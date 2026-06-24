@@ -1,0 +1,19 @@
+{
+  "space": {
+    "$type": "dimension",
+    "2":  { "$value": "2px",  "$description": "Hairline gaps, icon-to-text nudges." },
+    "4":  { "$value": "4px",  "$description": "Tight inner gaps, chip padding." },
+    "8":  { "$value": "8px",  "$description": "Default small gap between related items." },
+    "10": { "$value": "10px", "$description": "Compact control padding." },
+    "12": { "$value": "12px", "$description": "Card row gaps, control vertical padding." },
+    "16": { "$value": "16px", "$description": "Card body padding, grid gaps." },
+    "20": { "$value": "20px", "$description": "Panel padding, section sub-gaps." },
+    "24": { "$value": "24px", "$description": "Card/panel padding, comfortable grid gaps." },
+    "28": { "$value": "28px", "$description": "Large card padding." },
+    "32": { "$value": "32px", "$description": "Section header spacing." },
+    "40": { "$value": "40px", "$description": "Page horizontal padding." },
+    "56": { "$value": "56px", "$description": "Page top padding." },
+    "72": { "$value": "72px", "$description": "Between major sections." },
+    "96": { "$value": "96px", "$description": "Page bottom padding." }
+  }
+}

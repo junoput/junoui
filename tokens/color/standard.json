@@ -1,0 +1,115 @@
+{
+  "color": {
+    "standard": {
+      "$type": "color",
+      "dark": {
+        "nominal": {
+          "$value": "oklch(73% 0.22 148)",
+          "$description": "Normal / OK state. Nominal readings, confirmed-good, success."
+        },
+        "active": {
+          "$value": "oklch(76% 0.16 204)",
+          "$description": "Selected / active mode, armed state, focus rings, live status."
+        },
+        "target": {
+          "$value": "oklch(65% 0.26 324)",
+          "$description": "Managed / computed goal, automated set-point. Use sparingly."
+        },
+        "caution": {
+          "$value": "oklch(77% 0.17 73)",
+          "$description": "Abnormal but not critical. Approaching limits, degraded, watch."
+        },
+        "warning": {
+          "$value": "oklch(63% 0.22 28)",
+          "$description": "Limit exceeded / critical. Immediate action. Reserve strictly."
+        },
+        "data": {
+          "$value": "oklch(93% 0.008 85)",
+          "$description": "Primary numeric readouts and live values. Brightest text."
+        },
+        "label": {
+          "$value": "oklch(57% 0.012 85)",
+          "$description": "Labels, units, helper and secondary text. Never for values."
+        },
+        "muted": {
+          "$value": "oklch(35% 0.010 85)",
+          "$description": "Disabled, placeholder, decorative separators. No meaning."
+        },
+        "border": {
+          "$value": "oklch(23% 0.012 85)",
+          "$description": "Hairline borders and dividers."
+        },
+        "s0": {
+          "$value": "oklch(11% 0.010 85)",
+          "$description": "Surface — base background."
+        },
+        "s1": {
+          "$value": "oklch(15% 0.012 85)",
+          "$description": "Surface — panel background."
+        },
+        "s2": {
+          "$value": "oklch(19% 0.012 85)",
+          "$description": "Surface — elevated card."
+        },
+        "s3": {
+          "$value": "oklch(24% 0.012 85)",
+          "$description": "Surface — selected / overlay."
+        }
+      },
+      "light": {
+        "nominal": {
+          "$value": "oklch(42% 0.18 148)",
+          "$description": "Normal / OK state. Nominal readings, confirmed-good, success."
+        },
+        "active": {
+          "$value": "oklch(47% 0.16 220)",
+          "$description": "Selected / active mode, armed state, focus rings, live status."
+        },
+        "target": {
+          "$value": "oklch(45% 0.22 324)",
+          "$description": "Managed / computed goal, automated set-point. Use sparingly."
+        },
+        "caution": {
+          "$value": "oklch(50% 0.17 73)",
+          "$description": "Abnormal but not critical. Approaching limits, degraded, watch."
+        },
+        "warning": {
+          "$value": "oklch(42% 0.21 26)",
+          "$description": "Limit exceeded / critical. Immediate action. Reserve strictly."
+        },
+        "data": {
+          "$value": "oklch(14% 0.008 85)",
+          "$description": "Primary numeric readouts and live values. Brightest text."
+        },
+        "label": {
+          "$value": "oklch(42% 0.010 85)",
+          "$description": "Labels, units, helper and secondary text. Never for values."
+        },
+        "muted": {
+          "$value": "oklch(70% 0.008 85)",
+          "$description": "Disabled, placeholder, decorative separators. No meaning."
+        },
+        "border": {
+          "$value": "oklch(82% 0.010 85)",
+          "$description": "Hairline borders and dividers."
+        },
+        "s0": {
+          "$value": "oklch(97% 0.008 85)",
+          "$description": "Surface — base background."
+        },
+        "s1": {
+          "$value": "oklch(93% 0.010 85)",
+          "$description": "Surface — panel background."
+        },
+        "s2": {
+          "$value": "oklch(89% 0.010 85)",
+          "$description": "Surface — elevated card."
+        },
+        "s3": {
+          "$value": "oklch(85% 0.010 85)",
+          "$description": "Surface — selected / overlay."
+        }
+      }
+    }
+  }
+}

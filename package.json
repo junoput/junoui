@@ -1,0 +1,66 @@
+{
+  "name": "junoui",
+  "version": "0.1.0",
+  "description": "junoui — aviation-inspired design system. Color carries semantic meaning, never decoration: every hue has one assigned role (NOMINAL / ACTIVE / TARGET / CAUTION / WARNING). Ships multi-platform tokens (CSS, SCSS, JS/TS, JSON, Android, iOS, Flutter) plus a framework-agnostic CSS component layer.",
+  "type": "module",
+  "license": "MIT",
+  "author": "junoput",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-junoput:junoput/junoui.git"
+  },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "style-dictionary",
+    "css-variables",
+    "theme",
+    "dark-mode",
+    "accessibility",
+    "colorblind",
+    "aviation"
+  ],
+  "main": "./dist/js/tokens.js",
+  "module": "./dist/js/tokens.js",
+  "types": "./dist/js/tokens.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/js/tokens.d.ts",
+      "import": "./dist/js/tokens.js",
+      "default": "./dist/js/tokens.js"
+    },
+    "./css": "./dist/css/juno.css",
+    "./css/tokens": "./dist/css/juno-tokens.css",
+    "./scss": "./dist/scss/_juno-tokens.scss",
+    "./tokens.json": "./dist/json/tokens.json",
+    "./android/colors": "./dist/android/colors.xml",
+    "./android/dimens": "./dist/android/dimens.xml",
+    "./ios": "./dist/ios/JunoTokens.swift",
+    "./flutter": "./dist/flutter/juno_tokens.dart",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src/css",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build:tokens": "node style-dictionary.config.mjs",
+    "build:css": "node scripts/bundle-css.mjs",
+    "build": "npm run build:tokens && npm run build:css",
+    "gen-docs": "node scripts/gen-docs.mjs",
+    "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
+    "prepare": "npm run build",
+    "serve": "node style-dictionary.config.mjs && node scripts/bundle-css.mjs && python3 -m http.server 8137"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

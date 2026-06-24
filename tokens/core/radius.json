@@ -1,0 +1,10 @@
+{
+  "radius": {
+    "$type": "dimension",
+    "2": { "$value": "2px", "$description": "Badges, small inline chips." },
+    "3": { "$value": "3px", "$description": "Filled badges, dot containers." },
+    "4": { "$value": "4px", "$description": "Buttons, swatches, token rows." },
+    "5": { "$value": "5px", "$description": "Readout tiles." },
+    "8": { "$value": "8px", "$description": "Cards, panels, large containers." }
+  }
+}

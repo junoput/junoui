@@ -1,0 +1,115 @@
+{
+  "color": {
+    "colorblind": {
+      "$type": "color",
+      "dark": {
+        "nominal": {
+          "$value": "#78A9FF",
+          "$description": "Normal / OK state. Nominal readings, confirmed-good, success."
+        },
+        "active": {
+          "$value": "#BE95FF",
+          "$description": "Selected / active mode, armed state, focus rings, live status."
+        },
+        "target": {
+          "$value": "#FF7EB6",
+          "$description": "Managed / computed goal, automated set-point. Use sparingly."
+        },
+        "caution": {
+          "$value": "#F1C21B",
+          "$description": "Abnormal but not critical. Approaching limits, degraded, watch."
+        },
+        "warning": {
+          "$value": "#FF832B",
+          "$description": "Limit exceeded / critical. Immediate action. Reserve strictly."
+        },
+        "data": {
+          "$value": "oklch(93% 0.008 85)",
+          "$description": "Primary numeric readouts and live values. Brightest text."
+        },
+        "label": {
+          "$value": "oklch(57% 0.012 85)",
+          "$description": "Labels, units, helper and secondary text. Never for values."
+        },
+        "muted": {
+          "$value": "oklch(35% 0.010 85)",
+          "$description": "Disabled, placeholder, decorative separators. No meaning."
+        },
+        "border": {
+          "$value": "oklch(23% 0.012 85)",
+          "$description": "Hairline borders and dividers."
+        },
+        "s0": {
+          "$value": "oklch(11% 0.010 85)",
+          "$description": "Surface — base background."
+        },
+        "s1": {
+          "$value": "oklch(15% 0.012 85)",
+          "$description": "Surface — panel background."
+        },
+        "s2": {
+          "$value": "oklch(19% 0.012 85)",
+          "$description": "Surface — elevated card."
+        },
+        "s3": {
+          "$value": "oklch(24% 0.012 85)",
+          "$description": "Surface — selected / overlay."
+        }
+      },
+      "light": {
+        "nominal": {
+          "$value": "#0043CE",
+          "$description": "Normal / OK state. Nominal readings, confirmed-good, success."
+        },
+        "active": {
+          "$value": "#6929C4",
+          "$description": "Selected / active mode, armed state, focus rings, live status."
+        },
+        "target": {
+          "$value": "#9F1853",
+          "$description": "Managed / computed goal, automated set-point. Use sparingly."
+        },
+        "caution": {
+          "$value": "#7D4F00",
+          "$description": "Abnormal but not critical. Approaching limits, degraded, watch."
+        },
+        "warning": {
+          "$value": "#BA4300",
+          "$description": "Limit exceeded / critical. Immediate action. Reserve strictly."
+        },
+        "data": {
+          "$value": "oklch(14% 0.008 85)",
+          "$description": "Primary numeric readouts and live values. Brightest text."
+        },
+        "label": {
+          "$value": "oklch(42% 0.010 85)",
+          "$description": "Labels, units, helper and secondary text. Never for values."
+        },
+        "muted": {
+          "$value": "oklch(70% 0.008 85)",
+          "$description": "Disabled, placeholder, decorative separators. No meaning."
+        },
+        "border": {
+          "$value": "oklch(82% 0.010 85)",
+          "$description": "Hairline borders and dividers."
+        },
+        "s0": {
+          "$value": "oklch(97% 0.008 85)",
+          "$description": "Surface — base background."
+        },
+        "s1": {
+          "$value": "oklch(93% 0.010 85)",
+          "$description": "Surface — panel background."
+        },
+        "s2": {
+          "$value": "oklch(89% 0.010 85)",
+          "$description": "Surface — elevated card."
+        },
+        "s3": {
+          "$value": "oklch(85% 0.010 85)",
+          "$description": "Surface — selected / overlay."
+        }
+      }
+    }
+  }
+}

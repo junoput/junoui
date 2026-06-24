@@ -1,0 +1,10 @@
+{
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "1": { "$value": "1px", "$description": "Default hairline borders and dividers." },
+      "2": { "$value": "2px", "$description": "Status accent edge (card top border)." },
+      "3": { "$value": "3px", "$description": "Callout / note left accent." }
+    }
+  }
+}
