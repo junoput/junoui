@@ -49,10 +49,12 @@
   flex-wrap: wrap;
   gap: var(--juno-sidebar-space, var(--juno-space-24));
 }
+
 .juno-sidebar > .juno-sidebar__aside {
   flex-grow: 1;
   flex-basis: var(--juno-sidebar-width, 280px);
 }
+
 .juno-sidebar > .juno-sidebar__main {
   flex-grow: 999;
   flex-basis: 0;
@@ -66,6 +68,7 @@
   flex-wrap: wrap;
   gap: var(--juno-switcher-space, var(--juno-space-16));
 }
+
 .juno-switcher > * {
   flex-grow: 1;
   flex-basis: calc((var(--juno-switcher-threshold, var(--juno-bp-sm)) - 100%) * 999);
@@ -83,5 +86,6 @@
 
 /* Hide/show by viewport breakpoint — the rare case an intrinsic primitive
    can't express (e.g. swap a nav for a menu button). */
-@media (max-width: 767.98px) { .juno-hide-below-md { display: none !important; } }
-@media (min-width: 768px)    { .juno-hide-from-md  { display: none !important; } }
+@media (width <= 767.98px) { .juno-hide-below-md { display: none !important; } }
+
+@media (width >= 768px)    { .juno-hide-from-md  { display: none !important; } }

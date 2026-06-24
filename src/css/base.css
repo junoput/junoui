@@ -23,7 +23,7 @@ body {
   color: var(--juno-data);
   background: var(--juno-s0);
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
 }
 
 code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
@@ -43,4 +43,16 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Windows High Contrast / forced-colors: opt into the system palette so
+   borders and focus stay visible when our colors are overridden. */
+@media (forced-colors: active) {
+  *:focus-visible { outline-color: Highlight; }
+
+  .juno-badge,
+  .juno-btn,
+  .juno-card,
+  .juno-readout { border: 1px solid CanvasText; }
+  .juno-badge { forced-color-adjust: none; } /* keep status fill meaningful */
 }

@@ -7,6 +7,7 @@
 
 .juno-badge {
   --juno-role: var(--juno-muted);
+
   display: inline-flex;
   align-items: center;
   font-family: var(--juno-font-family-sans);

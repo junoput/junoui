@@ -11,6 +11,7 @@
 
 .juno-readout {
   --juno-role: var(--juno-data);
+
   display: flex;
   flex-direction: column;
   background: var(--juno-s2);

@@ -6,6 +6,7 @@
 
 .juno-btn {
   --juno-role: var(--juno-active);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;

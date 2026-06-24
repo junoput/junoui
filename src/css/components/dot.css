@@ -9,6 +9,7 @@
 
 .juno-status {
   --juno-role: var(--juno-nominal);
+
   display: inline-flex;
   align-items: center;
   gap: var(--juno-space-8);

@@ -9,7 +9,9 @@
  * ════════════════════════════════════════════════════════════════════ */
 
 @keyframes juno-arc-rot   { to { transform: rotate(360deg); } }
+
 @keyframes juno-beacon-pulse { 0% { transform: scale(0.28); opacity: 0.85; } 100% { transform: scale(1); opacity: 0; } }
+
 @keyframes juno-bar-slide { 0% { left: -42%; } 100% { left: 100%; } }
 
 /* ── ARC — circular ring ────────────────────────────────────────────── */
@@ -17,23 +19,28 @@
   --juno-role: var(--juno-active);
   --juno-arc-size: 76px;
   --juno-arc-width: 4px;
+
   position: relative;
   width: var(--juno-arc-size);
   height: var(--juno-arc-size);
   border-radius: 50%;
+
   /* determinate sweep: filled portion = progress */
   background: conic-gradient(
     var(--juno-role) calc(var(--juno-progress, 0) * 1%),
     var(--juno-s3) 0
   );
+
   /* punch out the centre to leave a ring */
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - var(--juno-arc-width)), #000 calc(100% - var(--juno-arc-width)));
           mask: radial-gradient(farthest-side, #0000 calc(100% - var(--juno-arc-width)), #000 calc(100% - var(--juno-arc-width)));
 }
+
 .juno-arc--indeterminate {
   background: conic-gradient(var(--juno-role) 0 70%, #0000 0);
   animation: juno-arc-rot 1.1s steps(12) infinite; /* mechanical, 12-step sweep */
 }
+
 /* centred readout for determinate arcs — place a span inside */
 .juno-arc__label {
   position: absolute;
@@ -45,6 +52,7 @@
   font-weight: var(--juno-font-weight-bold);
   font-size: var(--juno-font-size-13);
   color: var(--juno-data);
+
   /* the mask clips the ring, not this label: keep it on a sibling when
      a value is shown — see loader.md */
 }
@@ -53,6 +61,7 @@
 .juno-beacon {
   --juno-role: var(--juno-active);
   --juno-beacon-size: 76px;
+
   position: relative;
   width: var(--juno-beacon-size);
   height: var(--juno-beacon-size);
@@ -60,12 +69,14 @@
   align-items: center;
   justify-content: center;
 }
+
 .juno-beacon__core {
   width: 24%;
   height: 24%;
   border-radius: 50%;
   background: var(--juno-role);
 }
+
 /* two pulse rings (staggered) */
 .juno-beacon::before,
 .juno-beacon::after {
@@ -79,22 +90,25 @@
 .juno-beacon::after { animation-delay: 0.95s; }
 
 /* determinate: fill grows centre → rim by progress, keeps pulsing + readout */
-.juno-beacon--determinate { --_outer: calc(44% + 0.56% * var(--juno-progress, 0)); }
+.juno-beacon--determinate { --juno-beacon-fill-stop: calc(44% + 0.56% * var(--juno-progress, 0)); }
 .juno-beacon--determinate .juno-beacon__core { display: none; }
+
 .juno-beacon__track {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   border: 1px solid var(--juno-border);
 }
+
 .juno-beacon__fill {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background: var(--juno-role);
-  -webkit-mask: radial-gradient(circle closest-side, #0000 0 44%, #000 44% var(--_outer), #0000 var(--_outer));
-          mask: radial-gradient(circle closest-side, #0000 0 44%, #000 44% var(--_outer), #0000 var(--_outer));
+  -webkit-mask: radial-gradient(circle closest-side, #0000 0 44%, #000 44% var(--juno-beacon-fill-stop), #0000 var(--juno-beacon-fill-stop));
+          mask: radial-gradient(circle closest-side, #0000 0 44%, #000 44% var(--juno-beacon-fill-stop), #0000 var(--juno-beacon-fill-stop));
 }
+
 .juno-beacon__hub {
   position: absolute;
   left: 50%; top: 50%;
@@ -104,6 +118,7 @@
   background: var(--juno-s1);
   border: 1px solid var(--juno-border);
 }
+
 .juno-beacon__label {
   position: relative;
   font-family: var(--juno-font-family-mono);
@@ -115,6 +130,7 @@
 /* ── LINEAR BAR ─────────────────────────────────────────────────────── */
 .juno-bar {
   --juno-role: var(--juno-active);
+
   position: relative;
   width: 100%;
   height: 6px;
@@ -122,6 +138,7 @@
   background: var(--juno-s2);
   overflow: hidden;
 }
+
 .juno-bar__fill {
   position: absolute;
   top: 0;
@@ -132,6 +149,7 @@
   width: calc(var(--juno-progress, 0) * 1%);
   transition: width 0.12s linear;
 }
+
 /* indeterminate: a 40% segment slides across */
 .juno-bar--indeterminate .juno-bar__fill {
   width: 40%;

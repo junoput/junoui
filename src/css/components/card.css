@@ -11,6 +11,7 @@
 
 .juno-card {
   --juno-role: var(--juno-active);
+
   background: var(--juno-s1);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: var(--juno-radius-8);
