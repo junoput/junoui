@@ -1,0 +1,7 @@
+dist
+node_modules
+design
+package-lock.json
+docs/tokens-reference.md
+**/*.css
+**/*.html
