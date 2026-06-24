@@ -10,16 +10,16 @@ tool that does not understand `oklch()`).
 
 | Platform | Pattern | Example (`color.standard.dark.nominal`) |
 |---|---|---|
-| CSS — semantic | `var(--aero-<role>)` (switches with theme attrs) | `var(--aero-nominal)` |
-| SCSS | `$aero-color-<palette>-<mode>-<role>` | `$aero-color-standard-dark-nominal` |
+| CSS — semantic | `var(--juno-<role>)` (switches with theme attrs) | `var(--juno-nominal)` |
+| SCSS | `$juno-color-<palette>-<mode>-<role>` | `$juno-color-standard-dark-nominal` |
 | JS / TS | `TOKENS.<palette>.<mode>.<role>` | `TOKENS.standard.dark.nominal` |
 | JSON (DTCG) | `color.<palette>.<mode>.<role>` | `color.standard.dark.nominal` |
 | Android | `@color/<palette>_<mode>_<role>` | `@color/standard_dark_nominal` |
-| iOS (Swift) | `AeroTokens.<camelCase>` | `AeroTokens.standardDarkNominal` |
-| Flutter (Dart) | `AeroTokens.<camelCase>` | `AeroTokens.standardDarkNominal` |
+| iOS (Swift) | `JunoTokens.<camelCase>` | `JunoTokens.standardDarkNominal` |
+| Flutter (Dart) | `JunoTokens.<camelCase>` | `JunoTokens.standardDarkNominal` |
 
-Core tokens (spacing, radius, typography, …) use `--aero-<path-joined-by->`,
-e.g. `space.16` → `var(--aero-space-16)`, `@dimen/space_16`, `AeroTokens.space16`.
+Core tokens (spacing, radius, typography, …) use `--juno-<path-joined-by->`,
+e.g. `space.16` → `var(--juno-space-16)`, `@dimen/space_16`, `JunoTokens.space16`.
 
 ## Color roles
 
@@ -85,84 +85,94 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `border.width.1` | `1px` | `var(--aero-border-width-1)` | `AeroTokens.borderWidth1` |
-| `border.width.2` | `2px` | `var(--aero-border-width-2)` | `AeroTokens.borderWidth2` |
-| `border.width.3` | `3px` | `var(--aero-border-width-3)` | `AeroTokens.borderWidth3` |
+| `border.width.1` | `1px` | `var(--juno-border-width-1)` | `JunoTokens.borderWidth1` |
+| `border.width.2` | `2px` | `var(--juno-border-width-2)` | `JunoTokens.borderWidth2` |
+| `border.width.3` | `3px` | `var(--juno-border-width-3)` | `JunoTokens.borderWidth3` |
+
+### bp
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `bp.sm` | `640px` | `var(--juno-bp-sm)` | `JunoTokens.bpSm` |
+| `bp.md` | `768px` | `var(--juno-bp-md)` | `JunoTokens.bpMd` |
+| `bp.lg` | `1024px` | `var(--juno-bp-lg)` | `JunoTokens.bpLg` |
+| `bp.xl` | `1280px` | `var(--juno-bp-xl)` | `JunoTokens.bpXl` |
+| `bp.2xl` | `1536px` | `var(--juno-bp-2xl)` | `JunoTokens.bp2xl` |
 
 ### Radius
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `radius.2` | `2px` | `var(--aero-radius-2)` | `AeroTokens.radius2` |
-| `radius.3` | `3px` | `var(--aero-radius-3)` | `AeroTokens.radius3` |
-| `radius.4` | `4px` | `var(--aero-radius-4)` | `AeroTokens.radius4` |
-| `radius.5` | `5px` | `var(--aero-radius-5)` | `AeroTokens.radius5` |
-| `radius.8` | `8px` | `var(--aero-radius-8)` | `AeroTokens.radius8` |
+| `radius.2` | `2px` | `var(--juno-radius-2)` | `JunoTokens.radius2` |
+| `radius.3` | `3px` | `var(--juno-radius-3)` | `JunoTokens.radius3` |
+| `radius.4` | `4px` | `var(--juno-radius-4)` | `JunoTokens.radius4` |
+| `radius.5` | `5px` | `var(--juno-radius-5)` | `JunoTokens.radius5` |
+| `radius.8` | `8px` | `var(--juno-radius-8)` | `JunoTokens.radius8` |
 
 ### Sizing
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `size.tap.min` | `24px` | `var(--aero-size-tap-min)` | `AeroTokens.sizeTapMin` |
-| `size.tap.comfortable` | `44px` | `var(--aero-size-tap-comfortable)` | `AeroTokens.sizeTapComfortable` |
-| `size.dot.sm` | `8px` | `var(--aero-size-dot-sm)` | `AeroTokens.sizeDotSm` |
-| `size.dot.md` | `10px` | `var(--aero-size-dot-md)` | `AeroTokens.sizeDotMd` |
+| `size.tap.min` | `24px` | `var(--juno-size-tap-min)` | `JunoTokens.sizeTapMin` |
+| `size.tap.comfortable` | `44px` | `var(--juno-size-tap-comfortable)` | `JunoTokens.sizeTapComfortable` |
+| `size.dot.sm` | `8px` | `var(--juno-size-dot-sm)` | `JunoTokens.sizeDotSm` |
+| `size.dot.md` | `10px` | `var(--juno-size-dot-md)` | `JunoTokens.sizeDotMd` |
 
 ### Spacing
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `space.2` | `2px` | `var(--aero-space-2)` | `AeroTokens.space2` |
-| `space.4` | `4px` | `var(--aero-space-4)` | `AeroTokens.space4` |
-| `space.8` | `8px` | `var(--aero-space-8)` | `AeroTokens.space8` |
-| `space.10` | `10px` | `var(--aero-space-10)` | `AeroTokens.space10` |
-| `space.12` | `12px` | `var(--aero-space-12)` | `AeroTokens.space12` |
-| `space.16` | `16px` | `var(--aero-space-16)` | `AeroTokens.space16` |
-| `space.20` | `20px` | `var(--aero-space-20)` | `AeroTokens.space20` |
-| `space.24` | `24px` | `var(--aero-space-24)` | `AeroTokens.space24` |
-| `space.28` | `28px` | `var(--aero-space-28)` | `AeroTokens.space28` |
-| `space.32` | `32px` | `var(--aero-space-32)` | `AeroTokens.space32` |
-| `space.40` | `40px` | `var(--aero-space-40)` | `AeroTokens.space40` |
-| `space.56` | `56px` | `var(--aero-space-56)` | `AeroTokens.space56` |
-| `space.72` | `72px` | `var(--aero-space-72)` | `AeroTokens.space72` |
-| `space.96` | `96px` | `var(--aero-space-96)` | `AeroTokens.space96` |
+| `space.2` | `2px` | `var(--juno-space-2)` | `JunoTokens.space2` |
+| `space.4` | `4px` | `var(--juno-space-4)` | `JunoTokens.space4` |
+| `space.8` | `8px` | `var(--juno-space-8)` | `JunoTokens.space8` |
+| `space.10` | `10px` | `var(--juno-space-10)` | `JunoTokens.space10` |
+| `space.12` | `12px` | `var(--juno-space-12)` | `JunoTokens.space12` |
+| `space.16` | `16px` | `var(--juno-space-16)` | `JunoTokens.space16` |
+| `space.20` | `20px` | `var(--juno-space-20)` | `JunoTokens.space20` |
+| `space.24` | `24px` | `var(--juno-space-24)` | `JunoTokens.space24` |
+| `space.28` | `28px` | `var(--juno-space-28)` | `JunoTokens.space28` |
+| `space.32` | `32px` | `var(--juno-space-32)` | `JunoTokens.space32` |
+| `space.40` | `40px` | `var(--juno-space-40)` | `JunoTokens.space40` |
+| `space.56` | `56px` | `var(--juno-space-56)` | `JunoTokens.space56` |
+| `space.72` | `72px` | `var(--juno-space-72)` | `JunoTokens.space72` |
+| `space.96` | `96px` | `var(--juno-space-96)` | `JunoTokens.space96` |
 
 ### Typography
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `font.family.sans` | `'B612', sans-serif` | `var(--aero-font-family-sans)` | `AeroTokens.fontFamilySans` |
-| `font.family.mono` | `'B612 Mono', monospace` | `var(--aero-font-family-mono)` | `AeroTokens.fontFamilyMono` |
-| `font.weight.light` | `300` | `var(--aero-font-weight-light)` | `AeroTokens.fontWeightLight` |
-| `font.weight.regular` | `400` | `var(--aero-font-weight-regular)` | `AeroTokens.fontWeightRegular` |
-| `font.weight.medium` | `500` | `var(--aero-font-weight-medium)` | `AeroTokens.fontWeightMedium` |
-| `font.weight.semibold` | `600` | `var(--aero-font-weight-semibold)` | `AeroTokens.fontWeightSemibold` |
-| `font.weight.bold` | `700` | `var(--aero-font-weight-bold)` | `AeroTokens.fontWeightBold` |
-| `font.size.10` | `10px` | `var(--aero-font-size-10)` | `AeroTokens.fontSize10` |
-| `font.size.11` | `11px` | `var(--aero-font-size-11)` | `AeroTokens.fontSize11` |
-| `font.size.12` | `12px` | `var(--aero-font-size-12)` | `AeroTokens.fontSize12` |
-| `font.size.13` | `13px` | `var(--aero-font-size-13)` | `AeroTokens.fontSize13` |
-| `font.size.14` | `14px` | `var(--aero-font-size-14)` | `AeroTokens.fontSize14` |
-| `font.size.16` | `16px` | `var(--aero-font-size-16)` | `AeroTokens.fontSize16` |
-| `font.size.18` | `18px` | `var(--aero-font-size-18)` | `AeroTokens.fontSize18` |
-| `font.size.20` | `20px` | `var(--aero-font-size-20)` | `AeroTokens.fontSize20` |
-| `font.size.28` | `28px` | `var(--aero-font-size-28)` | `AeroTokens.fontSize28` |
-| `font.size.32` | `32px` | `var(--aero-font-size-32)` | `AeroTokens.fontSize32` |
-| `font.size.36` | `36px` | `var(--aero-font-size-36)` | `AeroTokens.fontSize36` |
-| `font.size.38` | `38px` | `var(--aero-font-size-38)` | `AeroTokens.fontSize38` |
-| `font.size.48` | `48px` | `var(--aero-font-size-48)` | `AeroTokens.fontSize48` |
-| `font.size.52` | `52px` | `var(--aero-font-size-52)` | `AeroTokens.fontSize52` |
-| `font.lineHeight.none` | `1` | `var(--aero-font-lineHeight-none)` | `AeroTokens.fontLineHeightNone` |
-| `font.lineHeight.tight` | `1.1` | `var(--aero-font-lineHeight-tight)` | `AeroTokens.fontLineHeightTight` |
-| `font.lineHeight.snug` | `1.2` | `var(--aero-font-lineHeight-snug)` | `AeroTokens.fontLineHeightSnug` |
-| `font.lineHeight.normal` | `1.4` | `var(--aero-font-lineHeight-normal)` | `AeroTokens.fontLineHeightNormal` |
-| `font.lineHeight.relaxed` | `1.5` | `var(--aero-font-lineHeight-relaxed)` | `AeroTokens.fontLineHeightRelaxed` |
-| `font.lineHeight.loose` | `1.7` | `var(--aero-font-lineHeight-loose)` | `AeroTokens.fontLineHeightLoose` |
-| `font.tracking.tight` | `0.02em` | `var(--aero-font-tracking-tight)` | `AeroTokens.fontTrackingTight` |
-| `font.tracking.normal` | `0.06em` | `var(--aero-font-tracking-normal)` | `AeroTokens.fontTrackingNormal` |
-| `font.tracking.label` | `0.08em` | `var(--aero-font-tracking-label)` | `AeroTokens.fontTrackingLabel` |
-| `font.tracking.wide` | `0.12em` | `var(--aero-font-tracking-wide)` | `AeroTokens.fontTrackingWide` |
-| `font.tracking.caps` | `0.15em` | `var(--aero-font-tracking-caps)` | `AeroTokens.fontTrackingCaps` |
-| `font.tracking.wider` | `0.2em` | `var(--aero-font-tracking-wider)` | `AeroTokens.fontTrackingWider` |
-| `font.tracking.widest` | `0.3em` | `var(--aero-font-tracking-widest)` | `AeroTokens.fontTrackingWidest` |
+| `font.family.sans` | `'B612', sans-serif` | `var(--juno-font-family-sans)` | `JunoTokens.fontFamilySans` |
+| `font.family.mono` | `'B612 Mono', monospace` | `var(--juno-font-family-mono)` | `JunoTokens.fontFamilyMono` |
+| `font.weight.light` | `300` | `var(--juno-font-weight-light)` | `JunoTokens.fontWeightLight` |
+| `font.weight.regular` | `400` | `var(--juno-font-weight-regular)` | `JunoTokens.fontWeightRegular` |
+| `font.weight.medium` | `500` | `var(--juno-font-weight-medium)` | `JunoTokens.fontWeightMedium` |
+| `font.weight.semibold` | `600` | `var(--juno-font-weight-semibold)` | `JunoTokens.fontWeightSemibold` |
+| `font.weight.bold` | `700` | `var(--juno-font-weight-bold)` | `JunoTokens.fontWeightBold` |
+| `font.size.10` | `10px` | `var(--juno-font-size-10)` | `JunoTokens.fontSize10` |
+| `font.size.11` | `11px` | `var(--juno-font-size-11)` | `JunoTokens.fontSize11` |
+| `font.size.12` | `12px` | `var(--juno-font-size-12)` | `JunoTokens.fontSize12` |
+| `font.size.13` | `13px` | `var(--juno-font-size-13)` | `JunoTokens.fontSize13` |
+| `font.size.14` | `14px` | `var(--juno-font-size-14)` | `JunoTokens.fontSize14` |
+| `font.size.16` | `16px` | `var(--juno-font-size-16)` | `JunoTokens.fontSize16` |
+| `font.size.18` | `18px` | `var(--juno-font-size-18)` | `JunoTokens.fontSize18` |
+| `font.size.20` | `20px` | `var(--juno-font-size-20)` | `JunoTokens.fontSize20` |
+| `font.size.28` | `28px` | `var(--juno-font-size-28)` | `JunoTokens.fontSize28` |
+| `font.size.32` | `32px` | `var(--juno-font-size-32)` | `JunoTokens.fontSize32` |
+| `font.size.36` | `36px` | `var(--juno-font-size-36)` | `JunoTokens.fontSize36` |
+| `font.size.38` | `38px` | `var(--juno-font-size-38)` | `JunoTokens.fontSize38` |
+| `font.size.48` | `48px` | `var(--juno-font-size-48)` | `JunoTokens.fontSize48` |
+| `font.size.52` | `52px` | `var(--juno-font-size-52)` | `JunoTokens.fontSize52` |
+| `font.lineHeight.none` | `1` | `var(--juno-font-lineHeight-none)` | `JunoTokens.fontLineHeightNone` |
+| `font.lineHeight.tight` | `1.1` | `var(--juno-font-lineHeight-tight)` | `JunoTokens.fontLineHeightTight` |
+| `font.lineHeight.snug` | `1.2` | `var(--juno-font-lineHeight-snug)` | `JunoTokens.fontLineHeightSnug` |
+| `font.lineHeight.normal` | `1.4` | `var(--juno-font-lineHeight-normal)` | `JunoTokens.fontLineHeightNormal` |
+| `font.lineHeight.relaxed` | `1.5` | `var(--juno-font-lineHeight-relaxed)` | `JunoTokens.fontLineHeightRelaxed` |
+| `font.lineHeight.loose` | `1.7` | `var(--juno-font-lineHeight-loose)` | `JunoTokens.fontLineHeightLoose` |
+| `font.tracking.tight` | `0.02em` | `var(--juno-font-tracking-tight)` | `JunoTokens.fontTrackingTight` |
+| `font.tracking.normal` | `0.06em` | `var(--juno-font-tracking-normal)` | `JunoTokens.fontTrackingNormal` |
+| `font.tracking.label` | `0.08em` | `var(--juno-font-tracking-label)` | `JunoTokens.fontTrackingLabel` |
+| `font.tracking.wide` | `0.12em` | `var(--juno-font-tracking-wide)` | `JunoTokens.fontTrackingWide` |
+| `font.tracking.caps` | `0.15em` | `var(--juno-font-tracking-caps)` | `JunoTokens.fontTrackingCaps` |
+| `font.tracking.wider` | `0.2em` | `var(--juno-font-tracking-wider)` | `JunoTokens.fontTrackingWider` |
+| `font.tracking.widest` | `0.3em` | `var(--juno-font-tracking-widest)` | `JunoTokens.fontTrackingWidest` |
 
