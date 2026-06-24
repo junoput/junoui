@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=B612+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+<style>* { box-sizing: border-box; margin: 0; padding: 0; } body { overflow-x: hidden; } @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} } *:focus-visible { outline: 2px solid oklch(76% 0.16 204); outline-offset: 2px; border-radius: 2px; }</style>
+</helmet>
+
+<div style="min-height:100vh;background:{{s0}};color:{{data}};font-family:'B612',sans-serif;letter-spacing:0.02em;">
+
+  <!-- ─── STICKY HEADER ─── -->
+  <header style="position:sticky;top:0;z-index:100;background:{{s1}};border-bottom:1px solid {{border}};padding:0 40px;height:52px;display:flex;align-items:center;gap:20px;">
+    <span style="font-family:'B612 Mono',monospace;font-size:16px;font-weight:700;color:{{nominal}};letter-spacing:0.2em;flex-shrink:0;">AERO·UI</span>
+    <span style="font-size:10px;color:{{label}};letter-spacing:0.25em;text-transform:uppercase;flex-shrink:0;">Design System</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:10px;color:{{label}};letter-spacing:0.15em;flex-shrink:0;">PALETTE</span>
+    <div style="display:flex;gap:4px;">
+      <button style="{{stdBtnStyle}}" onClick="{{setStd}}">STANDARD</button>
+      <button style="{{cbBtnStyle}}" onClick="{{setCb}}">COLORBLIND</button>
+      <button style="{{softBtnStyle}}" onClick="{{setSoft}}">SOFT</button>
+    </div>
+    <div style="width:1px;height:20px;background:{{border}};"></div>
+    <div style="display:flex;gap:4px;">
+      <button style="{{darkBtnStyle}}" onClick="{{setDark}}">◑ DARK</button>
+      <button style="{{lightBtnStyle}}" onClick="{{setLight}}">◐ LIGHT</button>
+    </div>
+    <div style="width:1px;height:20px;background:{{border}};"></div>
+    <span style="font-size:10px;color:{{label}};letter-spacing:0.15em;flex-shrink:0;">TEXT</span>
+    <div style="display:flex;gap:4px;">
+      <button style="{{szS}}" onClick="{{setSmall}}">S</button>
+      <button style="{{szM}}" onClick="{{setMedium}}">M</button>
+      <button style="{{szL}}" onClick="{{setLarge}}">L</button>
+    </div>
+  </header>
+
+  <!-- ─── MAIN ─── -->
+  <main style="zoom:{{zoom}};max-width:1280px;margin:0 auto;padding:56px 40px 96px;">
+
+    <!-- ══ 01 OVERVIEW ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">01</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">System Overview</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
+        <div>
+          <h1 style="font-size:36px;font-weight:300;color:{{data}};line-height:1.2;margin-bottom:16px;">Clarity<br/>at altitude.</h1>
+          <p style="font-size:14px;color:{{label}};line-height:1.7;max-width:340px;">Aviation-grade design tokens and UI components. Colors carry semantic meaning — never decoration. Every hue has one assigned role.</p>
+        </div>
+        <div style="background:{{s2}};border:1px solid {{border}};border-radius:8px;padding:24px;">
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.25em;margin-bottom:16px;">PRINCIPLES</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:10px;font-size:13px;color:{{data}};line-height:1.4;"><span style="color:{{nominal}};flex-shrink:0;">→</span>Color encodes status, never style</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:{{data}};line-height:1.4;"><span style="color:{{nominal}};flex-shrink:0;">→</span>Hierarchy via contrast, not scale</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:{{data}};line-height:1.4;"><span style="color:{{nominal}};flex-shrink:0;">→</span>Density is intentional, never accidental</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:{{data}};line-height:1.4;"><span style="color:{{nominal}};flex-shrink:0;">→</span>Designed for long viewing sessions</div>
+          </div>
+        </div>
+        <div style="background:{{s2}};border:1px solid {{border}};border-radius:8px;padding:24px;">
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.25em;margin-bottom:16px;">STATUS SCALE</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:10px;height:10px;border-radius:50%;background:{{nominal}};flex-shrink:0;"></span><span style="font-size:13px;color:{{nominal}};letter-spacing:0.08em;width:90px;">NOMINAL</span><span style="font-size:11px;color:{{label}};">Normal / OK</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:10px;height:10px;border-radius:50%;background:{{active}};flex-shrink:0;"></span><span style="font-size:13px;color:{{active}};letter-spacing:0.08em;width:90px;">ACTIVE</span><span style="font-size:11px;color:{{label}};">Selected / Ready</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:10px;height:10px;border-radius:50%;background:{{target}};flex-shrink:0;"></span><span style="font-size:13px;color:{{target}};letter-spacing:0.08em;width:90px;">TARGET</span><span style="font-size:11px;color:{{label}};">Managed / Goal</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:10px;height:10px;border-radius:50%;background:{{caution}};flex-shrink:0;"></span><span style="font-size:13px;color:{{caution}};letter-spacing:0.08em;width:90px;">CAUTION</span><span style="font-size:11px;color:{{label}};">Non-normal / Watch</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:10px;height:10px;border-radius:50%;background:{{warning}};flex-shrink:0;"></span><span style="font-size:13px;color:{{warning}};letter-spacing:0.08em;width:90px;">WARNING</span><span style="font-size:11px;color:{{label}};">Critical / Act Now</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 02 COLOR TOKENS ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">02</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Color Tokens — {{paletteLabel}} / {{modeLabel}}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:4px;margin-bottom:8px;padding:0 16px;">
+        <div></div>
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;">TOKEN</div>
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;">SEMANTIC ROLE &amp; USAGE</div>
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;">VALUE</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{nominal}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};">--col-nominal</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Normal / OK State</div><div style="font-size:11px;color:{{label}};">Nominal readings, active systems, confirmed good. Success states, confirmed actions. Never use decoratively.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{nominalVal}}</code>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{active}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{active}};">--col-active</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Selected / Active Mode</div><div style="font-size:11px;color:{{label}};">Currently selected item, active mode, armed state, live system status. Focus rings, selected tab underlines.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{activeVal}}</code>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{target}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{target}};">--col-target</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Managed / Target Value</div><div style="font-size:11px;color:{{label}};">Computed goals, automated managed values, set-point targets. Use sparingly — only for values the system drives toward.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{targetVal}}</code>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{caution}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{caution}};">--col-caution</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Caution / Non-Normal</div><div style="font-size:11px;color:{{label}};">Abnormal but not critical. Approaching limits, degraded state, needs attention. Does not require immediate action.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{cautionVal}}</code>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{warning}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{warning}};">--col-warning</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Warning / Critical</div><div style="font-size:11px;color:{{label}};">Limit exceeded, critical condition, immediate action required. Reserve strictly — overuse destroys authority.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{warningVal}}</code>
+        </div>
+        <div style="height:12px;"></div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{data}};border-radius:4px;border:1px solid {{border}};"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{data}};">--col-data</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Primary Data / Readout</div><div style="font-size:11px;color:{{label}};">All numerical readouts and primary values. The brightest non-semantic text color. Reserved for live readings only.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{dataVal}}</code>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{label}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-label</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Labels / Secondary Text</div><div style="font-size:11px;color:{{label}};">Dimension names, units, helper text, secondary descriptions. Never for values.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{labelVal}}</code>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 180px 1fr 220px;gap:16px;align-items:center;padding:10px 16px;background:{{s1}};border:1px solid {{border}};border-radius:4px;">
+          <div style="width:32px;height:32px;background:{{muted}};border-radius:4px;"></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:12px;color:{{muted}};">--col-muted</code>
+          <div><div style="font-size:13px;color:{{data}};font-weight:500;margin-bottom:2px;">Disabled / Decorative</div><div style="font-size:11px;color:{{label}};">Inactive states, placeholder text, disabled controls, visual separators. Should not carry meaning.</div></div>
+          <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};word-break:break-all;">{{mutedVal}}</code>
+        </div>
+        <div style="height:12px;"></div>
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;padding:0 16px;text-transform:uppercase;margin-bottom:4px;">Surface Layers — depth hierarchy</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;">
+          <div style="background:{{s0}};border:1px solid {{border}};border-radius:4px;padding:16px;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;margin-bottom:6px;">--col-s0</code><div style="font-size:12px;color:{{label}};">Base background</div></div>
+          <div style="background:{{s1}};border:1px solid {{border}};border-radius:4px;padding:16px;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;margin-bottom:6px;">--col-s1</code><div style="font-size:12px;color:{{label}};">Panel background</div></div>
+          <div style="background:{{s2}};border:1px solid {{border}};border-radius:4px;padding:16px;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;margin-bottom:6px;">--col-s2</code><div style="font-size:12px;color:{{label}};">Elevated card</div></div>
+          <div style="background:{{s3}};border:1px solid {{border}};border-radius:4px;padding:16px;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;margin-bottom:6px;">--col-s3</code><div style="font-size:12px;color:{{label}};">Selected / overlay</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 03 PALETTE COMPARISON ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">03</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Palette Comparison — Dark Mode</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+        <!-- Standard -->
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="padding:14px 20px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:600;color:{{data}};letter-spacing:0.1em;">STANDARD</span><span style="font-size:10px;color:{{label}};">Aviation traditional</span></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(73% 0.22 148);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(73% 0.22 148);font-weight:600;width:80px;">NOMINAL</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">73% .22 148</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(76% 0.16 204);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(76% 0.16 204);font-weight:600;width:80px;">ACTIVE</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">76% .16 204</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(65% 0.26 324);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(65% 0.26 324);font-weight:600;width:80px;">TARGET</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">65% .26 324</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(77% 0.17 73);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(77% 0.17 73);font-weight:600;width:80px;">CAUTION</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">77% .17 73</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(63% 0.22 28);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(63% 0.22 28);font-weight:600;width:80px;">WARNING</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">63% .22 28</code></div>
+          </div>
+        </div>
+        <!-- Colorblind -->
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="padding:14px 20px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:600;color:{{data}};letter-spacing:0.1em;">COLORBLIND SAFE</span><span style="font-size:10px;color:{{label}};">IBM Carbon universal</span></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:#78A9FF;flex-shrink:0;"></div><span style="font-size:12px;color:#78A9FF;font-weight:600;width:80px;">NOMINAL</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">#78A9FF</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:#BE95FF;flex-shrink:0;"></div><span style="font-size:12px;color:#BE95FF;font-weight:600;width:80px;">ACTIVE</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">#BE95FF</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:#FF7EB6;flex-shrink:0;"></div><span style="font-size:12px;color:#FF7EB6;font-weight:600;width:80px;">TARGET</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">#FF7EB6</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:#F1C21B;flex-shrink:0;"></div><span style="font-size:12px;color:#F1C21B;font-weight:600;width:80px;">CAUTION</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">#F1C21B</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:#FF832B;flex-shrink:0;"></div><span style="font-size:12px;color:#FF832B;font-weight:600;width:80px;">WARNING</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">#FF832B</code></div>
+          </div>
+        </div>
+        <!-- Soft -->
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="padding:14px 20px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:600;color:{{data}};letter-spacing:0.1em;">SOFT</span><span style="font-size:10px;color:{{label}};">Extended session</span></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(63% 0.13 155);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(63% 0.13 155);font-weight:600;width:80px;">NOMINAL</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">63% .13 155</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(67% 0.12 210);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(67% 0.12 210);font-weight:600;width:80px;">ACTIVE</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">67% .12 210</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(58% 0.14 318);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(58% 0.14 318);font-weight:600;width:80px;">TARGET</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">58% .14 318</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(72% 0.12 75);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(72% 0.12 75);font-weight:600;width:80px;">CAUTION</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">72% .12 75</code></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:3px;background:oklch(62% 0.15 30);flex-shrink:0;"></div><span style="font-size:12px;color:oklch(62% 0.15 30);font-weight:600;width:80px;">WARNING</span><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">62% .15 30</code></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:12px 20px;background:{{s1}};border:1px solid {{border}};border-left:3px solid {{active}};border-radius:4px;font-size:12px;color:{{label}};line-height:1.7;">
+        <strong style="color:{{data}};">Colorblind Safe</strong> uses IBM Carbon v11 dark-theme colorblind-safe set (40-tier). Distinguishable across deuteranopia (~8% males), protanopia, and tritanopia. Blue replaces green for NOMINAL, orange replaces red for WARNING. All five dark-mode colors pass WCAG <strong style="color:{{data}};">AAA (≥ 7:1)</strong> on the dark surface palette.
+      </div>
+    </section>
+
+    <!-- ══ 04 TYPOGRAPHY ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">04</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Typography</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:28px;">
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;margin-bottom:20px;">DATA VALUES — B612 MONO</div>
+          <div style="font-family:'B612 Mono',monospace;font-size:52px;font-weight:700;color:{{data}};line-height:1;margin-bottom:6px;">359.2</div>
+          <div style="font-family:'B612 Mono',monospace;font-size:32px;color:{{nominal}};margin-bottom:6px;">89.3 %</div>
+          <div style="font-family:'B612 Mono',monospace;font-size:20px;color:{{caution}};margin-bottom:6px;">402 °C</div>
+          <div style="font-family:'B612 Mono',monospace;font-size:14px;color:{{data}};">{{currentTime}} · {{currentDate}}</div>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid {{border}};font-size:11px;color:{{label}};line-height:1.7;">Designed by ESA for avionics readability. Fixed-width digits prevent value-change jitter. Use exclusively for numbers, timestamps, identifiers, and code.</div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:28px;">
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;margin-bottom:20px;">UI &amp; LABELS — B612</div>
+          <div style="font-family:'B612',sans-serif;font-size:36px;font-weight:400;color:{{data}};line-height:1.1;margin-bottom:10px;">System Overview</div>
+          <div style="font-family:'B612',sans-serif;font-size:20px;font-weight:600;color:{{data}};letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">ENGINE PARAMETERS</div>
+          <div style="font-family:'B612',sans-serif;font-size:14px;color:{{label}};margin-bottom:8px;">Subsystem label · Unit descriptor · Range</div>
+          <div style="font-family:'B612',sans-serif;font-size:10px;color:{{label}};letter-spacing:0.25em;text-transform:uppercase;">STATUS · CATEGORY · IDENTIFIER</div>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid {{border}};font-size:11px;color:{{label}};line-height:1.7;">Designed by Airbus &amp; ENAC for avionics readability. Optimized for cockpit displays — clear letterforms, excellent legibility at all sizes. 400 &amp; 700 weights. Use for all non-numeric UI: headings, labels, navigation, buttons.</div>
+        </div>
+      </div>
+      <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+        <div style="padding:16px 20px;border-bottom:1px solid {{border}};font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;">Type Scale</div>
+        <div style="display:flex;flex-direction:column;">
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;border-bottom:1px solid {{border}};align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-xl-value</code><span style="font-family:'B612 Mono',monospace;font-size:48px;font-weight:700;color:{{data}};line-height:1;">359.2</span><span style="font-size:11px;color:{{label}};">48px · Mono 700</span></div>
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;border-bottom:1px solid {{border}};align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-lg-value</code><span style="font-family:'B612 Mono',monospace;font-size:32px;font-weight:700;color:{{data}};line-height:1;">1,340</span><span style="font-size:11px;color:{{label}};">32px · Mono 700</span></div>
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;border-bottom:1px solid {{border}};align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-md-value</code><span style="font-family:'B612 Mono',monospace;font-size:20px;font-weight:700;color:{{data}};line-height:1;">89.3%</span><span style="font-size:11px;color:{{label}};">20px · Mono 700</span></div>
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;border-bottom:1px solid {{border}};align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-heading-lg</code><span style="font-family:'B612',sans-serif;font-size:28px;font-weight:400;color:{{data}};line-height:1;">System Parameters</span><span style="font-size:11px;color:{{label}};">28px · B612 400</span></div>
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;border-bottom:1px solid {{border}};align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-heading-md</code><span style="font-family:'B612',sans-serif;font-size:18px;font-weight:700;color:{{data}};letter-spacing:0.06em;text-transform:uppercase;line-height:1;">ENGINE PARAMETERS</span><span style="font-size:11px;color:{{label}};">18px · B612 700</span></div>
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;border-bottom:1px solid {{border}};align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-label</code><span style="font-family:'B612',sans-serif;font-size:13px;color:{{label}};line-height:1;">Fuel flow · kg/h · Range 0–2000</span><span style="font-size:11px;color:{{label}};">13px · B612 400</span></div>
+          <div style="display:grid;grid-template-columns:160px 1fr 140px;gap:16px;padding:12px 20px;align-items:baseline;"><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};">--type-micro</code><span style="font-family:'B612',sans-serif;font-size:10px;color:{{label}};letter-spacing:0.25em;text-transform:uppercase;line-height:1;">DIMENSION IDENTIFIER</span><span style="font-size:11px;color:{{label}};">10px · B612 400</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 05 COMPONENTS ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">05</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Components</span>
+      </div>
+
+      <!-- 5a Badges -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5a — Status Indicators &amp; Badges</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:20px;">
+          <div>
+            <div style="font-size:10px;color:{{muted}};letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Filled</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:{{nominal}};color:{{s0}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">NOMINAL</span>
+              <span style="background:{{active}};color:{{s0}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">ACTIVE</span>
+              <span style="background:{{target}};color:{{s0}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">TARGET</span>
+              <span style="background:{{caution}};color:{{s0}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">CAUTION</span>
+              <span style="background:{{warning}};color:{{s0}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">WARNING</span>
+              <span style="background:{{muted}};color:{{s0}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">INACTIVE</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:{{muted}};letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Outline</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="color:{{nominal}};border:1px solid {{nominal}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">NOMINAL</span>
+              <span style="color:{{active}};border:1px solid {{active}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">ACTIVE</span>
+              <span style="color:{{target}};border:1px solid {{target}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">TARGET</span>
+              <span style="color:{{caution}};border:1px solid {{caution}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">CAUTION</span>
+              <span style="color:{{warning}};border:1px solid {{warning}};font-family:'B612',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;padding:4px 10px;border-radius:3px;">WARNING</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:{{muted}};letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Dot Indicator</div>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:7px;"><span style="width:8px;height:8px;border-radius:50%;background:{{nominal}};flex-shrink:0;"></span><span style="font-size:12px;color:{{nominal}};letter-spacing:0.08em;">NOMINAL</span></div>
+              <div style="display:flex;align-items:center;gap:7px;"><span style="width:8px;height:8px;border-radius:50%;background:{{active}};flex-shrink:0;"></span><span style="font-size:12px;color:{{active}};letter-spacing:0.08em;">ACTIVE</span></div>
+              <div style="display:flex;align-items:center;gap:7px;"><span style="width:8px;height:8px;border-radius:50%;background:{{target}};flex-shrink:0;"></span><span style="font-size:12px;color:{{target}};letter-spacing:0.08em;">TARGET</span></div>
+              <div style="display:flex;align-items:center;gap:7px;"><span style="width:8px;height:8px;border-radius:50%;background:{{caution}};flex-shrink:0;"></span><span style="font-size:12px;color:{{caution}};letter-spacing:0.08em;">CAUTION</span></div>
+              <div style="display:flex;align-items:center;gap:7px;"><span style="width:8px;height:8px;border-radius:50%;background:{{warning}};flex-shrink:0;"></span><span style="font-size:12px;color:{{warning}};letter-spacing:0.08em;">WARNING</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5b Readouts -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5b — Data Readouts</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:4px;">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;">
+            <div style="background:{{s2}};border-radius:5px;padding:20px 16px;">
+              <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;">N1</div>
+              <div style="font-family:'B612 Mono',monospace;font-size:38px;font-weight:700;color:{{nominal}};line-height:1;margin-bottom:4px;">89.3</div>
+              <div style="font-size:11px;color:{{label}};">%</div>
+            </div>
+            <div style="background:{{s2}};border-radius:5px;padding:20px 16px;">
+              <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;">EGT</div>
+              <div style="font-family:'B612 Mono',monospace;font-size:38px;font-weight:700;color:{{caution}};line-height:1;margin-bottom:4px;">402</div>
+              <div style="font-size:11px;color:{{label}};">°C</div>
+            </div>
+            <div style="background:{{s2}};border-radius:5px;padding:20px 16px;">
+              <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;">F.FLOW</div>
+              <div style="font-family:'B612 Mono',monospace;font-size:38px;font-weight:700;color:{{data}};line-height:1;margin-bottom:4px;">1340</div>
+              <div style="font-size:11px;color:{{label}};">kg/h</div>
+            </div>
+            <div style="background:{{s2}};border-radius:5px;padding:20px 16px;">
+              <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;">ALT</div>
+              <div style="font-family:'B612 Mono',monospace;font-size:38px;font-weight:700;color:{{data}};line-height:1;margin-bottom:2px;">FL350</div>
+              <div style="font-family:'B612 Mono',monospace;font-size:11px;color:{{target}};">▲ FL380</div>
+            </div>
+            <div style="background:{{s2}};border-radius:5px;padding:20px 16px;border:1px solid {{warning}};">
+              <div style="font-size:10px;color:{{warning}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;">OIL PSI</div>
+              <div style="font-family:'B612 Mono',monospace;font-size:38px;font-weight:700;color:{{warning}};line-height:1;margin-bottom:4px;">12</div>
+              <div style="font-size:11px;color:{{warning}};">↓ LOW</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5c Cards -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5c — Cards &amp; Panels</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+          <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:600;color:{{data}};letter-spacing:0.15em;text-transform:uppercase;">ENGINE 1</span>
+              <span style="background:{{nominal}};color:{{s0}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">NOMINAL</span>
+            </div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12px;color:{{label}};">N1</span><span style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{data}};">89.3 <span style="font-size:11px;color:{{label}};">%</span></span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12px;color:{{label}};">N2</span><span style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{data}};">88.1 <span style="font-size:11px;color:{{label}};">%</span></span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:8px;border-top:1px solid {{border}};"><span style="font-size:12px;color:{{caution}};">EGT</span><span style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{caution}};">402 <span style="font-size:11px;">°C</span></span></div>
+            </div>
+          </div>
+          <div style="background:{{s1}};border:1px solid {{border}};border-top:2px solid {{caution}};border-radius:8px;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:600;color:{{data}};letter-spacing:0.12em;text-transform:uppercase;">HYD SYS B</span>
+              <span style="color:{{caution}};border:1px solid {{caution}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">CAUTION</span>
+            </div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12px;color:{{label}};">PRESSURE</span><span style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{caution}};">2,650 <span style="font-size:11px;color:{{label}};">PSI</span></span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12px;color:{{label}};">QTY</span><span style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{caution}};">72 <span style="font-size:11px;color:{{label}};">%</span></span></div>
+            </div>
+          </div>
+          <div style="background:{{s1}};border:1px solid {{warning}};border-top:2px solid {{warning}};border-radius:8px;overflow:hidden;">
+            <div style="padding:12px 16px;background:{{s2}};border-bottom:1px solid {{warning}};display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:600;color:{{warning}};letter-spacing:0.12em;text-transform:uppercase;">ENG 2 OIL</span>
+              <span style="background:{{warning}};color:{{s0}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">WARNING</span>
+            </div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12px;color:{{label}};">OIL PRESS</span><span style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{warning}};">12 <span style="font-size:11px;color:{{label}};">PSI</span></span></div>
+              <div style="font-size:12px;color:{{warning}};line-height:1.5;">CHECK OIL SYSTEM<br/>CONSIDER ENG SHUTDOWN</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5d Buttons -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5d — Buttons &amp; Controls</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:20px;">
+          <div><div style="font-size:10px;color:{{muted}};letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Primary — Filled</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button style="background:{{nominal}};color:{{s0}};font-family:'B612',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.15em;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;">CONFIRM</button>
+              <button style="background:{{active}};color:{{s0}};font-family:'B612',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.15em;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;">APPLY</button>
+              <button style="background:{{target}};color:{{s0}};font-family:'B612',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.15em;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;">SET TARGET</button>
+              <button style="background:{{warning}};color:{{s0}};font-family:'B612',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.15em;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;">EMERGENCY</button>
+            </div>
+          </div>
+          <div><div style="font-size:10px;color:{{muted}};letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Secondary — Ghost</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button style="background:transparent;color:{{data}};border:1px solid {{border}};font-family:'B612',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.15em;padding:10px 20px;border-radius:4px;cursor:pointer;">CANCEL</button>
+              <button style="background:transparent;color:{{label}};border:1px solid {{border}};font-family:'B612',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.15em;padding:10px 20px;border-radius:4px;cursor:pointer;">DETAILS</button>
+              <button style="background:transparent;color:{{caution}};border:1px solid {{caution}};font-family:'B612',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.15em;padding:10px 20px;border-radius:4px;cursor:pointer;">RESET</button>
+            </div>
+          </div>
+          <div><div style="font-size:10px;color:{{muted}};letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;">Disabled</div>
+            <div style="display:flex;gap:10px;">
+              <button style="background:{{s2}};color:{{muted}};border:1px solid {{border}};font-family:'B612',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.15em;padding:10px 20px;border-radius:4px;cursor:not-allowed;opacity:0.5;">UNAVAILABLE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5e Alerts -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5e — Alerts &amp; Notifications</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="padding:12px 16px;background:{{s2}};border:1px solid {{active}};border-left:3px solid {{active}};border-radius:4px;display:flex;align-items:flex-start;gap:12px;">
+            <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{active}};flex-shrink:0;margin-top:1px;">INFO</code>
+            <div><div style="font-size:13px;color:{{data}};font-weight:600;margin-bottom:2px;">Navigation database update available</div><div style="font-size:12px;color:{{label}};">v2406.1 ready for installation. Schedule during next ground stop.</div></div>
+          </div>
+          <div style="padding:12px 16px;background:{{s2}};border:1px solid {{nominal}};border-left:3px solid {{nominal}};border-radius:4px;display:flex;align-items:flex-start;gap:12px;">
+            <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};flex-shrink:0;margin-top:1px;">OK</code>
+            <div><div style="font-size:13px;color:{{data}};font-weight:600;margin-bottom:2px;">INS alignment complete</div><div style="font-size:12px;color:{{label}};">All sensors within tolerance. System ready.</div></div>
+          </div>
+          <div style="padding:12px 16px;background:{{s2}};border:1px solid {{caution}};border-left:3px solid {{caution}};border-radius:4px;display:flex;align-items:flex-start;gap:12px;">
+            <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{caution}};flex-shrink:0;margin-top:1px;">CAUT</code>
+            <div><div style="font-size:13px;color:{{data}};font-weight:600;margin-bottom:2px;">Fuel imbalance — L/R WING</div><div style="font-size:12px;color:{{label}};">Difference 480 kg. Monitor and initiate crossfeed if imbalance exceeds 500 kg.</div></div>
+          </div>
+          <div style="padding:12px 16px;background:{{s2}};border:1px solid {{warning}};border-left:3px solid {{warning}};border-radius:4px;display:flex;align-items:flex-start;gap:12px;">
+            <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{warning}};flex-shrink:0;margin-top:1px;">WARN</code>
+            <div><div style="font-size:13px;color:{{warning}};font-weight:600;margin-bottom:2px;">ENG 2 OIL PRESSURE LOW</div><div style="font-size:12px;color:{{label}};">Oil pressure below minimum. Refer to QRH. Consider engine shutdown.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5f Nav -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5f — Navigation &amp; Tabs</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="display:flex;background:{{s0}};border-bottom:1px solid {{border}};">
+            <div style="padding:13px 24px;font-size:12px;font-weight:600;letter-spacing:0.15em;color:{{data}};border-bottom:2px solid {{active}};cursor:pointer;text-transform:uppercase;flex-shrink:0;">OVERVIEW</div>
+            <div style="padding:13px 24px;font-size:12px;font-weight:600;letter-spacing:0.15em;color:{{label}};cursor:pointer;text-transform:uppercase;flex-shrink:0;">SYSTEMS</div>
+            <div style="padding:13px 24px;font-size:12px;font-weight:600;letter-spacing:0.15em;color:{{label}};cursor:pointer;text-transform:uppercase;flex-shrink:0;display:flex;align-items:center;gap:6px;">ALERTS<span style="background:{{warning}};color:{{s0}};font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;line-height:1.4;">2</span></div>
+            <div style="padding:13px 24px;font-size:12px;font-weight:600;letter-spacing:0.15em;color:{{label}};cursor:pointer;text-transform:uppercase;flex-shrink:0;">SETTINGS</div>
+          </div>
+          <div style="padding:16px 20px;font-size:12px;color:{{label}};">Tab content renders here</div>
+        </div>
+      </div>
+
+      <!-- 5g Forms -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5g — Forms &amp; Inputs</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:24px;">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div><label style="display:block;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">FLIGHT NUMBER</label><input type="text" value="AA 1234" style="width:100%;background:{{s0}};border:1px solid {{border}};border-radius:4px;padding:10px 12px;font-family:'B612 Mono',monospace;font-size:14px;color:{{data}};" readonly /></div>
+            <div><label style="display:block;font-size:10px;color:{{active}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">CALLSIGN — FOCUSED</label><input type="text" value="UAL 519" style="width:100%;background:{{s0}};border:1px solid {{active}};border-radius:4px;padding:10px 12px;font-family:'B612 Mono',monospace;font-size:14px;color:{{data}};" readonly /></div>
+            <div><label style="display:block;font-size:10px;color:{{warning}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">SQUAWK — ERROR</label><input type="text" value="7700" style="width:100%;background:{{s0}};border:1px solid {{warning}};border-radius:4px;padding:10px 12px;font-family:'B612 Mono',monospace;font-size:14px;color:{{warning}};" readonly /><div style="font-size:11px;color:{{warning}};margin-top:4px;">Emergency squawk detected</div></div>
+            <div><label style="display:block;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">STATUS</label><div style="background:{{s0}};border:1px solid {{border}};border-radius:4px;padding:10px 12px;font-size:14px;color:{{data}};display:flex;align-items:center;justify-content:space-between;cursor:pointer;"><span>NOMINAL</span><span style="color:{{label}};font-size:10px;">▼</span></div></div>
+            <div><label style="display:block;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">TARGET ALT</label><input type="text" value="38000" style="width:100%;background:{{s0}};border:1px solid {{target}};border-radius:4px;padding:10px 12px;font-family:'B612 Mono',monospace;font-size:14px;color:{{target}};text-align:right;" readonly /><div style="font-size:11px;color:{{target}};margin-top:4px;">FT — Managed target</div></div>
+            <div><label style="display:block;font-size:10px;color:{{muted}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">RESERVED</label><input type="text" value="—" style="width:100%;background:{{s1}};border:1px solid {{border}};border-radius:4px;padding:10px 12px;font-family:'B612 Mono',monospace;font-size:14px;color:{{muted}};cursor:not-allowed;" readonly /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5h Table -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5h — Data Table</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:{{s0}};border-bottom:1px solid {{border}};">
+              <th style="padding:10px 16px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;text-align:left;font-weight:500;">SYSTEM</th>
+              <th style="padding:10px 16px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;text-align:right;font-weight:500;">VALUE</th>
+              <th style="padding:10px 16px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;text-align:center;font-weight:500;">STATUS</th>
+              <th style="padding:10px 16px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;text-align:right;font-weight:500;">UPDATED</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 16px;font-size:13px;color:{{data}};">Engine N1 — ENG 1</td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:14px;color:{{nominal}};text-align:right;">89.3 %</td><td style="padding:10px 16px;text-align:center;"><span style="background:{{nominal}};color:{{s0}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">NOM</span></td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};text-align:right;">14:23:01</td></tr>
+              <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 16px;font-size:13px;color:{{data}};">Engine N2 — ENG 1</td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:14px;color:{{nominal}};text-align:right;">88.1 %</td><td style="padding:10px 16px;text-align:center;"><span style="background:{{nominal}};color:{{s0}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">NOM</span></td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};text-align:right;">14:23:01</td></tr>
+              <tr style="border-bottom:1px solid {{border}};background:{{s2}};"><td style="padding:10px 16px;font-size:13px;color:{{data}};">EGT — ENG 1</td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:14px;color:{{caution}};text-align:right;">402 °C</td><td style="padding:10px 16px;text-align:center;"><span style="color:{{caution}};border:1px solid {{caution}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">CAUT</span></td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};text-align:right;">14:23:05</td></tr>
+              <tr style="background:{{s2}};"><td style="padding:10px 16px;font-size:13px;color:{{warning}};">OIL PRESSURE — ENG 2</td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:14px;color:{{warning}};text-align:right;">12 PSI</td><td style="padding:10px 16px;text-align:center;"><span style="background:{{warning}};color:{{s0}};font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;">WARN</span></td><td style="padding:10px 16px;font-family:'B612 Mono',monospace;font-size:11px;color:{{label}};text-align:right;">14:23:07</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 5i Date & Time -->
+      <div style="margin-bottom:36px;">
+        <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">5i — Date &amp; Time Display</div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:24px;">
+          <div style="display:flex;gap:48px;align-items:flex-end;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid {{border}};">
+            <div><div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">TIME</div><div style="font-family:'B612 Mono',monospace;font-size:40px;font-weight:700;color:{{data}};line-height:1;">{{currentTime}}</div><div style="font-size:10px;color:{{label}};letter-spacing:0.15em;margin-top:4px;">UTC</div></div>
+            <div><div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">DATE</div><div style="font-family:'B612 Mono',monospace;font-size:40px;font-weight:700;color:{{data}};line-height:1;">{{currentDate}}</div><div style="font-size:10px;color:{{label}};letter-spacing:0.15em;margin-top:4px;">LOCAL</div></div>
+            <div><div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">COMPACT</div><div style="font-family:'B612 Mono',monospace;font-size:18px;font-weight:700;color:{{label}};line-height:1;">{{currentDate}} {{currentTime}}</div></div>
+          </div>
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px;">FORMAT — App Settings (configurable per app)</div>
+          <div style="display:flex;gap:40px;">
+            <div><div style="font-size:11px;color:{{label}};margin-bottom:8px;">Date format</div><div style="display:flex;gap:6px;"><button style="{{dtDMY}}" onClick="{{setDtDMY}}">DD.MM.YYYY</button><button style="{{dtYMD}}" onClick="{{setDtYMD}}">YYYY-MM-DD</button><button style="{{dtMDY}}" onClick="{{setDtMDY}}">MM/DD/YYYY</button></div></div>
+            <div><div style="font-size:11px;color:{{label}};margin-bottom:8px;">Time format</div><div style="display:flex;gap:6px;"><button style="{{dt24h}}" onClick="{{setDt24h}}">24H</button><button style="{{dt12h}}" onClick="{{setDt12h}}">12H AM/PM</button></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 05j TERMINAL & STRUCTURED DATA ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">05j</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Terminal &amp; Structured Data</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div style="background:{{s0}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="background:{{s2}};padding:8px 14px;border-bottom:1px solid {{border}};display:flex;align-items:center;gap:7px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:{{warning}};flex-shrink:0;"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:{{caution}};flex-shrink:0;"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:{{nominal}};flex-shrink:0;"></span>
+            <span style="font-size:10px;color:{{label}};letter-spacing:0.2em;margin-left:8px;">FMS TERMINAL</span>
+          </div>
+          <div style="padding:16px 20px;font-family:'B612 Mono',monospace;font-size:12px;line-height:1.9;">
+            <div><span style="color:{{nominal}};">aero@fmc</span><span style="color:{{muted}};">:~$</span> <span style="color:{{data}};">query eng2 oil_pressure</span></div>
+            <div style="margin-top:6px;color:{{muted}};">{</div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"value"</span><span style="color:{{muted}};">: </span><span style="color:{{warning}};">12</span><span style="color:{{muted}};">,</span></div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"unit"</span><span style="color:{{muted}};">: </span><span style="color:{{active}};">"PSI"</span><span style="color:{{muted}};">,</span></div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"status"</span><span style="color:{{muted}};">: </span><span style="color:{{warning}};">"WARNING"</span><span style="color:{{muted}};">,</span></div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"threshold"</span><span style="color:{{muted}};">: { </span><span style="color:{{label}};">"min"</span><span style="color:{{muted}};">: </span><span style="color:{{data}};">20</span><span style="color:{{muted}};">, "max": 95 }</span></div>
+            <div style="color:{{muted}};">}</div>
+            <div style="margin-top:8px;"><span style="color:{{nominal}};">aero@fmc</span><span style="color:{{muted}};">:~$</span> <span style="color:{{muted}};animation:blink 1s step-end infinite;">█</span></div>
+          </div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="padding:10px 16px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;">SYSTEM STATE</span>
+            <code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{muted}};">application/json</code>
+          </div>
+          <div style="padding:16px 20px;font-family:'B612 Mono',monospace;font-size:12px;line-height:2;">
+            <div style="color:{{muted}};">{</div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"flight_id"</span><span style="color:{{muted}};">: </span><span style="color:{{active}};">"AA1234"</span><span style="color:{{muted}};">,</span></div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"phase"</span><span style="color:{{muted}};">: </span><span style="color:{{nominal}};">"CRUISE"</span><span style="color:{{muted}};">,</span></div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"altitude_ft"</span><span style="color:{{muted}};">: </span><span style="color:{{data}};">35000</span><span style="color:{{muted}};">,</span></div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"engines"</span><span style="color:{{muted}};">: [</span></div>
+            <div style="padding-left:32px;"><span style="color:{{muted}};">{ </span><span style="color:{{label}};">"id"</span><span style="color:{{muted}};">: </span><span style="color:{{active}};">"ENG1"</span><span style="color:{{muted}};">, </span><span style="color:{{label}};">"status"</span><span style="color:{{muted}};">: </span><span style="color:{{nominal}};">"NOMINAL"</span><span style="color:{{muted}};"> },</span></div>
+            <div style="padding-left:32px;"><span style="color:{{muted}};">{ </span><span style="color:{{label}};">"id"</span><span style="color:{{muted}};">: </span><span style="color:{{active}};">"ENG2"</span><span style="color:{{muted}};">, </span><span style="color:{{label}};">"status"</span><span style="color:{{muted}};">: </span><span style="color:{{warning}};">"WARNING"</span><span style="color:{{muted}};"> }</span></div>
+            <div style="padding-left:16px;color:{{muted}};"> ],</div>
+            <div style="padding-left:16px;"><span style="color:{{label}};">"alerts"</span><span style="color:{{muted}};">: </span><span style="color:{{warning}};">2</span></div>
+            <div style="color:{{muted}};">}</div>
+          </div>
+        </div>
+        <div style="background:{{s0}};border:1px solid {{border}};border-radius:8px;overflow:hidden;">
+          <div style="background:{{s2}};padding:8px 14px;border-bottom:1px solid {{border}};">
+            <span style="font-size:10px;color:{{label}};letter-spacing:0.2em;">SYSTEM LOG</span>
+          </div>
+          <div style="padding:12px 16px;font-family:'B612 Mono',monospace;display:flex;flex-direction:column;gap:3px;">
+            <div style="display:grid;grid-template-columns:72px 36px 1fr;gap:10px;padding:3px 0;border-bottom:1px solid {{border}};"><span style="font-size:11px;color:{{label}};">14:21:03</span><span style="font-size:11px;color:{{active}};">[INF]</span><span style="font-size:11px;color:{{label}};">FMS init — db v2406.0</span></div>
+            <div style="display:grid;grid-template-columns:72px 36px 1fr;gap:10px;padding:3px 0;border-bottom:1px solid {{border}};"><span style="font-size:11px;color:{{label}};">14:22:30</span><span style="font-size:11px;color:{{active}};">[INF]</span><span style="font-size:11px;color:{{label}};">Cruise FL350 confirmed</span></div>
+            <div style="display:grid;grid-template-columns:72px 36px 1fr;gap:10px;padding:3px 0;border-bottom:1px solid {{border}};"><span style="font-size:11px;color:{{label}};">14:23:07</span><span style="font-size:11px;color:{{caution}};">[WRN]</span><span style="font-size:11px;color:{{data}};">HYD B fluid: 72% low</span></div>
+            <div style="display:grid;grid-template-columns:72px 36px 1fr;gap:10px;padding:3px 0;border-bottom:1px solid {{border}};"><span style="font-size:11px;color:{{label}};">14:23:07</span><span style="font-size:11px;color:{{warning}};">[ERR]</span><span style="font-size:11px;color:{{warning}};">ENG2 oil: 12 PSI low</span></div>
+            <div style="display:grid;grid-template-columns:72px 36px 1fr;gap:10px;padding:3px 0;"><span style="font-size:11px;color:{{nominal}};">{{currentTime}}</span><span style="font-size:11px;color:{{muted}};">[SYS]</span><span style="font-size:11px;color:{{muted}};animation:blink 1s step-end infinite;">█</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 06 SPACING & SHAPE ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">06</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Spacing &amp; Shape Tokens</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:24px;">
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:20px;">Spacing Scale</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:16px;"><div style="width:4px;height:14px;background:{{active}};flex-shrink:0;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};width:70px;">--sp-xs</code><span style="font-size:12px;color:{{data}};width:36px;">4px</span><span style="font-size:11px;color:{{label}};">Micro gaps, icon padding</span></div>
+            <div style="display:flex;align-items:center;gap:16px;"><div style="width:8px;height:14px;background:{{active}};flex-shrink:0;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};width:70px;">--sp-sm</code><span style="font-size:12px;color:{{data}};width:36px;">8px</span><span style="font-size:11px;color:{{label}};">Button padding, row gaps</span></div>
+            <div style="display:flex;align-items:center;gap:16px;"><div style="width:16px;height:14px;background:{{active}};flex-shrink:0;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};width:70px;">--sp-md</code><span style="font-size:12px;color:{{data}};width:36px;">16px</span><span style="font-size:11px;color:{{label}};">Card padding, section gaps</span></div>
+            <div style="display:flex;align-items:center;gap:16px;"><div style="width:24px;height:14px;background:{{active}};flex-shrink:0;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};width:70px;">--sp-lg</code><span style="font-size:12px;color:{{data}};width:36px;">24px</span><span style="font-size:11px;color:{{label}};">Panel gaps, group spacing</span></div>
+            <div style="display:flex;align-items:center;gap:16px;"><div style="width:32px;height:14px;background:{{active}};flex-shrink:0;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};width:70px;">--sp-xl</code><span style="font-size:12px;color:{{data}};width:36px;">32px</span><span style="font-size:11px;color:{{label}};">Layout padding</span></div>
+            <div style="display:flex;align-items:center;gap:16px;"><div style="width:48px;height:14px;background:{{active}};flex-shrink:0;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};width:70px;">--sp-2xl</code><span style="font-size:12px;color:{{data}};width:36px;">48px</span><span style="font-size:11px;color:{{label}};">Section separation</span></div>
+          </div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:24px;">
+          <div style="font-size:10px;color:{{label}};letter-spacing:0.2em;text-transform:uppercase;margin-bottom:20px;">Border Radius — Shape Language</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+            <div style="text-align:center;"><div style="width:100%;aspect-ratio:1;background:{{s2}};border:1px solid {{border}};border-radius:2px;margin-bottom:8px;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;">--r-xs</code><span style="font-size:11px;color:{{data}};">2px</span><div style="font-size:10px;color:{{label}};margin-top:2px;">Badges</div></div>
+            <div style="text-align:center;"><div style="width:100%;aspect-ratio:1;background:{{s2}};border:1px solid {{border}};border-radius:4px;margin-bottom:8px;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;">--r-sm</code><span style="font-size:11px;color:{{data}};">4px</span><div style="font-size:10px;color:{{label}};margin-top:2px;">Buttons, inputs</div></div>
+            <div style="text-align:center;"><div style="width:100%;aspect-ratio:1;background:{{s2}};border:1px solid {{border}};border-radius:8px;margin-bottom:8px;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;">--r-md</code><span style="font-size:11px;color:{{data}};">8px</span><div style="font-size:10px;color:{{label}};margin-top:2px;">Cards, panels</div></div>
+            <div style="text-align:center;"><div style="width:100%;aspect-ratio:1;background:{{s2}};border:1px solid {{border}};border-radius:9999px;margin-bottom:8px;"></div><code style="font-family:'B612 Mono',monospace;font-size:10px;color:{{label}};display:block;">--r-pill</code><span style="font-size:11px;color:{{data}};">∞</span><div style="font-size:10px;color:{{label}};margin-top:2px;">Pills, dots</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 07 GUIDELINES ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">07</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">Usage Guidelines</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:20px;">
+          <div style="font-size:11px;font-weight:600;color:{{nominal}};letter-spacing:0.1em;margin-bottom:14px;">✓  DO</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Use WARNING strictly for critical conditions requiring immediate action</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Pair color with text — never rely on color alone to convey meaning</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Keep all numeric readouts in B612 Mono at all times</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Show most critical status at top of any list</div>
+          </div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:20px;">
+          <div style="font-size:11px;font-weight:600;color:{{warning}};letter-spacing:0.1em;margin-bottom:14px;">✗  DON'T</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Don't use semantic colors (green/amber/red) decoratively</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Don't add gradients or shadows to data panels</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Don't clutter — one panel, one topic</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;">Don't use NOMINAL green as a brand or accent color</div>
+          </div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:20px;">
+          <div style="font-size:11px;font-weight:600;color:{{active}};letter-spacing:0.1em;margin-bottom:14px;">◈  PALETTE CHOICE</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:12px;color:{{data}};line-height:1.5;"><strong style="color:{{nominal}};">Standard</strong> — aviation-traditional, default for most apps</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;"><strong style="color:{{active}};">Colorblind Safe</strong> — required when accessibility is a strict constraint</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;"><strong style="color:{{target}};">Soft</strong> — operator desks, 8h+ sessions, fatigue reduction</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 08 WCAG 2.1 COMPLIANCE ══ -->
+    <section style="margin-bottom:72px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:10px;border-bottom:1px solid {{border}};">
+        <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{nominal}};">08</span>
+        <span style="font-size:11px;color:{{label}};letter-spacing:0.3em;text-transform:uppercase;">WCAG 2.1 Compliance</span>
+      </div>
+      <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;overflow:hidden;margin-bottom:20px;">
+        <div style="padding:14px 20px;border-bottom:1px solid {{border}};display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:12px;font-weight:600;color:{{data}};letter-spacing:0.1em;text-transform:uppercase;">Contrast Ratios — Standard Dark palette on Surface 0</span>
+          <span style="font-family:'B612 Mono',monospace;font-size:10px;color:{{nominal}};">AA ≥ 4.5:1 · AAA ≥ 7:1 · Large text ≥ 3:1</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:{{s0}};border-bottom:1px solid {{border}};">
+            <th style="padding:10px 20px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-align:left;font-weight:400;">TOKEN</th>
+            <th style="padding:10px 20px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-align:left;font-weight:400;">SAMPLE TEXT</th>
+            <th style="padding:10px 20px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-align:right;font-weight:400;">RATIO ON S0</th>
+            <th style="padding:10px 20px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-align:center;font-weight:400;">AA</th>
+            <th style="padding:10px 20px;font-size:10px;color:{{label}};letter-spacing:0.2em;text-align:center;font-weight:400;">AAA</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-data</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(93% 0.008 85);">89.3 %</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">15.1 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td></tr>
+            <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-nominal</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(73% 0.22 148);">NOMINAL</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">9.4 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td></tr>
+            <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-active</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(76% 0.16 204);">ACTIVE</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">10.5 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td></tr>
+            <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-caution</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(77% 0.17 73);">CAUTION</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">9.6 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td></tr>
+            <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-target</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(65% 0.26 324);">TARGET</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">5.5 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{label}};">✗</td></tr>
+            <tr style="border-bottom:1px solid {{border}};"><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-warning</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(63% 0.22 28);">WARNING</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">5.3 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{label}};">✗</td></tr>
+            <tr><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{label}};">--col-label</td><td style="padding:10px 20px;"><span style="font-size:14px;color:oklch(57% 0.012 85);">Label text</span></td><td style="padding:10px 20px;font-family:'B612 Mono',monospace;font-size:12px;color:{{nominal}};text-align:right;">5.8 : 1</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{nominal}};">✓</td><td style="padding:10px 20px;text-align:center;font-size:14px;color:{{label}};">✗</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:20px;">
+          <div style="font-size:11px;font-weight:600;color:{{active}};letter-spacing:0.1em;margin-bottom:12px;">FOCUS INDICATORS — 2.4.7</div>
+          <div style="font-size:12px;color:{{data}};line-height:1.6;margin-bottom:14px;">All interactive elements use <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{active}};">*:focus-visible</code> — 2px cyan outline, visible to keyboard and assistive technology users. <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{warning}};">outline:none</code> is never applied globally.</div>
+          <div style="padding:8px 12px;border:2px solid oklch(76% 0.16 204);border-radius:4px;font-family:'B612 Mono',monospace;font-size:12px;color:{{data}};width:fit-content;">FOCUSED ELEMENT</div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:20px;">
+          <div style="font-size:11px;font-weight:600;color:{{nominal}};letter-spacing:0.1em;margin-bottom:12px;">EXEMPTIONS — 1.4.3</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="font-size:12px;color:{{data}};line-height:1.5;padding-left:10px;border-left:2px solid {{muted}};">--col-muted and disabled states are fully exempt — inactive UI components have no contrast requirement</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;padding-left:10px;border-left:2px solid {{muted}};">--col-target and --col-warning pass AA for normal text; large text (≥ 18pt) only needs 3:1</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;padding-left:10px;border-left:2px solid {{muted}};">Logotypes and purely decorative elements are exempt</div>
+          </div>
+        </div>
+        <div style="background:{{s1}};border:1px solid {{border}};border-radius:8px;padding:20px;">
+          <div style="font-size:11px;font-weight:600;color:{{caution}};letter-spacing:0.1em;margin-bottom:12px;">TOUCH TARGETS — 2.5.8</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="font-size:12px;color:{{data}};line-height:1.5;padding-left:10px;border-left:2px solid {{muted}};">WCAG 2.2 AA minimum: 24×24px for all interactive controls</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;padding-left:10px;border-left:2px solid {{muted}};">Recommended: <code style="font-family:'B612 Mono',monospace;font-size:11px;color:{{active}};">min-height:44px</code> for primary action buttons on mobile</div>
+            <div style="font-size:12px;color:{{data}};line-height:1.5;padding-left:10px;border-left:2px solid {{muted}};">Always pair color with a visible text label — color is never the sole conveyor of meaning</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="padding-top:24px;border-top:1px solid {{border}};display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-family:'B612 Mono',monospace;font-size:14px;color:{{nominal}};letter-spacing:0.2em;">AERO·UI</span>
+      <span style="font-size:11px;color:{{muted}};letter-spacing:0.12em;">Design System v1.0 · Aviation-Inspired · {{currentDate}}</span>
+      <span style="font-family:'B612 Mono',monospace;font-size:11px;color:{{muted}};">DS.REF.001</span>
+    </footer>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1400, &quot;height&quot;: 900 },
+  &quot;palette&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;standard&quot;,&quot;colorblind&quot;,&quot;soft&quot;], &quot;default&quot;: &quot;standard&quot; },
+  &quot;mode&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;dark&quot;,&quot;light&quot;], &quot;default&quot;: &quot;dark&quot; },
+  &quot;dtFormat&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;dd.mm.yyyy&quot;,&quot;yyyy-mm-dd&quot;,&quot;mm/dd/yyyy&quot;], &quot;default&quot;: &quot;dd.mm.yyyy&quot; },
+  &quot;dtTime&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;24h&quot;,&quot;12h&quot;], &quot;default&quot;: &quot;24h&quot; }
+}">
+class Component extends DCLogic {
+  state = { palette: 'standard', mode: 'dark', dtFormat: 'dd.mm.yyyy', dtTime: '24h', textSize: 'medium' };
+
+  componentDidMount() {
+    // Tokens come from the shared module — single source of truth.
+    import('./aero-tokens.js').then(m => { this.TOKENS = m.TOKENS; this.forceUpdate(); });
+    this._timer = setInterval(() => this.forceUpdate(), 1000);
+  }
+  componentWillUnmount() { clearInterval(this._timer); }
+
+  tok() { return this.TOKENS ? this.TOKENS[this.state.palette][this.state.mode] : null; }
+
+  fmtDate(fmt) {
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    if (fmt === 'yyyy-mm-dd') return `${yyyy}-${mm}-${dd}`;
+    if (fmt === 'mm/dd/yyyy') return `${mm}/${dd}/${yyyy}`;
+    return `${dd}.${mm}.${yyyy}`;
+  }
+
+  fmtTime(fmt) {
+    const d = new Date();
+    const h = d.getHours();
+    const min = String(d.getMinutes()).padStart(2, '0');
+    const sec = String(d.getSeconds()).padStart(2, '0');
+    if (fmt === '12h') {
+      const h12 = h % 12 || 12;
+      return `${String(h12).padStart(2, '0')}:${min}:${sec} ${h < 12 ? 'AM' : 'PM'}`;
+    }
+    return `${String(h).padStart(2, '0')}:${min}:${sec}`;
+  }
+
+  btn(val, cur) {
+    const t = this.tok();
+    const on = val === cur;
+    return {
+      fontFamily: "'B612', sans-serif",
+      fontSize: '11px', letterSpacing: '0.12em',
+      padding: '5px 12px',
+      border: `1px solid ${on ? t.label : t.border}`,
+      borderRadius: '3px', cursor: 'pointer', fontWeight: '600',
+      background: on ? t.s3 : 'transparent',
+      color: on ? t.data : t.label,
+    };
+  }
+
+  renderVals() {
+    const t = this.tok();
+    if (!t) return {};
+    const p = this.state.palette;
+    const m = this.state.mode;
+    const ts = this.state.textSize || 'medium';
+    const df = this.state.dtFormat;
+    const dt = this.state.dtTime;
+    return {
+      ...t,
+      paletteLabel: { standard: 'Standard', colorblind: 'Colorblind Safe', soft: 'Soft' }[p],
+      modeLabel: m === 'dark' ? 'Dark' : 'Light',
+      setStd: () => this.setState({ palette: 'standard' }),
+      setCb:  () => this.setState({ palette: 'colorblind' }),
+      setSoft: () => this.setState({ palette: 'soft' }),
+      setDark:  () => this.setState({ mode: 'dark' }),
+      setLight: () => this.setState({ mode: 'light' }),
+      stdBtnStyle:  this.btn('standard', p),
+      cbBtnStyle:   this.btn('colorblind', p),
+      softBtnStyle: this.btn('soft', p),
+      darkBtnStyle:  this.btn('dark', m),
+      lightBtnStyle: this.btn('light', m),
+      nominalVal: t.nominal, activeVal: t.active, targetVal: t.target,
+      cautionVal: t.caution, warningVal: t.warning,
+      dataVal: t.data, labelVal: t.label, mutedVal: t.muted,
+      currentDate: this.fmtDate(df),
+      currentTime: this.fmtTime(dt),
+      dtDMY: this.btn('dd.mm.yyyy', df),
+      dtYMD: this.btn('yyyy-mm-dd', df),
+      dtMDY: this.btn('mm/dd/yyyy', df),
+      dt24h: this.btn('24h', dt),
+      dt12h: this.btn('12h', dt),
+      setDtDMY: () => this.setState({ dtFormat: 'dd.mm.yyyy' }),
+      setDtYMD: () => this.setState({ dtFormat: 'yyyy-mm-dd' }),
+      setDtMDY: () => this.setState({ dtFormat: 'mm/dd/yyyy' }),
+      setDt24h: () => this.setState({ dtTime: '24h' }),
+      setDt12h: () => this.setState({ dtTime: '12h' }),
+      szS: this.btn('small', ts), szM: this.btn('medium', ts), szL: this.btn('large', ts),
+      setSmall:  () => this.setState({ textSize: 'small' }),
+      setMedium: () => this.setState({ textSize: 'medium' }),
+      setLarge:  () => this.setState({ textSize: 'large' }),
+      zoom: { small: 0.85, medium: 1.0, large: 1.2 }[ts],
+    };
+  }
+}
+</script>
+</body>
+</html>
