@@ -31,11 +31,11 @@ A theme is one palette × one mode. Color always encodes status — see
 
 ## Pick your platform
 
-| You're building in… | Read |
-|---|---|
-| Web (CSS, SCSS, JS/TS) | [web.md](./web.md) |
-| Android / iOS | [native.md](./native.md) |
-| Flutter | [flutter.md](./flutter.md) |
+| You're building in…                    | Read                                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Web (CSS, SCSS, JS/TS)                 | [web.md](./web.md)                                                                                           |
+| Android / iOS                          | [native.md](./native.md)                                                                                     |
+| Flutter                                | [flutter.md](./flutter.md)                                                                                   |
 | Figma / Sketch / any tool without code | [tokens-reference.md](./tokens-reference.md) (exact values) + [design-guidelines.md](./design-guidelines.md) |
 
 Responsive behavior (how blocks adapt on resize) is its own layer:
@@ -49,13 +49,13 @@ shipped — it lives in the repo for development only.
 
 ## Build outputs
 
-| Path | Platform |
-|---|---|
-| `dist/css/juno.css` | Web — tokens + base + utilities + components |
-| `dist/css/juno-tokens.css` | Web — CSS variables only |
-| `dist/scss/_juno-tokens.scss` | Web — SCSS variables |
-| `dist/js/tokens.js` + `.d.ts` | JS / TS — `TOKENS`, `CORE`, `getTokens()` |
-| `dist/json/tokens.json` | W3C DTCG — any tool |
-| `dist/android/colors.xml` · `dimens.xml` | Android |
-| `dist/ios/JunoTokens.swift` | iOS |
-| `dist/flutter/juno_tokens.dart` | Flutter |
+| Path                                     | Platform                                     |
+| ---------------------------------------- | -------------------------------------------- |
+| `dist/css/juno.css`                      | Web — tokens + base + utilities + components |
+| `dist/css/juno-tokens.css`               | Web — CSS variables only                     |
+| `dist/scss/_juno-tokens.scss`            | Web — SCSS variables                         |
+| `dist/js/tokens.js` + `.d.ts`            | JS / TS — `TOKENS`, `CORE`, `getTokens()`    |
+| `dist/json/tokens.json`                  | W3C DTCG — any tool                          |
+| `dist/android/colors.xml` · `dimens.xml` | Android                                      |
+| `dist/ios/JunoTokens.swift`              | iOS                                          |
+| `dist/flutter/juno_tokens.dart`          | Flutter                                      |

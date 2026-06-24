@@ -89,7 +89,7 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 | `border.width.2` | `2px` | `var(--juno-border-width-2)` | `JunoTokens.borderWidth2` |
 | `border.width.3` | `3px` | `var(--juno-border-width-3)` | `JunoTokens.borderWidth3` |
 
-### bp
+### Breakpoints
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|

@@ -7,22 +7,22 @@ Buildable in any tool — these are rules, not code. Pair with exact values in
 
 Every hue has one assigned role. Never reuse a status color as styling.
 
-| Role | Meaning | When |
-|---|---|---|
-| `nominal` | Normal / OK | Nominal readings, confirmed-good, success. |
-| `active` | Selected / active | Current selection, armed state, focus rings, live status. |
-| `target` | Managed / goal | Computed set-points, automated targets. Use sparingly. |
-| `caution` | Non-normal, watch | Approaching limits, degraded — no immediate action. |
-| `warning` | Critical | Limit exceeded, act now. Reserve strictly — overuse destroys authority. |
+| Role      | Meaning           | When                                                                    |
+| --------- | ----------------- | ----------------------------------------------------------------------- |
+| `nominal` | Normal / OK       | Nominal readings, confirmed-good, success.                              |
+| `active`  | Selected / active | Current selection, armed state, focus rings, live status.               |
+| `target`  | Managed / goal    | Computed set-points, automated targets. Use sparingly.                  |
+| `caution` | Non-normal, watch | Approaching limits, degraded — no immediate action.                     |
+| `warning` | Critical          | Limit exceeded, act now. Reserve strictly — overuse destroys authority. |
 
 Neutral / structural roles carry no status meaning:
 
-| Role | Use |
-|---|---|
-| `data` | Primary numeric readouts and live values — the brightest text. |
-| `label` | Labels, units, helper and secondary text. Never for values. |
-| `muted` | Disabled, placeholder, decorative separators. |
-| `border` | Hairline borders and dividers. |
+| Role      | Use                                                             |
+| --------- | --------------------------------------------------------------- |
+| `data`    | Primary numeric readouts and live values — the brightest text.  |
+| `label`   | Labels, units, helper and secondary text. Never for values.     |
+| `muted`   | Disabled, placeholder, decorative separators.                   |
+| `border`  | Hairline borders and dividers.                                  |
 | `s0`–`s3` | Surface depth: base → panel → elevated card → selected/overlay. |
 
 ## More principles
@@ -49,8 +49,8 @@ Neutral / structural roles carry no status meaning:
 
 ## Choosing a palette
 
-| Palette | Use |
-|---|---|
-| `standard` | Default. Aviation-traditional, vivid OKLCH. |
-| `colorblind` | Accessibility-critical or universal audiences. |
-| `soft` | Long viewing sessions; lower chroma, less fatigue. |
+| Palette      | Use                                                |
+| ------------ | -------------------------------------------------- |
+| `standard`   | Default. Aviation-traditional, vivid OKLCH.        |
+| `colorblind` | Accessibility-critical or universal audiences.     |
+| `soft`       | Long viewing sessions; lower chroma, less fatigue. |

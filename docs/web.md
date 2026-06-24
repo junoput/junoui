@@ -5,16 +5,17 @@
 Import the full stylesheet (tokens + base + utilities + components):
 
 ```js
-import 'junoui/css';            // bundler
+import 'junoui/css'; // bundler
 ```
+
 ```css
-@import 'junoui/css';           /* plain CSS */
+@import 'junoui/css'; /* plain CSS */
 ```
 
 Set the theme with two attributes on `<html>` (defaults are `standard` / `dark`):
 
 ```html
-<html data-juno-palette="standard" data-juno-mode="dark">
+<html data-juno-palette="standard" data-juno-mode="dark"></html>
 ```
 
 Switch at runtime:
@@ -37,7 +38,7 @@ Want variables only (bring your own components)? Import `junoui/css/tokens`.
 ## SCSS
 
 ```scss
-@use 'junoui/scss' as juno;     // $juno-color-standard-dark-nominal, $juno-space-16, …
+@use 'junoui/scss' as juno; // $juno-color-standard-dark-nominal, $juno-space-16, …
 ```
 
 All variables are `!default`, so you can override before `@use` if you fork values.
@@ -48,15 +49,15 @@ All variables are `!default`, so you can override before `@use` if you fork valu
 import { TOKENS, CORE, getTokens } from 'junoui';
 
 getTokens('colorblind', 'light').warning; // "#BA4300"
-TOKENS.standard.dark.nominal;              // "oklch(73% 0.22 148)"
-CORE.space['16'];                          // "16px"
+TOKENS.standard.dark.nominal; // "oklch(73% 0.22 148)"
+CORE.space['16']; // "16px"
 ```
 
 Types ship with the package (`JunoPalette`, `JunoMode`, `JunoRole`, `JunoTheme`).
 
 ## Semantic vs explicit variables
 
-- **Semantic** `--juno-nominal` … resolve to the *current* theme. Use these in components.
+- **Semantic** `--juno-nominal` … resolve to the _current_ theme. Use these in components.
 - **Explicit** values for a specific theme live in SCSS/JS as
   `…-standard-dark-nominal`. Use only when you need a fixed theme regardless of context.
 

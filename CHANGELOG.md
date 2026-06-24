@@ -8,6 +8,7 @@ changed token value or removed token is a breaking change.
 ## [Unreleased]
 
 ### Added
+
 - DTCG token source (`tokens/`): color (3 palettes × dark/light), spacing,
   radius, border, sizing, typography.
 - Style Dictionary build → CSS, SCSS, JS/TS, JSON, Android, iOS, Flutter.
@@ -26,4 +27,5 @@ changed token value or removed token is a breaking change.
 - CI: build, dist verification, token-reference drift check, publish on tag.
 
 ## [0.1.0] — unreleased
+
 - Initial design-system module.

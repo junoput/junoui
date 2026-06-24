@@ -3,7 +3,7 @@
 How blocks adapt — defined once, inherited by every UI. Two mechanisms:
 
 1. **Intrinsic layout primitives** — reflow by available space, no media queries.
-2. **Container queries** — a component restyles by *its own* width, not the viewport
+2. **Container queries** — a component restyles by _its own_ width, not the viewport
    (right for a library dropped into unknown layouts).
 
 Breakpoint tokens (`--juno-bp-sm…2xl`) follow Tailwind's scale and exist for the
@@ -15,8 +15,11 @@ junoui components live inside arbitrary app skeletons. A card doesn't know if it
 in a 280px sidebar or full width — so it adapts to its container:
 
 ```css
-.juno-card { container-type: inline-size; }   /* already set */
+.juno-card {
+  container-type: inline-size;
+} /* already set */
 ```
+
 `.juno-card__row` stacks automatically when the card is < 320px wide, anywhere.
 
 ## Layout primitives
@@ -24,15 +27,15 @@ in a 280px sidebar or full width — so it adapts to its container:
 Wrap a region; it adapts on resize. Every knob is a custom property with a token
 default — override per instance inline.
 
-| Class | Does | Key knob (default) |
-|---|---|---|
-| `.juno-center` | Max-measure wrapper, fluid gutters | `--juno-measure` (`bp-xl`) |
-| `.juno-stack` | Vertical rhythm between children | `--juno-stack-space` (`space-16`) |
-| `.juno-cluster` | Wrapping inline group (toolbars, tags) | `--juno-cluster-space` (`space-8`) |
-| `.juno-grid-auto` | Cards that collapse columns themselves | `--juno-grid-min` (`240px`) |
-| `.juno-sidebar` | Aside + fluid content, stacks when tight | `--juno-sidebar-width` (`280px`) |
-| `.juno-switcher` | N-up or all-stacked at a threshold | `--juno-switcher-threshold` (`bp-sm`) |
-| `.juno-reel` | Horizontal scroll-snap row | `--juno-reel-space` (`space-12`) |
+| Class             | Does                                     | Key knob (default)                    |
+| ----------------- | ---------------------------------------- | ------------------------------------- |
+| `.juno-center`    | Max-measure wrapper, fluid gutters       | `--juno-measure` (`bp-xl`)            |
+| `.juno-stack`     | Vertical rhythm between children         | `--juno-stack-space` (`space-16`)     |
+| `.juno-cluster`   | Wrapping inline group (toolbars, tags)   | `--juno-cluster-space` (`space-8`)    |
+| `.juno-grid-auto` | Cards that collapse columns themselves   | `--juno-grid-min` (`240px`)           |
+| `.juno-sidebar`   | Aside + fluid content, stacks when tight | `--juno-sidebar-width` (`280px`)      |
+| `.juno-switcher`  | N-up or all-stacked at a threshold       | `--juno-switcher-threshold` (`bp-sm`) |
+| `.juno-reel`      | Horizontal scroll-snap row               | `--juno-reel-space` (`space-12`)      |
 
 ### Examples
 
@@ -57,7 +60,10 @@ default — override per instance inline.
 </div>
 
 <!-- two-up that flips to stacked under ~640px of space -->
-<div class="juno-switcher"><div>A</div><div>B</div></div>
+<div class="juno-switcher">
+  <div>A</div>
+  <div>B</div>
+</div>
 ```
 
 ## Adopting in an existing project

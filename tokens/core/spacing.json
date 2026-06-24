@@ -1,9 +1,9 @@
 {
   "space": {
     "$type": "dimension",
-    "2":  { "$value": "2px",  "$description": "Hairline gaps, icon-to-text nudges." },
-    "4":  { "$value": "4px",  "$description": "Tight inner gaps, chip padding." },
-    "8":  { "$value": "8px",  "$description": "Default small gap between related items." },
+    "2": { "$value": "2px", "$description": "Hairline gaps, icon-to-text nudges." },
+    "4": { "$value": "4px", "$description": "Tight inner gaps, chip padding." },
+    "8": { "$value": "8px", "$description": "Default small gap between related items." },
     "10": { "$value": "10px", "$description": "Compact control padding." },
     "12": { "$value": "12px", "$description": "Card row gaps, control vertical padding." },
     "16": { "$value": "16px", "$description": "Card body padding, grid gaps." },

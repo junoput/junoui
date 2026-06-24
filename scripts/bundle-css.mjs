@@ -31,7 +31,9 @@ parts.push(read(join(SRC, 'utilities.css')));
 parts.push(read(join(SRC, 'layout.css')));
 
 const compDir = join(SRC, 'components');
-for (const f of readdirSync(compDir).filter((f) => f.endsWith('.css')).sort()) {
+for (const f of readdirSync(compDir)
+  .filter((f) => f.endsWith('.css'))
+  .sort()) {
   parts.push(read(join(compDir, f)));
 }
 
@@ -48,8 +50,7 @@ body = body.replace(/^[ \t]*@import.*;[ \t]*$/gm, (line) => {
 });
 body = body.replace(/\n{3,}/g, '\n\n').trim();
 
-const banner =
-`/**
+const banner = `/**
  * junoui — complete stylesheet (tokens + base + utilities + components).
  * Generated bundle; edit sources in src/css/ and rebuild.
  */`;

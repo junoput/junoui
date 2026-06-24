@@ -9,11 +9,11 @@ A compact, uppercase status label.
 <span class="juno-badge juno-badge--outline juno--caution">CAUTION</span>
 ```
 
-| Class | Effect |
-|---|---|
-| `.juno-badge` | Base. Filled: background = role, text = `s0`. |
-| `.juno-badge--outline` | Transparent fill, text + border = role. |
-| `.juno--<role>` | Sets the color (required). |
+| Class                  | Effect                                        |
+| ---------------------- | --------------------------------------------- |
+| `.juno-badge`          | Base. Filled: background = role, text = `s0`. |
+| `.juno-badge--outline` | Transparent fill, text + border = role.       |
+| `.juno--<role>`        | Sets the color (required).                    |
 
 ## Anatomy (any platform)
 

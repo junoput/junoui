@@ -11,20 +11,22 @@ A surface grouping a titled header and a body.
     <span class="juno-badge juno-badge--outline juno--caution">CAUTION</span>
   </header>
   <div class="juno-card__body">
-    <div class="juno-card__row"><span class="juno-label">Pressure</span>
-      <span class="juno-value juno-text-caution">2,650</span></div>
+    <div class="juno-card__row">
+      <span class="juno-label">Pressure</span>
+      <span class="juno-value juno-text-caution">2,650</span>
+    </div>
   </div>
 </article>
 ```
 
-| Class | Effect |
-|---|---|
-| `.juno-card` | `s1` surface, 1px `border`, radius `radius.8`. |
-| `.juno-card--accent` | 2px top edge in the role color (status hint). |
-| `.juno-card--alert` | Full border in role + tinted header — critical panels. |
-| `.juno-card__head` | Uppercase title row; holds a status badge. |
-| `.juno-card__body` | Padded content column. |
-| `.juno-card__row` | Label-left / value-right baseline row. |
+| Class                | Effect                                                 |
+| -------------------- | ------------------------------------------------------ |
+| `.juno-card`         | `s1` surface, 1px `border`, radius `radius.8`.         |
+| `.juno-card--accent` | 2px top edge in the role color (status hint).          |
+| `.juno-card--alert`  | Full border in role + tinted header — critical panels. |
+| `.juno-card__head`   | Uppercase title row; holds a status badge.             |
+| `.juno-card__body`   | Padded content column.                                 |
+| `.juno-card__row`    | Label-left / value-right baseline row.                 |
 
 ## Anatomy (any platform)
 

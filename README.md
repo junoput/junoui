@@ -14,7 +14,7 @@ npm install junoui
 ```
 
 ```js
-import 'junoui/css';                       // styles + components
+import 'junoui/css'; // styles + components
 import { TOKENS, getTokens } from 'junoui'; // values in JS/TS
 ```
 
@@ -32,20 +32,20 @@ switched by two HTML attributes.
 One source → every target. Web keeps authored `oklch()`; native/Flutter get
 build-time sRGB hex (identical rendering).
 
-| Web | Native | Cross-platform |
-|---|---|---|
+| Web              | Native                     | Cross-platform                  |
+| ---------------- | -------------------------- | ------------------------------- |
 | CSS, SCSS, JS/TS | Android (xml), iOS (Swift) | Flutter (Dart), JSON (W3C DTCG) |
 
 ## Documentation
 
-| | |
-|---|---|
-| [Getting started](./docs/getting-started.md) | Install, model, what ships |
-| [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage |
-| [Design guidelines](./docs/design-guidelines.md) | Color semantics, a11y — for any tool |
-| [Layout](./docs/layout.md) | Responsive primitives + container queries (how blocks adapt) |
-| [Token reference](./docs/tokens-reference.md) | Every token + value + platform name (generated) |
-| [Components](./docs/components/README.md) | Badge, button, card, readout, status dot |
+|                                                                                  |                                                              |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [Getting started](./docs/getting-started.md)                                     | Install, model, what ships                                   |
+| [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                           |
+| [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                         |
+| [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt) |
+| [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)              |
+| [Components](./docs/components/README.md)                                        | Badge, button, card, readout, status dot                     |
 
 ## Repository
 

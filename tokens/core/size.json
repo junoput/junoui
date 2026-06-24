@@ -2,12 +2,15 @@
   "size": {
     "tap": {
       "$type": "dimension",
-      "min":         { "$value": "24px", "$description": "WCAG 2.2 AA minimum interactive target." },
-      "comfortable": { "$value": "44px", "$description": "Recommended primary action target (mobile)." }
+      "min": { "$value": "24px", "$description": "WCAG 2.2 AA minimum interactive target." },
+      "comfortable": {
+        "$value": "44px",
+        "$description": "Recommended primary action target (mobile)."
+      }
     },
     "dot": {
       "$type": "dimension",
-      "sm": { "$value": "8px",  "$description": "Inline status dot indicator." },
+      "sm": { "$value": "8px", "$description": "Inline status dot indicator." },
       "md": { "$value": "10px", "$description": "Legend / status-scale dot." }
     }
   }

@@ -2,10 +2,10 @@
   "bp": {
     "$type": "dimension",
     "$description": "Breakpoints follow Tailwind CSS's widely-used scale for familiarity and interop.",
-    "sm":  { "$value": "640px",  "$description": "≥ small — phone landscape." },
-    "md":  { "$value": "768px",  "$description": "≥ medium — tablet." },
-    "lg":  { "$value": "1024px", "$description": "≥ large — laptop." },
-    "xl":  { "$value": "1280px", "$description": "≥ extra-large — desktop." },
+    "sm": { "$value": "640px", "$description": "≥ small — phone landscape." },
+    "md": { "$value": "768px", "$description": "≥ medium — tablet." },
+    "lg": { "$value": "1024px", "$description": "≥ large — laptop." },
+    "xl": { "$value": "1280px", "$description": "≥ extra-large — desktop." },
     "2xl": { "$value": "1536px", "$description": "≥ 2x large — wide desktop." }
   }
 }

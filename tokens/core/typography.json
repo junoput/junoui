@@ -2,16 +2,22 @@
   "font": {
     "family": {
       "$type": "fontFamily",
-      "sans": { "$value": "'B612', sans-serif",      "$description": "All non-numeric UI: headings, labels, navigation, buttons. Airbus/ENAC cockpit typeface." },
-      "mono": { "$value": "'B612 Mono', monospace",  "$description": "All numeric readouts, timestamps, identifiers, code. Fixed-width prevents value jitter." }
+      "sans": {
+        "$value": "'B612', sans-serif",
+        "$description": "All non-numeric UI: headings, labels, navigation, buttons. Airbus/ENAC cockpit typeface."
+      },
+      "mono": {
+        "$value": "'B612 Mono', monospace",
+        "$description": "All numeric readouts, timestamps, identifiers, code. Fixed-width prevents value jitter."
+      }
     },
     "weight": {
       "$type": "fontWeight",
-      "light":    { "$value": 300 },
-      "regular":  { "$value": 400 },
-      "medium":   { "$value": 500 },
+      "light": { "$value": 300 },
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 },
       "semibold": { "$value": 600 },
-      "bold":     { "$value": 700 }
+      "bold": { "$value": 700 }
     },
     "size": {
       "$type": "dimension",
@@ -32,22 +38,22 @@
     },
     "lineHeight": {
       "$type": "number",
-      "none":    { "$value": 1 },
-      "tight":   { "$value": 1.1 },
-      "snug":    { "$value": 1.2 },
-      "normal":  { "$value": 1.4 },
+      "none": { "$value": 1 },
+      "tight": { "$value": 1.1 },
+      "snug": { "$value": 1.2 },
+      "normal": { "$value": 1.4 },
       "relaxed": { "$value": 1.5 },
-      "loose":   { "$value": 1.7 }
+      "loose": { "$value": 1.7 }
     },
     "tracking": {
       "$type": "dimension",
-      "tight":   { "$value": "0.02em", "$description": "Base UI tracking." },
-      "normal":  { "$value": "0.06em", "$description": "Uppercase headings." },
-      "label":   { "$value": "0.08em", "$description": "Status labels." },
-      "wide":    { "$value": "0.12em", "$description": "Toggle controls, card titles." },
-      "caps":    { "$value": "0.15em", "$description": "Badge / button uppercase." },
-      "wider":   { "$value": "0.2em",  "$description": "Brand mark, section accents." },
-      "widest":  { "$value": "0.3em",  "$description": "Section eyebrow labels." }
+      "tight": { "$value": "0.02em", "$description": "Base UI tracking." },
+      "normal": { "$value": "0.06em", "$description": "Uppercase headings." },
+      "label": { "$value": "0.08em", "$description": "Status labels." },
+      "wide": { "$value": "0.12em", "$description": "Toggle controls, card titles." },
+      "caps": { "$value": "0.15em", "$description": "Badge / button uppercase." },
+      "wider": { "$value": "0.2em", "$description": "Brand mark, section accents." },
+      "widest": { "$value": "0.3em", "$description": "Section eyebrow labels." }
     }
   }
 }

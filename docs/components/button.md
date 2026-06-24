@@ -8,12 +8,12 @@
 <button class="juno-btn" disabled>DISABLED</button>
 ```
 
-| Class | Effect |
-|---|---|
-| `.juno-btn` | Base. Primary (filled): background = role, text = `s0`. Default role = `active`. |
-| `.juno-btn--ghost` | Transparent, `data` text, `border` outline; hover → `s2`. |
-| `.juno--<role>` | Sets the primary fill color. |
-| `:disabled` | `muted` fill, `label` text, not-allowed. |
+| Class              | Effect                                                                           |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `.juno-btn`        | Base. Primary (filled): background = role, text = `s0`. Default role = `active`. |
+| `.juno-btn--ghost` | Transparent, `data` text, `border` outline; hover → `s2`.                        |
+| `.juno--<role>`    | Sets the primary fill color.                                                     |
+| `:disabled`        | `muted` fill, `label` text, not-allowed.                                         |
 
 ## Anatomy (any platform)
 

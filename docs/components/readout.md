@@ -18,12 +18,12 @@ A tile showing one live value: small label, large mono value, unit.
 </div>
 ```
 
-| Class | Effect |
-|---|---|
-| `.juno-readout` | `s2` tile, radius `radius.5`. Value default role = `data`. |
-| `.juno--<role>` | Colors the value (status). |
-| `.juno-readout--alert` | Adds a 1px role border for critical tiles. |
-| `__label` / `__value` / `__unit` | Parts. |
+| Class                            | Effect                                                     |
+| -------------------------------- | ---------------------------------------------------------- |
+| `.juno-readout`                  | `s2` tile, radius `radius.5`. Value default role = `data`. |
+| `.juno--<role>`                  | Colors the value (status).                                 |
+| `.juno-readout--alert`           | Adds a 1px role border for critical tiles.                 |
+| `__label` / `__value` / `__unit` | Parts.                                                     |
 
 ## Anatomy (any platform)
 

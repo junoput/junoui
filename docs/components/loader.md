@@ -26,11 +26,11 @@ Color comes from `--juno-role` (default `active`); add a `.juno--<role>` class t
 </div>
 ```
 
-| Class / var | Effect |
-|---|---|
-| `.juno-arc` | Ring; determinate sweep = progress (conic gradient + ring mask). |
-| `.juno-arc--indeterminate` | 12-step mechanical rotation. |
-| `--juno-arc-size` (76px) · `--juno-arc-width` (4px) | Diameter / stroke. |
+| Class / var                                         | Effect                                                           |
+| --------------------------------------------------- | ---------------------------------------------------------------- |
+| `.juno-arc`                                         | Ring; determinate sweep = progress (conic gradient + ring mask). |
+| `.juno-arc--indeterminate`                          | 12-step mechanical rotation.                                     |
+| `--juno-arc-size` (76px) · `--juno-arc-width` (4px) | Diameter / stroke.                                               |
 
 > The ring uses a CSS mask, which clips children. Put `.juno-arc__label` as a
 > **sibling** over a positioned wrapper, not inside `.juno-arc`.
@@ -50,12 +50,12 @@ Color comes from `--juno-role` (default `active`); add a `.juno--<role>` class t
 </div>
 ```
 
-| Part | Role |
-|---|---|
-| `.juno-beacon` | Container; emits two staggered pulse rings. |
-| `.juno-beacon__core` | Centre dot (indeterminate). |
-| `.juno-beacon--determinate` | Switches to a centre→rim fill mask by progress. |
-| `__track` / `__fill` / `__hub` / `__label` | Ring track, growing fill, centre hub, readout. |
+| Part                                       | Role                                            |
+| ------------------------------------------ | ----------------------------------------------- |
+| `.juno-beacon`                             | Container; emits two staggered pulse rings.     |
+| `.juno-beacon__core`                       | Centre dot (indeterminate).                     |
+| `.juno-beacon--determinate`                | Switches to a centre→rim fill mask by progress. |
+| `__track` / `__fill` / `__hub` / `__label` | Ring track, growing fill, centre hub, readout.  |
 
 ## Linear — bar
 
@@ -67,11 +67,11 @@ Color comes from `--juno-role` (default `active`); add a `.juno--<role>` class t
 <div class="juno-bar" style="--juno-progress:63;"><span class="juno-bar__fill"></span></div>
 ```
 
-| Class | Effect |
-|---|---|
-| `.juno-bar` | Track (`s2`, 6px, radius `radius.3`). |
-| `.juno-bar__fill` | Fill; width = progress, color = role. |
-| `.juno-bar--indeterminate` | A 40% segment slides across. |
+| Class                      | Effect                                |
+| -------------------------- | ------------------------------------- |
+| `.juno-bar`                | Track (`s2`, 6px, radius `radius.3`). |
+| `.juno-bar__fill`          | Fill; width = progress, color = role. |
+| `.juno-bar--indeterminate` | A 40% segment slides across.          |
 
 ## Notes
 
