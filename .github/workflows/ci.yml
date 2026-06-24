@@ -19,27 +19,13 @@ jobs:
 
       - run: npm ci
 
-      - name: Build tokens + CSS
-        run: npm run build
+      - name: Lint (stylelint + prettier)
+        run: npm run lint
 
-      - name: Verify all dist outputs exist
-        run: |
-          for f in \
-            dist/css/aero.css dist/css/aero-tokens.css \
-            dist/scss/_aero-tokens.scss \
-            dist/js/tokens.js dist/js/tokens.d.ts \
-            dist/json/tokens.json \
-            dist/android/colors.xml dist/android/dimens.xml \
-            dist/ios/AeroTokens.swift \
-            dist/flutter/aero_tokens.dart ; do
-            test -s "$f" || { echo "missing: $f"; exit 1; }
-          done
-
-      - name: Token reference is up to date
-        run: |
-          npm run gen-docs
-          git diff --exit-code docs/tokens-reference.md \
-            || { echo "docs/tokens-reference.md is stale — run 'npm run gen-docs' and commit."; exit 1; }
+      - name: Test (build + integrity suite)
+        # builds dist/, then asserts every platform output, package export,
+        # css var reference, and the committed token reference are correct.
+        run: npm test
 
       - name: Package contents
         run: npm pack --dry-run
