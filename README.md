@@ -44,8 +44,10 @@ build-time sRGB hex (identical rendering).
 | [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                           |
 | [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                         |
 | [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt) |
+| [Accessibility](./docs/accessibility.md)                                         | Color, focus, motion, targets, forced-colors, RTL, ARIA      |
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)              |
-| [Components](./docs/components/README.md)                                        | Badge, button, card, readout, status dot                     |
+| [Components](./docs/components/README.md)                                        | Badge, button, card, readout, status dot, loaders            |
+| [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                   |
 
 ## Repository
 
