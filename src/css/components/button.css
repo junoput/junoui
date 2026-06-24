@@ -1,0 +1,46 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Button
+ *  Usage:  <button class="juno-btn juno--nominal">CONFIRM</button>
+ *          <button class="juno-btn juno-btn--ghost">CANCEL</button>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-btn {
+  --juno-role: var(--juno-active);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--juno-space-8);
+  min-height: var(--juno-size-tap-min);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-caps);
+  text-transform: uppercase;
+  padding: var(--juno-space-10) var(--juno-space-20);
+  border: var(--juno-border-width-1) solid transparent;
+  border-radius: var(--juno-radius-4);
+  cursor: pointer;
+
+  /* primary (filled) */
+  background: var(--juno-role);
+  color: var(--juno-s0);
+}
+
+.juno-btn:hover { filter: brightness(1.08); }
+.juno-btn:active { filter: brightness(0.94); }
+
+.juno-btn--ghost {
+  background: transparent;
+  color: var(--juno-data);
+  border-color: var(--juno-border);
+  font-weight: var(--juno-font-weight-semibold);
+}
+.juno-btn--ghost:hover { background: var(--juno-s2); filter: none; }
+
+.juno-btn:disabled {
+  background: var(--juno-muted);
+  color: var(--juno-label);
+  border-color: transparent;
+  cursor: not-allowed;
+  filter: none;
+}

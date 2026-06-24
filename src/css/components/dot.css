@@ -1,0 +1,34 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Status dot + label
+ *  Usage:
+ *    <span class="juno-status juno--nominal">
+ *      <span class="juno-status__dot"></span>NOMINAL
+ *    </span>
+ *  Pair color with the text label — color is never the sole signal.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-status {
+  --juno-role: var(--juno-nominal);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+  font-size: var(--juno-font-size-12);
+  letter-spacing: var(--juno-font-tracking-label);
+  color: var(--juno-role);
+}
+
+.juno-status__dot {
+  width: var(--juno-size-dot-sm);
+  height: var(--juno-size-dot-sm);
+  border-radius: 50%;
+  background: var(--juno-role);
+  flex-shrink: 0;
+}
+
+.juno-status--lg .juno-status__dot {
+  width: var(--juno-size-dot-md);
+  height: var(--juno-size-dot-md);
+}
+
+/* Live/armed pulse — respects prefers-reduced-motion via base layer. */
+.juno-status--live .juno-status__dot { animation: juno-blink 1.4s ease-in-out infinite; }

@@ -1,0 +1,87 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  junoui — layout layer (intrinsic & responsive)
+ *
+ *  Composition primitives that reflow by the space available — no media
+ *  queries, no per-app config. Wrap a region in one of these and it adapts
+ *  on resize. Every knob is a custom property with a token default, so you
+ *  override per instance: <div class="juno-grid-auto" style="--juno-grid-min:280px">.
+ *
+ *  Pattern vocabulary follows the well-known "Every Layout" primitives
+ *  (stack / cluster / sidebar / switcher / grid) for familiarity.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Center — page/section wrapper with a max measure and fluid gutters. */
+.juno-center {
+  box-sizing: content-box;
+  max-width: var(--juno-measure, var(--juno-bp-xl));
+  margin-inline: auto;
+  padding-inline: clamp(var(--juno-space-16), 4vw, var(--juno-space-40));
+}
+
+/* Stack — vertical rhythm. Gap between siblings only. */
+.juno-stack {
+  display: flex;
+  flex-direction: column;
+}
+.juno-stack > * { margin-block: 0; }
+.juno-stack > * + * { margin-block-start: var(--juno-stack-space, var(--juno-space-16)); }
+
+/* Cluster — wrapping inline group (toolbars, tag rows, button groups). */
+.juno-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: var(--juno-cluster-align, center);
+  gap: var(--juno-cluster-space, var(--juno-space-8));
+}
+
+/* Grid-auto — responsive cards. Columns collapse on their own; no breakpoints.
+   Each column is at least --juno-grid-min, then as many as fit. */
+.juno-grid-auto {
+  display: grid;
+  gap: var(--juno-grid-space, var(--juno-space-16));
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--juno-grid-min, 240px), 100%), 1fr));
+}
+
+/* Sidebar — a fixed-ish aside next to fluid content; stacks when the content
+   would get narrower than --juno-sidebar-content-min. No media query. */
+.juno-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--juno-sidebar-space, var(--juno-space-24));
+}
+.juno-sidebar > .juno-sidebar__aside {
+  flex-grow: 1;
+  flex-basis: var(--juno-sidebar-width, 280px);
+}
+.juno-sidebar > .juno-sidebar__main {
+  flex-grow: 999;
+  flex-basis: 0;
+  min-inline-size: var(--juno-sidebar-content-min, 60%);
+}
+
+/* Switcher — N children side by side, or all stacked, flipping at a threshold
+   container width (--juno-switcher-threshold). Pure flex-basis math. */
+.juno-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--juno-switcher-space, var(--juno-space-16));
+}
+.juno-switcher > * {
+  flex-grow: 1;
+  flex-basis: calc((var(--juno-switcher-threshold, var(--juno-bp-sm)) - 100%) * 999);
+}
+
+/* Reel — horizontal scroll row (overflowing chips, timelines). */
+.juno-reel {
+  display: flex;
+  gap: var(--juno-reel-space, var(--juno-space-12));
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+}
+.juno-reel > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+/* Hide/show by viewport breakpoint — the rare case an intrinsic primitive
+   can't express (e.g. swap a nav for a menu button). */
+@media (max-width: 767.98px) { .juno-hide-below-md { display: none !important; } }
+@media (min-width: 768px)    { .juno-hide-from-md  { display: none !important; } }

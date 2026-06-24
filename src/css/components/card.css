@@ -1,0 +1,67 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Card / panel
+ *  Usage:
+ *    <article class="juno-card">
+ *      <header class="juno-card__head">…<span class="juno-badge …">…</span></header>
+ *      <div class="juno-card__body">…</div>
+ *    </article>
+ *  Add a status accent edge: <article class="juno-card juno-card--accent juno--caution">
+ *  Critical full-border:     <article class="juno-card juno-card--alert  juno--warning">
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-card {
+  --juno-role: var(--juno-active);
+  background: var(--juno-s1);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-8);
+  overflow: hidden;
+  container-type: inline-size; /* rows below adapt to the card's own width */
+}
+
+/* When the card itself is narrow, stack label/value rows. Driven by the
+   card's container width, not the viewport — works in any layout. */
+@container (max-width: 320px) {
+  .juno-card__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--juno-space-2);
+  }
+}
+
+.juno-card--accent { border-top: var(--juno-border-width-2) solid var(--juno-role); }
+
+.juno-card--alert { border-color: var(--juno-role); border-top-width: var(--juno-border-width-2); }
+
+.juno-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--juno-space-8);
+  padding: var(--juno-space-12) var(--juno-space-16);
+  border-bottom: var(--juno-border-width-1) solid var(--juno-border);
+  font-size: var(--juno-font-size-12);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--juno-data);
+}
+
+.juno-card--alert .juno-card__head {
+  background: var(--juno-s2);
+  border-bottom-color: var(--juno-role);
+  color: var(--juno-role);
+}
+
+.juno-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-12);
+  padding: var(--juno-space-16);
+}
+
+/* Label / value row inside a card body */
+.juno-card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}

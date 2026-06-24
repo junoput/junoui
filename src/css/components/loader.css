@@ -1,0 +1,141 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Loaders (Arc · Beacon · Linear bar)
+ *
+ *  Indeterminate variants loop on their own (CSS only). Determinate
+ *  variants track real progress: set --juno-progress (0–100) on the
+ *  element, inline or from JS:
+ *      el.style.setProperty('--juno-progress', 63);
+ *  Color comes from --juno-role (default = active).
+ * ════════════════════════════════════════════════════════════════════ */
+
+@keyframes juno-arc-rot   { to { transform: rotate(360deg); } }
+@keyframes juno-beacon-pulse { 0% { transform: scale(0.28); opacity: 0.85; } 100% { transform: scale(1); opacity: 0; } }
+@keyframes juno-bar-slide { 0% { left: -42%; } 100% { left: 100%; } }
+
+/* ── ARC — circular ring ────────────────────────────────────────────── */
+.juno-arc {
+  --juno-role: var(--juno-active);
+  --juno-arc-size: 76px;
+  --juno-arc-width: 4px;
+  position: relative;
+  width: var(--juno-arc-size);
+  height: var(--juno-arc-size);
+  border-radius: 50%;
+  /* determinate sweep: filled portion = progress */
+  background: conic-gradient(
+    var(--juno-role) calc(var(--juno-progress, 0) * 1%),
+    var(--juno-s3) 0
+  );
+  /* punch out the centre to leave a ring */
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - var(--juno-arc-width)), #000 calc(100% - var(--juno-arc-width)));
+          mask: radial-gradient(farthest-side, #0000 calc(100% - var(--juno-arc-width)), #000 calc(100% - var(--juno-arc-width)));
+}
+.juno-arc--indeterminate {
+  background: conic-gradient(var(--juno-role) 0 70%, #0000 0);
+  animation: juno-arc-rot 1.1s steps(12) infinite; /* mechanical, 12-step sweep */
+}
+/* centred readout for determinate arcs — place a span inside */
+.juno-arc__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+  /* the mask clips the ring, not this label: keep it on a sibling when
+     a value is shown — see loader.md */
+}
+
+/* ── BEACON — radiating pulse ───────────────────────────────────────── */
+.juno-beacon {
+  --juno-role: var(--juno-active);
+  --juno-beacon-size: 76px;
+  position: relative;
+  width: var(--juno-beacon-size);
+  height: var(--juno-beacon-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.juno-beacon__core {
+  width: 24%;
+  height: 24%;
+  border-radius: 50%;
+  background: var(--juno-role);
+}
+/* two pulse rings (staggered) */
+.juno-beacon::before,
+.juno-beacon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--juno-role);
+  animation: juno-beacon-pulse 1.9s ease-out infinite;
+}
+.juno-beacon::after { animation-delay: 0.95s; }
+
+/* determinate: fill grows centre → rim by progress, keeps pulsing + readout */
+.juno-beacon--determinate { --_outer: calc(44% + 0.56% * var(--juno-progress, 0)); }
+.juno-beacon--determinate .juno-beacon__core { display: none; }
+.juno-beacon__track {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--juno-border);
+}
+.juno-beacon__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--juno-role);
+  -webkit-mask: radial-gradient(circle closest-side, #0000 0 44%, #000 44% var(--_outer), #0000 var(--_outer));
+          mask: radial-gradient(circle closest-side, #0000 0 44%, #000 44% var(--_outer), #0000 var(--_outer));
+}
+.juno-beacon__hub {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 42%; height: 42%;
+  border-radius: 50%;
+  background: var(--juno-s1);
+  border: 1px solid var(--juno-border);
+}
+.juno-beacon__label {
+  position: relative;
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+}
+
+/* ── LINEAR BAR ─────────────────────────────────────────────────────── */
+.juno-bar {
+  --juno-role: var(--juno-active);
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--juno-radius-3);
+  background: var(--juno-s2);
+  overflow: hidden;
+}
+.juno-bar__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: var(--juno-radius-3);
+  background: var(--juno-role);
+  width: calc(var(--juno-progress, 0) * 1%);
+  transition: width 0.12s linear;
+}
+/* indeterminate: a 40% segment slides across */
+.juno-bar--indeterminate .juno-bar__fill {
+  width: 40%;
+  left: -42%;
+  transition: none;
+  animation: juno-bar-slide 1.3s ease-in-out infinite;
+}

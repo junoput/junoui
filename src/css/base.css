@@ -1,0 +1,46 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  junoui — base layer
+ *  Reset + document defaults. Pulls the B612 typeface (cockpit-grade
+ *  readability). If you self-host or already load the fonts, drop the
+ *  @import.
+ * ════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=B612+Mono:ital,wght@0,400;0,700&display=swap');
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-14);
+  line-height: var(--juno-font-lineHeight-normal);
+  letter-spacing: var(--juno-font-tracking-tight);
+  color: var(--juno-data);
+  background: var(--juno-s0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
+
+/* Accessible focus — uses the ACTIVE role so it tracks the theme. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--juno-active);
+  outline-offset: 2px;
+  border-radius: var(--juno-radius-2);
+}
+
+@keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

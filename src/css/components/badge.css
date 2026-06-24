@@ -1,0 +1,31 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Badge / status indicator
+ *  Usage:  <span class="juno-badge juno--nominal">NOMINAL</span>
+ *          <span class="juno-badge juno-badge--outline juno--caution">…</span>
+ *  Color comes from --juno-role (set by an .juno--<role> class).
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-badge {
+  --juno-role: var(--juno-muted);
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-11);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-caps);
+  text-transform: uppercase;
+  padding: var(--juno-space-4) var(--juno-space-10);
+  border-radius: var(--juno-radius-3);
+  border: var(--juno-border-width-1) solid transparent;
+  white-space: nowrap;
+
+  /* filled (default) */
+  background: var(--juno-role);
+  color: var(--juno-s0);
+}
+
+.juno-badge--outline {
+  background: transparent;
+  color: var(--juno-role);
+  border-color: var(--juno-role);
+}

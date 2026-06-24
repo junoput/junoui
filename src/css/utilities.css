@@ -1,0 +1,63 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  junoui — utilities layer
+ *
+ *  Role helpers set a single custom property --juno-role. Components read
+ *  var(--juno-role), so one class (.juno--warning) re-colors a badge, dot,
+ *  button, card accent, or readout identically. Color = status, always.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno--nominal { --juno-role: var(--juno-nominal); }
+.juno--active  { --juno-role: var(--juno-active);  }
+.juno--target  { --juno-role: var(--juno-target);  }
+.juno--caution { --juno-role: var(--juno-caution); }
+.juno--warning { --juno-role: var(--juno-warning); }
+.juno--muted   { --juno-role: var(--juno-muted);   }
+
+/* Text color roles */
+.juno-text-nominal { color: var(--juno-nominal); }
+.juno-text-active  { color: var(--juno-active);  }
+.juno-text-target  { color: var(--juno-target);  }
+.juno-text-caution { color: var(--juno-caution); }
+.juno-text-warning { color: var(--juno-warning); }
+.juno-text-data    { color: var(--juno-data);    }
+.juno-text-label   { color: var(--juno-label);   }
+.juno-text-muted   { color: var(--juno-muted);   }
+
+/* Surface backgrounds (depth hierarchy) */
+.juno-bg-s0 { background: var(--juno-s0); }
+.juno-bg-s1 { background: var(--juno-s1); }
+.juno-bg-s2 { background: var(--juno-s2); }
+.juno-bg-s3 { background: var(--juno-s3); }
+
+/* Typography helpers */
+.juno-mono { font-family: var(--juno-font-family-mono); }
+
+.juno-value {
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  color: var(--juno-data);
+  line-height: var(--juno-font-lineHeight-none);
+  font-variant-numeric: tabular-nums;
+}
+
+.juno-label {
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-label);
+}
+
+/* Section eyebrow / micro label — 10px uppercase, widely tracked */
+.juno-eyebrow {
+  font-size: var(--juno-font-size-10);
+  letter-spacing: var(--juno-font-tracking-widest);
+  text-transform: uppercase;
+  color: var(--juno-label);
+}
+
+.juno-heading {
+  font-family: var(--juno-font-family-sans);
+  font-weight: var(--juno-font-weight-bold);
+  font-size: var(--juno-font-size-18);
+  letter-spacing: var(--juno-font-tracking-normal);
+  text-transform: uppercase;
+  color: var(--juno-data);
+}

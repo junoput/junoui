@@ -1,0 +1,44 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Data readout tile
+ *  Usage:
+ *    <div class="juno-readout juno--nominal">
+ *      <span class="juno-readout__label">N1</span>
+ *      <span class="juno-readout__value">89.3</span>
+ *      <span class="juno-readout__unit">%</span>
+ *    </div>
+ *  The value takes --juno-role; default role is the neutral data color.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-readout {
+  --juno-role: var(--juno-data);
+  display: flex;
+  flex-direction: column;
+  background: var(--juno-s2);
+  border-radius: var(--juno-radius-5);
+  padding: var(--juno-space-20) var(--juno-space-16);
+}
+
+.juno-readout--alert { border: var(--juno-border-width-1) solid var(--juno-role); }
+
+.juno-readout__label {
+  font-size: var(--juno-font-size-10);
+  letter-spacing: var(--juno-font-tracking-wider);
+  text-transform: uppercase;
+  color: var(--juno-label);
+  margin-bottom: var(--juno-space-8);
+}
+
+.juno-readout__value {
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  font-size: var(--juno-font-size-38);
+  line-height: var(--juno-font-lineHeight-none);
+  color: var(--juno-role);
+  font-variant-numeric: tabular-nums;
+}
+
+.juno-readout__unit {
+  font-size: var(--juno-font-size-11);
+  color: var(--juno-label);
+  margin-top: var(--juno-space-4);
+}
