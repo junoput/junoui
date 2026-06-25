@@ -99,6 +99,33 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 | `bp.xl` | `1280px` | `var(--juno-bp-xl)` | `JunoTokens.bpXl` |
 | `bp.2xl` | `1536px` | `var(--juno-bp-2xl)` | `JunoTokens.bp2xl` |
 
+### Elevation
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `shadow.1` | `0 1px 2px rgb(0 0 0 / 0.32)` | `var(--juno-shadow-1)` | `JunoTokens.shadow1` |
+| `shadow.2` | `0 4px 12px rgb(0 0 0 / 0.40)` | `var(--juno-shadow-2)` | `JunoTokens.shadow2` |
+| `shadow.3` | `0 12px 32px rgb(0 0 0 / 0.48)` | `var(--juno-shadow-3)` | `JunoTokens.shadow3` |
+
+### Motion
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `motion.duration.fast` | `120ms` | `var(--juno-motion-duration-fast)` | `JunoTokens.motionDurationFast` |
+| `motion.duration.base` | `200ms` | `var(--juno-motion-duration-base)` | `JunoTokens.motionDurationBase` |
+| `motion.duration.slow` | `320ms` | `var(--juno-motion-duration-slow)` | `JunoTokens.motionDurationSlow` |
+| `motion.ease.standard` | `cubic-bezier(0.2, 0, 0, 1)` | `var(--juno-motion-ease-standard)` | `JunoTokens.motionEaseStandard` |
+| `motion.ease.in` | `cubic-bezier(0.4, 0, 1, 1)` | `var(--juno-motion-ease-in)` | `JunoTokens.motionEaseIn` |
+| `motion.ease.out` | `cubic-bezier(0, 0, 0.2, 1)` | `var(--juno-motion-ease-out)` | `JunoTokens.motionEaseOut` |
+
+### Opacity
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `opacity.disabled` | `0.45` | `var(--juno-opacity-disabled)` | `JunoTokens.opacityDisabled` |
+| `opacity.muted` | `0.65` | `var(--juno-opacity-muted)` | `JunoTokens.opacityMuted` |
+| `opacity.scrim` | `0.55` | `var(--juno-opacity-scrim)` | `JunoTokens.opacityScrim` |
+
 ### Radius
 
 | Token | Value | CSS variable | Flutter / iOS |
@@ -175,4 +202,17 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 | `font.tracking.caps` | `0.15em` | `var(--juno-font-tracking-caps)` | `JunoTokens.fontTrackingCaps` |
 | `font.tracking.wider` | `0.2em` | `var(--juno-font-tracking-wider)` | `JunoTokens.fontTrackingWider` |
 | `font.tracking.widest` | `0.3em` | `var(--juno-font-tracking-widest)` | `JunoTokens.fontTrackingWidest` |
+
+### Z-index
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `z.base` | `0` | `var(--juno-z-base)` | `JunoTokens.zBase` |
+| `z.raised` | `10` | `var(--juno-z-raised)` | `JunoTokens.zRaised` |
+| `z.sticky` | `100` | `var(--juno-z-sticky)` | `JunoTokens.zSticky` |
+| `z.dropdown` | `1000` | `var(--juno-z-dropdown)` | `JunoTokens.zDropdown` |
+| `z.overlay` | `1100` | `var(--juno-z-overlay)` | `JunoTokens.zOverlay` |
+| `z.modal` | `1200` | `var(--juno-z-modal)` | `JunoTokens.zModal` |
+| `z.popover` | `1300` | `var(--juno-z-popover)` | `JunoTokens.zPopover` |
+| `z.toast` | `1400` | `var(--juno-z-toast)` | `JunoTokens.zToast` |
 

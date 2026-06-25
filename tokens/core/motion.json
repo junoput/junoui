@@ -1,0 +1,34 @@
+{
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "fast": {
+        "$value": "120ms",
+        "$description": "Micro feedback — hover, focus, small state and value changes."
+      },
+      "base": {
+        "$value": "200ms",
+        "$description": "Standard UI transitions — most components."
+      },
+      "slow": {
+        "$value": "320ms",
+        "$description": "Overlays and larger movement — modal, drawer, sheet."
+      }
+    },
+    "ease": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "cubic-bezier(0.2, 0, 0, 1)",
+        "$description": "Default — most transitions and on-screen movement."
+      },
+      "in": {
+        "$value": "cubic-bezier(0.4, 0, 1, 1)",
+        "$description": "Accelerate — elements leaving the screen."
+      },
+      "out": {
+        "$value": "cubic-bezier(0, 0, 0.2, 1)",
+        "$description": "Decelerate — elements entering the screen."
+      }
+    }
+  }
+}

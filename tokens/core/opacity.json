@@ -1,0 +1,17 @@
+{
+  "opacity": {
+    "$type": "number",
+    "disabled": {
+      "$value": 0.45,
+      "$description": "Disabled / inert control — dimmed but legible."
+    },
+    "muted": {
+      "$value": 0.65,
+      "$description": "De-emphasised but active content — secondary text, placeholder."
+    },
+    "scrim": {
+      "$value": 0.55,
+      "$description": "Backdrop dim behind a modal or drawer."
+    }
+  }
+}
