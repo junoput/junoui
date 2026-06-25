@@ -59,7 +59,7 @@ CI runs `lint` + `test` + `npm pack --dry-run`. All must pass.
 
 ```
 tokens/        DTCG source of truth (core/ + color/)
-src/css/       base.css · utilities.css · layout.css · components/*.css
+src/css/       base.css · utilities.css · layout.css · density.css · components/*.css
 scripts/       color.mjs · bundle-css.mjs · gen-docs.mjs
 style-dictionary.config.mjs   token build (custom per-platform formats)
 test/          node:test suite (no deps)

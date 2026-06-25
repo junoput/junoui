@@ -1,0 +1,34 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  junoui — density layer
+ *  Semantic padding/gap aliases that switch with [data-juno-density].
+ *  Components reference these instead of raw --juno-space-* for their
+ *  internal padding, so the whole UI compacts from one attribute:
+ *
+ *      <body data-juno-density="compact">   →  dense cockpit layout
+ *      <body>                               →  comfortable (default)
+ *
+ *  Density is intentionally NON-linear: compact removes more block
+ *  (vertical) padding than inline, so text never crowds its edges.
+ *  Interactive controls keep their min-height (WCAG tap target) — only
+ *  padding shrinks. Add a new archetype only when a component needs one.
+ * ════════════════════════════════════════════════════════════════════ */
+
+:root,
+[data-juno-density='comfortable'] {
+  /* interactive controls — button, future input/select */
+  --juno-pad-control-block: var(--juno-space-10);
+  --juno-pad-control-inline: var(--juno-space-20);
+  --juno-gap-control: var(--juno-space-8);
+
+  /* surfaces — card / panel bodies */
+  --juno-pad-surface-block: var(--juno-space-16);
+  --juno-pad-surface-inline: var(--juno-space-16);
+}
+
+[data-juno-density='compact'] {
+  --juno-pad-control-block: var(--juno-space-4);
+  --juno-pad-control-inline: var(--juno-space-12);
+  --juno-gap-control: var(--juno-space-4);
+  --juno-pad-surface-block: var(--juno-space-10);
+  --juno-pad-surface-inline: var(--juno-space-12);
+}

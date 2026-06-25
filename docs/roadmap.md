@@ -15,15 +15,18 @@ Tokens (color · spacing · type · radius · border · size · breakpoints), th
 loaders), layout primitives + container queries, multi-platform outputs, docs, lint +
 tests + CI.
 
-## Foundations (token gaps)
+## Foundations (token gaps) — ✅ shipped 2026-06
 
-| Missing                           | Why                                                                               | Priority |
-| --------------------------------- | --------------------------------------------------------------------------------- | -------- |
-| **Motion** (duration + easing)    | Keyframes exist but timings are hardcoded. Shared scale for transitions/overlays. | 🔴       |
-| **Z-index scale**                 | No layering system → overlays/modals/tooltips collide. Needed before any overlay. | 🔴       |
-| **Elevation / shadow**            | Depth is border-only (intentional, but raised surfaces/dropdowns need shadow).    | 🟡       |
-| **Opacity scale**                 | Disabled states, scrims, overlays.                                                | 🟡       |
-| **Density modes** (compact/comfy) | Cockpit/data domain — swap the padding scale via an attribute. High value.        | 🟡       |
+All foundation token gaps are now built. Values: [tokens-reference.md](./tokens-reference.md);
+usage: [design-guidelines.md](./design-guidelines.md).
+
+| Done                              | What shipped                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Motion** (duration + easing)    | `--juno-motion-duration-{fast,base,slow}` + `--juno-motion-ease-{standard,in,out}`.        |
+| **Z-index scale**                 | `--juno-z-*` (raised → toast), single layering source of truth.                            |
+| **Elevation / shadow**            | `--juno-shadow-{1,2,3}` — border-first depth; shadow for lifted surfaces.                  |
+| **Opacity scale**                 | `--juno-opacity-{disabled,muted,scrim}`.                                                   |
+| **Density modes** (compact/comfy) | `data-juno-density` swaps semantic padding aliases (`--juno-pad-*`, `--juno-gap-control`). |
 
 ## Components
 
@@ -53,8 +56,8 @@ contract, forced-colors, RTL via logical properties, CI gate.
 
 ## Recommended order
 
-1. **Foundation tokens** — motion, z-index, elevation, opacity. Small; unblocks the rest.
-2. **Form controls + field** — the single biggest capability gap.
+1. ~~**Foundation tokens** — motion, z-index, elevation, opacity, density.~~ ✅ done.
+2. **Form controls + field** — the single biggest capability gap. _(next)_
 3. **Overlays** — modal, tooltip, menu (after #1).
 4. **Table**.
 5. **Quality** — visual-regression snapshots + changesets.

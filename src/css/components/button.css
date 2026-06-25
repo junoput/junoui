@@ -10,14 +10,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--juno-space-8);
+  gap: var(--juno-gap-control);
   min-height: var(--juno-size-tap-min);
   font-family: var(--juno-font-family-sans);
   font-size: var(--juno-font-size-13);
   font-weight: var(--juno-font-weight-bold);
   letter-spacing: var(--juno-font-tracking-caps);
   text-transform: uppercase;
-  padding: var(--juno-space-10) var(--juno-space-20);
+  padding: var(--juno-pad-control-block) var(--juno-pad-control-inline);
   border: var(--juno-border-width-1) solid transparent;
   border-radius: var(--juno-radius-4);
   cursor: pointer;

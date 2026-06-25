@@ -29,6 +29,7 @@ parts.push(read(TOKENS));
 parts.push(read(join(SRC, 'base.css')));
 parts.push(read(join(SRC, 'utilities.css')));
 parts.push(read(join(SRC, 'layout.css')));
+parts.push(read(join(SRC, 'density.css')));
 
 const compDir = join(SRC, 'components');
 for (const f of readdirSync(compDir)

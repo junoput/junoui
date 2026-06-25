@@ -57,7 +57,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--juno-space-12);
-  padding: var(--juno-space-16);
+  padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
 }
 
 /* Label / value row inside a card body */

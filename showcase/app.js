@@ -28,13 +28,16 @@ const ROLES = [
 
 // ── theme toggles ───────────────────────────────────────────────────────
 function syncToggles() {
-  const { junoPalette: p, junoMode: m } = html.dataset;
+  const { junoPalette: p, junoMode: m, junoDensity: d } = html.dataset;
   document
     .querySelectorAll('[data-palette]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.palette === p)));
   document
     .querySelectorAll('[data-mode]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  document
+    .querySelectorAll('[data-density]')
+    .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.density === d)));
   document.getElementById('tokens-caption').textContent = `Color Tokens — ${p} / ${m}`;
   renderTokens();
 }
@@ -42,9 +45,11 @@ function syncToggles() {
 document.addEventListener('click', (e) => {
   const pb = e.target.closest('[data-palette]');
   const mb = e.target.closest('[data-mode]');
+  const db = e.target.closest('[data-density]');
   if (pb) html.dataset.junoPalette = pb.dataset.palette;
   if (mb) html.dataset.junoMode = mb.dataset.mode;
-  if (pb || mb) syncToggles();
+  if (db) html.dataset.junoDensity = db.dataset.density;
+  if (pb || mb || db) syncToggles();
 });
 
 // ── token table (values straight from the JS module) ────────────────────
@@ -84,6 +89,7 @@ function driveProgress() {
   });
 }
 
+html.dataset.junoDensity ??= 'comfortable';
 syncToggles();
 tick();
 setInterval(tick, 1000);

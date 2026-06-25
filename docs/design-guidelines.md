@@ -29,6 +29,7 @@ Neutral / structural roles carry no status meaning:
 
 - **Hierarchy via contrast, not scale.** Brightness/weight separate levels before size does.
 - **Density is intentional.** Choose spacing deliberately; don't pad by accident.
+  Switch the whole UI between comfortable and compact with one attribute (below).
 - **Designed for long sessions.** The `soft` palette and dark mode reduce fatigue.
 
 ## Typography
@@ -57,6 +58,25 @@ apps. Exact values: [tokens-reference.md](./tokens-reference.md).
   subtle, `2` floating, `3` top layer.
 - **Opacity.** `--juno-opacity-disabled` for inert controls, `--juno-opacity-muted`
   for de-emphasised content, `--juno-opacity-scrim` for a modal/drawer backdrop.
+
+## Density
+
+One attribute on any ancestor swaps the internal padding of every component
+underneath it — no per-component class:
+
+```html
+<body data-juno-density="compact">
+  <!-- comfortable (default) needs no attribute -->
+</body>
+```
+
+Components read **semantic padding aliases** (`--juno-pad-control-*`,
+`--juno-pad-surface-*`, `--juno-gap-control`) instead of raw `--juno-space-*`;
+`data-juno-density` redefines that set. Density is deliberately **non-linear** —
+compact removes more block (vertical) than inline padding, so text never crowds its
+edges. Interactive controls keep their `min-height` (WCAG tap target); only padding
+shrinks. New components should use the aliases for internal padding to inherit
+density for free; add a new archetype only when one is genuinely needed.
 
 ## Accessibility
 
