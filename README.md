@@ -48,6 +48,7 @@ build-time sRGB hex (identical rendering).
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)              |
 | [Components](./docs/components/README.md)                                        | Badge, button, card, readout, status dot, loaders            |
 | [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                   |
+| [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                            |
 
 ## Repository
 
