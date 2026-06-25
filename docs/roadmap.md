@@ -10,10 +10,11 @@ Priority key: 🔴 must · 🟡 high · 🟢 nice.
 
 ## Have today
 
-Tokens (color · spacing · type · radius · border · size · breakpoints), themes
-(3 palettes × dark/light), CSS components (badge, button, card, readout, status dot,
-loaders), layout primitives + container queries, multi-platform outputs, docs, lint +
-tests + CI.
+Tokens (color · spacing · type · radius · border · size · breakpoints · motion ·
+z-index · elevation · opacity), density modes, themes (3 palettes × dark/light), CSS
+components (badge, button, card, readout, status dot, loaders, **form controls** —
+field · input · select · checkbox · radio · switch · slider), layout primitives +
+container queries, multi-platform outputs, docs, lint + tests + CI.
 
 ## Foundations (token gaps) — ✅ shipped 2026-06
 
@@ -30,17 +31,17 @@ usage: [design-guidelines.md](./design-guidelines.md).
 
 ## Components
 
-| Missing                                                                                             | Priority |
-| --------------------------------------------------------------------------------------------------- | -------- |
-| **Form controls** — input, textarea, select, checkbox, radio, switch, slider                        | 🔴       |
-| **Field** wrapper — label + control + help + error + required                                       | 🔴       |
-| **Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown (needs z-index + motion first) | 🔴       |
-| **Table / data grid** styling                                                                       | 🔴       |
-| **Alert / toast / inline notification**                                                             | 🟡       |
-| **Tabs**, accordion / disclosure                                                                    | 🟡       |
-| **Skeleton** loading placeholder (pairs with loaders)                                               | 🟡       |
-| Avatar, chip/tag, divider, breadcrumb, pagination, stepper                                          | 🟢       |
-| Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)                               | 🟢       |
+| Missing                                                                                             | Priority   |
+| --------------------------------------------------------------------------------------------------- | ---------- |
+| ~~**Form controls** — input, textarea, select, checkbox, radio, switch, slider~~                    | ✅ shipped |
+| ~~**Field** wrapper — label + control + help + error + required~~                                   | ✅ shipped |
+| **Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown (needs z-index + motion first) | 🔴         |
+| **Table / data grid** styling                                                                       | 🔴         |
+| **Alert / toast / inline notification**                                                             | 🟡         |
+| **Tabs**, accordion / disclosure                                                                    | 🟡         |
+| **Skeleton** loading placeholder (pairs with loaders)                                               | 🟡         |
+| Avatar, chip/tag, divider, breadcrumb, pagination, stepper                                          | 🟢         |
+| Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)                               | 🟢         |
 
 ## Quality / infra
 
@@ -57,8 +58,8 @@ contract, forced-colors, RTL via logical properties, CI gate.
 ## Recommended order
 
 1. ~~**Foundation tokens** — motion, z-index, elevation, opacity, density.~~ ✅ done.
-2. **Form controls + field** — the single biggest capability gap. _(next)_
-3. **Overlays** — modal, tooltip, menu (after #1).
+2. ~~**Form controls + field** — the single biggest capability gap.~~ ✅ done.
+3. **Overlays** — modal, tooltip, menu (after #1). _(next)_
 4. **Table**.
 5. **Quality** — visual-regression snapshots + changesets.
 

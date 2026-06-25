@@ -1,0 +1,37 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Field
+ *  Wraps any control with a label, optional help, and an error message.
+ *  Usage:
+ *    <div class="juno-field">
+ *      <label class="juno-field__label" for="cs">Callsign
+ *        <span class="juno-field__req" aria-hidden="true">*</span>
+ *      </label>
+ *      <input id="cs" class="juno-input juno-mono" type="text" />
+ *      <span class="juno-field__help">ICAO format</span>
+ *    </div>
+ *  Error: add aria-invalid="true" to the control and swap help → __error.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-4);
+}
+
+.juno-field__label {
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-10);
+  letter-spacing: var(--juno-font-tracking-wider);
+  text-transform: uppercase;
+  color: var(--juno-label);
+}
+
+/* required marker — warning hue, paired with aria-required on the control */
+.juno-field__req {
+  color: var(--juno-warning);
+  margin-inline-start: var(--juno-space-2);
+}
+
+.juno-field__help { font-size: var(--juno-font-size-11); color: var(--juno-label); }
+
+.juno-field__error { font-size: var(--juno-font-size-11); color: var(--juno-warning); }

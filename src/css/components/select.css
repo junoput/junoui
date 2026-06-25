@@ -1,0 +1,37 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Select
+ *  A native <select> styled as an input, with a token-colored chevron.
+ *  Usage:
+ *    <div class="juno-select">
+ *      <select class="juno-input">
+ *        <option>NOMINAL</option><option>CAUTION</option>
+ *      </select>
+ *    </div>
+ *  The inner <select> reuses .juno-input for the box; the wrapper adds the
+ *  chevron and reserves room for it (inline-end, so it mirrors under RTL).
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-select {
+  position: relative;
+  display: block;
+}
+
+.juno-select > .juno-input {
+  appearance: none;
+  padding-inline-end: var(--juno-space-32);
+  cursor: pointer;
+}
+
+/* chevron — CSS triangle so it inherits a token color, no SVG asset */
+.juno-select::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: var(--juno-space-12);
+  inset-block-start: 50%;
+  inline-size: 0;
+  block-size: 0;
+  border-inline: var(--juno-space-4) solid transparent;
+  border-block-start: var(--juno-space-4) solid var(--juno-label);
+  transform: translateY(-25%);
+  pointer-events: none;
+}

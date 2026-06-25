@@ -176,10 +176,80 @@
       </div></article>
     </section>
 
-    <!-- Loaders -->
+    <!-- Form controls -->
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">Form controls — input · select · choice · switch · slider</span>
+      </div>
+      <p class="juno-label" style="margin-bottom:24px;">Neutral at rest; a role class or <code class="juno-mono">aria-invalid</code> tints the border. Padding follows the density toggle above.</p>
+
+      <p class="juno-eyebrow" style="margin-bottom:14px;">Inputs &amp; select</p>
+      <article class="juno-card" style="margin-bottom:36px;"><div class="juno-card__body">
+        <div class="juno-grid-auto" style="--juno-grid-min:220px;">
+          <div class="juno-field">
+            <label class="juno-field__label" for="f-flt">Flight number</label>
+            <input id="f-flt" class="juno-input juno-mono" type="text" value="AA 1234" />
+            <span class="juno-field__help">IATA or ICAO</span>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="f-tgt">Target alt <span class="juno-field__req" aria-hidden="true">*</span></label>
+            <input id="f-tgt" class="juno-input juno-mono juno--target" type="text" value="38000" aria-required="true" />
+            <span class="juno-field__help juno-text-target">FT — managed</span>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="f-sq">Squawk</label>
+            <input id="f-sq" class="juno-input juno-mono" type="text" value="7700" aria-invalid="true" aria-describedby="f-sq-e" />
+            <span class="juno-field__error" id="f-sq-e">Emergency squawk detected</span>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="f-st">Status</label>
+            <div class="juno-select">
+              <select id="f-st" class="juno-input">
+                <option>NOMINAL</option><option>CAUTION</option><option>WARNING</option>
+              </select>
+            </div>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="f-rsv">Reserved</label>
+            <input id="f-rsv" class="juno-input juno-mono" type="text" value="—" disabled />
+          </div>
+          <div class="juno-field" style="grid-column:1 / -1;">
+            <label class="juno-field__label" for="f-note">Remarks</label>
+            <textarea id="f-note" class="juno-input" rows="2" placeholder="Free text…"></textarea>
+          </div>
+        </div>
+      </div></article>
+
+      <p class="juno-eyebrow" style="margin-bottom:14px;">Checkbox · radio · switch · slider</p>
+      <article class="juno-card"><div class="juno-card__body" style="gap:20px;">
+        <div class="juno-cluster" style="--juno-cluster-space:24px;">
+          <label class="juno-choice"><input class="juno-checkbox" type="checkbox" checked /> AUTOPILOT</label>
+          <label class="juno-choice"><input class="juno-radio" type="radio" name="mode" /> SELECTED</label>
+          <label class="juno-choice"><input class="juno-radio juno--target" type="radio" name="mode" checked /> MANAGED</label>
+          <label class="juno-choice"><input class="juno-checkbox" type="checkbox" disabled /> UNAVAILABLE</label>
+        </div>
+        <div class="juno-cluster" style="--juno-cluster-space:24px;">
+          <label class="juno-switch">
+            <input class="juno-switch__input" type="checkbox" role="switch" checked />
+            <span class="juno-switch__track"></span><span>CROSSFEED</span>
+          </label>
+          <label class="juno-switch">
+            <input class="juno-switch__input" type="checkbox" role="switch" />
+            <span class="juno-switch__track juno--caution"></span><span>OVERRIDE</span>
+          </label>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:360px;">
+          <input class="juno-slider" type="range" min="0" max="100" value="60" aria-label="Throttle" />
+          <input class="juno-slider juno--target" type="range" min="0" max="100" value="80" aria-label="Managed setpoint" />
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Loaders -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
         <span class="juno-eyebrow">Loaders — arc · beacon · linear</span>
       </div>
       <p class="juno-label" style="margin-bottom:24px;">Indeterminate loops continuously; determinate tracks true progress (live).</p>
@@ -234,7 +304,7 @@
     <!-- Layout -->
     <section class="demo-section">
       <div class="demo-section__title">
-        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
         <span class="juno-eyebrow">Layout — resize the window to see reflow</span>
       </div>
 

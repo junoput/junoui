@@ -52,13 +52,17 @@ and what you must wire up.
 
 junoui gives structure + style; you add roles/state:
 
-| Component              | You must add                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| Badge / status dot     | Text label in the DOM (not color alone). For live values, `aria-live="polite"`. |
-| Button                 | Use a real `<button>`; `disabled` for disabled (not just the class).            |
-| Card                   | Heading semantics (`<h2>`…) in `__head` if it titles a region.                  |
-| Loader (indeterminate) | `role="status"` + `aria-label="Loading"`.                                       |
-| Loader (determinate)   | `role="progressbar"` + `aria-valuenow/min/max`.                                 |
+| Component                 | You must add                                                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Badge / status dot        | Text label in the DOM (not color alone). For live values, `aria-live="polite"`.                                                 |
+| Button                    | Use a real `<button>`; `disabled` for disabled (not just the class).                                                            |
+| Card                      | Heading semantics (`<h2>`…) in `__head` if it titles a region.                                                                  |
+| Loader (indeterminate)    | `role="status"` + `aria-label="Loading"`.                                                                                       |
+| Loader (determinate)      | `role="progressbar"` + `aria-valuenow/min/max`.                                                                                 |
+| Input / select / textarea | A `<label>` tied by `for`/`id`. Errors: `aria-invalid="true"` + `aria-describedby` → the error text. Required: `aria-required`. |
+| Checkbox / radio          | Real `<input>` inside its `<label>`; radios share a `name`. State is native `checked`.                                          |
+| Switch                    | `role="switch"` on the input; app keeps `checked` + `aria-checked` in sync.                                                     |
+| Slider                    | Real `<input type="range">`; add `aria-valuetext` when the number needs units.                                                  |
 
 These are interaction concerns — junoui can't enforce them in CSS, so they're your
 responsibility (or the widget package's).

@@ -1,0 +1,44 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Text input / textarea
+ *  Usage:  <input class="juno-input" type="text" />
+ *          <input class="juno-input juno-mono juno--target" />   (managed)
+ *          <input class="juno-input" aria-invalid="true" />      (error)
+ *          <textarea class="juno-input"></textarea>
+ *
+ *  --juno-role defaults to the neutral border, so the resting border is
+ *  quiet. A role class (.juno--warning, .juno--target…) or aria-invalid
+ *  re-colors the border with no per-role rules. Focus uses the base ring.
+ *  Add .juno-mono for codes / numeric values (callsign, squawk, altitude).
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-input {
+  --juno-role: var(--juno-border);
+
+  display: block;
+  inline-size: 100%;
+  min-block-size: var(--juno-size-tap-min);
+  background: var(--juno-s0);
+  border: var(--juno-border-width-1) solid var(--juno-role);
+  border-radius: var(--juno-radius-4);
+  padding: var(--juno-pad-control-block) var(--juno-pad-control-inline);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-14);
+  color: var(--juno-data);
+}
+
+.juno-input::placeholder { color: var(--juno-muted); }
+
+/* invalid: ties the warning border to the a11y attribute the app must set */
+.juno-input[aria-invalid='true'] { --juno-role: var(--juno-warning); }
+
+.juno-input:disabled {
+  background: var(--juno-s1);
+  color: var(--juno-muted);
+  cursor: not-allowed;
+}
+
+textarea.juno-input {
+  min-block-size: calc(var(--juno-size-tap-min) * 3);
+  resize: vertical;
+  line-height: var(--juno-font-lineHeight-normal);
+}

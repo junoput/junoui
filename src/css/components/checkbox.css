@@ -1,0 +1,39 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Checkbox & Radio
+ *  Native inputs tinted with the role via accent-color (keyboard +
+ *  screen-reader native, zero JS). Wrap with .juno-choice for an inline
+ *  label row.
+ *  Usage:
+ *    <label class="juno-choice">
+ *      <input class="juno-checkbox" type="checkbox" checked /> AUTOPILOT
+ *    </label>
+ *    <label class="juno-choice">
+ *      <input class="juno-radio juno--target" type="radio" name="m" /> MANAGED
+ *    </label>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-gap-control);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+  cursor: pointer;
+}
+
+.juno-checkbox,
+.juno-radio {
+  --juno-role: var(--juno-active);
+
+  inline-size: var(--juno-space-16);
+  block-size: var(--juno-space-16);
+  accent-color: var(--juno-role);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.juno-checkbox:disabled,
+.juno-radio:disabled { opacity: var(--juno-opacity-disabled); cursor: not-allowed; }
+
+.juno-choice:has(:disabled) { color: var(--juno-muted); cursor: not-allowed; }

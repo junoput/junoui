@@ -1,0 +1,77 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Switch (toggle)
+ *  A real checkbox drives a sliding track. Presentational only — the app
+ *  owns the checked state. Honors prefers-reduced-motion via the base layer.
+ *  Usage:
+ *    <label class="juno-switch">
+ *      <input class="juno-switch__input" type="checkbox" role="switch" />
+ *      <span class="juno-switch__track"></span>
+ *      <span>CROSSFEED</span>
+ *    </label>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-gap-control);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+  cursor: pointer;
+}
+
+/* visually hidden but still focusable + in the tab order */
+.juno-switch__input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+}
+
+.juno-switch__track {
+  --juno-role: var(--juno-active);
+
+  position: relative;
+  flex-shrink: 0;
+  inline-size: var(--juno-space-40);
+  block-size: var(--juno-space-20);
+  background: var(--juno-s3);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: 999px;
+  transition: background var(--juno-motion-duration-fast) var(--juno-motion-ease-standard);
+}
+
+.juno-switch__track::before {
+  content: '';
+  position: absolute;
+  inset-block-start: var(--juno-space-2);
+  inset-inline-start: var(--juno-space-2);
+  inline-size: calc(var(--juno-space-16) - var(--juno-border-width-1));
+  block-size: calc(var(--juno-space-16) - var(--juno-border-width-1));
+  background: var(--juno-label);
+  border-radius: 50%;
+
+  /* inset-inline-start (not transform) so the thumb travels correctly in RTL */
+  transition: inset-inline-start var(--juno-motion-duration-fast) var(--juno-motion-ease-standard),
+    background var(--juno-motion-duration-fast) var(--juno-motion-ease-standard);
+}
+
+.juno-switch__input:checked + .juno-switch__track {
+  background: var(--juno-role);
+  border-color: var(--juno-role);
+}
+
+.juno-switch__input:checked + .juno-switch__track::before {
+  inset-inline-start: calc(var(--juno-space-40) - var(--juno-space-20));
+  background: var(--juno-s0);
+}
+
+.juno-switch__input:focus-visible + .juno-switch__track {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+}
+
+.juno-switch__input:disabled + .juno-switch__track {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}

@@ -1,0 +1,23 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Slider (range)
+ *  Native <input type="range"> tinted with the role via accent-color.
+ *  Native = keyboard + screen-reader support for free; focus uses the
+ *  base ring. Pair with a mono readout of the value.
+ *  Usage:
+ *    <input class="juno-slider" type="range" min="0" max="100" value="60" />
+ *    <input class="juno-slider juno--target" type="range" … />   (managed)
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-slider {
+  --juno-role: var(--juno-active);
+
+  inline-size: 100%;
+  block-size: var(--juno-size-tap-min);
+  accent-color: var(--juno-role);
+  cursor: pointer;
+}
+
+.juno-slider:disabled {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
