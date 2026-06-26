@@ -1,8 +1,8 @@
 /* ════════════════════════════════════════════════════════════════════
- *  Component — Switch (toggle)
- *  Flight-deck rocker: a squared track lit green (NOMINAL) when ON, with an
- *  ON / OFF legend and a sliding knob. A real checkbox drives it; the app
- *  owns the checked state. Honors prefers-reduced-motion via the base layer.
+ *  Component — Switch (toggle)  ·  AERO-UI "annunciator slot"
+ *  A wide squared slide-switch with the state printed inside the track
+ *  (ON / OFF, mono) and a gripped knob; lit nominal-green when ON. A real
+ *  checkbox drives it; the app owns state. Honors prefers-reduced-motion.
  *  Usage:
  *    <label class="juno-switch">
  *      <input class="juno-switch__input" type="checkbox" role="switch" />
@@ -34,7 +34,7 @@
 
   position: relative;
   flex-shrink: 0;
-  inline-size: var(--juno-space-72);
+  inline-size: 70px;
   block-size: var(--juno-space-28);
   background: var(--juno-s0);
   border: var(--juno-border-width-1) solid var(--juno-control-edge);
@@ -43,7 +43,7 @@
   transition: border-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
-/* ON / OFF legend (opposite the knob) */
+/* ON / OFF legend, printed opposite the knob */
 .juno-switch__track::after {
   content: 'OFF';
   position: absolute;
@@ -58,24 +58,25 @@
   color: var(--juno-muted);
 }
 
-/* knob — slides via inset-inline-start so it travels correctly in RTL */
+/* knob — gradient face, three grip lines; slides via inset-inline-start (RTL) */
 .juno-switch__track::before {
   content: '';
   position: absolute;
   inset-block-start: var(--juno-space-2);
   inset-inline-start: var(--juno-space-2);
-  inline-size: var(--juno-space-24);
-  block-size: var(--juno-space-24);
+  inline-size: 26px;
+  block-size: 22px;
   border-radius: var(--juno-radius-4);
-  background: linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
   border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  background:
+    repeating-linear-gradient(90deg, var(--juno-muted) 0 2px, transparent 2px 5px) center / 12px
+      14px no-repeat,
+    linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.5);
-  transition: inset-inline-start var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
+  transition: inset-inline-start var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
-.juno-switch__input:checked + .juno-switch__track {
-  border-color: var(--juno-role);
-}
+.juno-switch__input:checked + .juno-switch__track { border-color: var(--juno-role); }
 
 .juno-switch__input:checked + .juno-switch__track::after {
   content: 'ON';
@@ -84,7 +85,7 @@
 }
 
 .juno-switch__input:checked + .juno-switch__track::before {
-  inset-inline-start: calc(var(--juno-space-72) - var(--juno-space-24) - var(--juno-space-2));
+  inset-inline-start: calc(70px - 26px - var(--juno-space-2));
 }
 
 .juno-switch__input:focus-visible + .juno-switch__track {

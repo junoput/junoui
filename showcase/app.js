@@ -80,6 +80,41 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
+function initSliders() {
+  document.querySelectorAll('.juno-slider').forEach((el) => {
+    const lo = +el.getAttribute('aria-valuemin') || 0;
+    const hi = +el.getAttribute('aria-valuemax') || 100;
+    const step = hi - lo > 100 ? 10 : 1;
+    const setVal = (v) => {
+      v = Math.max(lo, Math.min(hi, Math.round(v / step) * step));
+      el.setAttribute('aria-valuenow', v);
+      el.style.setProperty('--juno-slider-pct', ((v - lo) / (hi - lo)) * 100);
+    };
+    const fromX = (x) => {
+      const r = el.getBoundingClientRect();
+      return lo + Math.max(0, Math.min(1, (x - r.left) / r.width)) * (hi - lo);
+    };
+    setVal(+el.getAttribute('aria-valuenow') || lo);
+    el.addEventListener('pointerdown', (e) => {
+      el.setPointerCapture(e.pointerId);
+      setVal(fromX(e.clientX));
+      const mv = (ev) => setVal(fromX(ev.clientX));
+      const up = () => {
+        el.removeEventListener('pointermove', mv);
+        el.removeEventListener('pointerup', up);
+      };
+      el.addEventListener('pointermove', mv);
+      el.addEventListener('pointerup', up);
+    });
+    el.addEventListener('keydown', (e) => {
+      const cur = +el.getAttribute('aria-valuenow') || lo;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') (setVal(cur + step), e.preventDefault());
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') (setVal(cur - step), e.preventDefault());
+    });
+  });
+}
+
 // ── token table (values straight from the JS module) ────────────────────
 function renderTokens() {
   const t = TOKENS[html.dataset.junoPalette][html.dataset.junoMode];
@@ -118,6 +153,7 @@ function driveProgress() {
 }
 
 html.dataset.junoDensity ??= 'comfortable';
+initSliders();
 syncToggles();
 tick();
 setInterval(tick, 1000);

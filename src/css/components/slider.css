@@ -1,81 +1,117 @@
 /* ════════════════════════════════════════════════════════════════════
- *  Component — Slider (range)
- *  Throttle-quadrant lever: a detented channel with a gripped lever. Native
- *  <input type="range"> — keyboard + screen-reader for free. Tint per role.
+ *  Component — Slider  ·  AERO-UI "throttle quadrant"
+ *  A recessed channel with detent notches, an accent fill, and a gripped
+ *  lever. Value-driven: the app sets --juno-slider-pct (0–100) and owns
+ *  drag / keyboard / ARIA (role="slider" + aria-value*), the same split as
+ *  the overlays. Two sizes: standard (lever always full) and --compact
+ *  (lever recedes to a slim marker until hover / focus / drag).
  *  Usage:
- *    <input class="juno-slider" type="range" min="0" max="100" value="60" />
- *    <input class="juno-slider juno--target" type="range" … />   (managed)
- *  Pair with a mono readout (.juno-value) of the current value.
+ *    <div class="juno-slider" style="--juno-slider-pct: 72" role="slider"
+ *         tabindex="0" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100">
+ *      <span class="juno-slider__channel"></span>
+ *      <span class="juno-slider__lever"></span>
+ *    </div>
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-slider {
   --juno-role: var(--juno-active);
+  --juno-slider-pct: 0;
 
+  position: relative;
+  display: flex;
+  align-items: center;
   inline-size: 100%;
-  block-size: var(--juno-size-tap-min);
-  appearance: none;
-  background: transparent;
+  block-size: 48px;
   cursor: pointer;
+  touch-action: none;
 }
 
-/* channel — detented, inset; the detents are faint tick marks every 10% */
-.juno-slider::-webkit-slider-runnable-track {
+.juno-slider__channel {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
   block-size: var(--juno-space-20);
+  background-color: var(--juno-s0);
   border: var(--juno-border-width-1) solid var(--juno-control-edge);
   border-radius: var(--juno-radius-4);
-  background-color: var(--juno-s0);
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+
+/* detent notches every 10% */
+.juno-slider__channel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background-image: repeating-linear-gradient(
     90deg,
     transparent 0 calc(10% - 1px),
     var(--juno-muted) calc(10% - 1px),
     var(--juno-muted) 10%
   );
-  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.5);
+  opacity: 0.5;
 }
 
-.juno-slider::-moz-range-track {
-  block-size: var(--juno-space-20);
-  border: var(--juno-border-width-1) solid var(--juno-control-edge);
-  border-radius: var(--juno-radius-4);
-  background-color: var(--juno-s0);
-  background-image: repeating-linear-gradient(
+/* accent fill up to the value */
+.juno-slider__channel::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: calc(var(--juno-slider-pct) * 1%);
+  background: linear-gradient(
     90deg,
-    transparent 0 calc(10% - 1px),
-    var(--juno-muted) calc(10% - 1px),
-    var(--juno-muted) 10%
+    color-mix(in srgb, var(--juno-role) 8%, transparent),
+    color-mix(in srgb, var(--juno-role) 34%, transparent)
   );
-  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.5);
 }
 
-/* filled portion (Firefox) — role-tinted */
-.juno-slider::-moz-range-progress {
-  block-size: var(--juno-space-20);
+/* gripped lever, positioned at the value */
+.juno-slider__lever {
+  position: absolute;
+  inset-inline-start: calc(var(--juno-slider-pct) * 1%);
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  inline-size: 26px;
+  block-size: 40px;
   border-radius: var(--juno-radius-4);
-  background: var(--juno-role);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  background:
+    repeating-linear-gradient(90deg, var(--juno-muted) 0 2px, transparent 2px 5px) center / 12px
+      16px no-repeat,
+    linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.5);
+  pointer-events: none;
+  transition:
+    inline-size var(--juno-motion-duration-base) ease,
+    block-size var(--juno-motion-duration-base) ease,
+    box-shadow var(--juno-motion-duration-base) ease;
 }
 
-/* lever — tall gripped knob */
-.juno-slider::-webkit-slider-thumb {
-  appearance: none;
-  inline-size: var(--juno-space-10);
-  block-size: var(--juno-space-28);
-  margin-block-start: calc((var(--juno-space-20) - var(--juno-space-28)) / 2);
-  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+/* compact — lever minimizes to a slim marker until engaged */
+.juno-slider--compact .juno-slider__lever {
+  inline-size: 10px;
+  block-size: 22px;
   border-radius: var(--juno-radius-3);
   background: linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.45);
 }
 
-.juno-slider::-moz-range-thumb {
-  inline-size: var(--juno-space-10);
-  block-size: var(--juno-space-28);
-  border: var(--juno-border-width-1) solid var(--juno-control-edge);
-  border-radius: var(--juno-radius-3);
-  background: linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+.juno-slider--compact:hover .juno-slider__lever,
+.juno-slider--compact:focus-within .juno-slider__lever,
+.juno-slider--compact:active .juno-slider__lever {
+  inline-size: 26px;
+  block-size: 40px;
+  border-radius: var(--juno-radius-4);
+  background:
+    repeating-linear-gradient(90deg, var(--juno-muted) 0 2px, transparent 2px 5px) center / 12px
+      16px no-repeat,
+    linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.5);
 }
 
-.juno-slider:disabled {
+.juno-slider[aria-disabled='true'] {
   opacity: var(--juno-opacity-disabled);
   cursor: not-allowed;
 }

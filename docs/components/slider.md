@@ -1,29 +1,48 @@
 # Slider
 
-A throttle-quadrant lever: a detented channel with a gripped lever. Native
-`<input type="range">` — keyboard + screen-reader support for free.
+A throttle-quadrant slider: a recessed channel with detent notches, an accent fill, and
+a gripped lever. **Value-driven** — junoui ships the look; the app sets the value % and
+owns drag / keyboard / ARIA (the same split as the overlays). Two sizes: standard (lever
+always full) and `--compact` (lever recedes to a slim marker until hover / focus / drag).
 
 ## Web
 
 ```html
-<input class="juno-slider" type="range" min="0" max="100" value="60" />
-<input class="juno-slider juno--target" type="range" min="10" max="320" value="160" />
+<div
+  class="juno-slider"
+  style="--juno-slider-pct: 72"
+  role="slider"
+  tabindex="0"
+  aria-valuenow="72"
+  aria-valuemin="0"
+  aria-valuemax="100"
+>
+  <span class="juno-slider__channel"></span>
+  <span class="juno-slider__lever"></span>
+</div>
+
+<!-- compact, managed accent -->
+<div class="juno-slider juno-slider--compact juno--target" style="--juno-slider-pct: 50">…</div>
 ```
 
-| Class           | Effect                                                   |
-| --------------- | -------------------------------------------------------- |
-| `.juno-slider`  | Full-width range; detented `s0` channel + gripped lever. |
-| `.juno--<role>` | Tints the filled portion (default `active`).             |
-| `:disabled`     | Dimmed by `opacity.disabled`, not-allowed.               |
+| Property / class         | Effect                                                          |
+| ------------------------ | --------------------------------------------------------------- |
+| `--juno-slider-pct`      | 0–100; the app sets it. Drives the fill width + lever position. |
+| `.juno-slider__channel`  | `s0` channel, `control-edge` border, inset shadow, 10% detents. |
+| `.juno-slider__lever`    | Gripped lever (`space.26`×`space.40`) at the value.             |
+| `.juno-slider--compact`  | Lever shrinks to a marker until hover / focus / drag.           |
+| `.juno--<role>`          | Tints the fill (default `active`).                              |
+| `[aria-disabled="true"]` | Dimmed, not-allowed.                                            |
 
 ## Anatomy (any platform)
 
-- Channel `space.20`, `control-edge` border, inset shadow, faint detents every 10%.
-  Lever `space.10` × `space.28`, gradient `s3`→`s2`. Full hit height `size.tap.min`.
-- Filled portion is role-tinted (Firefox `::-moz-range-progress`; on WebKit the role
-  shows via the paired value readout). Focus uses the base ring.
+- Channel `space.20`, inset; faint detents every 10%; accent fill (8%→34%) to the value.
+- Lever 26×40 (standard), gradient `s3`→`s2`, three grips; compact shrinks to 10×22.
+- Lever/size transitions use `motion.duration.base` / `ease`.
 
 ## Usage
 
-- Pair with a mono readout (`.juno-value` / `.juno-mono`) of the current value.
-- The app owns `min`/`max`/`value` and `aria-valuetext` when the number needs units.
+- The app owns the value: set `--juno-slider-pct` and keep `aria-valuenow` in sync; wire
+  pointer-drag and arrow/Page keys, plus `aria-valuetext` when the number needs units.
+  (`showcase/app.js` has a reference driver.)
+- Pair with a mono readout (`.juno-value`) of the current value.

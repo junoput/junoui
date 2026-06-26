@@ -239,9 +239,19 @@
             <span class="juno-switch__track juno--caution"></span><span>OVERRIDE</span>
           </label>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;max-width:360px;">
-          <input class="juno-slider" type="range" min="0" max="100" value="60" aria-label="Throttle" />
-          <input class="juno-slider juno--target" type="range" min="0" max="100" value="80" aria-label="Managed setpoint" />
+        <div style="display:flex;flex-direction:column;gap:20px;max-width:360px;">
+          <div>
+            <span class="juno-eyebrow" style="display:block;margin-bottom:6px;">Throttle — standard</span>
+            <div class="juno-slider" role="slider" tabindex="0" aria-label="Throttle" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+              <span class="juno-slider__channel"></span><span class="juno-slider__lever"></span>
+            </div>
+          </div>
+          <div>
+            <span class="juno-eyebrow" style="display:block;margin-bottom:6px;">ND range — compact (managed)</span>
+            <div class="juno-slider juno-slider--compact juno--target" role="slider" tabindex="0" aria-label="ND range" aria-valuenow="160" aria-valuemin="10" aria-valuemax="320">
+              <span class="juno-slider__channel"></span><span class="juno-slider__lever"></span>
+            </div>
+          </div>
         </div>
       </div></article>
 
@@ -386,8 +396,10 @@
             <button class="juno-btn juno-btn--ghost" data-toggle="demo-pop" aria-expanded="false" aria-controls="demo-pop">RANGE FILTER ▾</button>
             <div class="juno-popover" id="demo-pop" data-overlay role="dialog" aria-label="Range filter" hidden>
               <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Traffic filter</span>
-              <div class="juno-field"><label class="juno-field__label" for="pr">Within (NM)</label>
-                <input class="juno-slider" id="pr" type="range" min="5" max="80" value="40" /></div>
+              <div class="juno-field"><span class="juno-field__label">Within (NM)</span>
+                <div class="juno-slider juno-slider--compact" role="slider" tabindex="0" aria-label="Within NM" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80">
+                  <span class="juno-slider__channel"></span><span class="juno-slider__lever"></span>
+                </div></div>
               <span class="juno-popover__arrow"></span>
             </div>
           </span>
