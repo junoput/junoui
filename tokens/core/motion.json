@@ -2,32 +2,40 @@
   "motion": {
     "duration": {
       "$type": "duration",
-      "fast": {
-        "$value": "120ms",
-        "$description": "Micro feedback — hover, focus, small state and value changes."
+      "instant": {
+        "$value": "80ms",
+        "$description": "State feedback — hover, press, immediate value change."
+      },
+      "quick": {
+        "$value": "140ms",
+        "$description": "Tooltip, menu — fast transient overlays."
       },
       "base": {
         "$value": "200ms",
-        "$description": "Standard UI transitions — most components."
+        "$description": "Popover, drawer — standard overlay motion."
       },
-      "slow": {
-        "$value": "320ms",
-        "$description": "Overlays and larger movement — modal, drawer, sheet."
+      "deliberate": {
+        "$value": "300ms",
+        "$description": "Modal, scrim — blocking surfaces enter slowly."
       }
     },
     "ease": {
       "$type": "cubicBezier",
-      "standard": {
-        "$value": "cubic-bezier(0.2, 0, 0, 1)",
-        "$description": "Default — most transitions and on-screen movement."
+      "decel": {
+        "$value": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "$description": "Enter — decelerate into place. Default for things appearing."
       },
-      "in": {
+      "accel": {
         "$value": "cubic-bezier(0.4, 0, 1, 1)",
-        "$description": "Accelerate — elements leaving the screen."
+        "$description": "Exit — accelerate away. For things leaving the screen."
       },
-      "out": {
-        "$value": "cubic-bezier(0, 0, 0.2, 1)",
-        "$description": "Decelerate — elements entering the screen."
+      "standard": {
+        "$value": "cubic-bezier(0.2, 0.7, 0.3, 1)",
+        "$description": "Move — on-screen repositioning that starts and ends at rest."
+      },
+      "spring": {
+        "$value": "cubic-bezier(0.2, 0.9, 0.3, 1.2)",
+        "$description": "Toggle — slight overshoot for switches, checkmarks."
       }
     }
   }

@@ -1,0 +1,89 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Menu / Dropdown
+ *  A list of immediate actions anchored to its trigger. Section dividers,
+ *  keyboard shortcuts, and a destructive item set apart by WARNING. junoui
+ *  ships the look; the app owns open/close, roving focus, and dismiss.
+ *  Usage:
+ *    <div class="juno-popover-anchor">
+ *      <button aria-haspopup="menu" aria-expanded="true">FLIGHT PLAN ▾</button>
+ *      <ul class="juno-menu" role="menu">
+ *        <li><button class="juno-menu__item" role="menuitem">
+ *          <span class="juno-menu__icon">⤓</span>Load flight plan
+ *          <span class="juno-menu__kbd">⌘O</span>
+ *        </button></li>
+ *        <li class="juno-menu__sep" role="separator"></li>
+ *        <li><button class="juno-menu__item juno--warning" role="menuitem">
+ *          <span class="juno-menu__icon">⨯</span>Discard plan
+ *        </button></li>
+ *      </ul>
+ *    </div>
+ *  Hide with [hidden] when closed (reuses .juno-popover-anchor for position).
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-menu {
+  position: absolute;
+  z-index: var(--juno-z-anchored);
+  inset-block-start: calc(100% + var(--juno-space-8));
+  inset-inline-end: 0;
+  min-inline-size: 256px;
+  background: var(--juno-s2);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-5);
+  box-shadow: var(--juno-shadow-2);
+  padding: var(--juno-space-4);
+  list-style: none;
+}
+
+.juno-menu__item {
+  --juno-role: var(--juno-data);
+
+  display: flex;
+  align-items: center;
+  gap: var(--juno-gap-control);
+  inline-size: 100%;
+  padding: var(--juno-space-8) var(--juno-space-10);
+  background: transparent;
+  border: none;
+  border-radius: var(--juno-radius-4);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-role);
+  text-align: start;
+  cursor: pointer;
+}
+
+.juno-menu__item:hover,
+.juno-menu__item:focus-visible { background: var(--juno-s3); }
+
+/* destructive item — .juno--warning sets --juno-role to warning */
+.juno-menu__item.juno--warning:hover,
+.juno-menu__item.juno--warning:focus-visible {
+  background: color-mix(in srgb, var(--juno-role) 14%, transparent);
+}
+
+.juno-menu__item:disabled,
+.juno-menu__item[aria-disabled='true'] { opacity: var(--juno-opacity-disabled); cursor: not-allowed; }
+
+.juno-menu__icon {
+  flex-shrink: 0;
+  inline-size: var(--juno-space-16);
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-11);
+  color: var(--juno-label);
+}
+
+.juno-menu__item.juno--warning .juno-menu__icon { color: var(--juno-role); }
+
+.juno-menu__kbd {
+  margin-inline-start: auto;
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-10);
+  color: var(--juno-muted);
+}
+
+.juno-menu__sep {
+  block-size: var(--juno-border-width-1);
+  background: var(--juno-border);
+  margin-block: var(--juno-space-4);
+  list-style: none;
+}

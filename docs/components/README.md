@@ -35,5 +35,10 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Checkbox / radio             | `.juno-checkbox` `.juno-radio`         | [checkbox.md](./checkbox.md) |
 | Switch                       | `.juno-switch`                         | [switch.md](./switch.md)     |
 | Slider                       | `.juno-slider`                         | [slider.md](./slider.md)     |
+| Modal / dialog               | `.juno-modal`                          | [modal.md](./modal.md)       |
+| Drawer                       | `.juno-drawer`                         | [drawer.md](./drawer.md)     |
+| Tooltip                      | `.juno-tooltip`                        | [tooltip.md](./tooltip.md)   |
+| Popover                      | `.juno-popover`                        | [popover.md](./popover.md)   |
+| Menu / dropdown              | `.juno-menu`                           | [menu.md](./menu.md)         |
 
 Always pair a status color with a text label — color is never the only signal.

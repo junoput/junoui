@@ -52,6 +52,31 @@ document.addEventListener('click', (e) => {
   if (pb || mb || db) syncToggles();
 });
 
+// ── overlays (demo wiring — apps own this behavior, not junoui) ──────────
+document.addEventListener('click', (e) => {
+  const open = e.target.closest('[data-open]');
+  if (open) document.getElementById(open.dataset.open)?.showModal();
+
+  // toggle popover / menu panels via [hidden] + aria-expanded
+  const trig = e.target.closest('[data-toggle]');
+  document.querySelectorAll('[data-overlay]').forEach((panel) => {
+    const owner = panel.id === trig?.dataset.toggle;
+    const wasHidden = panel.hidden;
+    if (!owner) panel.hidden = true;
+    else panel.hidden = !wasHidden;
+    document
+      .querySelector(`[data-toggle="${panel.id}"]`)
+      ?.setAttribute('aria-expanded', String(!panel.hidden));
+  });
+  // click outside closes any open panel
+  if (!trig && !e.target.closest('[data-overlay]')) {
+    document.querySelectorAll('[data-overlay]').forEach((p) => (p.hidden = true));
+    document
+      .querySelectorAll('[data-toggle]')
+      .forEach((b) => b.setAttribute('aria-expanded', 'false'));
+  }
+});
+
 // ── token table (values straight from the JS module) ────────────────────
 function renderTokens() {
   const t = TOKENS[html.dataset.junoPalette][html.dataset.junoMode];

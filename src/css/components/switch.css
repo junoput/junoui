@@ -38,7 +38,7 @@
   background: var(--juno-s3);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: 999px;
-  transition: background var(--juno-motion-duration-fast) var(--juno-motion-ease-standard);
+  transition: background var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
 }
 
 .juno-switch__track::before {
@@ -52,8 +52,8 @@
   border-radius: 50%;
 
   /* inset-inline-start (not transform) so the thumb travels correctly in RTL */
-  transition: inset-inline-start var(--juno-motion-duration-fast) var(--juno-motion-ease-standard),
-    background var(--juno-motion-duration-fast) var(--juno-motion-ease-standard);
+  transition: inset-inline-start var(--juno-motion-duration-quick) var(--juno-motion-ease-spring),
+    background var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
 }
 
 .juno-switch__input:checked + .juno-switch__track {

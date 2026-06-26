@@ -1,0 +1,125 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Modal / Dialog
+ *  Style a native <dialog>. The app owns open/close (dialog.showModal() /
+ *  .close()) and focus-trapping; junoui ships the look + entry motion.
+ *  Centered, scrim-backed. Reserved for decisions that must block the deck.
+ *  Usage:
+ *    <dialog class="juno-modal">                 (or .juno-modal.juno--warning)
+ *      <div class="juno-modal__stripe"></div>
+ *      <div class="juno-modal__head">
+ *        <span class="juno-modal__tag">FLIGHT MANAGEMENT</span>
+ *        <button class="juno-modal__close" aria-label="Close">✕</button>
+ *      </div>
+ *      <div class="juno-modal__body">
+ *        <h2 class="juno-modal__title">Amend cruise altitude?</h2>
+ *        <p class="juno-modal__text">…</p>
+ *        <div class="juno-modal__foot">
+ *          <button class="juno-btn juno-btn--ghost">CANCEL</button>
+ *          <button class="juno-btn">APPLY</button>
+ *        </div>
+ *      </div>
+ *    </dialog>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-modal {
+  --juno-role: var(--juno-active);
+
+  inline-size: 440px;
+  max-inline-size: 100%;
+  padding: 0;
+  background: var(--juno-s1);
+  color: var(--juno-data);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-8);
+  overflow: hidden;
+  box-shadow: var(--juno-shadow-3);
+
+  /* enter: scale + rise, decelerating (deliberate — it blocks the deck) */
+  opacity: 0;
+  transform: translateY(var(--juno-space-12)) scale(0.97);
+  transition:
+    opacity var(--juno-motion-duration-deliberate) var(--juno-motion-ease-decel),
+    transform var(--juno-motion-duration-deliberate) var(--juno-motion-ease-decel),
+    overlay var(--juno-motion-duration-deliberate) allow-discrete,
+    display var(--juno-motion-duration-deliberate) allow-discrete;
+}
+
+.juno-modal[open] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@starting-style {
+  .juno-modal[open] {
+    opacity: 0;
+    transform: translateY(var(--juno-space-12)) scale(0.97);
+  }
+}
+
+/* scrim — one at a time; dark wash + faint blur */
+.juno-modal::backdrop {
+  background: rgb(0 0 0);
+  opacity: var(--juno-opacity-scrim);
+  backdrop-filter: blur(1.5px);
+}
+
+/* status accent stripe across the top (role-colored) */
+.juno-modal__stripe {
+  block-size: var(--juno-border-width-3);
+  background: var(--juno-role);
+}
+
+.juno-modal__head {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+  padding: var(--juno-space-16) var(--juno-pad-surface-inline) 0;
+}
+
+.juno-modal__tag {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-10);
+  letter-spacing: var(--juno-font-tracking-wider);
+  text-transform: uppercase;
+  color: var(--juno-role);
+}
+
+.juno-modal__close {
+  margin-inline-start: auto;
+  inline-size: var(--juno-size-tap-min);
+  block-size: var(--juno-size-tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: var(--juno-border-width-1) solid transparent;
+  border-radius: var(--juno-radius-4);
+  color: var(--juno-label);
+  cursor: pointer;
+}
+
+.juno-modal__close:hover { background: var(--juno-s2); color: var(--juno-data); }
+
+.juno-modal__body { padding: var(--juno-space-12) var(--juno-pad-surface-inline) var(--juno-pad-surface-inline); }
+
+.juno-modal__title {
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-20);
+  font-weight: var(--juno-font-weight-light);
+  line-height: var(--juno-font-lineHeight-snug);
+  color: var(--juno-data);
+  margin-block-end: var(--juno-space-12);
+}
+
+.juno-modal__text {
+  font-size: var(--juno-font-size-13);
+  line-height: var(--juno-font-lineHeight-loose);
+  color: var(--juno-label);
+}
+
+.juno-modal__foot {
+  display: flex;
+  gap: var(--juno-gap-control);
+  justify-content: flex-end;
+  margin-block-start: var(--juno-space-24);
+}

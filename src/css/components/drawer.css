@@ -1,0 +1,70 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Drawer
+ *  Edge-anchored <dialog> for secondary tasks and settings. Same scrim and
+ *  altitude as the modal, but slides along one axis. App owns showModal()/close().
+ *  Default anchors to the inline-end edge; modifiers move it.
+ *  Usage:
+ *    <dialog class="juno-modal juno-drawer">…</dialog>            (inline-end)
+ *    <dialog class="juno-modal juno-drawer juno-drawer--start">…</dialog>
+ *    <dialog class="juno-modal juno-drawer juno-drawer--bottom">…</dialog>
+ *  Reuses .juno-modal for the surface + scrim; this file re-pins + re-slides.
+ *  Selectors are compound (.juno-modal.juno-drawer) so they override the
+ *  modal's centered transform regardless of bundle order.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-modal.juno-drawer {
+  inline-size: 380px;
+  max-inline-size: 100%;
+  block-size: 100dvh;
+  max-block-size: 100dvh;
+  border-radius: 0;
+  border: none;
+
+  /* pin to the inline-end edge (mirrors under RTL) */
+  margin-block: 0;
+  margin-inline: auto 0;
+  border-inline-start: var(--juno-border-width-1) solid var(--juno-border);
+
+  /* slide in from the edge; base speed (lighter than a modal) */
+  transform: translateX(100%);
+  transition:
+    transform var(--juno-motion-duration-base) var(--juno-motion-ease-decel),
+    overlay var(--juno-motion-duration-base) allow-discrete,
+    display var(--juno-motion-duration-base) allow-discrete;
+}
+
+.juno-modal.juno-drawer[open] { transform: translateX(0); }
+
+@starting-style {
+  .juno-modal.juno-drawer[open] { transform: translateX(100%); }
+}
+
+.juno-modal.juno-drawer--start {
+  margin-inline: 0 auto;
+  border-inline: none;
+  border-inline-end: var(--juno-border-width-1) solid var(--juno-border);
+  transform: translateX(-100%);
+}
+
+.juno-modal.juno-drawer--start[open] { transform: translateX(0); }
+
+@starting-style {
+  .juno-modal.juno-drawer--start[open] { transform: translateX(-100%); }
+}
+
+.juno-modal.juno-drawer--bottom {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  block-size: 60dvh;
+  margin-block: auto 0;
+  margin-inline: 0;
+  border: none;
+  border-block-start: var(--juno-border-width-1) solid var(--juno-border);
+  transform: translateY(100%);
+}
+
+.juno-modal.juno-drawer--bottom[open] { transform: translateY(0); }
+
+@starting-style {
+  .juno-modal.juno-drawer--bottom[open] { transform: translateY(100%); }
+}

@@ -103,20 +103,22 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `shadow.1` | `0 1px 2px rgb(0 0 0 / 0.32)` | `var(--juno-shadow-1)` | `JunoTokens.shadow1` |
-| `shadow.2` | `0 4px 12px rgb(0 0 0 / 0.40)` | `var(--juno-shadow-2)` | `JunoTokens.shadow2` |
-| `shadow.3` | `0 12px 32px rgb(0 0 0 / 0.48)` | `var(--juno-shadow-3)` | `JunoTokens.shadow3` |
+| `shadow.1` | `0 1px 2px rgb(0 0 0 / 0.30)` | `var(--juno-shadow-1)` | `JunoTokens.shadow1` |
+| `shadow.2` | `0 4px 14px rgb(0 0 0 / 0.35)` | `var(--juno-shadow-2)` | `JunoTokens.shadow2` |
+| `shadow.3` | `0 12px 32px rgb(0 0 0 / 0.50)` | `var(--juno-shadow-3)` | `JunoTokens.shadow3` |
 
 ### Motion
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `motion.duration.fast` | `120ms` | `var(--juno-motion-duration-fast)` | `JunoTokens.motionDurationFast` |
+| `motion.duration.instant` | `80ms` | `var(--juno-motion-duration-instant)` | `JunoTokens.motionDurationInstant` |
+| `motion.duration.quick` | `140ms` | `var(--juno-motion-duration-quick)` | `JunoTokens.motionDurationQuick` |
 | `motion.duration.base` | `200ms` | `var(--juno-motion-duration-base)` | `JunoTokens.motionDurationBase` |
-| `motion.duration.slow` | `320ms` | `var(--juno-motion-duration-slow)` | `JunoTokens.motionDurationSlow` |
-| `motion.ease.standard` | `cubic-bezier(0.2, 0, 0, 1)` | `var(--juno-motion-ease-standard)` | `JunoTokens.motionEaseStandard` |
-| `motion.ease.in` | `cubic-bezier(0.4, 0, 1, 1)` | `var(--juno-motion-ease-in)` | `JunoTokens.motionEaseIn` |
-| `motion.ease.out` | `cubic-bezier(0, 0, 0.2, 1)` | `var(--juno-motion-ease-out)` | `JunoTokens.motionEaseOut` |
+| `motion.duration.deliberate` | `300ms` | `var(--juno-motion-duration-deliberate)` | `JunoTokens.motionDurationDeliberate` |
+| `motion.ease.decel` | `cubic-bezier(0.2, 0.8, 0.2, 1)` | `var(--juno-motion-ease-decel)` | `JunoTokens.motionEaseDecel` |
+| `motion.ease.accel` | `cubic-bezier(0.4, 0, 1, 1)` | `var(--juno-motion-ease-accel)` | `JunoTokens.motionEaseAccel` |
+| `motion.ease.standard` | `cubic-bezier(0.2, 0.7, 0.3, 1)` | `var(--juno-motion-ease-standard)` | `JunoTokens.motionEaseStandard` |
+| `motion.ease.spring` | `cubic-bezier(0.2, 0.9, 0.3, 1.2)` | `var(--juno-motion-ease-spring)` | `JunoTokens.motionEaseSpring` |
 
 ### Opacity
 
@@ -124,7 +126,7 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 |---|---|---|---|
 | `opacity.disabled` | `0.45` | `var(--juno-opacity-disabled)` | `JunoTokens.opacityDisabled` |
 | `opacity.muted` | `0.65` | `var(--juno-opacity-muted)` | `JunoTokens.opacityMuted` |
-| `opacity.scrim` | `0.55` | `var(--juno-opacity-scrim)` | `JunoTokens.opacityScrim` |
+| `opacity.scrim` | `0.62` | `var(--juno-opacity-scrim)` | `JunoTokens.opacityScrim` |
 
 ### Radius
 
@@ -207,12 +209,9 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 
 | Token | Value | CSS variable | Flutter / iOS |
 |---|---|---|---|
-| `z.base` | `0` | `var(--juno-z-base)` | `JunoTokens.zBase` |
-| `z.raised` | `10` | `var(--juno-z-raised)` | `JunoTokens.zRaised` |
-| `z.sticky` | `100` | `var(--juno-z-sticky)` | `JunoTokens.zSticky` |
-| `z.dropdown` | `1000` | `var(--juno-z-dropdown)` | `JunoTokens.zDropdown` |
-| `z.overlay` | `1100` | `var(--juno-z-overlay)` | `JunoTokens.zOverlay` |
-| `z.modal` | `1200` | `var(--juno-z-modal)` | `JunoTokens.zModal` |
-| `z.popover` | `1300` | `var(--juno-z-popover)` | `JunoTokens.zPopover` |
-| `z.toast` | `1400` | `var(--juno-z-toast)` | `JunoTokens.zToast` |
+| `z.surface` | `0` | `var(--juno-z-surface)` | `JunoTokens.zSurface` |
+| `z.raised` | `100` | `var(--juno-z-raised)` | `JunoTokens.zRaised` |
+| `z.anchored` | `2000` | `var(--juno-z-anchored)` | `JunoTokens.zAnchored` |
+| `z.overlay` | `4000` | `var(--juno-z-overlay)` | `JunoTokens.zOverlay` |
+| `z.alert` | `5000` | `var(--juno-z-alert)` | `JunoTokens.zAlert` |
 

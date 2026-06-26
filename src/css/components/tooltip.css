@@ -1,0 +1,110 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Tooltip
+ *  Transient hover/focus label. Pure CSS reveal (no JS): the bubble shows
+ *  on hover or keyboard focus of the wrapper. Four placements with an arrow.
+ *  Usage:
+ *    <span class="juno-tooltip">
+ *      <button tabindex="0">SPD</button>
+ *      <span class="juno-tooltip__bubble" role="tooltip">
+ *        Indicated airspeed · 248 kt
+ *        <span class="juno-tooltip__arrow"></span>
+ *      </span>
+ *    </span>
+ *  Default placement is top; add --right / --bottom / --left on the bubble.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.juno-tooltip__bubble {
+  position: absolute;
+  z-index: var(--juno-z-anchored);
+  inset-block-end: calc(100% + var(--juno-space-8));
+  inset-inline-start: 50%;
+  transform: translateX(-50%) translateY(var(--juno-space-4));
+  white-space: nowrap;
+  background: var(--juno-s3);
+  color: var(--juno-data);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-4);
+  box-shadow: var(--juno-shadow-2);
+  padding: var(--juno-space-4) var(--juno-space-10);
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-11);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    transform var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    visibility var(--juno-motion-duration-quick);
+}
+
+.juno-tooltip:hover .juno-tooltip__bubble,
+.juno-tooltip:focus-within .juno-tooltip__bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* arrow — a rotated square straddling the bubble edge nearest the target.
+   The bubble overlaps its inner half, leaving a clean notch. */
+.juno-tooltip__arrow {
+  position: absolute;
+  inline-size: var(--juno-space-8);
+  block-size: var(--juno-space-8);
+  background: var(--juno-s3);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  transform: rotate(45deg);
+  inset-block-start: calc(100% - var(--juno-space-4));
+  inset-inline-start: calc(50% - var(--juno-space-4));
+}
+
+/* ── placements (set on the bubble) ───────────────────────────────────── */
+.juno-tooltip__bubble--bottom {
+  inset-block: calc(100% + var(--juno-space-8)) auto;
+  transform: translateX(-50%) translateY(calc(-1 * var(--juno-space-4)));
+}
+
+.juno-tooltip:hover .juno-tooltip__bubble--bottom,
+.juno-tooltip:focus-within .juno-tooltip__bubble--bottom {
+  transform: translateX(-50%) translateY(0);
+}
+
+.juno-tooltip__bubble--bottom .juno-tooltip__arrow {
+  inset-block-start: calc(-1 * var(--juno-space-4));
+}
+
+.juno-tooltip__bubble--right {
+  inset-block: 50% auto;
+  inset-inline-start: calc(100% + var(--juno-space-8));
+  transform: translateY(-50%) translateX(calc(-1 * var(--juno-space-4)));
+}
+
+.juno-tooltip:hover .juno-tooltip__bubble--right,
+.juno-tooltip:focus-within .juno-tooltip__bubble--right {
+  transform: translateY(-50%) translateX(0);
+}
+
+.juno-tooltip__bubble--right .juno-tooltip__arrow {
+  inset-block-start: calc(50% - var(--juno-space-4));
+  inset-inline-start: calc(-1 * var(--juno-space-4));
+}
+
+.juno-tooltip__bubble--left {
+  inset-block: 50% auto;
+  inset-inline: auto calc(100% + var(--juno-space-8));
+  transform: translateY(-50%) translateX(var(--juno-space-4));
+}
+
+.juno-tooltip:hover .juno-tooltip__bubble--left,
+.juno-tooltip:focus-within .juno-tooltip__bubble--left {
+  transform: translateY(-50%) translateX(0);
+}
+
+.juno-tooltip__bubble--left .juno-tooltip__arrow {
+  inset-block-start: calc(50% - var(--juno-space-4));
+  inset-inline-start: calc(100% - var(--juno-space-4));
+}

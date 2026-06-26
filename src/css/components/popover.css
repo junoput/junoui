@@ -1,0 +1,47 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Popover
+ *  Anchored, click-triggered surface for rich, interactive content (filters,
+ *  quick-edits, detail cards). Unlike a tooltip it holds focusable controls
+ *  and persists until dismissed. junoui ships the surface + arrow; the app
+ *  owns open/close, positioning, outside-click + ESC dismiss.
+ *  Usage:
+ *    <div class="juno-popover-anchor">
+ *      <button aria-expanded="true" aria-controls="pf">RANGE FILTER ▾</button>
+ *      <div class="juno-popover" id="pf" role="dialog">
+ *        …controls…
+ *        <span class="juno-popover__arrow"></span>
+ *      </div>
+ *    </div>
+ *  Hide it from the app with the [hidden] attribute when closed.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-popover-anchor { position: relative; }
+
+.juno-popover {
+  position: absolute;
+  z-index: var(--juno-z-anchored);
+  inset-block-start: calc(100% + var(--juno-space-12));
+  inset-inline-end: 0;
+  inline-size: 280px;
+  max-inline-size: 100%;
+  background: var(--juno-s2);
+  color: var(--juno-data);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-5);
+  box-shadow: var(--juno-shadow-2);
+  padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
+}
+
+/* arrow back to the anchor (top-end corner) */
+.juno-popover__arrow {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--juno-space-4) - var(--juno-border-width-1));
+  inset-inline-end: var(--juno-space-24);
+  inline-size: var(--juno-space-8);
+  block-size: var(--juno-space-8);
+  background: var(--juno-s2);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-block-end: none;
+  border-inline-end: none;
+  transform: rotate(45deg);
+}

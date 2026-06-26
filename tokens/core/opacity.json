@@ -10,8 +10,8 @@
       "$description": "De-emphasised but active content — secondary text, placeholder."
     },
     "scrim": {
-      "$value": 0.55,
-      "$description": "Backdrop dim behind a modal or drawer."
+      "$value": 0.62,
+      "$description": "Backdrop dim behind a modal or drawer (one scrim at a time)."
     }
   }
 }

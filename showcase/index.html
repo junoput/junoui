@@ -336,6 +336,89 @@
       </div>
     </section>
 
+    <!-- Overlays -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">07</span>
+        <span class="juno-eyebrow">Overlays — modal · drawer · tooltip · popover · menu</span>
+      </div>
+      <p class="juno-label" style="margin-bottom:24px;">Altitude stack + shared motion. junoui ships the look; open/close/focus-trap belong to the app (native <code class="juno-mono">&lt;dialog&gt;</code> here).</p>
+
+      <article class="juno-card" style="margin-bottom:36px;"><div class="juno-card__body" style="gap:20px;">
+        <div class="juno-cluster" style="--juno-cluster-space:12px;align-items:center;">
+          <button class="juno-btn juno-btn--ghost" data-open="demo-modal">OPEN DIALOG</button>
+          <button class="juno-btn juno--warning juno-btn--ghost" data-open="demo-modal-danger">DESTRUCTIVE</button>
+          <button class="juno-btn juno-btn--ghost" data-open="demo-drawer">OPEN DRAWER</button>
+
+          <span class="juno-tooltip">
+            <button class="juno-btn juno-btn--ghost" tabindex="0">HOVER · TOOLTIP</button>
+            <span class="juno-tooltip__bubble" role="tooltip">Indicated airspeed · 248 kt<span class="juno-tooltip__arrow"></span></span>
+          </span>
+
+          <span class="juno-popover-anchor">
+            <button class="juno-btn juno-btn--ghost" data-toggle="demo-pop" aria-expanded="false" aria-controls="demo-pop">RANGE FILTER ▾</button>
+            <div class="juno-popover" id="demo-pop" data-overlay role="dialog" aria-label="Range filter" hidden>
+              <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Traffic filter</span>
+              <div class="juno-field"><label class="juno-field__label" for="pr">Within (NM)</label>
+                <input class="juno-slider" id="pr" type="range" min="5" max="80" value="40" /></div>
+              <span class="juno-popover__arrow"></span>
+            </div>
+          </span>
+
+          <span class="juno-popover-anchor">
+            <button class="juno-btn juno-btn--ghost" data-toggle="demo-menu" aria-haspopup="menu" aria-expanded="false">FLIGHT PLAN ▾</button>
+            <ul class="juno-menu" id="demo-menu" data-overlay role="menu" hidden>
+              <li><button class="juno-menu__item" role="menuitem"><span class="juno-menu__icon">⤓</span>Load flight plan<span class="juno-menu__kbd">⌘O</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem"><span class="juno-menu__icon">✎</span>Amend route<span class="juno-menu__kbd">⌘E</span></button></li>
+              <li class="juno-menu__sep" role="separator"></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem"><span class="juno-menu__icon">⨯</span>Discard plan<span class="juno-menu__kbd">⌫</span></button></li>
+            </ul>
+          </span>
+        </div>
+      </div></article>
+
+      <dialog class="juno-modal" id="demo-modal" aria-labelledby="dm-t">
+        <div class="juno-modal__stripe"></div>
+        <div class="juno-modal__head"><span class="juno-modal__tag">FLIGHT MANAGEMENT</span>
+          <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <div class="juno-modal__body">
+          <h2 class="juno-modal__title" id="dm-t">Amend cruise altitude to FL380?</h2>
+          <p class="juno-modal__text">ATC has cleared a step climb. Applying this amendment recomputes the descent profile and fuel prediction.</p>
+          <form method="dialog" class="juno-modal__foot">
+            <button class="juno-btn juno-btn--ghost">CANCEL</button>
+            <button class="juno-btn">APPLY AMENDMENT</button>
+          </form>
+        </div>
+      </dialog>
+
+      <dialog class="juno-modal juno--warning" id="demo-modal-danger" aria-labelledby="dd-t">
+        <div class="juno-modal__stripe"></div>
+        <div class="juno-modal__head"><span class="juno-modal__tag">CONFIRMATION REQUIRED</span>
+          <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <div class="juno-modal__body">
+          <h2 class="juno-modal__title" id="dd-t">Discard active flight plan?</h2>
+          <p class="juno-modal__text">This clears the loaded route and all crew amendments. This action cannot be undone.</p>
+          <form method="dialog" class="juno-modal__foot">
+            <button class="juno-btn juno-btn--ghost">CANCEL</button>
+            <button class="juno-btn juno--warning">DISCARD PLAN</button>
+          </form>
+        </div>
+      </dialog>
+
+      <dialog class="juno-modal juno-drawer" id="demo-drawer" aria-labelledby="dr-t">
+        <div class="juno-modal__head"><span class="juno-modal__tag" id="dr-t">DISPLAY SETTINGS</span>
+          <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <div class="juno-modal__body">
+          <p class="juno-modal__text" style="margin-bottom:16px;">Edge-anchored panel for settings that don't warrant leaving context.</p>
+          <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>HUD repeater</span></label>
+          <form method="dialog" class="juno-modal__foot">
+            <button class="juno-btn juno-btn--ghost">CLOSE</button>
+            <button class="juno-btn">APPLY</button>
+          </form>
+        </div>
+      </dialog>
+    </section>
+
     <footer style="padding-top:24px;border-top:1px solid var(--juno-border);display:flex;justify-content:space-between;">
       <span class="juno-mono juno-text-nominal" style="letter-spacing:.2em;">junoui</span>
       <span class="juno-text-muted" style="font-size:11px;">junoui · interactive demo · not shipped in the npm package</span>

@@ -13,35 +13,36 @@ Priority key: 🔴 must · 🟡 high · 🟢 nice.
 Tokens (color · spacing · type · radius · border · size · breakpoints · motion ·
 z-index · elevation · opacity), density modes, themes (3 palettes × dark/light), CSS
 components (badge, button, card, readout, status dot, loaders, **form controls** —
-field · input · select · checkbox · radio · switch · slider), layout primitives +
-container queries, multi-platform outputs, docs, lint + tests + CI.
+field · input · select · checkbox · radio · switch · slider; **overlays** — modal ·
+drawer · tooltip · popover · menu), layout primitives + container queries,
+multi-platform outputs, docs, lint + tests + CI.
 
 ## Foundations (token gaps) — ✅ shipped 2026-06
 
 All foundation token gaps are now built. Values: [tokens-reference.md](./tokens-reference.md);
 usage: [design-guidelines.md](./design-guidelines.md).
 
-| Done                              | What shipped                                                                               |
-| --------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Motion** (duration + easing)    | `--juno-motion-duration-{fast,base,slow}` + `--juno-motion-ease-{standard,in,out}`.        |
-| **Z-index scale**                 | `--juno-z-*` (raised → toast), single layering source of truth.                            |
-| **Elevation / shadow**            | `--juno-shadow-{1,2,3}` — border-first depth; shadow for lifted surfaces.                  |
-| **Opacity scale**                 | `--juno-opacity-{disabled,muted,scrim}`.                                                   |
-| **Density modes** (compact/comfy) | `data-juno-density` swaps semantic padding aliases (`--juno-pad-*`, `--juno-gap-control`). |
+| Done                              | What shipped                                                                                                   |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Motion** (duration + easing)    | `--juno-motion-duration-{instant,quick,base,deliberate}` + `--juno-motion-ease-{decel,accel,standard,spring}`. |
+| **Z-index scale**                 | `--juno-z-*` altitude stack: surface · raised · anchored · overlay · alert.                                    |
+| **Elevation / shadow**            | `--juno-shadow-{1,2,3}` (e1–e3) — border-first depth; shadow for lifted surfaces.                              |
+| **Opacity scale**                 | `--juno-opacity-{disabled,muted,scrim}`.                                                                       |
+| **Density modes** (compact/comfy) | `data-juno-density` swaps semantic padding aliases (`--juno-pad-*`, `--juno-gap-control`).                     |
 
 ## Components
 
-| Missing                                                                                             | Priority   |
-| --------------------------------------------------------------------------------------------------- | ---------- |
-| ~~**Form controls** — input, textarea, select, checkbox, radio, switch, slider~~                    | ✅ shipped |
-| ~~**Field** wrapper — label + control + help + error + required~~                                   | ✅ shipped |
-| **Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown (needs z-index + motion first) | 🔴         |
-| **Table / data grid** styling                                                                       | 🔴         |
-| **Alert / toast / inline notification**                                                             | 🟡         |
-| **Tabs**, accordion / disclosure                                                                    | 🟡         |
-| **Skeleton** loading placeholder (pairs with loaders)                                               | 🟡         |
-| Avatar, chip/tag, divider, breadcrumb, pagination, stepper                                          | 🟢         |
-| Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)                               | 🟢         |
+| Missing                                                                          | Priority   |
+| -------------------------------------------------------------------------------- | ---------- |
+| ~~**Form controls** — input, textarea, select, checkbox, radio, switch, slider~~ | ✅ shipped |
+| ~~**Field** wrapper — label + control + help + error + required~~                | ✅ shipped |
+| ~~**Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown~~         | ✅ shipped |
+| **Table / data grid** styling                                                    | 🔴         |
+| **Alert / toast / inline notification**                                          | 🟡         |
+| **Tabs**, accordion / disclosure                                                 | 🟡         |
+| **Skeleton** loading placeholder (pairs with loaders)                            | 🟡         |
+| Avatar, chip/tag, divider, breadcrumb, pagination, stepper                       | 🟢         |
+| Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)            | 🟢         |
 
 ## Quality / infra
 
@@ -59,8 +60,8 @@ contract, forced-colors, RTL via logical properties, CI gate.
 
 1. ~~**Foundation tokens** — motion, z-index, elevation, opacity, density.~~ ✅ done.
 2. ~~**Form controls + field** — the single biggest capability gap.~~ ✅ done.
-3. **Overlays** — modal, tooltip, menu (after #1). _(next)_
-4. **Table**.
+3. ~~**Overlays** — modal, tooltip, menu.~~ ✅ done.
+4. **Table**. _(next)_
 5. **Quality** — visual-regression snapshots + changesets.
 
 Biggest leverage: **#1 + #2.**

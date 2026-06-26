@@ -52,17 +52,21 @@ and what you must wire up.
 
 junoui gives structure + style; you add roles/state:
 
-| Component                 | You must add                                                                                                                    |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Badge / status dot        | Text label in the DOM (not color alone). For live values, `aria-live="polite"`.                                                 |
-| Button                    | Use a real `<button>`; `disabled` for disabled (not just the class).                                                            |
-| Card                      | Heading semantics (`<h2>`…) in `__head` if it titles a region.                                                                  |
-| Loader (indeterminate)    | `role="status"` + `aria-label="Loading"`.                                                                                       |
-| Loader (determinate)      | `role="progressbar"` + `aria-valuenow/min/max`.                                                                                 |
-| Input / select / textarea | A `<label>` tied by `for`/`id`. Errors: `aria-invalid="true"` + `aria-describedby` → the error text. Required: `aria-required`. |
-| Checkbox / radio          | Real `<input>` inside its `<label>`; radios share a `name`. State is native `checked`.                                          |
-| Switch                    | `role="switch"` on the input; app keeps `checked` + `aria-checked` in sync.                                                     |
-| Slider                    | Real `<input type="range">`; add `aria-valuetext` when the number needs units.                                                  |
+| Component                 | You must add                                                                                                                             |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Badge / status dot        | Text label in the DOM (not color alone). For live values, `aria-live="polite"`.                                                          |
+| Button                    | Use a real `<button>`; `disabled` for disabled (not just the class).                                                                     |
+| Card                      | Heading semantics (`<h2>`…) in `__head` if it titles a region.                                                                           |
+| Loader (indeterminate)    | `role="status"` + `aria-label="Loading"`.                                                                                                |
+| Loader (determinate)      | `role="progressbar"` + `aria-valuenow/min/max`.                                                                                          |
+| Input / select / textarea | A `<label>` tied by `for`/`id`. Errors: `aria-invalid="true"` + `aria-describedby` → the error text. Required: `aria-required`.          |
+| Checkbox / radio          | Real `<input>` inside its `<label>`; radios share a `name`. State is native `checked`.                                                   |
+| Switch                    | `role="switch"` on the input; app keeps `checked` + `aria-checked` in sync.                                                              |
+| Slider                    | Real `<input type="range">`; add `aria-valuetext` when the number needs units.                                                           |
+| Modal / drawer            | Native `<dialog>` + `showModal()` (focus-trap, ESC, inert background, scrim-click come free). Name it via `aria-labelledby` → the title. |
+| Tooltip                   | Trigger needs a tabstop; bubble `role="tooltip"` + `aria-describedby` so it reveals on focus, not only hover.                            |
+| Popover                   | Trigger `aria-expanded` + `aria-controls`; move focus in on open, restore on close; ESC + outside-click dismiss.                         |
+| Menu / dropdown           | `role="menu"` + `role="menuitem"`; trigger `aria-haspopup="menu"` + `aria-expanded`. App wires arrow-key roving focus, Enter, ESC.       |
 
 These are interaction concerns — junoui can't enforce them in CSS, so they're your
 responsibility (or the widget package's).

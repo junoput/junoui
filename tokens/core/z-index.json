@@ -1,14 +1,11 @@
 {
   "z": {
     "$type": "number",
-    "$description": "Layering scale. Gaps left between steps so consumers can slot custom layers.",
-    "base": { "$value": 0, "$description": "Default flow — in-page content." },
-    "raised": { "$value": 10, "$description": "Raised surface — hovered card, sticky cell." },
-    "sticky": { "$value": 100, "$description": "Sticky header / toolbar pinned in scroll." },
-    "dropdown": { "$value": 1000, "$description": "Menu, select listbox, combobox panel." },
-    "overlay": { "$value": 1100, "$description": "Scrim / backdrop behind a modal or drawer." },
-    "modal": { "$value": 1200, "$description": "Modal dialog, drawer, sheet." },
-    "popover": { "$value": 1300, "$description": "Popover, tooltip — above modal content." },
-    "toast": { "$value": 1400, "$description": "Toast / notification — above everything." }
+    "$description": "Altitude stack — overlays obey a strict layering order, low to high. Large gaps between steps leave room for app-specific layers.",
+    "surface": { "$value": 0, "$description": "FL000 — base content and data panels." },
+    "raised": { "$value": 100, "$description": "FL010 — sticky rails, raised cards." },
+    "anchored": { "$value": 2000, "$description": "FL200 — menu, popover, dropdown, tooltip." },
+    "overlay": { "$value": 4000, "$description": "FL400 — modal, drawer + scrim." },
+    "alert": { "$value": 5000, "$description": "FL500 — toast, master warning. Above everything." }
   }
 }

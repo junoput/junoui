@@ -147,7 +147,7 @@
   border-radius: var(--juno-radius-3);
   background: var(--juno-role);
   width: calc(var(--juno-progress, 0) * 1%);
-  transition: width var(--juno-motion-duration-fast) linear;
+  transition: width var(--juno-motion-duration-quick) linear;
 }
 
 /* indeterminate: a 40% segment slides across */

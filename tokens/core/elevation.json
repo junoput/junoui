@@ -1,18 +1,18 @@
 {
   "shadow": {
     "$type": "shadow",
-    "$description": "Depth is border-first by design; shadow is reserved for surfaces that lift off the page (dropdowns, overlays). Tuned for the dark-first default.",
+    "$description": "Depth is border-first by design; shadow is reserved for surfaces that lift off the glass. Elevation = z-index + shadow, always paired. Tuned for the dark-first default.",
     "1": {
-      "$value": "0 1px 2px rgb(0 0 0 / 0.32)",
-      "$description": "Subtle raise — hovered card, raised tile."
+      "$value": "0 1px 2px rgb(0 0 0 / 0.30)",
+      "$description": "e1 — raised cards, hovered tiles."
     },
     "2": {
-      "$value": "0 4px 12px rgb(0 0 0 / 0.40)",
-      "$description": "Floating layer — dropdown, popover, menu, tooltip."
+      "$value": "0 4px 14px rgb(0 0 0 / 0.35)",
+      "$description": "e2 — menu, popover, tooltip (anchored layer)."
     },
     "3": {
-      "$value": "0 12px 32px rgb(0 0 0 / 0.48)",
-      "$description": "Top layer — modal, dialog, drawer."
+      "$value": "0 12px 32px rgb(0 0 0 / 0.50)",
+      "$description": "e3 — modal, drawer (overlay layer)."
     }
   }
 }
