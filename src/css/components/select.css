@@ -19,6 +19,7 @@
 .juno-select > .juno-input {
   appearance: none;
   padding-inline-end: var(--juno-space-32);
+  font-family: var(--juno-font-family-sans);
   cursor: pointer;
 }
 

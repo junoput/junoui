@@ -216,7 +216,7 @@
           </div>
           <div class="juno-field" style="grid-column:1 / -1;">
             <label class="juno-field__label" for="f-note">Remarks</label>
-            <textarea id="f-note" class="juno-input" rows="2" placeholder="Free text…"></textarea>
+            <textarea id="f-note" class="juno-input juno-input--sans" rows="2" placeholder="Free text…"></textarea>
           </div>
         </div>
       </div></article>
@@ -242,6 +242,33 @@
         <div style="display:flex;flex-direction:column;gap:8px;max-width:360px;">
           <input class="juno-slider" type="range" min="0" max="100" value="60" aria-label="Throttle" />
           <input class="juno-slider juno--target" type="range" min="0" max="100" value="80" aria-label="Managed setpoint" />
+        </div>
+      </div></article>
+
+      <p class="juno-eyebrow" style="margin:36px 0 14px;">Toggle buttons — illuminated legend</p>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="juno-grid-auto" style="--juno-grid-min:240px;">
+          <button class="juno-toggle-btn" aria-pressed="true">
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row">
+              <span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">APU BLEED</span><span class="juno-toggle-btn__desc">Auxiliary power air supply</span></span>
+              <span class="juno-toggle-btn__status">ON</span>
+            </span>
+          </button>
+          <button class="juno-toggle-btn" aria-pressed="false">
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row">
+              <span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">WING ANTI-ICE</span><span class="juno-toggle-btn__desc">Leading-edge de-ice</span></span>
+              <span class="juno-toggle-btn__status">OFF</span>
+            </span>
+          </button>
+          <button class="juno-toggle-btn" disabled>
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row">
+              <span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">EMER ELEC</span><span class="juno-toggle-btn__desc">Guarded — disabled</span></span>
+              <span class="juno-toggle-btn__status">LOCK</span>
+            </span>
+          </button>
         </div>
       </div></article>
     </section>

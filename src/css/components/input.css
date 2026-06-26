@@ -1,38 +1,54 @@
 /* ════════════════════════════════════════════════════════════════════
  *  Component — Text input / textarea
- *  Usage:  <input class="juno-input" type="text" />
- *          <input class="juno-input juno-mono juno--target" />   (managed)
- *          <input class="juno-input" aria-invalid="true" />      (error)
- *          <textarea class="juno-input"></textarea>
+ *  Inputs are instruments: mono by default (codes, callsigns, squawks),
+ *  ACTIVE-cyan focus ring always visible, semantic color reserved for
+ *  validation. Add .juno-input--sans for free-text fields.
+ *  Usage:  <input class="juno-input" type="text" value="UAL 519" />
+ *          <input class="juno-input juno-input--sans" placeholder="Type…" />
+ *          <input class="juno-input juno--target" value="38000" />   (managed)
+ *          <input class="juno-input" aria-invalid="true" />          (error)
+ *          <textarea class="juno-input juno-input--sans"></textarea>
  *
- *  --juno-role defaults to the neutral border, so the resting border is
- *  quiet. A role class (.juno--warning, .juno--target…) or aria-invalid
- *  re-colors the border with no per-role rules. Focus uses the base ring.
- *  Add .juno-mono for codes / numeric values (callsign, squawk, altitude).
+ *  --juno-role defaults to the control edge, so the resting border is quiet;
+ *  a role class or aria-invalid re-colors it. Focus shows ACTIVE + a 1px ring.
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-input {
-  --juno-role: var(--juno-border);
+  --juno-role: var(--juno-control-edge);
 
   display: block;
   inline-size: 100%;
   min-block-size: var(--juno-size-tap-min);
-  background: var(--juno-s0);
+  background: var(--juno-control-surface);
   border: var(--juno-border-width-1) solid var(--juno-role);
   border-radius: var(--juno-radius-4);
-  padding: var(--juno-pad-control-block) var(--juno-pad-control-inline);
-  font-family: var(--juno-font-family-sans);
+  padding: var(--juno-pad-control-block) var(--juno-space-12);
+  font-family: var(--juno-font-family-mono);
   font-size: var(--juno-font-size-14);
   color: var(--juno-data);
 }
 
+.juno-input--sans { font-family: var(--juno-font-family-sans); }
+
 .juno-input::placeholder { color: var(--juno-muted); }
 
-/* invalid: ties the warning border to the a11y attribute the app must set */
-.juno-input[aria-invalid='true'] { --juno-role: var(--juno-warning); }
+/* focus — ACTIVE border + 1px ring (replaces the base outline on inputs) */
+.juno-input:focus-visible {
+  outline: none;
+  border-color: var(--juno-active);
+  box-shadow: 0 0 0 var(--juno-border-width-1) var(--juno-active);
+}
+
+/* invalid: warning border + text, tied to the a11y attribute */
+.juno-input[aria-invalid='true'] {
+  --juno-role: var(--juno-warning);
+
+  color: var(--juno-warning);
+}
 
 .juno-input:disabled {
   background: var(--juno-s1);
+  border-color: var(--juno-border);
   color: var(--juno-muted);
   cursor: not-allowed;
 }
@@ -40,5 +56,5 @@
 textarea.juno-input {
   min-block-size: calc(var(--juno-size-tap-min) * 3);
   resize: vertical;
-  line-height: var(--juno-font-lineHeight-normal);
+  line-height: var(--juno-font-lineHeight-loose);
 }

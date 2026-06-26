@@ -1,12 +1,13 @@
 /* ════════════════════════════════════════════════════════════════════
  *  Component — Switch (toggle)
- *  A real checkbox drives a sliding track. Presentational only — the app
+ *  Flight-deck rocker: a squared track lit green (NOMINAL) when ON, with an
+ *  ON / OFF legend and a sliding knob. A real checkbox drives it; the app
  *  owns the checked state. Honors prefers-reduced-motion via the base layer.
  *  Usage:
  *    <label class="juno-switch">
  *      <input class="juno-switch__input" type="checkbox" role="switch" />
  *      <span class="juno-switch__track"></span>
- *      <span>CROSSFEED</span>
+ *      <span>AUTO-THROTTLE</span>
  *    </label>
  * ════════════════════════════════════════════════════════════════════ */
 
@@ -29,41 +30,61 @@
 }
 
 .juno-switch__track {
-  --juno-role: var(--juno-active);
+  --juno-role: var(--juno-nominal);
 
   position: relative;
   flex-shrink: 0;
-  inline-size: var(--juno-space-40);
-  block-size: var(--juno-space-20);
-  background: var(--juno-s3);
-  border: var(--juno-border-width-1) solid var(--juno-border);
-  border-radius: 999px;
-  transition: background var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
+  inline-size: var(--juno-space-72);
+  block-size: var(--juno-space-28);
+  background: var(--juno-s0);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  border-radius: var(--juno-radius-4);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.4);
+  transition: border-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
+/* ON / OFF legend (opposite the knob) */
+.juno-switch__track::after {
+  content: 'OFF';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--juno-space-8);
+  display: flex;
+  align-items: center;
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-10);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-wide);
+  color: var(--juno-muted);
+}
+
+/* knob — slides via inset-inline-start so it travels correctly in RTL */
 .juno-switch__track::before {
   content: '';
   position: absolute;
   inset-block-start: var(--juno-space-2);
   inset-inline-start: var(--juno-space-2);
-  inline-size: calc(var(--juno-space-16) - var(--juno-border-width-1));
-  block-size: calc(var(--juno-space-16) - var(--juno-border-width-1));
-  background: var(--juno-label);
-  border-radius: 50%;
-
-  /* inset-inline-start (not transform) so the thumb travels correctly in RTL */
-  transition: inset-inline-start var(--juno-motion-duration-quick) var(--juno-motion-ease-spring),
-    background var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
+  inline-size: var(--juno-space-24);
+  block-size: var(--juno-space-24);
+  border-radius: var(--juno-radius-4);
+  background: linear-gradient(180deg, var(--juno-s3), var(--juno-s2));
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.5);
+  transition: inset-inline-start var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
 }
 
 .juno-switch__input:checked + .juno-switch__track {
-  background: var(--juno-role);
   border-color: var(--juno-role);
 }
 
+.juno-switch__input:checked + .juno-switch__track::after {
+  content: 'ON';
+  inset-inline: var(--juno-space-8) auto;
+  color: var(--juno-role);
+}
+
 .juno-switch__input:checked + .juno-switch__track::before {
-  inset-inline-start: calc(var(--juno-space-40) - var(--juno-space-20));
-  background: var(--juno-s0);
+  inset-inline-start: calc(var(--juno-space-72) - var(--juno-space-24) - var(--juno-space-2));
 }
 
 .juno-switch__input:focus-visible + .juno-switch__track {

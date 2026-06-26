@@ -52,10 +52,13 @@ document.addEventListener('click', (e) => {
   if (pb || mb || db) syncToggles();
 });
 
-// ── overlays (demo wiring — apps own this behavior, not junoui) ──────────
+// ── overlays + pressed toggles (demo wiring — apps own this, not junoui) ──
 document.addEventListener('click', (e) => {
   const open = e.target.closest('[data-open]');
   if (open) document.getElementById(open.dataset.open)?.showModal();
+
+  const tb = e.target.closest('.juno-toggle-btn:not(:disabled)');
+  if (tb) tb.setAttribute('aria-pressed', String(tb.getAttribute('aria-pressed') !== 'true'));
 
   // toggle popover / menu panels via [hidden] + aria-expanded
   const trig = e.target.closest('[data-toggle]');

@@ -22,6 +22,8 @@ and what you must wire up.
   theme and is never removed.
 - Don't suppress `:focus-visible`. If you build a custom control, give it a tabstop
   and let the ring apply.
+- Text inputs / select / textarea swap the outline for an equivalent visible signal:
+  an `active` border + 1px ring. Never remove focus indication outright.
 
 ## Motion
 
@@ -62,6 +64,7 @@ junoui gives structure + style; you add roles/state:
 | Input / select / textarea | A `<label>` tied by `for`/`id`. Errors: `aria-invalid="true"` + `aria-describedby` → the error text. Required: `aria-required`.          |
 | Checkbox / radio          | Real `<input>` inside its `<label>`; radios share a `name`. State is native `checked`.                                                   |
 | Switch                    | `role="switch"` on the input; app keeps `checked` + `aria-checked` in sync.                                                              |
+| Toggle button             | Real `<button>` with `aria-pressed`; app flips it. Legend text is in the DOM, not color alone.                                           |
 | Slider                    | Real `<input type="range">`; add `aria-valuetext` when the number needs units.                                                           |
 | Modal / drawer            | Native `<dialog>` + `showModal()` (focus-trap, ESC, inert background, scrim-click come free). Name it via `aria-labelledby` → the title. |
 | Tooltip                   | Trigger needs a tabstop; bubble `role="tooltip"` + `aria-describedby` so it reveals on focus, not only hover.                            |

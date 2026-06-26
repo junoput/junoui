@@ -1,14 +1,15 @@
 /* ════════════════════════════════════════════════════════════════════
  *  Component — Checkbox & Radio
- *  Native inputs tinted with the role via accent-color (keyboard +
- *  screen-reader native, zero JS). Wrap with .juno-choice for an inline
- *  label row.
+ *  Custom-styled native inputs (appearance:none) — keyboard + screen-reader
+ *  native, zero JS. Checkbox is a targeting-reticle square whose solid core
+ *  drops in on check; radio is a ring with a center dot. Default tint ACTIVE.
+ *  Wrap with .juno-choice for an inline label row.
  *  Usage:
  *    <label class="juno-choice">
- *      <input class="juno-checkbox" type="checkbox" checked /> AUTOPILOT
+ *      <input class="juno-checkbox" type="checkbox" checked /> TCAS
  *    </label>
  *    <label class="juno-choice">
- *      <input class="juno-radio juno--target" type="radio" name="m" /> MANAGED
+ *      <input class="juno-radio" type="radio" name="mode" /> MANAGED
  *    </label>
  * ════════════════════════════════════════════════════════════════════ */
 
@@ -26,14 +27,52 @@
 .juno-radio {
   --juno-role: var(--juno-active);
 
+  appearance: none;
+  margin: 0;
+  flex-shrink: 0;
   inline-size: var(--juno-space-16);
   block-size: var(--juno-space-16);
-  accent-color: var(--juno-role);
-  flex-shrink: 0;
+  display: inline-grid;
+  place-content: center;
+  background: var(--juno-control-surface);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
   cursor: pointer;
+  transition:
+    border-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    box-shadow var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
+.juno-checkbox { border-radius: var(--juno-radius-2); }
+.juno-radio { border-radius: 50%; }
+
+/* the core / dot — drops in on check with a slight overshoot */
+.juno-checkbox::before,
+.juno-radio::before {
+  content: '';
+  inline-size: var(--juno-space-8);
+  block-size: var(--juno-space-8);
+  background: var(--juno-role);
+  transform: scale(0);
+  transition: transform var(--juno-motion-duration-quick) var(--juno-motion-ease-spring);
+}
+
+.juno-checkbox::before { border-radius: 1px; }
+.juno-radio::before { border-radius: 50%; }
+
+.juno-checkbox:checked,
+.juno-radio:checked {
+  border-color: var(--juno-role);
+  box-shadow: 0 0 0 var(--juno-border-width-3) color-mix(in srgb, var(--juno-role) 22%, transparent);
+}
+
+.juno-checkbox:checked::before,
+.juno-radio:checked::before { transform: scale(1); }
+
 .juno-checkbox:disabled,
-.juno-radio:disabled { opacity: var(--juno-opacity-disabled); cursor: not-allowed; }
+.juno-radio:disabled {
+  background: var(--juno-s1);
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
 
 .juno-choice:has(:disabled) { color: var(--juno-muted); cursor: not-allowed; }

@@ -1,0 +1,91 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Toggle button
+ *  Airbus-style illuminated-legend pushbutton: the body stays dark; a top
+ *  strip lights (NOMINAL) and the surround glows when engaged. A real
+ *  <button aria-pressed>; the app flips aria-pressed.
+ *  Usage:
+ *    <button class="juno-toggle-btn" aria-pressed="true">
+ *      <span class="juno-toggle-btn__strip"></span>
+ *      <span class="juno-toggle-btn__row">
+ *        <span class="juno-toggle-btn__text">
+ *          <span class="juno-toggle-btn__legend">APU BLEED</span>
+ *          <span class="juno-toggle-btn__desc">Auxiliary power air supply</span>
+ *        </span>
+ *        <span class="juno-toggle-btn__status">ON</span>
+ *      </span>
+ *    </button>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-toggle-btn {
+  --juno-role: var(--juno-nominal);
+
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  padding: 0;
+  overflow: hidden;
+  background: var(--juno-control-surface);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  border-radius: var(--juno-radius-4);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    box-shadow var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-toggle-btn[aria-pressed='true'] {
+  border-color: var(--juno-role);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--juno-role) 20%, transparent);
+}
+
+.juno-toggle-btn__strip {
+  block-size: var(--juno-space-4);
+  background: var(--juno-s3);
+  transition:
+    background var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    box-shadow var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-toggle-btn[aria-pressed='true'] .juno-toggle-btn__strip {
+  background: var(--juno-role);
+  box-shadow: 0 0 8px var(--juno-role);
+}
+
+.juno-toggle-btn__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--juno-space-12);
+  padding: var(--juno-pad-control-block) var(--juno-space-16);
+}
+
+.juno-toggle-btn__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-2);
+}
+
+.juno-toggle-btn__legend {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-13);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-tight);
+  color: var(--juno-data);
+}
+
+.juno-toggle-btn__desc { font-size: var(--juno-font-size-11); color: var(--juno-label); }
+
+.juno-toggle-btn__status {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-10);
+  letter-spacing: var(--juno-font-tracking-caps);
+  color: var(--juno-muted);
+}
+
+.juno-toggle-btn[aria-pressed='true'] .juno-toggle-btn__status { color: var(--juno-role); }
+
+.juno-toggle-btn:disabled {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}

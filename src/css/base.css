@@ -11,6 +11,20 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* Control surfaces. On dark panels the hairline border (~23% L) disappears, so
+   lift the control edge to `muted` and sit controls on `s2`; light mode keeps the
+   true border on `s0`. Form components read these instead of raw surface roles. */
+:root,
+:root[data-juno-mode='dark'] {
+  --juno-control-surface: var(--juno-s2);
+  --juno-control-edge: var(--juno-muted);
+}
+
+:root[data-juno-mode='light'] {
+  --juno-control-surface: var(--juno-s0);
+  --juno-control-edge: var(--juno-border);
+}
+
 * { margin: 0; padding: 0; }
 
 html { -webkit-text-size-adjust: 100%; }
