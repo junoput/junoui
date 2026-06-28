@@ -8,17 +8,17 @@ layout + the validation/required cue — it owns no state.
 ```html
 <div class="juno-field">
   <label class="juno-field__label" for="cs">
-    Callsign <span class="juno-field__req" aria-hidden="true">*</span>
+    Order ID <span class="juno-field__req" aria-hidden="true">*</span>
   </label>
   <input id="cs" class="juno-input juno-mono" type="text" aria-required="true" />
-  <span class="juno-field__help">ICAO format</span>
+  <span class="juno-field__help">Prefix + number</span>
 </div>
 
 <!-- error -->
 <div class="juno-field">
-  <label class="juno-field__label" for="sq">Squawk</label>
+  <label class="juno-field__label" for="sq">Error code</label>
   <input id="sq" class="juno-input juno-mono" aria-invalid="true" aria-describedby="sq-e" />
-  <span class="juno-field__error" id="sq-e">Emergency squawk detected</span>
+  <span class="juno-field__error" id="sq-e">Service unavailable</span>
 </div>
 ```
 

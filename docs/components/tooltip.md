@@ -8,7 +8,7 @@ A transient hover/focus label. Pure CSS reveal — no JS. Four placements with a
 <span class="juno-tooltip">
   <button tabindex="0">SPD</button>
   <span class="juno-tooltip__bubble" role="tooltip">
-    Indicated airspeed · 248 kt
+    Requests / sec · 248
     <span class="juno-tooltip__arrow"></span>
   </span>
 </span>

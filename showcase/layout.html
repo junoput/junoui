@@ -25,10 +25,10 @@
         <span class="juno-eyebrow">.juno-grid-auto — cards collapse on their own (<code class="juno-mono">--juno-grid-min</code>)</span>
       </div>
       <div class="juno-grid-auto" style="--juno-grid-min:200px;">
-        <article class="juno-card"><div class="juno-card__head">Engine 1<span class="juno-badge juno--nominal">NOMINAL</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">N1</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">89.3</span></div></div></article>
-        <article class="juno-card"><div class="juno-card__head">Engine 2<span class="juno-badge juno--caution">CAUTION</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">N1</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">71.2</span></div></div></article>
-        <article class="juno-card"><div class="juno-card__head">APU<span class="juno-badge juno--active">ACTIVE</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">RPM</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">99%</span></div></div></article>
-        <article class="juno-card"><div class="juno-card__head">Hyd A<span class="juno-badge juno--nominal">NOMINAL</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">PSI</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">3,010</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">API node<span class="juno-badge juno--nominal">NOMINAL</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">CPU</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">89.3</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">Worker<span class="juno-badge juno--caution">CAUTION</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">CPU</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">71.2</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">Cache<span class="juno-badge juno--active">ACTIVE</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">Hit</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">99%</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">Database<span class="juno-badge juno--nominal">NOMINAL</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">Conns</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">3,010</span></div></div></article>
       </div>
     </section>
 
@@ -66,7 +66,7 @@
         <span class="juno-eyebrow">.juno-sidebar — aside + content, stacks when tight</span>
       </div>
       <div class="juno-sidebar">
-        <aside class="juno-sidebar__aside juno-card"><div class="juno-card__body"><span class="juno-eyebrow">NAV</span><span class="juno-label">Systems · Engines · Hydraulics · Electrical</span></div></aside>
+        <aside class="juno-sidebar__aside juno-card"><div class="juno-card__body"><span class="juno-eyebrow">NAV</span><span class="juno-label">Overview · Services · Database · Network</span></div></aside>
         <main class="juno-sidebar__main juno-card"><div class="juno-card__body"><span class="juno-eyebrow">CONTENT</span><span class="juno-label">Fluid main region. The aside drops below this panel once the content would get narrower than its threshold.</span></div></main>
       </div>
     </section>
@@ -91,12 +91,12 @@
         <span class="juno-eyebrow">.juno-reel — horizontal scroll-snap row</span>
       </div>
       <div class="juno-reel" style="--juno-reel-space:12px;">
-        <div class="juno-readout juno--nominal" style="min-width:120px;"><span class="juno-readout__label">N1</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
-        <div class="juno-readout juno--caution" style="min-width:120px;"><span class="juno-readout__label">EGT</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">°C</span></div>
-        <div class="juno-readout" style="min-width:120px;"><span class="juno-readout__label">F.Flow</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">kg/h</span></div>
-        <div class="juno-readout juno--target" style="min-width:120px;"><span class="juno-readout__label">Hdg</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">°</span></div>
-        <div class="juno-readout" style="min-width:120px;"><span class="juno-readout__label">Fuel</span><span class="juno-readout__value">18.4</span><span class="juno-readout__unit">t</span></div>
-        <div class="juno-readout juno--warning" style="min-width:120px;"><span class="juno-readout__label">Oil</span><span class="juno-readout__value">12</span><span class="juno-readout__unit">psi</span></div>
+        <div class="juno-readout juno--nominal" style="min-width:120px;"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+        <div class="juno-readout juno--caution" style="min-width:120px;"><span class="juno-readout__label">Latency</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">ms</span></div>
+        <div class="juno-readout" style="min-width:120px;"><span class="juno-readout__label">Req/s</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">rps</span></div>
+        <div class="juno-readout juno--target" style="min-width:120px;"><span class="juno-readout__label">Queue</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">jobs</span></div>
+        <div class="juno-readout" style="min-width:120px;"><span class="juno-readout__label">Cache</span><span class="juno-readout__value">18.4</span><span class="juno-readout__unit">GB</span></div>
+        <div class="juno-readout juno--warning" style="min-width:120px;"><span class="juno-readout__label">Disk</span><span class="juno-readout__value">12</span><span class="juno-readout__unit">%</span></div>
       </div>
     </section>
 

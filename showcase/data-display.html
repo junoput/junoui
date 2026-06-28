@@ -68,16 +68,16 @@
         <span class="juno-eyebrow">Data readouts — label · value · unit</span>
       </div>
       <div class="demo-grid" style="grid-template-columns:repeat(5,1fr);">
-        <div class="juno-readout juno--nominal"><span class="juno-readout__label">N1</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
-        <div class="juno-readout juno--active"><span class="juno-readout__label">IAS</span><span class="juno-readout__value">248</span><span class="juno-readout__unit">kt</span></div>
-        <div class="juno-readout juno--caution"><span class="juno-readout__label">EGT</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">°C</span></div>
-        <div class="juno-readout"><span class="juno-readout__label">F.Flow</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">kg/h</span></div>
-        <div class="juno-readout"><span class="juno-readout__label">Alt</span><span class="juno-readout__value">FL350</span><span class="juno-readout__unit juno-text-target">▲ FL380</span></div>
-        <div class="juno-readout juno-readout--alert juno--warning"><span class="juno-readout__label">Oil PSI</span><span class="juno-readout__value">12</span><span class="juno-readout__unit juno-text-warning">↓ LOW</span></div>
-        <div class="juno-readout juno-readout--alert juno--caution"><span class="juno-readout__label">Hyd B</span><span class="juno-readout__value">2,650</span><span class="juno-readout__unit juno-text-caution">▼ DROP</span></div>
-        <div class="juno-readout juno--target"><span class="juno-readout__label">Hdg</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">°</span></div>
-        <div class="juno-readout juno--muted"><span class="juno-readout__label">VOR 2</span><span class="juno-readout__value">---</span><span class="juno-readout__unit">off</span></div>
-        <div class="juno-readout juno--nominal"><span class="juno-readout__label">Fuel</span><span class="juno-readout__value">18.4</span><span class="juno-readout__unit">t</span></div>
+        <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+        <div class="juno-readout juno--active"><span class="juno-readout__label">Req/s</span><span class="juno-readout__value">248</span><span class="juno-readout__unit">rps</span></div>
+        <div class="juno-readout juno--caution"><span class="juno-readout__label">Latency</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">ms</span></div>
+        <div class="juno-readout"><span class="juno-readout__label">Writes</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">/s</span></div>
+        <div class="juno-readout"><span class="juno-readout__label">Replicas</span><span class="juno-readout__value">3</span><span class="juno-readout__unit juno-text-target">▲ 5</span></div>
+        <div class="juno-readout juno-readout--alert juno--warning"><span class="juno-readout__label">Disk free</span><span class="juno-readout__value">12</span><span class="juno-readout__unit juno-text-warning">↓ LOW</span></div>
+        <div class="juno-readout juno-readout--alert juno--caution"><span class="juno-readout__label">DB conns</span><span class="juno-readout__value">2,650</span><span class="juno-readout__unit juno-text-caution">▼ DROP</span></div>
+        <div class="juno-readout juno--target"><span class="juno-readout__label">Queue</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">jobs</span></div>
+        <div class="juno-readout juno--muted"><span class="juno-readout__label">Region B</span><span class="juno-readout__value">---</span><span class="juno-readout__unit">off</span></div>
+        <div class="juno-readout juno--nominal"><span class="juno-readout__label">Cache</span><span class="juno-readout__value">18.4</span><span class="juno-readout__unit">GB</span></div>
       </div>
     </section>
 
@@ -89,25 +89,25 @@
       </div>
       <div class="demo-grid" style="grid-template-columns:repeat(3,1fr);">
         <article class="juno-card">
-          <div class="juno-card__head">Engine 1<span class="juno-badge juno--nominal">NOMINAL</span></div>
+          <div class="juno-card__head">API node<span class="juno-badge juno--nominal">NOMINAL</span></div>
           <div class="juno-card__body">
-            <div class="juno-card__row"><span class="juno-label">N1</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">89.3</span></div>
-            <div class="juno-card__row"><span class="juno-label">N2</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">88.1</span></div>
-            <div class="juno-card__row"><span class="juno-label">EGT</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">540</span></div>
+            <div class="juno-card__row"><span class="juno-label">CPU</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">89.3</span></div>
+            <div class="juno-card__row"><span class="juno-label">Mem</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">88.1</span></div>
+            <div class="juno-card__row"><span class="juno-label">Req/s</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">540</span></div>
           </div>
         </article>
         <article class="juno-card juno-card--accent juno--caution">
-          <div class="juno-card__head">Hyd Sys B<span class="juno-badge juno-badge--outline juno--caution">CAUTION</span></div>
+          <div class="juno-card__head">Database<span class="juno-badge juno-badge--outline juno--caution">CAUTION</span></div>
           <div class="juno-card__body">
-            <div class="juno-card__row"><span class="juno-label">Pressure</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">2,650</span></div>
-            <div class="juno-card__row"><span class="juno-label">Qty</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">72</span></div>
+            <div class="juno-card__row"><span class="juno-label">Conns</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">2,650</span></div>
+            <div class="juno-card__row"><span class="juno-label">Pool</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">72</span></div>
           </div>
         </article>
         <article class="juno-card juno-card--alert juno--warning">
-          <div class="juno-card__head">Eng 2 Oil<span class="juno-badge juno--warning">WARNING</span></div>
+          <div class="juno-card__head">Worker 2<span class="juno-badge juno--warning">WARNING</span></div>
           <div class="juno-card__body">
-            <div class="juno-card__row"><span class="juno-label">Oil Press</span><span class="juno-value juno-text-warning" style="font-size:var(--juno-font-size-18);">12</span></div>
-            <div class="juno-text-warning" style="font-size:var(--juno-font-size-12);line-height:var(--juno-font-lineHeight-relaxed);">CHECK OIL SYSTEM</div>
+            <div class="juno-card__row"><span class="juno-label">Disk free</span><span class="juno-value juno-text-warning" style="font-size:var(--juno-font-size-18);">12</span></div>
+            <div class="juno-text-warning" style="font-size:var(--juno-font-size-12);line-height:var(--juno-font-lineHeight-relaxed);">DISK ALMOST FULL</div>
           </div>
         </article>
       </div>

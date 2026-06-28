@@ -4,7 +4,7 @@ The single graphics source for all junoput UIs. You build the UI skeleton; junou
 defines colors, spacing, typography, radii and sizing. Tokens are authored once and
 compiled to every platform.
 
-**Aviation-inspired, semantic-first:** color encodes status, never decoration —
+**Semantic-first:** color encodes status, never decoration —
 every hue has one role (NOMINAL · ACTIVE · TARGET · CAUTION · WARNING).
 
 ## Install

@@ -8,11 +8,11 @@ ESC are free. junoui ships the look; **the app owns** roving focus (arrow keys).
 ## Web
 
 ```html
-<button popovertarget="fp" aria-haspopup="menu">FLIGHT PLAN ▾</button>
-<ul class="juno-menu" id="fp" popover role="menu">
+<button popovertarget="acts" aria-haspopup="menu">ACTIONS ▾</button>
+<ul class="juno-menu" id="acts" popover role="menu">
   <li>
-    <button class="juno-menu__item" role="menuitem" popovertarget="fp" popovertargetaction="hide">
-      <span class="juno-menu__icon">⤓</span>Load flight plan
+    <button class="juno-menu__item" role="menuitem" popovertarget="acts" popovertargetaction="hide">
+      <span class="juno-menu__icon">⤓</span>Import data
       <span class="juno-menu__kbd">⌘O</span>
     </button>
   </li>
@@ -21,10 +21,10 @@ ESC are free. junoui ships the look; **the app owns** roving focus (arrow keys).
     <button
       class="juno-menu__item juno--warning"
       role="menuitem"
-      popovertarget="fp"
+      popovertarget="acts"
       popovertargetaction="hide"
     >
-      <span class="juno-menu__icon">⨯</span>Discard plan
+      <span class="juno-menu__icon">⨯</span>Delete project
     </button>
   </li>
 </ul>

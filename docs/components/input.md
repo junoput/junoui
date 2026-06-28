@@ -1,6 +1,6 @@
 # Input / textarea
 
-Text entry — inputs are instruments. **Mono by default** (codes, callsigns, squawks);
+Text entry — inputs are precise. **Mono by default** (codes, IDs, tokens, values);
 add `.juno-input--sans` for free text. One class for `<input>` and `<textarea>`.
 
 ## Web
@@ -40,6 +40,6 @@ base outline on inputs).
 
 ## Usage
 
-- Mono is the default because most cockpit entry is codes/values; opt into `--sans`
+- Mono is the default because most technical entry is codes/values; opt into `--sans`
   for names and remarks. Textarea is usually `--sans`.
 - Wrap in [`.juno-field`](./field.md) for label + help/error.

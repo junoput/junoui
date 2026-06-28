@@ -52,7 +52,7 @@ apps. Exact values: [tokens-reference.md](./tokens-reference.md).
   `standard`, toggle with `spring`. Always inside a `transition`/`animation`;
   `prefers-reduced-motion` already collapses these in `base.css`.
 - **Z-index.** `--juno-z-*` is the single layering source of truth — never invent raw
-  z-index. Altitude stack: `surface` (0) < `raised` (100) < `anchored` (2000, menu ·
+  z-index. Layer stack: `surface` (0) < `raised` (100) < `anchored` (2000, menu ·
   popover · tooltip) < `overlay` (4000, modal · drawer + scrim) < `alert` (5000, toast).
   Large gaps leave room for app layers.
 - **Elevation.** Depth is **border-first** by design; elevation = z-index + shadow,
@@ -93,6 +93,6 @@ density for free; add a new archetype only when one is genuinely needed.
 
 | Palette      | Use                                                |
 | ------------ | -------------------------------------------------- |
-| `standard`   | Default. Aviation-traditional, vivid OKLCH.        |
+| `standard`   | Default. Vivid, high-contrast OKLCH.               |
 | `colorblind` | Accessibility-critical or universal audiences.     |
 | `soft`       | Long viewing sessions; lower chroma, less fatigue. |

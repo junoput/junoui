@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════════════
- *  Component — Switch (toggle)  ·  AERO-UI "annunciator slot"
+ *  Component — Switch (toggle)  ·  labeled rocker
  *  A wide squared slide-switch with the state printed inside the track
  *  (ON / OFF, mono) and a gripped knob; lit nominal-green when ON. A real
  *  checkbox drives it; the app owns state. Honors prefers-reduced-motion.
@@ -7,7 +7,7 @@
  *    <label class="juno-switch">
  *      <input class="juno-switch__input" type="checkbox" role="switch" />
  *      <span class="juno-switch__track"></span>
- *      <span>AUTO-THROTTLE</span>
+ *      <span>AUTO-SCALING</span>
  *    </label>
  * ════════════════════════════════════════════════════════════════════ */
 

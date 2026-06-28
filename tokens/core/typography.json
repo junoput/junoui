@@ -4,7 +4,7 @@
       "$type": "fontFamily",
       "sans": {
         "$value": "'B612', sans-serif",
-        "$description": "All non-numeric UI: headings, labels, navigation, buttons. Airbus/ENAC cockpit typeface."
+        "$description": "All non-numeric UI: headings, labels, navigation, buttons. Highly legible on dense technical displays."
       },
       "mono": {
         "$value": "'B612 Mono', monospace",

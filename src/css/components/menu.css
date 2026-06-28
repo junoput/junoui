@@ -6,17 +6,17 @@
  *  ESC come from the native Popover API — the menu lives in the TOP LAYER, so
  *  it is never clipped by an ancestor's overflow and never fights z-index.
  *  Usage:
- *    <button popovertarget="fp" aria-haspopup="menu" aria-expanded="false">FLIGHT PLAN ▾</button>
- *    <ul class="juno-menu" id="fp" popover role="menu">
+ *    <button popovertarget="acts" aria-haspopup="menu" aria-expanded="false">ACTIONS ▾</button>
+ *    <ul class="juno-menu" id="acts" popover role="menu">
  *      <li><button class="juno-menu__item" role="menuitem"
- *            popovertarget="fp" popovertargetaction="hide">
- *        <span class="juno-menu__icon">⤓</span>Load flight plan
+ *            popovertarget="acts" popovertargetaction="hide">
+ *        <span class="juno-menu__icon">⤓</span>Import data
  *        <span class="juno-menu__kbd">⌘O</span>
  *      </button></li>
  *      <li class="juno-menu__sep" role="separator"></li>
  *      <li><button class="juno-menu__item juno--warning" role="menuitem"
- *            popovertarget="fp" popovertargetaction="hide">
- *        <span class="juno-menu__icon">⨯</span>Discard plan
+ *            popovertarget="acts" popovertargetaction="hide">
+ *        <span class="juno-menu__icon">⨯</span>Delete project
  *      </button></li>
  *    </ul>
  *  (Each item carries popovertargetaction="hide" so activating it closes the

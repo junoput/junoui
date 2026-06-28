@@ -1,6 +1,6 @@
 # Drawer
 
-An edge-anchored `<dialog>` for secondary tasks and settings — same scrim and altitude
+An edge-anchored `<dialog>` for secondary tasks and settings — same scrim and layer
 as the [modal](./modal.md), but it slides along one axis. Reuses `.juno-modal` for the
 surface; `.juno-drawer` re-pins and re-slides it.
 

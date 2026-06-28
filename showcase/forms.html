@@ -28,22 +28,22 @@
         <div class="juno-grid-auto" style="--juno-grid-min:220px;">
           <div class="juno-field">
             <label class="juno-field__label" for="i-def">Default (mono)</label>
-            <input id="i-def" class="juno-input juno-mono" type="text" value="AA 1234" />
-            <span class="juno-field__help">IATA or ICAO</span>
+            <input id="i-def" class="juno-input juno-mono" type="text" value="ORD-1234" />
+            <span class="juno-field__help">Prefix + number</span>
           </div>
           <div class="juno-field">
             <label class="juno-field__label" for="i-sans">Sans variant</label>
-            <input id="i-sans" class="juno-input juno-input--sans" type="text" value="Cleared direct" />
+            <input id="i-sans" class="juno-input juno-input--sans" type="text" value="Free text value" />
           </div>
           <div class="juno-field">
             <label class="juno-field__label" for="i-tgt">Role-tinted <span class="juno-field__req" aria-hidden="true">*</span></label>
-            <input id="i-tgt" class="juno-input juno-mono juno--target" type="text" value="38000" aria-required="true" />
-            <span class="juno-field__help juno-text-target">FT — managed</span>
+            <input id="i-tgt" class="juno-input juno-mono juno--target" type="text" value="5000" aria-required="true" />
+            <span class="juno-field__help juno-text-target">req/s — managed</span>
           </div>
           <div class="juno-field">
             <label class="juno-field__label" for="i-inv">Invalid</label>
-            <input id="i-inv" class="juno-input juno-mono" type="text" value="7700" aria-invalid="true" aria-describedby="i-inv-e" />
-            <span class="juno-field__error" id="i-inv-e">Emergency squawk detected</span>
+            <input id="i-inv" class="juno-input juno-mono" type="text" value="E-503" aria-invalid="true" aria-describedby="i-inv-e" />
+            <span class="juno-field__error" id="i-inv-e">Unknown error code</span>
           </div>
           <div class="juno-field">
             <label class="juno-field__label" for="i-ph">Placeholder</label>
@@ -104,7 +104,7 @@
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
-        <span class="juno-eyebrow">Switch — annunciator rocker</span>
+        <span class="juno-eyebrow">Switch — labeled rocker</span>
       </div>
       <article class="juno-card"><div class="juno-card__body">
         <div class="demo-row" style="gap:32px;">
@@ -120,7 +120,7 @@
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
-        <span class="juno-eyebrow">Slider — throttle quadrant (drag / arrow keys)</span>
+        <span class="juno-eyebrow">Slider — track + grip lever (drag / arrow keys)</span>
       </div>
       <article class="juno-card"><div class="juno-card__body" style="gap:24px;max-width:420px;">
         <div>
@@ -152,19 +152,19 @@
         <div class="juno-grid-auto" style="--juno-grid-min:240px;">
           <button class="juno-toggle-btn" aria-pressed="true">
             <span class="juno-toggle-btn__strip"></span>
-            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">APU BLEED</span><span class="juno-toggle-btn__desc">Auxiliary power air supply</span></span><span class="juno-toggle-btn__status">ON</span></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">AUTO-SCALING</span><span class="juno-toggle-btn__desc">Scale workers with load</span></span><span class="juno-toggle-btn__status">ON</span></span>
           </button>
           <button class="juno-toggle-btn" aria-pressed="false">
             <span class="juno-toggle-btn__strip"></span>
-            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">WING ANTI-ICE</span><span class="juno-toggle-btn__desc">Leading-edge de-ice</span></span><span class="juno-toggle-btn__status">OFF</span></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">CDN CACHE</span><span class="juno-toggle-btn__desc">Edge response caching</span></span><span class="juno-toggle-btn__status">OFF</span></span>
           </button>
           <button class="juno-toggle-btn juno--caution" aria-pressed="true">
             <span class="juno-toggle-btn__strip"></span>
-            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">FUEL XFEED</span><span class="juno-toggle-btn__desc">Crossfeed valve open</span></span><span class="juno-toggle-btn__status">ON</span></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">RATE LIMIT</span><span class="juno-toggle-btn__desc">Throttle excess requests</span></span><span class="juno-toggle-btn__status">ON</span></span>
           </button>
           <button class="juno-toggle-btn" disabled>
             <span class="juno-toggle-btn__strip"></span>
-            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">EMER ELEC</span><span class="juno-toggle-btn__desc">Guarded — disabled</span></span><span class="juno-toggle-btn__status">LOCK</span></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">MAINTENANCE</span><span class="juno-toggle-btn__desc">Guarded — disabled</span></span><span class="juno-toggle-btn__status">LOCK</span></span>
           </button>
         </div>
       </div></article>

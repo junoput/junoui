@@ -4,7 +4,7 @@
  *  Components reference these instead of raw --juno-space-* for their
  *  internal padding, so the whole UI compacts from one attribute:
  *
- *      <body data-juno-density="compact">   →  dense cockpit layout
+ *      <body data-juno-density="compact">   →  dense, data-heavy layout
  *      <body>                               →  comfortable (default)
  *
  *  Density is intentionally NON-linear: compact removes more block

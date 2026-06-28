@@ -1,11 +1,14 @@
 {
   "z": {
     "$type": "number",
-    "$description": "Altitude stack — overlays obey a strict layering order, low to high. Large gaps between steps leave room for app-specific layers.",
-    "surface": { "$value": 0, "$description": "FL000 — base content and data panels." },
-    "raised": { "$value": 100, "$description": "FL010 — sticky rails, raised cards." },
-    "anchored": { "$value": 2000, "$description": "FL200 — menu, popover, dropdown, tooltip." },
-    "overlay": { "$value": 4000, "$description": "FL400 — modal, drawer + scrim." },
-    "alert": { "$value": 5000, "$description": "FL500 — toast, master warning. Above everything." }
+    "$description": "Layering stack — overlays obey a strict layering order, low to high. Large gaps between steps leave room for app-specific layers.",
+    "surface": { "$value": 0, "$description": "Level 0 — base content and data panels." },
+    "raised": { "$value": 100, "$description": "Level 1 — sticky rails, raised cards." },
+    "anchored": { "$value": 2000, "$description": "Level 2 — menu, popover, dropdown, tooltip." },
+    "overlay": { "$value": 4000, "$description": "Level 4 — modal, drawer + scrim." },
+    "alert": {
+      "$value": 5000,
+      "$description": "Level 5 — toast, critical alert. Above everything."
+    }
   }
 }

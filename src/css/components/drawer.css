@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════════════
  *  Component — Drawer
  *  Edge-anchored <dialog> for secondary tasks and settings. Same scrim and
- *  altitude as the modal, but slides along one axis. App owns showModal()/close().
+ *  layer as the modal, but slides along one axis. App owns showModal()/close().
  *  Default anchors to the inline-end edge; modifiers move it.
  *  Usage:
  *    <dialog class="juno-modal juno-drawer">…</dialog>            (inline-end)

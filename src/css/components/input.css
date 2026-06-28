@@ -1,9 +1,9 @@
 /* ════════════════════════════════════════════════════════════════════
  *  Component — Text input / textarea
- *  Inputs are instruments: mono by default (codes, callsigns, squawks),
+ *  Inputs are precise: mono by default (codes, IDs, tokens, values),
  *  ACTIVE-cyan focus ring always visible, semantic color reserved for
  *  validation. Add .juno-input--sans for free-text fields.
- *  Usage:  <input class="juno-input" type="text" value="UAL 519" />
+ *  Usage:  <input class="juno-input" type="text" value="ORD-519" />
  *          <input class="juno-input juno-input--sans" placeholder="Type…" />
  *          <input class="juno-input juno--target" value="38000" />   (managed)
  *          <input class="juno-input" aria-invalid="true" />          (error)

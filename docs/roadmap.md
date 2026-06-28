@@ -25,7 +25,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | Done                              | What shipped                                                                                                   |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | **Motion** (duration + easing)    | `--juno-motion-duration-{instant,quick,base,deliberate}` + `--juno-motion-ease-{decel,accel,standard,spring}`. |
-| **Z-index scale**                 | `--juno-z-*` altitude stack: surface · raised · anchored · overlay · alert.                                    |
+| **Z-index scale**                 | `--juno-z-*` layer stack: surface · raised · anchored · overlay · alert.                                       |
 | **Elevation / shadow**            | `--juno-shadow-{1,2,3}` (e1–e3) — border-first depth; shadow for lifted surfaces.                              |
 | **Opacity scale**                 | `--juno-opacity-{disabled,muted,scrim}`.                                                                       |
 | **Density modes** (compact/comfy) | `data-juno-density` swaps semantic padding aliases (`--juno-pad-*`, `--juno-gap-control`).                     |

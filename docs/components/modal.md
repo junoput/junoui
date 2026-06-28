@@ -10,15 +10,15 @@ and ESC/scrim-click dismiss (native `<dialog>` gives you most of this free).
 <dialog class="juno-modal">
   <div class="juno-modal__stripe"></div>
   <div class="juno-modal__head">
-    <span class="juno-modal__tag">FLIGHT MANAGEMENT</span>
+    <span class="juno-modal__tag">DEPLOYMENT</span>
     <button class="juno-modal__close" aria-label="Close">✕</button>
   </div>
   <div class="juno-modal__body">
-    <h2 class="juno-modal__title">Amend cruise altitude to FL380?</h2>
-    <p class="juno-modal__text">Applying this recomputes the descent profile…</p>
+    <h2 class="juno-modal__title">Promote build to production?</h2>
+    <p class="juno-modal__text">This routes production traffic to the new version…</p>
     <div class="juno-modal__foot">
       <button class="juno-btn juno-btn--ghost">CANCEL</button>
-      <button class="juno-btn">APPLY AMENDMENT</button>
+      <button class="juno-btn">PROMOTE BUILD</button>
     </div>
   </div>
 </dialog>

@@ -4,9 +4,9 @@
  *  on hover or keyboard focus of the wrapper. Four placements with an arrow.
  *  Usage:
  *    <span class="juno-tooltip">
- *      <button tabindex="0">SPD</button>
+ *      <button tabindex="0">RPS</button>
  *      <span class="juno-tooltip__bubble" role="tooltip">
- *        Indicated airspeed · 248 kt
+ *        Requests / sec · 248
  *        <span class="juno-tooltip__arrow"></span>
  *      </span>
  *    </span>

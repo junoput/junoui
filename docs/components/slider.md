@@ -1,6 +1,6 @@
 # Slider
 
-A throttle-quadrant slider: a recessed channel with detent notches, an accent fill, and
+A track slider: a recessed channel with detent notches, an accent fill, and
 a gripped lever. **Value-driven** — junoui ships the look; the app sets the value % and
 owns drag / keyboard / ARIA (the same split as the overlays). Two sizes: standard (lever
 always full) and `--compact` (lever recedes to a slim marker until hover / focus / drag).

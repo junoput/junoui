@@ -7,11 +7,11 @@
  *    <dialog class="juno-modal">                 (or .juno-modal.juno--warning)
  *      <div class="juno-modal__stripe"></div>
  *      <div class="juno-modal__head">
- *        <span class="juno-modal__tag">FLIGHT MANAGEMENT</span>
+ *        <span class="juno-modal__tag">CONFIGURATION</span>
  *        <button class="juno-modal__close" aria-label="Close">✕</button>
  *      </div>
  *      <div class="juno-modal__body">
- *        <h2 class="juno-modal__title">Amend cruise altitude?</h2>
+ *        <h2 class="juno-modal__title">Apply configuration change?</h2>
  *        <p class="juno-modal__text">…</p>
  *        <div class="juno-modal__foot">
  *          <button class="juno-btn juno-btn--ghost">CANCEL</button>

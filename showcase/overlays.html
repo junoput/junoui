@@ -16,7 +16,7 @@
       <p>Modals + drawers are native <code class="juno-mono">&lt;dialog&gt;</code> (focus-trap, ESC,
         scrim come free). Popover + menu + tooltip use the native Popover API, so they render
         in the browser top layer — immune to any ancestor's <code class="juno-mono">overflow</code>.
-        Shared altitude stack + motion.</p>
+        Shared layer stack + motion.</p>
     </div>
 
     <!-- Modals + drawers -->
@@ -75,21 +75,21 @@
           <span class="juno-popover-anchor">
             <button class="juno-btn juno-btn--ghost" popovertarget="ov-pop" aria-haspopup="dialog">RANGE FILTER ▾</button>
             <div class="juno-popover" id="ov-pop" popover role="dialog" aria-label="Range filter">
-              <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Traffic filter</span>
-              <div class="juno-field"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span class="juno-field__label">Within (NM)</span><span class="juno-value juno-text-active js-sval" style="font-size:16px;">40</span></div>
-                <div class="juno-slider juno-slider--compact" role="slider" tabindex="0" aria-label="Within NM" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+              <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Request filter</span>
+              <div class="juno-field"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span class="juno-field__label">Window (min)</span><span class="juno-value juno-text-active js-sval" style="font-size:16px;">40</span></div>
+                <div class="juno-slider juno-slider--compact" role="slider" tabindex="0" aria-label="Window minutes" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
               </div>
               <span class="juno-popover__arrow"></span>
             </div>
           </span>
           <span class="juno-popover-anchor">
-            <button class="juno-btn juno-btn--ghost" popovertarget="ov-menu" aria-haspopup="menu">FLIGHT PLAN ▾</button>
+            <button class="juno-btn juno-btn--ghost" popovertarget="ov-menu" aria-haspopup="menu">ACTIONS ▾</button>
             <ul class="juno-menu" id="ov-menu" popover role="menu">
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⤓</span>Load flight plan<span class="juno-menu__kbd">⌘O</span></button></li>
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">✎</span>Amend route<span class="juno-menu__kbd">⌘E</span></button></li>
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⎘</span>Duplicate leg<span class="juno-menu__kbd">⌘D</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⤓</span>Import data<span class="juno-menu__kbd">⌘O</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">✎</span>Edit settings<span class="juno-menu__kbd">⌘E</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⎘</span>Duplicate<span class="juno-menu__kbd">⌘D</span></button></li>
               <li class="juno-menu__sep" role="separator"></li>
-              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⨯</span>Discard plan<span class="juno-menu__kbd">⌫</span></button></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⨯</span>Delete project<span class="juno-menu__kbd">⌫</span></button></li>
             </ul>
           </span>
         </div>
@@ -100,12 +100,12 @@
     <!-- dialogs -->
     <dialog class="juno-modal" id="ov-modal" aria-labelledby="ov-modal-t">
       <div class="juno-modal__stripe"></div>
-      <div class="juno-modal__head"><span class="juno-modal__tag">FLIGHT MANAGEMENT</span>
+      <div class="juno-modal__head"><span class="juno-modal__tag">DEPLOYMENT</span>
         <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
       <div class="juno-modal__body">
-        <h2 class="juno-modal__title" id="ov-modal-t">Amend cruise altitude to FL380?</h2>
-        <p class="juno-modal__text">ATC has cleared a step climb. Applying recomputes the descent profile and fuel prediction.</p>
-        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn">APPLY</button></form>
+        <h2 class="juno-modal__title" id="ov-modal-t">Promote build to production?</h2>
+        <p class="juno-modal__text">Build #482 passed all checks. Promoting routes production traffic to the new version and updates the rollout plan.</p>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn">PROMOTE</button></form>
       </div>
     </dialog>
 
@@ -114,9 +114,9 @@
       <div class="juno-modal__head"><span class="juno-modal__tag">CONFIRMATION REQUIRED</span>
         <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
       <div class="juno-modal__body">
-        <h2 class="juno-modal__title" id="ov-dd-t">Discard active flight plan?</h2>
-        <p class="juno-modal__text">This clears the loaded route and all crew amendments. Cannot be undone.</p>
-        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn juno--warning">DISCARD</button></form>
+        <h2 class="juno-modal__title" id="ov-dd-t">Delete this project?</h2>
+        <p class="juno-modal__text">This removes the project and all of its data and settings. Cannot be undone.</p>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn juno--warning">DELETE</button></form>
       </div>
     </dialog>
 
@@ -125,7 +125,7 @@
         <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
       <div class="juno-modal__body">
         <p class="juno-modal__text" style="margin-bottom:16px;">Edge-anchored panel (inline-end) for settings that don't warrant leaving context.</p>
-        <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>HUD repeater</span></label>
+        <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>Live updates</span></label>
         <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button><button class="juno-btn">APPLY</button></form>
       </div>
     </dialog>

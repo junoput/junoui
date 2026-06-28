@@ -1,7 +1,7 @@
 {
   "name": "junoui",
   "version": "0.1.0",
-  "description": "junoui — aviation-inspired design system. Color carries semantic meaning, never decoration: every hue has one assigned role (NOMINAL / ACTIVE / TARGET / CAUTION / WARNING). Ships multi-platform tokens (CSS, SCSS, JS/TS, JSON, Android, iOS, Flutter) plus a framework-agnostic CSS component layer.",
+  "description": "junoui — a token-driven design system. Color carries semantic meaning, never decoration: every hue has one assigned role (NOMINAL / ACTIVE / TARGET / CAUTION / WARNING). Ships multi-platform tokens (CSS, SCSS, JS/TS, JSON, Android, iOS, Flutter) plus a framework-agnostic CSS component layer.",
   "type": "module",
   "license": "MIT",
   "author": "junoput",
@@ -18,7 +18,7 @@
     "dark-mode",
     "accessibility",
     "colorblind",
-    "aviation"
+    "dashboard"
   ],
   "main": "./dist/js/tokens.js",
   "module": "./dist/js/tokens.js",

@@ -11,8 +11,8 @@ flips `aria-pressed`. Use for panel-style on/off controls where the lit legend m
   <span class="juno-toggle-btn__strip"></span>
   <span class="juno-toggle-btn__row">
     <span class="juno-toggle-btn__text">
-      <span class="juno-toggle-btn__legend">APU BLEED</span>
-      <span class="juno-toggle-btn__desc">Auxiliary power air supply</span>
+      <span class="juno-toggle-btn__legend">AUTO-SCALING</span>
+      <span class="juno-toggle-btn__desc">Scale workers with load</span>
     </span>
     <span class="juno-toggle-btn__status">ON</span>
   </span>

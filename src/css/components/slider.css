@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════════════
- *  Component — Slider  ·  AERO-UI "throttle quadrant"
+ *  Component — Slider  ·  track + grip lever
  *  A recessed channel with detent notches, an accent fill, and a gripped
  *  lever. Value-driven: the app sets --juno-slider-pct (0–100) and owns
  *  drag / keyboard / ARIA (role="slider" + aria-value*), the same split as

@@ -3,11 +3,11 @@
  *  Wraps any control with a label, optional help, and an error message.
  *  Usage:
  *    <div class="juno-field">
- *      <label class="juno-field__label" for="cs">Callsign
+ *      <label class="juno-field__label" for="cs">Order ID
  *        <span class="juno-field__req" aria-hidden="true">*</span>
  *      </label>
  *      <input id="cs" class="juno-input juno-mono" type="text" />
- *      <span class="juno-field__help">ICAO format</span>
+ *      <span class="juno-field__help">Prefix + number</span>
  *    </div>
  *  Error: add aria-invalid="true" to the control and swap help → __error.
  * ════════════════════════════════════════════════════════════════════ */
