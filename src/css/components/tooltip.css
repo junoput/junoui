@@ -49,6 +49,51 @@
   transform: translateX(-50%) translateY(0);
 }
 
+/* ── top-layer mode ─────────────────────────────────────────────────────
+   The pure-CSS reveal above is clipped if an ancestor sets overflow/clip.
+   Promote the bubble to a `popover="hint"` (a stateless enhancer toggles it
+   on hover/focus and points position-anchor at the trigger) and it renders in
+   the TOP LAYER — never clipped. CSS anchor positioning replaces the
+   wrapper-relative offsets; the arrow + placement classes still apply. */
+.juno-tooltip__bubble[popover] {
+  position: fixed;
+  margin: 0;
+  inset: auto;
+  position-area: block-start;
+  position-try-fallbacks: flip-block;
+  transform: translateY(var(--juno-space-4));
+  transition:
+    opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    transform var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    overlay var(--juno-motion-duration-quick) allow-discrete,
+    display var(--juno-motion-duration-quick) allow-discrete;
+}
+
+.juno-tooltip__bubble--bottom[popover] {
+  position-area: block-end;
+  transform: translateY(calc(-1 * var(--juno-space-4)));
+}
+
+.juno-tooltip__bubble--right[popover] {
+  position-area: inline-end;
+  transform: translateX(calc(-1 * var(--juno-space-4)));
+}
+
+.juno-tooltip__bubble--left[popover] {
+  position-area: inline-start;
+  transform: translateX(var(--juno-space-4));
+}
+
+.juno-tooltip__bubble[popover]:popover-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+@starting-style {
+  .juno-tooltip__bubble[popover]:popover-open { opacity: 0; }
+}
+
 /* arrow — a rotated square straddling the bubble edge nearest the target.
    The bubble overlaps its inner half, leaving a clean notch. */
 .juno-tooltip__arrow {

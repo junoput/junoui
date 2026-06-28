@@ -393,8 +393,8 @@
           </span>
 
           <span class="juno-popover-anchor">
-            <button class="juno-btn juno-btn--ghost" data-toggle="demo-pop" aria-expanded="false" aria-controls="demo-pop">RANGE FILTER ▾</button>
-            <div class="juno-popover" id="demo-pop" data-overlay role="dialog" aria-label="Range filter" hidden>
+            <button class="juno-btn juno-btn--ghost" popovertarget="demo-pop" aria-haspopup="dialog">RANGE FILTER ▾</button>
+            <div class="juno-popover" id="demo-pop" popover role="dialog" aria-label="Range filter">
               <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Traffic filter</span>
               <div class="juno-field"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span class="juno-field__label">Within (NM)</span><span class="juno-value juno-text-active js-sval" style="font-size:16px;">40</span></div>
                 <div class="juno-slider juno-slider--compact" role="slider" tabindex="0" aria-label="Within NM" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80">
@@ -405,12 +405,12 @@
           </span>
 
           <span class="juno-popover-anchor">
-            <button class="juno-btn juno-btn--ghost" data-toggle="demo-menu" aria-haspopup="menu" aria-expanded="false">FLIGHT PLAN ▾</button>
-            <ul class="juno-menu" id="demo-menu" data-overlay role="menu" hidden>
-              <li><button class="juno-menu__item" role="menuitem"><span class="juno-menu__icon">⤓</span>Load flight plan<span class="juno-menu__kbd">⌘O</span></button></li>
-              <li><button class="juno-menu__item" role="menuitem"><span class="juno-menu__icon">✎</span>Amend route<span class="juno-menu__kbd">⌘E</span></button></li>
+            <button class="juno-btn juno-btn--ghost" popovertarget="demo-menu" aria-haspopup="menu">FLIGHT PLAN ▾</button>
+            <ul class="juno-menu" id="demo-menu" popover role="menu">
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="demo-menu" popovertargetaction="hide"><span class="juno-menu__icon">⤓</span>Load flight plan<span class="juno-menu__kbd">⌘O</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="demo-menu" popovertargetaction="hide"><span class="juno-menu__icon">✎</span>Amend route<span class="juno-menu__kbd">⌘E</span></button></li>
               <li class="juno-menu__sep" role="separator"></li>
-              <li><button class="juno-menu__item juno--warning" role="menuitem"><span class="juno-menu__icon">⨯</span>Discard plan<span class="juno-menu__kbd">⌫</span></button></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="demo-menu" popovertargetaction="hide"><span class="juno-menu__icon">⨯</span>Discard plan<span class="juno-menu__kbd">⌫</span></button></li>
             </ul>
           </span>
         </div>

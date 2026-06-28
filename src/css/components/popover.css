@@ -2,34 +2,60 @@
  *  Component — Popover
  *  Anchored, click-triggered surface for rich, interactive content (filters,
  *  quick-edits, detail cards). Unlike a tooltip it holds focusable controls
- *  and persists until dismissed. junoui ships the surface + arrow; the app
- *  owns open/close, positioning, outside-click + ESC dismiss.
+ *  and persists until dismissed.
+ *
+ *  Built on the native Popover API: the panel lives in the browser TOP LAYER,
+ *  so it is never clipped by an ancestor's overflow/transform and never fights
+ *  z-index. A `popovertarget` button is its implicit anchor; CSS anchor
+ *  positioning pins it below, inline-end aligned. Open/close, light-dismiss,
+ *  and ESC all come from the platform — zero JS.
  *  Usage:
- *    <div class="juno-popover-anchor">
- *      <button aria-expanded="true" aria-controls="pf">RANGE FILTER ▾</button>
- *      <div class="juno-popover" id="pf" role="dialog">
- *        …controls…
- *        <span class="juno-popover__arrow"></span>
- *      </div>
+ *    <button popovertarget="pf" aria-expanded="false">RANGE FILTER ▾</button>
+ *    <div class="juno-popover" id="pf" popover role="dialog">
+ *      …controls…
+ *      <span class="juno-popover__arrow"></span>
  *    </div>
- *  Hide it from the app with the [hidden] attribute when closed.
+ *  (Older engines without anchor positioning fall back to the app setting
+ *   inset on the `toggle` event — junoui ships the surface; the app may pin it.)
  * ════════════════════════════════════════════════════════════════════ */
 
+/* legacy grouping wrapper — kept for layout; positioning no longer needs it */
 .juno-popover-anchor { position: relative; }
 
 .juno-popover {
-  position: absolute;
-  z-index: var(--juno-z-anchored);
-  inset-block-start: calc(100% + var(--juno-space-12));
-  inset-inline-end: 0;
+  position: fixed;
+  margin: 0;
+  inset: auto;
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-block, flip-inline;
+  margin-block-start: var(--juno-space-12);
   inline-size: 280px;
-  max-inline-size: 100%;
+  max-inline-size: calc(100vw - var(--juno-space-24));
   background: var(--juno-s2);
   color: var(--juno-data);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: var(--juno-radius-5);
   box-shadow: var(--juno-shadow-2);
   padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--juno-space-4)));
+  transition:
+    opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    transform var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    overlay var(--juno-motion-duration-quick) allow-discrete,
+    display var(--juno-motion-duration-quick) allow-discrete;
+}
+
+.juno-popover:popover-open {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .juno-popover:popover-open {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--juno-space-4)));
+  }
 }
 
 /* arrow back to the anchor (top-end corner) */

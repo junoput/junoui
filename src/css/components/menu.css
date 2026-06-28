@@ -2,29 +2,34 @@
  *  Component — Menu / Dropdown
  *  A list of immediate actions anchored to its trigger. Section dividers,
  *  keyboard shortcuts, and a destructive item set apart by WARNING. junoui
- *  ships the look; the app owns open/close, roving focus, and dismiss.
+ *  ships the look; the app owns roving focus. Open/close, light-dismiss, and
+ *  ESC come from the native Popover API — the menu lives in the TOP LAYER, so
+ *  it is never clipped by an ancestor's overflow and never fights z-index.
  *  Usage:
- *    <div class="juno-popover-anchor">
- *      <button aria-haspopup="menu" aria-expanded="true">FLIGHT PLAN ▾</button>
- *      <ul class="juno-menu" role="menu">
- *        <li><button class="juno-menu__item" role="menuitem">
- *          <span class="juno-menu__icon">⤓</span>Load flight plan
- *          <span class="juno-menu__kbd">⌘O</span>
- *        </button></li>
- *        <li class="juno-menu__sep" role="separator"></li>
- *        <li><button class="juno-menu__item juno--warning" role="menuitem">
- *          <span class="juno-menu__icon">⨯</span>Discard plan
- *        </button></li>
- *      </ul>
- *    </div>
- *  Hide with [hidden] when closed (reuses .juno-popover-anchor for position).
+ *    <button popovertarget="fp" aria-haspopup="menu" aria-expanded="false">FLIGHT PLAN ▾</button>
+ *    <ul class="juno-menu" id="fp" popover role="menu">
+ *      <li><button class="juno-menu__item" role="menuitem"
+ *            popovertarget="fp" popovertargetaction="hide">
+ *        <span class="juno-menu__icon">⤓</span>Load flight plan
+ *        <span class="juno-menu__kbd">⌘O</span>
+ *      </button></li>
+ *      <li class="juno-menu__sep" role="separator"></li>
+ *      <li><button class="juno-menu__item juno--warning" role="menuitem"
+ *            popovertarget="fp" popovertargetaction="hide">
+ *        <span class="juno-menu__icon">⨯</span>Discard plan
+ *      </button></li>
+ *    </ul>
+ *  (Each item carries popovertargetaction="hide" so activating it closes the
+ *   menu with no JS. The invoker is the menu's implicit anchor.)
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-menu {
-  position: absolute;
-  z-index: var(--juno-z-anchored);
-  inset-block-start: calc(100% + var(--juno-space-8));
-  inset-inline-end: 0;
+  position: fixed;
+  margin: 0;
+  inset: auto;
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-block, flip-inline;
+  margin-block-start: var(--juno-space-8);
   min-inline-size: 256px;
   background: var(--juno-s2);
   border: var(--juno-border-width-1) solid var(--juno-border);
@@ -32,6 +37,25 @@
   box-shadow: var(--juno-shadow-2);
   padding: var(--juno-space-4);
   list-style: none;
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--juno-space-4)));
+  transition:
+    opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    transform var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    overlay var(--juno-motion-duration-quick) allow-discrete,
+    display var(--juno-motion-duration-quick) allow-discrete;
+}
+
+.juno-menu:popover-open {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .juno-menu:popover-open {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--juno-space-4)));
+  }
 }
 
 .juno-menu__item {

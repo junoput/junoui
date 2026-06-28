@@ -52,30 +52,38 @@ document.addEventListener('click', (e) => {
   if (pb || mb || db) syncToggles();
 });
 
-// ── overlays + pressed toggles (demo wiring — apps own this, not junoui) ──
+// ── modal + pressed toggles (demo wiring — apps own this, not junoui) ─────
+//  Popover + menu need no JS: they use the native Popover API (popovertarget),
+//  so open/close, light-dismiss, and ESC are the platform's job.
 document.addEventListener('click', (e) => {
   const open = e.target.closest('[data-open]');
   if (open) document.getElementById(open.dataset.open)?.showModal();
 
   const tb = e.target.closest('.juno-toggle-btn:not(:disabled)');
   if (tb) tb.setAttribute('aria-pressed', String(tb.getAttribute('aria-pressed') !== 'true'));
-
-  // popover / menu: trigger toggles; clicks inside keep it open; a menu item
-  // or any outside click closes it.
-  const trig = e.target.closest('[data-toggle]');
-  const insidePanel = e.target.closest('[data-overlay]');
-  const closeAction = e.target.closest('[role="menuitem"], [data-close]');
-  document.querySelectorAll('[data-overlay]').forEach((panel) => {
-    let visible;
-    if (trig && panel.id === trig.dataset.toggle) visible = panel.hidden;
-    else if (panel === insidePanel && !closeAction) visible = !panel.hidden;
-    else visible = false;
-    panel.hidden = !visible;
-    document
-      .querySelector(`[data-toggle="${panel.id}"]`)
-      ?.setAttribute('aria-expanded', String(visible));
-  });
 });
+
+// ── tooltips: promote each bubble to a top-layer hint popover so it can't be
+//  clipped by an ancestor's overflow. Stateless enhancer — show on hover/focus
+//  of the trigger, hide on leave/blur; CSS owns the look (a no-JS consumer
+//  still gets the pure-CSS hover reveal, just clippable). ───────────────────
+function initTooltips() {
+  document.querySelectorAll('.juno-tooltip').forEach((wrap, i) => {
+    const trigger = wrap.querySelector('button, [tabindex]');
+    const bubble = wrap.querySelector('.juno-tooltip__bubble');
+    if (!trigger || !bubble || !('popover' in bubble)) return;
+    const name = `--juno-tip-${i}`;
+    trigger.style.anchorName = name;
+    bubble.style.positionAnchor = name;
+    bubble.popover = 'hint';
+    const show = () => bubble.matches(':popover-open') || bubble.showPopover();
+    const hide = () => bubble.matches(':popover-open') && bubble.hidePopover();
+    trigger.addEventListener('pointerenter', show);
+    trigger.addEventListener('pointerleave', hide);
+    trigger.addEventListener('focus', show);
+    trigger.addEventListener('blur', hide);
+  });
+}
 
 // ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
 function initSliders() {
@@ -153,6 +161,7 @@ function driveProgress() {
 
 html.dataset.junoDensity ??= 'comfortable';
 initSliders();
+initTooltips();
 syncToggles();
 tick();
 setInterval(tick, 1000);
