@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Data display</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Data display</span>
+      <h1>Status, never by color alone.</h1>
+      <p>Every status pairs its hue with a word, dot, or shape. Badges, status pills,
+        readouts, and cards all read <code class="juno-mono">var(--juno-role)</code> set by a
+        <code class="juno-mono">.juno--&lt;role&gt;</code> class.</p>
+    </div>
+
+    <!-- Badges -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Badges — filled &amp; outline</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body" style="gap:20px;">
+        <div class="demo-row" style="gap:8px;">
+          <span class="juno-badge juno--nominal">NOMINAL</span>
+          <span class="juno-badge juno--active">ACTIVE</span>
+          <span class="juno-badge juno--target">TARGET</span>
+          <span class="juno-badge juno--caution">CAUTION</span>
+          <span class="juno-badge juno--warning">WARNING</span>
+          <span class="juno-badge juno--muted">INACTIVE</span>
+        </div>
+        <div class="demo-row" style="gap:8px;">
+          <span class="juno-badge juno-badge--outline juno--nominal">NOMINAL</span>
+          <span class="juno-badge juno-badge--outline juno--active">ACTIVE</span>
+          <span class="juno-badge juno-badge--outline juno--target">TARGET</span>
+          <span class="juno-badge juno-badge--outline juno--caution">CAUTION</span>
+          <span class="juno-badge juno-badge--outline juno--warning">WARNING</span>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Status dots -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Status pills — dot + label (--live pulses)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row" style="gap:24px;">
+          <span class="juno-status juno--nominal"><span class="juno-status__dot"></span>NOMINAL</span>
+          <span class="juno-status juno--active juno-status--live"><span class="juno-status__dot"></span>ACTIVE · LIVE</span>
+          <span class="juno-status juno--target"><span class="juno-status__dot"></span>TARGET</span>
+          <span class="juno-status juno--caution"><span class="juno-status__dot"></span>CAUTION</span>
+          <span class="juno-status juno--warning juno-status--live"><span class="juno-status__dot"></span>WARNING · LIVE</span>
+          <span class="juno-status juno--muted"><span class="juno-status__dot"></span>OFFLINE</span>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Readouts -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Data readouts — label · value · unit</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:repeat(5,1fr);">
+        <div class="juno-readout juno--nominal"><span class="juno-readout__label">N1</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+        <div class="juno-readout juno--active"><span class="juno-readout__label">IAS</span><span class="juno-readout__value">248</span><span class="juno-readout__unit">kt</span></div>
+        <div class="juno-readout juno--caution"><span class="juno-readout__label">EGT</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">°C</span></div>
+        <div class="juno-readout"><span class="juno-readout__label">F.Flow</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">kg/h</span></div>
+        <div class="juno-readout"><span class="juno-readout__label">Alt</span><span class="juno-readout__value">FL350</span><span class="juno-readout__unit juno-text-target">▲ FL380</span></div>
+        <div class="juno-readout juno-readout--alert juno--warning"><span class="juno-readout__label">Oil PSI</span><span class="juno-readout__value">12</span><span class="juno-readout__unit juno-text-warning">↓ LOW</span></div>
+        <div class="juno-readout juno-readout--alert juno--caution"><span class="juno-readout__label">Hyd B</span><span class="juno-readout__value">2,650</span><span class="juno-readout__unit juno-text-caution">▼ DROP</span></div>
+        <div class="juno-readout juno--target"><span class="juno-readout__label">Hdg</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">°</span></div>
+        <div class="juno-readout juno--muted"><span class="juno-readout__label">VOR 2</span><span class="juno-readout__value">---</span><span class="juno-readout__unit">off</span></div>
+        <div class="juno-readout juno--nominal"><span class="juno-readout__label">Fuel</span><span class="juno-readout__value">18.4</span><span class="juno-readout__unit">t</span></div>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">Cards &amp; panels — default · accent · alert</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:repeat(3,1fr);">
+        <article class="juno-card">
+          <div class="juno-card__head">Engine 1<span class="juno-badge juno--nominal">NOMINAL</span></div>
+          <div class="juno-card__body">
+            <div class="juno-card__row"><span class="juno-label">N1</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">89.3</span></div>
+            <div class="juno-card__row"><span class="juno-label">N2</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">88.1</span></div>
+            <div class="juno-card__row"><span class="juno-label">EGT</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">540</span></div>
+          </div>
+        </article>
+        <article class="juno-card juno-card--accent juno--caution">
+          <div class="juno-card__head">Hyd Sys B<span class="juno-badge juno-badge--outline juno--caution">CAUTION</span></div>
+          <div class="juno-card__body">
+            <div class="juno-card__row"><span class="juno-label">Pressure</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">2,650</span></div>
+            <div class="juno-card__row"><span class="juno-label">Qty</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">72</span></div>
+          </div>
+        </article>
+        <article class="juno-card juno-card--alert juno--warning">
+          <div class="juno-card__head">Eng 2 Oil<span class="juno-badge juno--warning">WARNING</span></div>
+          <div class="juno-card__body">
+            <div class="juno-card__row"><span class="juno-label">Oil Press</span><span class="juno-value juno-text-warning" style="font-size:var(--juno-font-size-18);">12</span></div>
+            <div class="juno-text-warning" style="font-size:var(--juno-font-size-12);line-height:var(--juno-font-lineHeight-relaxed);">CHECK OIL SYSTEM</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

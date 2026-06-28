@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Layout</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Layout</span>
+      <h1>Intrinsic primitives — reflow by space, not breakpoints.</h1>
+      <p>Components live in unknown layouts, so these reflow on their own (container queries +
+        intrinsic sizing). Resize the window to watch them respond. Each primitive takes a
+        <code class="juno-mono">--juno-*</code> custom prop to tune.</p>
+    </div>
+
+    <!-- grid-auto -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">.juno-grid-auto — cards collapse on their own (<code class="juno-mono">--juno-grid-min</code>)</span>
+      </div>
+      <div class="juno-grid-auto" style="--juno-grid-min:200px;">
+        <article class="juno-card"><div class="juno-card__head">Engine 1<span class="juno-badge juno--nominal">NOMINAL</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">N1</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">89.3</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">Engine 2<span class="juno-badge juno--caution">CAUTION</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">N1</span><span class="juno-value juno-text-caution" style="font-size:var(--juno-font-size-18);">71.2</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">APU<span class="juno-badge juno--active">ACTIVE</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">RPM</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">99%</span></div></div></article>
+        <article class="juno-card"><div class="juno-card__head">Hyd A<span class="juno-badge juno--nominal">NOMINAL</span></div><div class="juno-card__body"><div class="juno-card__row"><span class="juno-label">PSI</span><span class="juno-value" style="font-size:var(--juno-font-size-18);">3,010</span></div></div></article>
+      </div>
+    </section>
+
+    <!-- stack + cluster -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">.juno-stack &amp; .juno-cluster</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">.juno-stack — vertical rhythm</span>
+          <div class="juno-stack" style="--juno-stack-space:12px;">
+            <div class="juno-card"><div class="juno-card__body"><span class="juno-label">Row one</span></div></div>
+            <div class="juno-card"><div class="juno-card__body"><span class="juno-label">Row two</span></div></div>
+            <div class="juno-card"><div class="juno-card__body"><span class="juno-label">Row three</span></div></div>
+          </div>
+        </div>
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">.juno-cluster — wrapping group</span>
+          <div class="juno-cluster">
+            <button class="juno-btn juno--nominal">CONFIRM</button>
+            <button class="juno-btn juno--active">APPLY</button>
+            <button class="juno-btn juno-btn--ghost">DETAILS</button>
+            <button class="juno-btn juno-btn--ghost">CANCEL</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- sidebar -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">.juno-sidebar — aside + content, stacks when tight</span>
+      </div>
+      <div class="juno-sidebar">
+        <aside class="juno-sidebar__aside juno-card"><div class="juno-card__body"><span class="juno-eyebrow">NAV</span><span class="juno-label">Systems · Engines · Hydraulics · Electrical</span></div></aside>
+        <main class="juno-sidebar__main juno-card"><div class="juno-card__body"><span class="juno-eyebrow">CONTENT</span><span class="juno-label">Fluid main region. The aside drops below this panel once the content would get narrower than its threshold.</span></div></main>
+      </div>
+    </section>
+
+    <!-- switcher -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">.juno-switcher — side-by-side, all stack past a threshold</span>
+      </div>
+      <div class="juno-switcher" style="--juno-switcher-threshold:480px;">
+        <article class="juno-card"><div class="juno-card__body"><span class="juno-eyebrow">PRIMARY</span><span class="juno-label">Equal-width siblings…</span></div></article>
+        <article class="juno-card"><div class="juno-card__body"><span class="juno-eyebrow">SECONDARY</span><span class="juno-label">…until the row is narrower than the threshold,</span></div></article>
+        <article class="juno-card"><div class="juno-card__body"><span class="juno-eyebrow">TERTIARY</span><span class="juno-label">then every child stacks at once.</span></div></article>
+      </div>
+    </section>
+
+    <!-- reel -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-eyebrow">.juno-reel — horizontal scroll-snap row</span>
+      </div>
+      <div class="juno-reel" style="--juno-reel-space:12px;">
+        <div class="juno-readout juno--nominal" style="min-width:120px;"><span class="juno-readout__label">N1</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+        <div class="juno-readout juno--caution" style="min-width:120px;"><span class="juno-readout__label">EGT</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">°C</span></div>
+        <div class="juno-readout" style="min-width:120px;"><span class="juno-readout__label">F.Flow</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">kg/h</span></div>
+        <div class="juno-readout juno--target" style="min-width:120px;"><span class="juno-readout__label">Hdg</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">°</span></div>
+        <div class="juno-readout" style="min-width:120px;"><span class="juno-readout__label">Fuel</span><span class="juno-readout__value">18.4</span><span class="juno-readout__unit">t</span></div>
+        <div class="juno-readout juno--warning" style="min-width:120px;"><span class="juno-readout__label">Oil</span><span class="juno-readout__value">12</span><span class="juno-readout__unit">psi</span></div>
+      </div>
+    </section>
+
+    <!-- center + responsive utils -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
+        <span class="juno-eyebrow">.juno-center &amp; responsive visibility</span>
+      </div>
+      <div class="juno-center juno-card" style="margin-bottom:24px;"><div class="juno-card__body"><span class="juno-eyebrow">CENTERED MEASURE</span><span class="juno-label">.juno-center caps the line length and centers within fluid gutters — the spine of a reading column.</span></div></div>
+      <div class="demo-row" style="gap:16px;">
+        <span class="juno-badge juno--active juno-hide-below-md">VISIBLE ≥ MD</span>
+        <span class="juno-badge juno--caution juno-hide-from-md">VISIBLE &lt; MD</span>
+        <span class="juno-text-muted" style="font-size:11px;">resize across the md breakpoint to toggle these</span>
+      </div>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

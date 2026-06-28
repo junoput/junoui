@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Overlays</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Overlays</span>
+      <h1>The top layer — never clipped.</h1>
+      <p>Modals + drawers are native <code class="juno-mono">&lt;dialog&gt;</code> (focus-trap, ESC,
+        scrim come free). Popover + menu + tooltip use the native Popover API, so they render
+        in the browser top layer — immune to any ancestor's <code class="juno-mono">overflow</code>.
+        Shared altitude stack + motion.</p>
+    </div>
+
+    <!-- Modals + drawers -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Modals &amp; drawers</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="juno-cluster" style="--juno-cluster-space:12px;">
+          <button class="juno-btn juno-btn--ghost" data-open="ov-modal">DIALOG</button>
+          <button class="juno-btn juno--warning juno-btn--ghost" data-open="ov-modal-danger">DESTRUCTIVE</button>
+          <button class="juno-btn juno-btn--ghost" data-open="ov-drawer-end">DRAWER · END</button>
+          <button class="juno-btn juno-btn--ghost" data-open="ov-drawer-start">DRAWER · START</button>
+          <button class="juno-btn juno-btn--ghost" data-open="ov-drawer-bottom">DRAWER · BOTTOM</button>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Tooltip placements -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Tooltip — four placements (hover / focus)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row" style="gap:32px;justify-content:center;padding:24px 0;">
+          <span class="juno-tooltip">
+            <button class="juno-btn juno-btn--ghost" tabindex="0">TOP</button>
+            <span class="juno-tooltip__bubble" role="tooltip">Default placement<span class="juno-tooltip__arrow"></span></span>
+          </span>
+          <span class="juno-tooltip">
+            <button class="juno-btn juno-btn--ghost" tabindex="0">RIGHT</button>
+            <span class="juno-tooltip__bubble juno-tooltip__bubble--right" role="tooltip">To the side<span class="juno-tooltip__arrow"></span></span>
+          </span>
+          <span class="juno-tooltip">
+            <button class="juno-btn juno-btn--ghost" tabindex="0">BOTTOM</button>
+            <span class="juno-tooltip__bubble juno-tooltip__bubble--bottom" role="tooltip">Below the trigger<span class="juno-tooltip__arrow"></span></span>
+          </span>
+          <span class="juno-tooltip">
+            <button class="juno-btn juno-btn--ghost" tabindex="0">LEFT</button>
+            <span class="juno-tooltip__bubble juno-tooltip__bubble--left" role="tooltip">Other side<span class="juno-tooltip__arrow"></span></span>
+          </span>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Popover + menu -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Popover &amp; menu — top layer, anchored</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="juno-cluster" style="--juno-cluster-space:12px;align-items:center;">
+          <span class="juno-popover-anchor">
+            <button class="juno-btn juno-btn--ghost" popovertarget="ov-pop" aria-haspopup="dialog">RANGE FILTER ▾</button>
+            <div class="juno-popover" id="ov-pop" popover role="dialog" aria-label="Range filter">
+              <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Traffic filter</span>
+              <div class="juno-field"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span class="juno-field__label">Within (NM)</span><span class="juno-value juno-text-active js-sval" style="font-size:16px;">40</span></div>
+                <div class="juno-slider juno-slider--compact" role="slider" tabindex="0" aria-label="Within NM" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+              </div>
+              <span class="juno-popover__arrow"></span>
+            </div>
+          </span>
+          <span class="juno-popover-anchor">
+            <button class="juno-btn juno-btn--ghost" popovertarget="ov-menu" aria-haspopup="menu">FLIGHT PLAN ▾</button>
+            <ul class="juno-menu" id="ov-menu" popover role="menu">
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⤓</span>Load flight plan<span class="juno-menu__kbd">⌘O</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">✎</span>Amend route<span class="juno-menu__kbd">⌘E</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⎘</span>Duplicate leg<span class="juno-menu__kbd">⌘D</span></button></li>
+              <li class="juno-menu__sep" role="separator"></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⨯</span>Discard plan<span class="juno-menu__kbd">⌫</span></button></li>
+            </ul>
+          </span>
+        </div>
+        <p class="juno-text-muted" style="font-size:11px;margin-top:16px;">Open one inside this card — it floats above everything, never clipped by the card's edges.</p>
+      </div></article>
+    </section>
+
+    <!-- dialogs -->
+    <dialog class="juno-modal" id="ov-modal" aria-labelledby="ov-modal-t">
+      <div class="juno-modal__stripe"></div>
+      <div class="juno-modal__head"><span class="juno-modal__tag">FLIGHT MANAGEMENT</span>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+      <div class="juno-modal__body">
+        <h2 class="juno-modal__title" id="ov-modal-t">Amend cruise altitude to FL380?</h2>
+        <p class="juno-modal__text">ATC has cleared a step climb. Applying recomputes the descent profile and fuel prediction.</p>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn">APPLY</button></form>
+      </div>
+    </dialog>
+
+    <dialog class="juno-modal juno--warning" id="ov-modal-danger" aria-labelledby="ov-dd-t">
+      <div class="juno-modal__stripe"></div>
+      <div class="juno-modal__head"><span class="juno-modal__tag">CONFIRMATION REQUIRED</span>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+      <div class="juno-modal__body">
+        <h2 class="juno-modal__title" id="ov-dd-t">Discard active flight plan?</h2>
+        <p class="juno-modal__text">This clears the loaded route and all crew amendments. Cannot be undone.</p>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn juno--warning">DISCARD</button></form>
+      </div>
+    </dialog>
+
+    <dialog class="juno-modal juno-drawer" id="ov-drawer-end" aria-labelledby="ov-de-t">
+      <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-de-t">DISPLAY SETTINGS · END</span>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+      <div class="juno-modal__body">
+        <p class="juno-modal__text" style="margin-bottom:16px;">Edge-anchored panel (inline-end) for settings that don't warrant leaving context.</p>
+        <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>HUD repeater</span></label>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button><button class="juno-btn">APPLY</button></form>
+      </div>
+    </dialog>
+
+    <dialog class="juno-modal juno-drawer juno-drawer--start" id="ov-drawer-start" aria-labelledby="ov-ds-t">
+      <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-ds-t">NAV · START</span>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+      <div class="juno-modal__body">
+        <p class="juno-modal__text">Anchored to the inline-start edge (mirrors under RTL).</p>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button></form>
+      </div>
+    </dialog>
+
+    <dialog class="juno-modal juno-drawer juno-drawer--bottom" id="ov-drawer-bottom" aria-labelledby="ov-db-t">
+      <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-db-t">QUICK ACTIONS · BOTTOM</span>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+      <div class="juno-modal__body">
+        <p class="juno-modal__text">Slides up from the block-end edge — good for mobile sheets.</p>
+        <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button><button class="juno-btn">CONFIRM</button></form>
+      </div>
+    </dialog>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

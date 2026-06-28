@@ -1,0 +1,202 @@
+/* ════════════════════════════════════════════════════════════════════════
+ *  junoui showcase — demo-only scaffolding. NOT part of the design system.
+ *  Shared across every showcase page. The chrome (header + nav + footer) is
+ *  injected by app.js so the pages stay DRY.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+.demo-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 40px 96px;
+}
+
+/* ── header ──────────────────────────────────────────────────────────── */
+.demo-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-height: 52px;
+  padding: 8px 40px;
+  background: var(--juno-s1);
+  border-bottom: 1px solid var(--juno-border);
+}
+
+.demo-toggle {
+  font-family: var(--juno-font-family-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--juno-label);
+  border: 1px solid var(--juno-border);
+  border-radius: 3px;
+}
+
+.demo-toggle[aria-pressed='true'] {
+  background: var(--juno-s3);
+  color: var(--juno-data);
+  border-color: var(--juno-label);
+}
+
+.demo-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--juno-border);
+}
+
+.demo-spacer {
+  flex: 1;
+}
+
+/* ── nav ─────────────────────────────────────────────────────────────── */
+.demo-nav {
+  position: sticky;
+  top: 53px;
+  z-index: 99;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 8px 40px;
+  background: color-mix(in srgb, var(--juno-s1) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--juno-border);
+}
+
+.demo-nav a {
+  font-family: var(--juno-font-family-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 3px;
+  color: var(--juno-label);
+  text-decoration: none;
+}
+
+.demo-nav a:hover {
+  color: var(--juno-data);
+  background: var(--juno-s2);
+}
+
+.demo-nav a[aria-current='page'] {
+  color: var(--juno-nominal);
+  background: color-mix(in srgb, var(--juno-nominal) 12%, transparent);
+}
+
+/* ── page hero ───────────────────────────────────────────────────────── */
+.demo-hero {
+  margin-bottom: 56px;
+}
+
+.demo-hero h1 {
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-38);
+  font-weight: var(--juno-font-weight-semibold);
+  color: var(--juno-data);
+  margin: 8px 0 12px;
+}
+
+.demo-hero p {
+  max-width: 60ch;
+  color: var(--juno-label);
+  font-size: var(--juno-font-size-14);
+  line-height: var(--juno-font-lineHeight-relaxed);
+}
+
+/* ── sections + specimens ────────────────────────────────────────────── */
+.demo-section {
+  margin-bottom: 64px;
+}
+
+.demo-section__title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--juno-border);
+}
+
+.demo-grid {
+  display: grid;
+  gap: 16px;
+}
+
+/* labelled example cell */
+.demo-specimen {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--juno-s1);
+  border: 1px solid var(--juno-border);
+  border-radius: var(--juno-radius-4);
+}
+
+.demo-specimen__label {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-10);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--juno-muted);
+}
+
+/* flex row of examples */
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.demo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.demo-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--juno-radius-4);
+  border: 1px solid var(--juno-border);
+}
+
+/* eyebrow that introduces a sub-group */
+.demo-lead {
+  margin-bottom: 14px;
+}
+
+/* "see everything" link on the overview page */
+.demo-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-12);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--juno-active);
+  text-decoration: none;
+}
+
+.demo-more:hover {
+  text-decoration: underline;
+}
+
+.demo-footer {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 40px 48px;
+  border-top: 1px solid var(--juno-border);
+  display: flex;
+  justify-content: space-between;
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Buttons</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Buttons</span>
+      <h1>One element, every role.</h1>
+      <p><code class="juno-mono">.juno-btn</code> reads <code class="juno-mono">var(--juno-role)</code>;
+        a <code class="juno-mono">.juno--&lt;role&gt;</code> class sets it. Add
+        <code class="juno-mono">.juno-btn--ghost</code> for the outline treatment and the native
+        <code class="juno-mono">disabled</code> attribute for disabled. Min height is
+        <code class="juno-mono">--juno-size-tap-min</code> (24px, WCAG 2.2).</p>
+    </div>
+
+    <!-- Solid -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Solid — every role</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row">
+          <button class="juno-btn">DEFAULT</button>
+          <button class="juno-btn juno--nominal">NOMINAL</button>
+          <button class="juno-btn juno--active">ACTIVE</button>
+          <button class="juno-btn juno--target">TARGET</button>
+          <button class="juno-btn juno--caution">CAUTION</button>
+          <button class="juno-btn juno--warning">WARNING</button>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Ghost -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Ghost — every role</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row">
+          <button class="juno-btn juno-btn--ghost">DEFAULT</button>
+          <button class="juno-btn juno-btn--ghost juno--nominal">NOMINAL</button>
+          <button class="juno-btn juno-btn--ghost juno--active">ACTIVE</button>
+          <button class="juno-btn juno-btn--ghost juno--target">TARGET</button>
+          <button class="juno-btn juno-btn--ghost juno--caution">CAUTION</button>
+          <button class="juno-btn juno-btn--ghost juno--warning">WARNING</button>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- States -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">States</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">Disabled</span>
+          <div class="demo-row">
+            <button class="juno-btn" disabled>SOLID</button>
+            <button class="juno-btn juno-btn--ghost" disabled>GHOST</button>
+            <button class="juno-btn juno--warning" disabled>WARNING</button>
+          </div>
+        </div>
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">Focus — tab to a button to see the ring</span>
+          <div class="demo-row">
+            <button class="juno-btn juno--active">FOCUSABLE</button>
+            <button class="juno-btn juno-btn--ghost">FOCUSABLE</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- In context -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">In context — a wrapping toolbar (.juno-cluster)</span>
+      </div>
+      <div class="juno-cluster">
+        <button class="juno-btn juno--nominal">CONFIRM</button>
+        <button class="juno-btn juno--active">APPLY</button>
+        <button class="juno-btn juno--target">SET TARGET</button>
+        <button class="juno-btn juno-btn--ghost">DETAILS</button>
+        <button class="juno-btn juno-btn--ghost">CANCEL</button>
+        <button class="juno-btn juno--warning">EMERGENCY</button>
+      </div>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

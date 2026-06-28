@@ -2,9 +2,13 @@
 //  junoui demo runtime — NOT part of the published package.
 // ════════════════════════════════════════════════════════════════════════
 //  Demonstrates real consumption: theming is done purely by setting
-//  data-juno-palette / data-juno-mode on <html> (the CSS does the rest),
-//  and the token table is read from the built JS module — the same import
-//  a consuming app uses.
+//  data-juno-palette / data-juno-mode / data-juno-density on <html> (the CSS
+//  does the rest), and the token table is read from the built JS module — the
+//  same import a consuming app uses.
+//
+//  Shared across every showcase page: the chrome (header + nav + footer) is
+//  injected here so the pages only carry their own <main>. Every page-specific
+//  hook is null-guarded, so this one script drives them all.
 // ════════════════════════════════════════════════════════════════════════
 
 import { TOKENS } from '../dist/js/tokens.js';
@@ -26,7 +30,70 @@ const ROLES = [
   's3',
 ];
 
-// ── theme toggles ───────────────────────────────────────────────────────
+const PAGES = [
+  ['index.html', 'Overview'],
+  ['foundations.html', 'Foundations'],
+  ['buttons.html', 'Buttons'],
+  ['forms.html', 'Forms'],
+  ['data-display.html', 'Data display'],
+  ['loaders.html', 'Loaders'],
+  ['overlays.html', 'Overlays'],
+  ['layout.html', 'Layout'],
+];
+
+// ── shared chrome (header + nav + footer) ────────────────────────────────
+function renderChrome() {
+  const here = location.pathname.split('/').pop() || 'index.html';
+  const nav = PAGES.map(
+    ([href, label]) =>
+      `<a href="./${href}"${href === here ? ' aria-current="page"' : ''}>${label}</a>`,
+  ).join('');
+
+  const header = document.createElement('header');
+  header.className = 'demo-header';
+  header.innerHTML = `
+    <a href="./index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+      <span class="juno-mono" style="font-size:16px;font-weight:700;color:var(--juno-nominal);letter-spacing:.2em;">junoui</span>
+      <span class="juno-eyebrow">design system</span>
+    </a>
+    <div class="demo-spacer"></div>
+    <span class="juno-eyebrow">Palette</span>
+    <div style="display:flex;gap:4px;">
+      <button class="demo-toggle" data-palette="standard">STANDARD</button>
+      <button class="demo-toggle" data-palette="colorblind">COLORBLIND</button>
+      <button class="demo-toggle" data-palette="soft">SOFT</button>
+    </div>
+    <div class="demo-divider"></div>
+    <span class="juno-eyebrow">Mode</span>
+    <div style="display:flex;gap:4px;">
+      <button class="demo-toggle" data-mode="dark">◑ DARK</button>
+      <button class="demo-toggle" data-mode="light">◐ LIGHT</button>
+    </div>
+    <div class="demo-divider"></div>
+    <span class="juno-eyebrow">Density</span>
+    <div style="display:flex;gap:4px;">
+      <button class="demo-toggle" data-density="comfortable">COMFORTABLE</button>
+      <button class="demo-toggle" data-density="compact">COMPACT</button>
+    </div>
+    <div class="demo-divider"></div>
+    <span class="juno-mono juno-text-data" id="clock" style="font-size:13px;"></span>`;
+
+  const navEl = document.createElement('nav');
+  navEl.className = 'demo-nav';
+  navEl.innerHTML = nav;
+
+  document.body.prepend(navEl);
+  document.body.prepend(header);
+
+  const footer = document.createElement('footer');
+  footer.className = 'demo-footer';
+  footer.innerHTML = `
+    <span class="juno-mono juno-text-nominal" style="letter-spacing:.2em;">junoui</span>
+    <span class="juno-text-muted" style="font-size:11px;">junoui · interactive demo · not shipped in the npm package</span>`;
+  document.body.append(footer);
+}
+
+// ── theme toggles ────────────────────────────────────────────────────────
 function syncToggles() {
   const { junoPalette: p, junoMode: m, junoDensity: d } = html.dataset;
   document
@@ -38,7 +105,8 @@ function syncToggles() {
   document
     .querySelectorAll('[data-density]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.density === d)));
-  document.getElementById('tokens-caption').textContent = `Color Tokens — ${p} / ${m}`;
+  const cap = document.getElementById('tokens-caption');
+  if (cap) cap.textContent = `Color tokens — ${p} / ${m}`;
   renderTokens();
 }
 
@@ -63,6 +131,44 @@ document.addEventListener('click', (e) => {
   if (tb) tb.setAttribute('aria-pressed', String(tb.getAttribute('aria-pressed') !== 'true'));
 });
 
+// ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
+function initSliders() {
+  document.querySelectorAll('.juno-slider').forEach((el) => {
+    const lo = +el.getAttribute('aria-valuemin') || 0;
+    const hi = +el.getAttribute('aria-valuemax') || 100;
+    const step = hi - lo > 100 ? 10 : 1;
+    const out = el.parentElement.querySelector('.js-sval');
+    const setVal = (v) => {
+      v = Math.max(lo, Math.min(hi, Math.round(v / step) * step));
+      el.setAttribute('aria-valuenow', v);
+      el.style.setProperty('--juno-slider-pct', ((v - lo) / (hi - lo)) * 100);
+      if (out) out.textContent = v;
+    };
+    const fromX = (x) => {
+      const r = el.getBoundingClientRect();
+      return lo + Math.max(0, Math.min(1, (x - r.left) / r.width)) * (hi - lo);
+    };
+    setVal(+el.getAttribute('aria-valuenow') || lo);
+    if (el.getAttribute('aria-disabled') === 'true') return;
+    el.addEventListener('pointerdown', (e) => {
+      el.setPointerCapture(e.pointerId);
+      setVal(fromX(e.clientX));
+      const mv = (ev) => setVal(fromX(ev.clientX));
+      const up = () => {
+        el.removeEventListener('pointermove', mv);
+        el.removeEventListener('pointerup', up);
+      };
+      el.addEventListener('pointermove', mv);
+      el.addEventListener('pointerup', up);
+    });
+    el.addEventListener('keydown', (e) => {
+      const cur = +el.getAttribute('aria-valuenow') || lo;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') (setVal(cur + step), e.preventDefault());
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') (setVal(cur - step), e.preventDefault());
+    });
+  });
+}
+
 // ── tooltips: promote each bubble to a top-layer hint popover so it can't be
 //  clipped by an ancestor's overflow. Stateless enhancer — show on hover/focus
 //  of the trigger, hide on leave/blur; CSS owns the look (a no-JS consumer
@@ -85,47 +191,11 @@ function initTooltips() {
   });
 }
 
-// ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
-function initSliders() {
-  document.querySelectorAll('.juno-slider').forEach((el) => {
-    const lo = +el.getAttribute('aria-valuemin') || 0;
-    const hi = +el.getAttribute('aria-valuemax') || 100;
-    const step = hi - lo > 100 ? 10 : 1;
-    const out = el.parentElement.querySelector('.js-sval');
-    const setVal = (v) => {
-      v = Math.max(lo, Math.min(hi, Math.round(v / step) * step));
-      el.setAttribute('aria-valuenow', v);
-      el.style.setProperty('--juno-slider-pct', ((v - lo) / (hi - lo)) * 100);
-      if (out) out.textContent = v;
-    };
-    const fromX = (x) => {
-      const r = el.getBoundingClientRect();
-      return lo + Math.max(0, Math.min(1, (x - r.left) / r.width)) * (hi - lo);
-    };
-    setVal(+el.getAttribute('aria-valuenow') || lo);
-    el.addEventListener('pointerdown', (e) => {
-      el.setPointerCapture(e.pointerId);
-      setVal(fromX(e.clientX));
-      const mv = (ev) => setVal(fromX(ev.clientX));
-      const up = () => {
-        el.removeEventListener('pointermove', mv);
-        el.removeEventListener('pointerup', up);
-      };
-      el.addEventListener('pointermove', mv);
-      el.addEventListener('pointerup', up);
-    });
-    el.addEventListener('keydown', (e) => {
-      const cur = +el.getAttribute('aria-valuenow') || lo;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') (setVal(cur + step), e.preventDefault());
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') (setVal(cur - step), e.preventDefault());
-    });
-  });
-}
-
 // ── token table (values straight from the JS module) ────────────────────
 function renderTokens() {
-  const t = TOKENS[html.dataset.junoPalette][html.dataset.junoMode];
   const grid = document.getElementById('token-grid');
+  if (!grid) return;
+  const t = TOKENS[html.dataset.junoPalette][html.dataset.junoMode];
   grid.innerHTML = ROLES.map(
     (role) => `
     <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--juno-s1);border:1px solid var(--juno-border);border-radius:var(--juno-radius-4);">
@@ -139,15 +209,17 @@ function renderTokens() {
 
 // ── live clock ──────────────────────────────────────────────────────────
 function tick() {
+  const el = document.getElementById('clock');
+  if (!el) return;
   const d = new Date();
   const p = (n) => String(n).padStart(2, '0');
-  document.getElementById('clock').textContent =
-    `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  el.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
 }
 
 // ── determinate-loader progress (demo only) ──────────────────────────────
 let progress = 0;
 function driveProgress() {
+  if (!document.querySelector('[data-prog]')) return;
   progress += 1.1;
   if (progress >= 100) progress = 0;
   const pct = Math.round(progress);
@@ -159,6 +231,9 @@ function driveProgress() {
   });
 }
 
+renderChrome();
+html.dataset.junoPalette ??= 'standard';
+html.dataset.junoMode ??= 'dark';
 html.dataset.junoDensity ??= 'comfortable';
 initSliders();
 initTooltips();

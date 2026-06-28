@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Foundations</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Foundations</span>
+      <h1>Tokens — the contract.</h1>
+      <p>Every value is authored once in <code class="juno-mono">tokens/**</code> and compiled to
+        each platform. Edit a token = change the system everywhere. Color is shown for the
+        live palette / mode (toggle in the header).</p>
+    </div>
+
+    <!-- Color -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow" id="tokens-caption">Color tokens</span>
+      </div>
+      <div class="demo-grid" id="token-grid" style="grid-template-columns:repeat(2,1fr);"></div>
+
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Text utilities — <code class="juno-mono">.juno-text-&lt;role&gt;</code></p>
+      <div class="demo-row" style="gap:20px;">
+        <span class="juno-value juno-text-nominal">NOMINAL</span>
+        <span class="juno-value juno-text-active">ACTIVE</span>
+        <span class="juno-value juno-text-target">TARGET</span>
+        <span class="juno-value juno-text-caution">CAUTION</span>
+        <span class="juno-value juno-text-warning">WARNING</span>
+        <span class="juno-value juno-text-data">DATA</span>
+        <span class="juno-value juno-text-label">LABEL</span>
+        <span class="juno-value juno-text-muted">MUTED</span>
+      </div>
+    </section>
+
+    <!-- Type scale -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Typography</span>
+      </div>
+
+      <p class="juno-eyebrow demo-lead">Type scale — <code class="juno-mono">--juno-font-size-*</code></p>
+      <div class="demo-stack" style="gap:6px;margin-bottom:36px;">
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">52</code><span style="font-size:var(--juno-font-size-52);color:var(--juno-data);">359.2</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">38</code><span style="font-size:var(--juno-font-size-38);color:var(--juno-data);">System Overview</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">28</code><span style="font-size:var(--juno-font-size-28);color:var(--juno-data);">Engine Parameters</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">20</code><span style="font-size:var(--juno-font-size-20);color:var(--juno-data);">Subsystem heading</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">16</code><span style="font-size:var(--juno-font-size-16);color:var(--juno-data);">Body / control label text</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">13</code><span style="font-size:var(--juno-font-size-13);color:var(--juno-label);">Secondary / help</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px;"><code class="juno-mono juno-text-muted" style="width:48px;font-size:11px;">11</code><span style="font-size:var(--juno-font-size-11);letter-spacing:.12em;color:var(--juno-muted);">EYEBROW · 11</span></div>
+      </div>
+
+      <div class="demo-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">Weights — B612 (sans)</span>
+          <span style="font-family:var(--juno-font-family-sans);font-weight:var(--juno-font-weight-light);color:var(--juno-data);font-size:18px;">Light 300</span>
+          <span style="font-family:var(--juno-font-family-sans);font-weight:var(--juno-font-weight-regular);color:var(--juno-data);font-size:18px;">Regular 400</span>
+          <span style="font-family:var(--juno-font-family-sans);font-weight:var(--juno-font-weight-medium);color:var(--juno-data);font-size:18px;">Medium 500</span>
+          <span style="font-family:var(--juno-font-family-sans);font-weight:var(--juno-font-weight-semibold);color:var(--juno-data);font-size:18px;">Semibold 600</span>
+          <span style="font-family:var(--juno-font-family-sans);font-weight:var(--juno-font-weight-bold);color:var(--juno-data);font-size:18px;">Bold 700</span>
+        </div>
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">Families</span>
+          <span class="juno-value" style="font-size:20px;">B612 Mono — 0123.456 °C</span>
+          <span style="font-family:var(--juno-font-family-sans);color:var(--juno-data);font-size:20px;">B612 Sans — System Overview</span>
+          <span class="demo-specimen__label" style="margin-top:8px;">Line-heights</span>
+          <span class="juno-text-label" style="line-height:var(--juno-font-lineHeight-tight);font-size:13px;">tight · snug · normal · relaxed · loose are available as <code class="juno-mono">--juno-font-lineHeight-*</code>.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spacing + radius -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Spacing &amp; radius</span>
+      </div>
+
+      <p class="juno-eyebrow demo-lead">Spacing scale — <code class="juno-mono">--juno-space-*</code> (px)</p>
+      <div class="demo-stack" style="gap:6px;margin-bottom:36px;" id="space-scale"></div>
+
+      <p class="juno-eyebrow demo-lead">Radius scale — <code class="juno-mono">--juno-radius-*</code></p>
+      <div class="demo-row" style="gap:16px;" id="radius-scale"></div>
+    </section>
+
+    <!-- Motion -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">Motion</span>
+      </div>
+      <p class="juno-label demo-lead" style="max-width:60ch;">Hover a tile — each transitions with a different duration / easing token. All motion
+        honors <code class="juno-mono">prefers-reduced-motion</code>.</p>
+      <div class="demo-grid" style="grid-template-columns:repeat(4,1fr);" id="motion-grid"></div>
+    </section>
+
+    <!-- Elevation + z + opacity -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-eyebrow">Elevation · Z-index · Opacity</span>
+      </div>
+
+      <p class="juno-eyebrow demo-lead">Elevation — <code class="juno-mono">--juno-shadow-1 · 2 · 3</code></p>
+      <div class="demo-row" style="gap:32px;margin-bottom:36px;">
+        <div class="demo-specimen" style="box-shadow:var(--juno-shadow-1);"><span class="demo-specimen__label">shadow-1</span></div>
+        <div class="demo-specimen" style="box-shadow:var(--juno-shadow-2);"><span class="demo-specimen__label">shadow-2</span></div>
+        <div class="demo-specimen" style="box-shadow:var(--juno-shadow-3);"><span class="demo-specimen__label">shadow-3</span></div>
+      </div>
+
+      <div class="demo-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">Altitude stack — <code class="juno-mono">--juno-z-*</code></span>
+          <div class="juno-mono juno-text-label" style="font-size:13px;line-height:1.9;">
+            surface&nbsp;&nbsp;0<br>raised&nbsp;&nbsp;&nbsp;100<br>anchored&nbsp;2000&nbsp;<span class="juno-text-muted">— menu · popover · tooltip</span><br>overlay&nbsp;&nbsp;4000&nbsp;<span class="juno-text-muted">— modal · drawer · scrim</span><br>alert&nbsp;&nbsp;&nbsp;&nbsp;5000&nbsp;<span class="juno-text-muted">— toast</span>
+          </div>
+        </div>
+        <div class="demo-specimen">
+          <span class="demo-specimen__label">Opacity — <code class="juno-mono">--juno-opacity-*</code></span>
+          <div class="demo-row" style="gap:16px;">
+            <span class="juno-value juno-text-data" style="opacity:var(--juno-opacity-disabled);">disabled .45</span>
+            <span class="juno-value juno-text-data" style="opacity:var(--juno-opacity-muted);">muted .65</span>
+            <span class="juno-value juno-text-data" style="opacity:var(--juno-opacity-scrim);">scrim .62</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // demo-only generators for the scale strips (kept inline; pure presentation)
+    const SPACE = [2, 4, 8, 10, 12, 16, 20, 24, 28, 32, 40, 56, 72, 96];
+    document.getElementById('space-scale').innerHTML = SPACE.map((n) =>
+      `<div style="display:flex;align-items:center;gap:16px;"><code class="juno-mono juno-text-muted" style="width:36px;font-size:11px;">${n}</code><span style="height:14px;width:${n}px;background:var(--juno-active);border-radius:2px;"></span></div>`).join('');
+
+    const RADIUS = [2, 3, 4, 5, 8];
+    document.getElementById('radius-scale').innerHTML = RADIUS.map((n) =>
+      `<div class="demo-stack" style="gap:8px;align-items:center;"><div style="width:64px;height:64px;background:var(--juno-s2);border:1px solid var(--juno-border);border-radius:var(--juno-radius-${n});"></div><code class="juno-mono juno-text-muted" style="font-size:11px;">radius-${n}</code></div>`).join('');
+
+    const MOTION = [
+      ['duration-instant', 'ease-standard', '80ms'],
+      ['duration-quick', 'ease-decel', '140ms'],
+      ['duration-base', 'ease-standard', '200ms'],
+      ['duration-deliberate', 'ease-spring', '300ms · spring'],
+    ];
+    document.getElementById('motion-grid').innerHTML = MOTION.map(([d, e, lbl]) =>
+      `<div class="demo-specimen" style="cursor:pointer;transition:transform var(--juno-motion-${d}) var(--juno-motion-${e});" onpointerenter="this.style.transform='translateX(40px)'" onpointerleave="this.style.transform='none'"><span class="demo-specimen__label">${lbl}</span><code class="juno-mono juno-text-label" style="font-size:11px;">${e}</code></div>`).join('');
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

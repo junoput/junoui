@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Loaders</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Loaders</span>
+      <h1>Indeterminate loops; determinate tells the truth.</h1>
+      <p>Three families — arc, beacon, linear. Indeterminate loops continuously; determinate
+        tracks real progress (driven live here). All honor
+        <code class="juno-mono">prefers-reduced-motion</code> and read
+        <code class="juno-mono">var(--juno-role)</code>.</p>
+    </div>
+
+    <!-- Families -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Families × indeterminate / determinate</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:90px 1fr 1fr;align-items:center;row-gap:36px;">
+        <!-- ARC -->
+        <div><div class="juno-mono juno-text-active" style="font-size:11px;">ARC</div><div class="juno-eyebrow" style="margin-top:4px;">RING</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div class="juno-arc juno-arc--indeterminate"></div>
+          <span class="juno-eyebrow">INDETERMINATE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div style="position:relative;width:76px;height:76px;">
+            <div class="juno-arc" data-prog></div>
+            <span class="juno-arc__label" data-pct></span>
+          </div>
+          <span class="juno-eyebrow">DETERMINATE</span>
+        </div>
+
+        <!-- BEACON -->
+        <div><div class="juno-mono juno-text-active" style="font-size:11px;">BEACON</div><div class="juno-eyebrow" style="margin-top:4px;">PULSE</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div class="juno-beacon"><span class="juno-beacon__core"></span></div>
+          <span class="juno-eyebrow">INDETERMINATE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div class="juno-beacon juno-beacon--determinate" data-prog>
+            <span class="juno-beacon__track"></span><span class="juno-beacon__fill"></span><span class="juno-beacon__hub"></span><span class="juno-beacon__label" data-pct></span>
+          </div>
+          <span class="juno-eyebrow">DETERMINATE</span>
+        </div>
+
+        <!-- LINEAR -->
+        <div><div class="juno-mono juno-text-active" style="font-size:11px;">LINEAR</div><div class="juno-eyebrow" style="margin-top:4px;">BAR</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div class="juno-bar juno-bar--indeterminate" style="max-width:220px;"><span class="juno-bar__fill"></span></div>
+          <span class="juno-eyebrow">INDETERMINATE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;width:100%;max-width:220px;">
+            <div class="juno-bar" data-prog style="flex:1;"><span class="juno-bar__fill"></span></div>
+            <span class="juno-mono" style="font-size:13px;font-weight:700;color:var(--juno-data);min-width:42px;text-align:right;" data-pct></span>
+          </div>
+          <span class="juno-eyebrow">DETERMINATE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roles -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Role tints — any loader reads <code class="juno-mono">--juno-role</code></span>
+      </div>
+      <div class="demo-row" style="gap:48px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div class="juno-arc juno-arc--indeterminate juno--active"></div><span class="juno-eyebrow">active</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div class="juno-arc juno-arc--indeterminate juno--caution"></div><span class="juno-eyebrow">caution</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div class="juno-beacon juno--warning"><span class="juno-beacon__core"></span></div><span class="juno-eyebrow">warning</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;max-width:240px;">
+          <div class="juno-bar juno-bar--indeterminate juno--target" style="width:100%;"><span class="juno-bar__fill"></span></div><span class="juno-eyebrow">target</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

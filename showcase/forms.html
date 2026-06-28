@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Forms</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Form controls</span>
+      <h1>Neutral at rest; role on demand.</h1>
+      <p>Controls are neutral until a <code class="juno-mono">.juno--&lt;role&gt;</code> class or
+        <code class="juno-mono">aria-invalid</code> tints them. Padding follows the density toggle
+        in the header. junoui ships the look + a11y contract; the app owns value + state.</p>
+    </div>
+
+    <!-- Inputs -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Inputs &amp; field — every state</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="juno-grid-auto" style="--juno-grid-min:220px;">
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-def">Default (mono)</label>
+            <input id="i-def" class="juno-input juno-mono" type="text" value="AA 1234" />
+            <span class="juno-field__help">IATA or ICAO</span>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-sans">Sans variant</label>
+            <input id="i-sans" class="juno-input juno-input--sans" type="text" value="Cleared direct" />
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-tgt">Role-tinted <span class="juno-field__req" aria-hidden="true">*</span></label>
+            <input id="i-tgt" class="juno-input juno-mono juno--target" type="text" value="38000" aria-required="true" />
+            <span class="juno-field__help juno-text-target">FT — managed</span>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-inv">Invalid</label>
+            <input id="i-inv" class="juno-input juno-mono" type="text" value="7700" aria-invalid="true" aria-describedby="i-inv-e" />
+            <span class="juno-field__error" id="i-inv-e">Emergency squawk detected</span>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-ph">Placeholder</label>
+            <input id="i-ph" class="juno-input juno-mono" type="text" placeholder="—— · ——" />
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-dis">Disabled</label>
+            <input id="i-dis" class="juno-input juno-mono" type="text" value="LOCKED" disabled />
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-sel">Select</label>
+            <div class="juno-select">
+              <select id="i-sel" class="juno-input">
+                <option>NOMINAL</option><option>CAUTION</option><option>WARNING</option>
+              </select>
+            </div>
+          </div>
+          <div class="juno-field">
+            <label class="juno-field__label" for="i-sel2">Select — disabled</label>
+            <div class="juno-select">
+              <select id="i-sel2" class="juno-input" disabled>
+                <option>UNAVAILABLE</option>
+              </select>
+            </div>
+          </div>
+          <div class="juno-field" style="grid-column:1 / -1;">
+            <label class="juno-field__label" for="i-ta">Textarea (sans)</label>
+            <textarea id="i-ta" class="juno-input juno-input--sans" rows="2" placeholder="Free text remarks…"></textarea>
+          </div>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Checkbox / radio -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Checkbox &amp; radio — reticle core</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body" style="gap:20px;">
+        <div class="demo-row" style="gap:24px;">
+          <label class="juno-choice"><input class="juno-checkbox" type="checkbox" checked /> CHECKED</label>
+          <label class="juno-choice"><input class="juno-checkbox" type="checkbox" /> UNCHECKED</label>
+          <label class="juno-choice"><input class="juno-checkbox juno--target" type="checkbox" checked /> TARGET ROLE</label>
+          <label class="juno-choice"><input class="juno-checkbox juno--warning" type="checkbox" checked /> WARNING ROLE</label>
+          <label class="juno-choice"><input class="juno-checkbox" type="checkbox" checked disabled /> DISABLED</label>
+        </div>
+        <div class="demo-row" style="gap:24px;">
+          <label class="juno-choice"><input class="juno-radio" type="radio" name="r" /> OPTION A</label>
+          <label class="juno-choice"><input class="juno-radio" type="radio" name="r" checked /> OPTION B</label>
+          <label class="juno-choice"><input class="juno-radio juno--target" type="radio" name="r2" checked /> MANAGED</label>
+          <label class="juno-choice"><input class="juno-radio" type="radio" name="r3" disabled /> DISABLED</label>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Switch -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Switch — annunciator rocker</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row" style="gap:32px;">
+          <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>ON (nominal)</span></label>
+          <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" /><span class="juno-switch__track"></span><span>OFF</span></label>
+          <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track juno--caution"></span><span>CAUTION ON</span></label>
+          <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked disabled /><span class="juno-switch__track"></span><span>DISABLED</span></label>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Slider -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">Slider — throttle quadrant (drag / arrow keys)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body" style="gap:24px;max-width:420px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span class="juno-eyebrow">Standard</span><span class="juno-value juno-text-data js-sval" style="font-size:18px;">60</span></div>
+          <div class="juno-slider" role="slider" tabindex="0" aria-label="Standard" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span class="juno-eyebrow">Compact — managed (target)</span><span class="juno-value juno-text-target js-sval" style="font-size:18px;">160</span></div>
+          <div class="juno-slider juno-slider--compact juno--target" role="slider" tabindex="0" aria-label="Compact" aria-valuenow="160" aria-valuemin="10" aria-valuemax="320"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span class="juno-eyebrow">Caution role</span><span class="juno-value juno-text-caution js-sval" style="font-size:18px;">85</span></div>
+          <div class="juno-slider juno--caution" role="slider" tabindex="0" aria-label="Caution" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span class="juno-eyebrow">Disabled</span><span class="juno-value juno-text-muted js-sval" style="font-size:18px;">40</span></div>
+          <div class="juno-slider" role="slider" tabindex="-1" aria-disabled="true" aria-label="Disabled" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Toggle buttons -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-eyebrow">Toggle buttons — illuminated legend</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="juno-grid-auto" style="--juno-grid-min:240px;">
+          <button class="juno-toggle-btn" aria-pressed="true">
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">APU BLEED</span><span class="juno-toggle-btn__desc">Auxiliary power air supply</span></span><span class="juno-toggle-btn__status">ON</span></span>
+          </button>
+          <button class="juno-toggle-btn" aria-pressed="false">
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">WING ANTI-ICE</span><span class="juno-toggle-btn__desc">Leading-edge de-ice</span></span><span class="juno-toggle-btn__status">OFF</span></span>
+          </button>
+          <button class="juno-toggle-btn juno--caution" aria-pressed="true">
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">FUEL XFEED</span><span class="juno-toggle-btn__desc">Crossfeed valve open</span></span><span class="juno-toggle-btn__status">ON</span></span>
+          </button>
+          <button class="juno-toggle-btn" disabled>
+            <span class="juno-toggle-btn__strip"></span>
+            <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">EMER ELEC</span><span class="juno-toggle-btn__desc">Guarded — disabled</span></span><span class="juno-toggle-btn__status">LOCK</span></span>
+          </button>
+        </div>
+      </div></article>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
