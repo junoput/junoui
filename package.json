@@ -61,7 +61,7 @@
     "lint": "npm run lint:css && npm run format:check",
     "test": "npm run build && node --test \"test/**/*.test.mjs\"",
     "prepare": "npm run build",
-    "serve": "node style-dictionary.config.mjs && node scripts/bundle-css.mjs && python3 -m http.server 8137"
+    "showcase": "npm run build && node scripts/serve.mjs"
   },
   "devDependencies": {
     "prettier": "^3.8.4",
