@@ -13,6 +13,7 @@ A compact, uppercase status label.
 | ---------------------- | --------------------------------------------- |
 | `.juno-badge`          | Base. Filled: background = role, text = `s0`. |
 | `.juno-badge--outline` | Transparent fill, text + border = role.       |
+| `.juno-badge--soft`    | Low-fill chip: role text on a 13% role wash.  |
 | `.juno--<role>`        | Sets the color (required).                    |
 
 ## Anatomy (any platform)

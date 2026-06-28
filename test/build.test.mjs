@@ -94,6 +94,8 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-switcher-space',
     'juno-switcher-threshold',
     'juno-reel-space',
+    'juno-table-fill',
+    'juno-cell-max',
   ]);
   const files = [
     'src/css/base.css',

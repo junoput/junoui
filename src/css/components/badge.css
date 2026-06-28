@@ -30,3 +30,11 @@
   color: var(--juno-role);
   border-color: var(--juno-role);
 }
+
+/* soft — low-fill chip: role text on a tinted wash + faint role border.
+   Quieter than filled; ideal for in-table status (a phase/state per row). */
+.juno-badge--soft {
+  background: color-mix(in srgb, var(--juno-role) 13%, transparent);
+  color: var(--juno-role);
+  border-color: color-mix(in srgb, var(--juno-role) 30%, transparent);
+}

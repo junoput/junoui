@@ -1,0 +1,327 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Table / Data grid
+ *  Dense, scannable rows that read like instrument readouts: numbers in
+ *  mono, right-aligned; semantic color reserved for status; one selected
+ *  row carries the active rail. junoui ships the LOOK + a11y contract;
+ *  the app owns sort, selection, inline-edit, pagination, and filtering.
+ *
+ *  Real <table> semantics — junoui only dresses it. Wrap in
+ *  `.juno-table-scroll` for a sticky-header, overflow-scrolling viewport.
+ *  Usage:
+ *    <div class="juno-table-scroll">
+ *      <table class="juno-table juno-table--zebra juno-table--sticky">
+ *        <thead><tr>
+ *          <th aria-sort="ascending">FLIGHT</th>
+ *          <th class="juno-table__num" aria-sort="none">ALT</th>
+ *        </tr></thead>
+ *        <tbody>
+ *          <tr aria-selected="true"><td>…</td><td class="juno-table__num">37,000</td></tr>
+ *        </tbody>
+ *      </table>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* ── scroll viewport (sticky header lives here) ───────────────────────── */
+.juno-table-scroll {
+  max-block-size: 480px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--juno-s3) transparent;
+}
+
+.juno-table-scroll::-webkit-scrollbar { inline-size: 10px; block-size: 10px; }
+.juno-table-scroll::-webkit-scrollbar-thumb { background: var(--juno-s3); border-radius: var(--juno-radius-5); }
+.juno-table-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ── table ────────────────────────────────────────────────────────────── */
+.juno-table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+}
+
+/* header */
+.juno-table thead th {
+  padding: var(--juno-space-12) var(--juno-space-16);
+  background: var(--juno-s2);
+  font-size: var(--juno-font-size-10);
+  font-weight: var(--juno-font-weight-medium);
+  letter-spacing: var(--juno-font-tracking-caps);
+  text-transform: uppercase;
+  color: var(--juno-label);
+  text-align: start;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border-block-end: var(--juno-border-width-1) solid var(--juno-control-edge);
+}
+
+.juno-table--sticky thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--juno-z-raised);
+}
+
+/* sortable header — set aria-sort; the arrow + active color follow */
+.juno-table thead th[aria-sort] { cursor: pointer; }
+
+.juno-table thead th[aria-sort]::after {
+  content: '';
+  display: inline-block;
+  inline-size: var(--juno-space-8);
+  margin-inline-start: var(--juno-space-4);
+  font-family: var(--juno-font-family-mono);
+  font-size: 9px;
+  color: var(--juno-active);
+}
+
+.juno-table thead th[aria-sort='none']:hover { color: var(--juno-data); }
+.juno-table thead th[aria-sort='none']:hover::after { content: '↕'; color: var(--juno-muted); }
+.juno-table thead th[aria-sort='ascending'] { color: var(--juno-data); }
+.juno-table thead th[aria-sort='ascending']::after { content: '▲'; }
+.juno-table thead th[aria-sort='descending'] { color: var(--juno-data); }
+.juno-table thead th[aria-sort='descending']::after { content: '▼'; }
+
+/* body cells */
+.juno-table tbody td {
+  padding: var(--juno-space-12) var(--juno-space-16);
+  color: var(--juno-data);
+  white-space: nowrap;
+  vertical-align: middle;
+  border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+/* density — per-table, independent of the global density mode */
+.juno-table--compact thead th { padding: var(--juno-space-8) var(--juno-space-12); }
+.juno-table--compact tbody td { padding: var(--juno-space-8) var(--juno-space-16); }
+
+/* zebra (set on the table; striping the odd body rows) */
+.juno-table--zebra tbody tr:nth-child(even) td { background: var(--juno-s2); }
+:root[data-juno-mode='light'] .juno-table--zebra tbody tr:nth-child(even) td { background: var(--juno-s1); }
+
+/* row interaction — app keeps aria-selected in sync */
+.juno-table tbody tr { transition: background var(--juno-motion-duration-quick) var(--juno-motion-ease-standard); }
+.juno-table tbody tr:hover td { background: var(--juno-s2); }
+:root[data-juno-mode='light'] .juno-table tbody tr:hover td { background: var(--juno-s1); }
+
+.juno-table tbody tr[aria-selected='true'] td {
+  background: color-mix(in srgb, var(--juno-active) 11%, transparent);
+}
+
+/* selection rail — a left bar on the first cell of a selected row */
+.juno-table tbody td:first-child {
+  border-inline-start: var(--juno-border-width-3) solid transparent;
+}
+
+.juno-table tbody tr[aria-selected='true'] td:first-child {
+  border-inline-start-color: var(--juno-active);
+}
+
+/* ── cell flavors ─────────────────────────────────────────────────────── */
+
+/* identifier — mono, bold (callsigns, codes, IDs) */
+.juno-table__id {
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+}
+
+/* numeric — mono, bold, end-aligned (measured values) */
+.juno-table__num {
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  text-align: end;
+}
+
+/* secondary mono (routes, sub-codes) — quieter than data */
+.juno-table__mono {
+  font-family: var(--juno-font-family-mono);
+  color: var(--juno-label);
+}
+
+/* timestamp — mono, muted */
+.juno-table__time {
+  font-family: var(--juno-font-family-mono);
+  text-align: end;
+  color: var(--juno-label);
+}
+
+/* trend / delta — role-colored mono; author supplies ▲ / ▼ + sign */
+.juno-table__trend {
+  --juno-role: var(--juno-nominal);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-4);
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  color: var(--juno-role);
+}
+
+/* inline meter — track + role fill + value; app sets --juno-table-fill (0–100) */
+.juno-table__meter {
+  --juno-role: var(--juno-nominal);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+  justify-content: flex-end;
+  inline-size: 100%;
+}
+
+.juno-table__meter-track {
+  inline-size: var(--juno-space-56);
+  block-size: var(--juno-space-4);
+  border-radius: var(--juno-radius-3);
+  background: var(--juno-control-surface);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.juno-table__meter-fill {
+  display: block;
+  block-size: 100%;
+  inline-size: calc(var(--juno-table-fill, 0) * 1%);
+  background: var(--juno-role);
+  border-radius: var(--juno-radius-3);
+}
+
+.juno-table__meter-val {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-12);
+  color: var(--juno-role);
+  min-inline-size: var(--juno-space-32);
+  text-align: end;
+}
+
+/* row actions — icon buttons, revealed when the row is hovered/focused */
+.juno-table__actions {
+  display: inline-flex;
+  gap: var(--juno-space-8);
+  opacity: 0;
+  transition: opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-table tbody tr:hover .juno-table__actions,
+.juno-table tbody tr:focus-within .juno-table__actions { opacity: 1; }
+
+.juno-table__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--juno-space-24);
+  block-size: var(--juno-space-24);
+  border-radius: var(--juno-radius-3);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  background: transparent;
+  color: var(--juno-label);
+  font-size: var(--juno-font-size-13);
+  cursor: pointer;
+}
+
+.juno-table__action:hover { color: var(--juno-data); background: var(--juno-s2); }
+
+/* ── overflow behaviors (set on a cell) ───────────────────────────────── */
+.juno-table__truncate {
+  max-inline-size: var(--juno-cell-max, 240px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.juno-table__clamp {
+  max-inline-size: var(--juno-cell-max, 240px);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+
+.juno-table__wrap {
+  max-inline-size: var(--juno-cell-max, 240px);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ── toolbar / footer / bulk bar (framing rows) ───────────────────────── */
+.juno-table__toolbar,
+.juno-table__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-12);
+  flex-wrap: wrap;
+  padding: var(--juno-space-12) var(--juno-space-16);
+  background: var(--juno-s1);
+}
+
+.juno-table__toolbar { border-block-end: var(--juno-border-width-1) solid var(--juno-border); }
+.juno-table__foot { border-block-start: var(--juno-border-width-1) solid var(--juno-border); }
+
+/* selection / bulk-action bar — shown by the app while rows are selected */
+.juno-table__bulk {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-16);
+  padding: var(--juno-space-10) var(--juno-space-16);
+  background: color-mix(in srgb, var(--juno-active) 10%, transparent);
+  border-block-end: var(--juno-border-width-1) solid var(--juno-active);
+}
+
+.juno-table__bulk-count {
+  font-family: var(--juno-font-family-mono);
+  font-weight: var(--juno-font-weight-bold);
+  font-size: var(--juno-font-size-12);
+  color: var(--juno-active);
+}
+
+/* ── skeleton + empty states ──────────────────────────────────────────── */
+.juno-table__skeleton {
+  block-size: var(--juno-space-10);
+  border-radius: var(--juno-radius-3);
+  background: linear-gradient(
+    90deg,
+    var(--juno-s2) 0%,
+    var(--juno-s3) 50%,
+    var(--juno-s2) 100%
+  );
+  background-size: 200% 100%;
+  animation: juno-table-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes juno-table-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.juno-table__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--juno-space-12);
+  padding: var(--juno-space-56) var(--juno-space-24);
+  text-align: center;
+  color: var(--juno-label);
+}
+
+.juno-table__empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--juno-space-40);
+  block-size: var(--juno-space-40);
+  border-radius: var(--juno-radius-8);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  color: var(--juno-muted);
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .juno-table__skeleton { animation: none; }
+}

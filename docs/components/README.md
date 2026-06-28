@@ -41,5 +41,6 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Tooltip                      | `.juno-tooltip`                        | [tooltip.md](./tooltip.md)             |
 | Popover                      | `.juno-popover`                        | [popover.md](./popover.md)             |
 | Menu / dropdown              | `.juno-menu`                           | [menu.md](./menu.md)                   |
+| Table / data grid            | `.juno-table`                          | [table.md](./table.md)                 |
 
 Always pair a status color with a text label — color is never the only signal.

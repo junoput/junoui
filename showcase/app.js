@@ -36,6 +36,7 @@ const PAGES = [
   ['buttons.html', 'Buttons'],
   ['forms.html', 'Forms'],
   ['data-display.html', 'Data display'],
+  ['tables.html', 'Tables'],
   ['loaders.html', 'Loaders'],
   ['overlays.html', 'Overlays'],
   ['layout.html', 'Layout'],
@@ -191,6 +192,61 @@ function initTooltips() {
   });
 }
 
+// ── tables (demo: app owns sort + selection; junoui ships the look) ──────
+function initTables() {
+  document.querySelectorAll('.juno-table[data-interactive]').forEach((table) => {
+    const tbody = table.tBodies[0];
+    const headers = [...table.querySelectorAll('thead th[aria-sort]')];
+    headers.forEach((th, ci) => {
+      th.addEventListener('click', () => {
+        const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+        headers.forEach((o) => o.setAttribute('aria-sort', 'none'));
+        th.setAttribute('aria-sort', dir);
+        const num = th.classList.contains('juno-table__num');
+        const val = (tr) => tr.cells[ci].textContent.trim();
+        [...tbody.rows]
+          .sort((a, b) => {
+            if (num) {
+              const x = parseFloat(val(a).replace(/[^0-9.-]/g, '')) || 0;
+              const y = parseFloat(val(b).replace(/[^0-9.-]/g, '')) || 0;
+              return dir === 'ascending' ? x - y : y - x;
+            }
+            return dir === 'ascending'
+              ? val(a).localeCompare(val(b))
+              : val(b).localeCompare(val(a));
+          })
+          .forEach((r) => tbody.appendChild(r));
+      });
+    });
+
+    const bar = document.querySelector(`[data-bulk="${table.id}"]`);
+    const sync = () => {
+      const n = tbody.querySelectorAll('tr[aria-selected="true"]').length;
+      if (!bar) return;
+      bar.hidden = n === 0;
+      const c = bar.querySelector('.juno-table__bulk-count');
+      if (c) c.textContent = `${n} SELECTED`;
+    };
+    tbody.querySelectorAll('tr').forEach((tr) => {
+      tr.addEventListener('click', (e) => {
+        if (e.target.closest('.juno-table__action')) return;
+        tr.setAttribute(
+          'aria-selected',
+          tr.getAttribute('aria-selected') === 'true' ? 'false' : 'true',
+        );
+        sync();
+      });
+    });
+    bar?.querySelector('[data-bulk-clear]')?.addEventListener('click', () => {
+      tbody
+        .querySelectorAll('tr[aria-selected="true"]')
+        .forEach((tr) => tr.setAttribute('aria-selected', 'false'));
+      sync();
+    });
+    sync();
+  });
+}
+
 // ── token table (values straight from the JS module) ────────────────────
 function renderTokens() {
   const grid = document.getElementById('token-grid');
@@ -237,6 +293,7 @@ html.dataset.junoMode ??= 'dark';
 html.dataset.junoDensity ??= 'comfortable';
 initSliders();
 initTooltips();
+initTables();
 syncToggles();
 tick();
 setInterval(tick, 1000);

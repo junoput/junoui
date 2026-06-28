@@ -87,5 +87,6 @@ focused chunks. Work on `main` (solo repo). Push only when asked.
 
 Full gap analysis + priorities: **[docs/roadmap.md](./docs/roadmap.md)**. Done:
 foundation tokens (motion/z-index/elevation/opacity), density modes, form controls +
-field, overlays (modal/drawer/tooltip/popover/menu). Next: table → visual-regression
-snapshots + changesets. junoui ships the look + a11y spec; stateful behavior stays out.
+field, overlays (modal/drawer/tooltip/popover/menu), table/data-grid (sortable header,
+cell types, row states, overflow, skeleton/empty). Next: visual-regression snapshots +
+changesets. junoui ships the look + a11y spec; stateful behavior stays out.

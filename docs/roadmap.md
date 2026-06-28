@@ -37,7 +37,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | ~~**Form controls** — input, textarea, select, checkbox, radio, switch, slider~~ | ✅ shipped |
 | ~~**Field** wrapper — label + control + help + error + required~~                | ✅ shipped |
 | ~~**Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown~~         | ✅ shipped |
-| **Table / data grid** styling                                                    | 🔴         |
+| ~~**Table / data grid** styling~~                                                | ✅ shipped |
 | **Alert / toast / inline notification**                                          | 🟡         |
 | **Tabs**, accordion / disclosure                                                 | 🟡         |
 | **Skeleton** loading placeholder (pairs with loaders)                            | 🟡         |
@@ -61,7 +61,7 @@ contract, forced-colors, RTL via logical properties, CI gate.
 1. ~~**Foundation tokens** — motion, z-index, elevation, opacity, density.~~ ✅ done.
 2. ~~**Form controls + field** — the single biggest capability gap.~~ ✅ done.
 3. ~~**Overlays** — modal, tooltip, menu.~~ ✅ done.
-4. **Table**. _(next)_
-5. **Quality** — visual-regression snapshots + changesets.
+4. ~~**Table / data grid** — sortable header, cell types, row states, overflow, skeleton/empty.~~ ✅ done.
+5. **Quality** — visual-regression snapshots + changesets. _(next)_
 
 Biggest leverage: **#1 + #2.**

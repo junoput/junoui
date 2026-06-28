@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Tables</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Tables / data grid</span>
+      <h1>Dense, scannable, quiet.</h1>
+      <p>Rows read like instrument readouts — numbers in mono and right-aligned, semantic
+        color reserved for status, and the active-cyan rail marking the row in focus.
+        junoui ships the look + the ARIA contract; the app owns sort, selection,
+        inline-edit, and pagination. Sort and select below are wired in
+        <code class="juno-mono">app.js</code>.</p>
+    </div>
+
+    <!-- 01 LIVE DATA GRID -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Live data grid — service fleet</span>
+      </div>
+
+      <div class="juno-card">
+        <!-- toolbar -->
+        <div class="juno-table__toolbar">
+          <div class="juno-field" style="gap:0;">
+            <input class="juno-input juno-input--sans" type="search" placeholder="Filter service, region…" style="inline-size:240px;" />
+          </div>
+          <span class="juno-mono juno-text-muted" style="font-size:11px;">8 services</span>
+          <div class="demo-spacer"></div>
+          <span class="juno-text-muted" style="font-size:11px;">click a header to sort · click a row to select</span>
+        </div>
+
+        <!-- bulk bar (shown by app.js while rows are selected) -->
+        <div class="juno-table__bulk" data-bulk="grid-fleet" hidden>
+          <span class="juno-table__bulk-count">0 SELECTED</span>
+          <span style="inline-size:1px;block-size:16px;background:var(--juno-border);"></span>
+          <button class="juno-btn juno-btn--ghost">RESTART</button>
+          <button class="juno-btn juno-btn--ghost">DRAIN</button>
+          <button class="juno-btn juno-btn--ghost juno--warning">SCALE DOWN</button>
+          <div class="demo-spacer"></div>
+          <button class="juno-btn juno-btn--ghost" data-bulk-clear>CLEAR</button>
+        </div>
+
+        <div class="juno-table-scroll">
+          <table class="juno-table juno-table--zebra juno-table--sticky" id="grid-fleet" data-interactive>
+            <thead><tr>
+              <th aria-sort="ascending">SERVICE</th>
+              <th aria-sort="none">REGION</th>
+              <th aria-sort="none">STATUS</th>
+              <th class="juno-table__num" aria-sort="none">CPU</th>
+              <th class="juno-table__num" aria-sort="none">RPS</th>
+              <th aria-sort="none">SUCCESS</th>
+              <th class="juno-table__num" aria-sort="none">P95</th>
+              <th class="juno-table__time" aria-sort="none">DEPLOYED</th>
+            </tr></thead>
+            <tbody>
+              <tr aria-selected="false"><td class="juno-table__id">api-gateway</td><td class="juno-table__mono">us-east-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">62</td><td class="juno-table__num">4,780</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:99;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">99%</span></span></td><td class="juno-table__num">128</td><td class="juno-table__time">14:32</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">worker-pool</td><td class="juno-table__mono">us-east-1</td><td><span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span></td><td class="juno-table__num">88</td><td class="juno-table__num">3,920</td><td><span class="juno-table__meter juno--caution" style="--juno-table-fill:94;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">94%</span></span></td><td class="juno-table__num">402</td><td class="juno-table__time">16:05</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">auth-service</td><td class="juno-table__mono">eu-west-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">41</td><td class="juno-table__num">5,120</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:100;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">100%</span></span></td><td class="juno-table__num">96</td><td class="juno-table__time">22:40</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">cache-redis</td><td class="juno-table__mono">eu-west-1</td><td><span class="juno-badge juno-badge--soft juno--warning">DOWN</span></td><td class="juno-table__num">—</td><td class="juno-table__num">—</td><td><span class="juno-table__meter juno--warning" style="--juno-table-fill:0;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">0%</span></span></td><td class="juno-table__num">—</td><td class="juno-table__time">15:18</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">billing-api</td><td class="juno-table__mono">us-west-2</td><td><span class="juno-badge juno-badge--soft juno--active">DEPLOYING</span></td><td class="juno-table__num">28</td><td class="juno-table__num">1,980</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:98;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">98%</span></span></td><td class="juno-table__num">210</td><td class="juno-table__time">14:50</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">search-index</td><td class="juno-table__mono">ap-south-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">55</td><td class="juno-table__num">2,640</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:97;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">97%</span></span></td><td class="juno-table__num">174</td><td class="juno-table__time">17:22</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">queue-consumer</td><td class="juno-table__mono">ap-south-1</td><td><span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span></td><td class="juno-table__num">73</td><td class="juno-table__num">880</td><td><span class="juno-table__meter juno--caution" style="--juno-table-fill:91;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">91%</span></span></td><td class="juno-table__num">560</td><td class="juno-table__time">15:40</td></tr>
+              <tr aria-selected="false"><td class="juno-table__id">cdn-edge</td><td class="juno-table__mono">global</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">33</td><td class="juno-table__num">9,310</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:100;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">100%</span></span></td><td class="juno-table__num">42</td><td class="juno-table__time">19:10</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- footer / pagination (static demo) -->
+        <div class="juno-table__foot">
+          <span class="juno-mono juno-text-label" style="font-size:11px;">1–8 of 8</span>
+          <div class="demo-spacer"></div>
+          <button class="juno-btn juno-btn--ghost" disabled>‹ PREV</button>
+          <span class="juno-mono juno-text-data" style="font-size:12px;min-inline-size:54px;text-align:center;">1 / 1</span>
+          <button class="juno-btn juno-btn--ghost" disabled>NEXT ›</button>
+        </div>
+      </div>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Sticky header holds on scroll · zebra striping · selected rows carry the active rail + cyan wash · status as a soft badge, never row-wide color.</p>
+    </section>
+
+    <!-- 02 CELL TYPES -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Cell types</span>
+      </div>
+      <div class="juno-card">
+        <table class="juno-table">
+          <thead><tr><th>CELL TYPE</th><th>RENDERING</th><th>WHEN TO USE</th></tr></thead>
+          <tbody>
+            <tr><td class="juno-table__id">Text</td><td>Denver Center</td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Names, free-form labels — sans, start-aligned.</td></tr>
+            <tr><td class="juno-table__id">Identifier</td><td class="juno-table__id">api-gateway</td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Codes, IDs, hostnames — mono, weight 700.</td></tr>
+            <tr><td class="juno-table__id">Numeric</td><td class="juno-table__num">37,000</td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Measured values — mono, end-aligned, grouped.</td></tr>
+            <tr><td class="juno-table__id">Status badge</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Enumerated state — semantic color, soft chip.</td></tr>
+            <tr><td class="juno-table__id">Progress</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:64;justify-content:flex-start;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">64%</span></span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Bounded quantity — track + fill, value follows.</td></tr>
+            <tr><td class="juno-table__id">Trend / delta</td><td><span class="juno-table__trend juno--nominal">▲ +1,200</span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Change vs. prior — arrow + signed mono value.</td></tr>
+            <tr><td class="juno-table__id">Timestamp</td><td class="juno-table__time" style="text-align:start;">14:32 UTC</td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Times — mono, muted.</td></tr>
+            <tr><td class="juno-table__id">Actions</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry">⤺</button><button class="juno-table__action" aria-label="More">⋯</button></span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Row operations — icon buttons, revealed on hover.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 03 ROW STATES -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Row states</span>
+      </div>
+      <div class="juno-card">
+        <table class="juno-table">
+          <thead><tr><th>STATE</th><th>SERVICE</th><th>REGION</th><th class="juno-table__num">CPU</th><th>NOTE</th></tr></thead>
+          <tbody>
+            <tr><td class="juno-table__id" style="font-weight:700;">Default</td><td class="juno-table__id">search-index</td><td class="juno-table__mono">ap-south-1</td><td class="juno-table__num">55</td><td class="juno-text-muted" style="font-size:11px;">Nominal</td></tr>
+            <tr style="background:var(--juno-s2);"><td class="juno-table__id">Zebra</td><td class="juno-table__id">cdn-edge</td><td class="juno-table__mono">global</td><td class="juno-table__num">33</td><td class="juno-text-muted" style="font-size:11px;">Nominal</td></tr>
+            <tr aria-selected="true"><td class="juno-table__id" style="color:var(--juno-active);">Selected</td><td class="juno-table__id">api-gateway</td><td class="juno-table__mono">us-east-1</td><td class="juno-table__num">62</td><td class="juno-text-active" style="font-size:11px;">In selection set</td></tr>
+            <tr><td class="juno-table__id">Caution</td><td class="juno-table__id">worker-pool</td><td class="juno-table__mono">us-east-1</td><td class="juno-table__num juno-text-caution">88</td><td class="juno-mono juno-text-caution" style="font-size:11px;">High CPU — 88%</td></tr>
+            <tr><td class="juno-table__id">Warning</td><td class="juno-table__id">cache-redis</td><td class="juno-table__mono">eu-west-1</td><td class="juno-table__num juno-text-warning">—</td><td class="juno-mono juno-text-warning" style="font-size:11px;">Unreachable · 0 rps</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Selected rows carry the active rail + a faint cyan wash. Caution / warning tint only their status note — the row body stays neutral so the board reads calmly.</p>
+    </section>
+
+    <!-- 04 CELL TEXT OVERFLOW -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">Cell text overflow — column capped at 240px</span>
+      </div>
+      <div class="juno-card">
+        <table class="juno-table" style="table-layout:fixed;">
+          <thead><tr><th style="inline-size:200px;">BEHAVIOR</th><th style="inline-size:272px;">RESULT</th><th>WHEN TO USE</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="inline-size:7px;block-size:7px;border-radius:2px;background:var(--juno-active);"></span>Truncate · ellipsis</span></td>
+              <td class="juno-table__truncate" title="Primary database cluster — read replica us-east-1c, lag 240ms, failover armed">Primary database cluster — read replica us-east-1c, lag 240ms, failover armed</td>
+              <td class="juno-table__wrap" style="--juno-cell-max:none;color:var(--juno-label);font-size:12px;">Default. Fixes row height; pair with a tooltip / title so the full value stays recoverable.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="inline-size:7px;block-size:7px;border-radius:2px;background:var(--juno-caution);"></span>Clamp · two lines</span></td>
+              <td class="juno-table__clamp">Primary database cluster — read replica us-east-1c, lag 240ms, failover armed</td>
+              <td class="juno-table__wrap" style="--juno-cell-max:none;color:var(--juno-label);font-size:12px;">When a little more context helps and rows may breathe. Caps at two lines, then ellipsis.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="inline-size:7px;block-size:7px;border-radius:2px;background:var(--juno-nominal);"></span>Wrap · full value</span></td>
+              <td class="juno-table__wrap">Primary database cluster — read replica us-east-1c, lag 240ms, failover armed</td>
+              <td class="juno-table__wrap" style="--juno-cell-max:none;color:var(--juno-label);font-size:12px;">Reserve for the one descriptive column where the whole value must be read.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 05 LOADING + EMPTY -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-eyebrow">Loading &amp; empty states</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="juno-card">
+          <div class="juno-table__toolbar" style="text-transform:uppercase;font-size:10px;letter-spacing:.2em;color:var(--juno-label);">Loading — skeleton</div>
+          <div style="padding:6px 18px 14px;">
+            <div style="display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--juno-border);"><span class="juno-table__skeleton" style="inline-size:90px;"></span><span class="juno-table__skeleton" style="inline-size:130px;"></span><span class="demo-spacer"></span><span class="juno-table__skeleton" style="inline-size:44px;"></span></div>
+            <div style="display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--juno-border);"><span class="juno-table__skeleton" style="inline-size:70px;"></span><span class="juno-table__skeleton" style="inline-size:150px;"></span><span class="demo-spacer"></span><span class="juno-table__skeleton" style="inline-size:44px;"></span></div>
+            <div style="display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--juno-border);"><span class="juno-table__skeleton" style="inline-size:104px;"></span><span class="juno-table__skeleton" style="inline-size:110px;"></span><span class="demo-spacer"></span><span class="juno-table__skeleton" style="inline-size:44px;"></span></div>
+            <div style="display:flex;align-items:center;gap:16px;padding:13px 0;"><span class="juno-table__skeleton" style="inline-size:80px;"></span><span class="juno-table__skeleton" style="inline-size:140px;"></span><span class="demo-spacer"></span><span class="juno-table__skeleton" style="inline-size:44px;"></span></div>
+          </div>
+        </div>
+        <div class="juno-card" style="display:flex;flex-direction:column;">
+          <div class="juno-table__toolbar" style="text-transform:uppercase;font-size:10px;letter-spacing:.2em;color:var(--juno-label);">Empty — no data</div>
+          <div class="juno-table__empty" style="flex:1;">
+            <div class="juno-table__empty-icon">▦</div>
+            <div>
+              <div style="font-size:14px;color:var(--juno-data);margin-bottom:5px;">No active services</div>
+              <div style="font-size:12px;color:var(--juno-label);line-height:1.5;max-inline-size:240px;">The fleet is idle. Services appear here as soon as a deployment is rolled out.</div>
+            </div>
+            <button class="juno-btn juno--active">+ DEPLOY SERVICE</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

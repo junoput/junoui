@@ -105,10 +105,35 @@
       <a class="demo-more" href="./data-display.html">See all data display — badges · status · readouts · cards →</a>
     </section>
 
-    <!-- Loaders -->
+    <!-- Tables -->
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-eyebrow">Tables / data grid</span>
+      </div>
+      <div class="juno-table-scroll juno-card" style="max-block-size:none;">
+        <table class="juno-table juno-table--zebra">
+          <thead><tr>
+            <th aria-sort="ascending">SERVICE</th>
+            <th>REGION</th>
+            <th>STATUS</th>
+            <th class="juno-table__num">CPU</th>
+            <th class="juno-table__num">P95</th>
+          </tr></thead>
+          <tbody>
+            <tr aria-selected="true"><td class="juno-table__id">api-gateway</td><td class="juno-table__mono">us-east-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">62%</td><td class="juno-table__num">128</td></tr>
+            <tr><td class="juno-table__id">worker-pool</td><td class="juno-table__mono">us-east-1</td><td><span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span></td><td class="juno-table__num">88%</td><td class="juno-table__num">402</td></tr>
+            <tr><td class="juno-table__id">cache-redis</td><td class="juno-table__mono">eu-west-1</td><td><span class="juno-badge juno-badge--soft juno--warning">DOWN</span></td><td class="juno-table__num">—</td><td class="juno-table__num">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a class="demo-more" href="./tables.html">See all tables — sortable grid · cell types · row states · overflow · empty / loading →</a>
+    </section>
+
+    <!-- Loaders -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
         <span class="juno-eyebrow">Loaders</span>
       </div>
       <div class="demo-row" style="gap:48px;">
@@ -122,7 +147,7 @@
     <!-- Overlays -->
     <section class="demo-section">
       <div class="demo-section__title">
-        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">07</span>
         <span class="juno-eyebrow">Overlays</span>
       </div>
       <article class="juno-card"><div class="juno-card__body">
@@ -148,7 +173,7 @@
     <!-- Layout -->
     <section class="demo-section">
       <div class="demo-section__title">
-        <span class="juno-mono juno-text-nominal" style="font-size:11px;">07</span>
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">08</span>
         <span class="juno-eyebrow">Layout</span>
       </div>
       <p class="juno-eyebrow demo-lead">.juno-grid-auto — columns collapse on their own (no breakpoints)</p>
