@@ -60,24 +60,21 @@ document.addEventListener('click', (e) => {
   const tb = e.target.closest('.juno-toggle-btn:not(:disabled)');
   if (tb) tb.setAttribute('aria-pressed', String(tb.getAttribute('aria-pressed') !== 'true'));
 
-  // toggle popover / menu panels via [hidden] + aria-expanded
+  // popover / menu: trigger toggles; clicks inside keep it open; a menu item
+  // or any outside click closes it.
   const trig = e.target.closest('[data-toggle]');
+  const insidePanel = e.target.closest('[data-overlay]');
+  const closeAction = e.target.closest('[role="menuitem"], [data-close]');
   document.querySelectorAll('[data-overlay]').forEach((panel) => {
-    const owner = panel.id === trig?.dataset.toggle;
-    const wasHidden = panel.hidden;
-    if (!owner) panel.hidden = true;
-    else panel.hidden = !wasHidden;
+    let visible;
+    if (trig && panel.id === trig.dataset.toggle) visible = panel.hidden;
+    else if (panel === insidePanel && !closeAction) visible = !panel.hidden;
+    else visible = false;
+    panel.hidden = !visible;
     document
       .querySelector(`[data-toggle="${panel.id}"]`)
-      ?.setAttribute('aria-expanded', String(!panel.hidden));
+      ?.setAttribute('aria-expanded', String(visible));
   });
-  // click outside closes any open panel
-  if (!trig && !e.target.closest('[data-overlay]')) {
-    document.querySelectorAll('[data-overlay]').forEach((p) => (p.hidden = true));
-    document
-      .querySelectorAll('[data-toggle]')
-      .forEach((b) => b.setAttribute('aria-expanded', 'false'));
-  }
 });
 
 // ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
@@ -86,10 +83,12 @@ function initSliders() {
     const lo = +el.getAttribute('aria-valuemin') || 0;
     const hi = +el.getAttribute('aria-valuemax') || 100;
     const step = hi - lo > 100 ? 10 : 1;
+    const out = el.parentElement.querySelector('.js-sval');
     const setVal = (v) => {
       v = Math.max(lo, Math.min(hi, Math.round(v / step) * step));
       el.setAttribute('aria-valuenow', v);
       el.style.setProperty('--juno-slider-pct', ((v - lo) / (hi - lo)) * 100);
+      if (out) out.textContent = v;
     };
     const fromX = (x) => {
       const r = el.getBoundingClientRect();

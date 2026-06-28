@@ -241,13 +241,13 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:20px;max-width:360px;">
           <div>
-            <span class="juno-eyebrow" style="display:block;margin-bottom:6px;">Throttle — standard</span>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span class="juno-eyebrow">Throttle — standard</span><span class="juno-value juno-text-data js-sval" style="font-size:18px;">60</span></div>
             <div class="juno-slider" role="slider" tabindex="0" aria-label="Throttle" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
               <span class="juno-slider__channel"></span><span class="juno-slider__lever"></span>
             </div>
           </div>
           <div>
-            <span class="juno-eyebrow" style="display:block;margin-bottom:6px;">ND range — compact (managed)</span>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span class="juno-eyebrow">ND range — compact (managed)</span><span class="juno-value juno-text-target js-sval" style="font-size:18px;">160</span></div>
             <div class="juno-slider juno-slider--compact juno--target" role="slider" tabindex="0" aria-label="ND range" aria-valuenow="160" aria-valuemin="10" aria-valuemax="320">
               <span class="juno-slider__channel"></span><span class="juno-slider__lever"></span>
             </div>
@@ -396,7 +396,7 @@
             <button class="juno-btn juno-btn--ghost" data-toggle="demo-pop" aria-expanded="false" aria-controls="demo-pop">RANGE FILTER ▾</button>
             <div class="juno-popover" id="demo-pop" data-overlay role="dialog" aria-label="Range filter" hidden>
               <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Traffic filter</span>
-              <div class="juno-field"><span class="juno-field__label">Within (NM)</span>
+              <div class="juno-field"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span class="juno-field__label">Within (NM)</span><span class="juno-value juno-text-active js-sval" style="font-size:16px;">40</span></div>
                 <div class="juno-slider juno-slider--compact" role="slider" tabindex="0" aria-label="Within NM" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80">
                   <span class="juno-slider__channel"></span><span class="juno-slider__lever"></span>
                 </div></div>
