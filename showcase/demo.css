@@ -50,6 +50,18 @@
   background: var(--juno-border);
 }
 
+/* header control cluster — label + segmented buttons stay together on wrap */
+.demo-ctl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-seg {
+  display: flex;
+  gap: 4px;
+}
+
 .demo-spacer {
   flex: 1;
 }

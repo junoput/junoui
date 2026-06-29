@@ -133,32 +133,36 @@ function renderChrome() {
       <span class="juno-eyebrow">design system</span>
     </a>
     <div class="demo-spacer"></div>
-    <span class="juno-eyebrow">Palette</span>
-    <div style="display:flex;gap:4px;">
-      <button class="demo-toggle" data-palette="standard">STANDARD</button>
-      <button class="demo-toggle" data-palette="colorblind">COLORBLIND</button>
-      <button class="demo-toggle" data-palette="soft">SOFT</button>
+    <div class="demo-ctl">
+      <span class="juno-eyebrow">Palette</span>
+      <div class="demo-seg">
+        <button class="demo-toggle" data-palette="standard">STANDARD</button>
+        <button class="demo-toggle" data-palette="colorblind">COLORBLIND</button>
+        <button class="demo-toggle" data-palette="soft">SOFT</button>
+      </div>
     </div>
-    <div class="demo-divider"></div>
-    <span class="juno-eyebrow">Mode</span>
-    <div style="display:flex;gap:4px;">
-      <button class="demo-toggle" data-mode="dark">${icon('moon', 'juno-icon--sm')} DARK</button>
-      <button class="demo-toggle" data-mode="light">${icon('sun', 'juno-icon--sm')} LIGHT</button>
+    <div class="demo-ctl">
+      <span class="juno-eyebrow">Mode</span>
+      <div class="demo-seg">
+        <button class="demo-toggle" data-mode="dark">${icon('moon', 'juno-icon--sm')} DARK</button>
+        <button class="demo-toggle" data-mode="light">${icon('sun', 'juno-icon--sm')} LIGHT</button>
+      </div>
     </div>
-    <div class="demo-divider"></div>
-    <span class="juno-eyebrow">Density</span>
-    <div style="display:flex;gap:4px;">
-      <button class="demo-toggle" data-density="comfortable">COMFORTABLE</button>
-      <button class="demo-toggle" data-density="compact">COMPACT</button>
+    <div class="demo-ctl">
+      <span class="juno-eyebrow">Density</span>
+      <div class="demo-seg">
+        <button class="demo-toggle" data-density="comfortable">COMFORTABLE</button>
+        <button class="demo-toggle" data-density="compact">COMPACT</button>
+      </div>
     </div>
-    <div class="demo-divider"></div>
-    <span class="juno-eyebrow">Text</span>
-    <div style="display:flex;gap:4px;">
-      <button class="demo-toggle" data-text="base">A</button>
-      <button class="demo-toggle" data-text="large">A+</button>
-      <button class="demo-toggle" data-text="xl">A++</button>
+    <div class="demo-ctl">
+      <span class="juno-eyebrow">Text</span>
+      <div class="demo-seg">
+        <button class="demo-toggle" data-text="base">A</button>
+        <button class="demo-toggle" data-text="large">A+</button>
+        <button class="demo-toggle" data-text="xl">A++</button>
+      </div>
     </div>
-    <div class="demo-divider"></div>
     <span class="juno-mono juno-text-data" id="clock" style="font-size:13px;"></span>`;
 
   const navEl = document.createElement('nav');
