@@ -33,16 +33,17 @@
           <input class="juno-input juno-input--sans" type="search" placeholder="Filter service, region, status…" style="inline-size:260px;" data-filter="grid-fleet" />
           <span class="juno-mono juno-text-muted" style="font-size:11px;" data-count="grid-fleet">8 / 8</span>
           <div class="demo-spacer"></div>
-          <span class="juno-text-muted" style="font-size:11px;">click header to sort · checkbox to select · double-click CPU / P95 to edit</span>
+          <span class="juno-text-muted" style="font-size:11px;">double-click CPU / P95 to edit</span>
+          <label class="juno-choice" style="font-size:11px;"><input class="juno-checkbox" type="checkbox" data-zebra="grid-fleet" checked /> ZEBRA</label>
         </div>
 
         <!-- bulk bar (shown by app.js while rows are selected) -->
         <div class="juno-table__bulk" data-bulk="grid-fleet" hidden>
           <span class="juno-table__bulk-count">0 SELECTED</span>
           <span style="inline-size:1px;block-size:16px;background:var(--juno-border);"></span>
-          <button class="juno-btn juno-btn--ghost">RESTART</button>
-          <button class="juno-btn juno-btn--ghost">DRAIN</button>
-          <button class="juno-btn juno-btn--ghost juno--warning">SCALE DOWN</button>
+          <button class="juno-btn juno-btn--ghost" data-bulk-action="restart">RESTART</button>
+          <button class="juno-btn juno-btn--ghost" data-bulk-action="drain">DRAIN</button>
+          <button class="juno-btn juno-btn--ghost juno--warning" data-bulk-action="scale">SCALE DOWN</button>
           <div class="demo-spacer"></div>
           <button class="juno-btn juno-btn--ghost" data-bulk-clear>CLEAR</button>
         </div>
@@ -73,13 +74,20 @@
           </table>
         </div>
 
-        <!-- footer / pagination (static demo) -->
+        <!-- footer / pagination -->
         <div class="juno-table__foot">
-          <span class="juno-mono juno-text-label" style="font-size:11px;">1–8 of 8</span>
+          <span class="juno-mono juno-text-label" style="font-size:11px;" data-range="grid-fleet">1–5 of 8</span>
           <div class="demo-spacer"></div>
-          <button class="juno-btn juno-btn--ghost" disabled>‹ PREV</button>
-          <span class="juno-mono juno-text-data" style="font-size:12px;min-inline-size:54px;text-align:center;">1 / 1</span>
-          <button class="juno-btn juno-btn--ghost" disabled>NEXT ›</button>
+          <span class="juno-text-muted" style="font-size:10px;letter-spacing:.15em;">ROWS</span>
+          <div style="display:flex;gap:3px;" data-pagesize="grid-fleet">
+            <button class="juno-btn juno-btn--ghost" data-page-size="5">5</button>
+            <button class="juno-btn juno-btn--ghost" data-page-size="8">8</button>
+            <button class="juno-btn juno-btn--ghost" data-page-size="all">ALL</button>
+          </div>
+          <span style="inline-size:1px;block-size:18px;background:var(--juno-border);"></span>
+          <button class="juno-btn juno-btn--ghost" data-prev="grid-fleet">‹ PREV</button>
+          <span class="juno-mono juno-text-data" style="font-size:12px;min-inline-size:54px;text-align:center;" data-page="grid-fleet">1 / 2</span>
+          <button class="juno-btn juno-btn--ghost" data-next="grid-fleet">NEXT ›</button>
         </div>
       </div>
       <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Filter, sort, checkbox-select, and double-click-to-edit (CPU / P95) are all wired in <code class="juno-mono">app.js</code> — junoui ships the look, the app drives the behavior.</p>
@@ -118,11 +126,12 @@
         <table class="juno-table">
           <thead><tr><th>STATE</th><th>SERVICE</th><th>REGION</th><th class="juno-table__num">CPU</th><th>NOTE</th></tr></thead>
           <tbody>
-            <tr><td class="juno-table__id" style="font-weight:700;">Default</td><td class="juno-table__id">search-index</td><td class="juno-table__mono">ap-south-1</td><td class="juno-table__num">55</td><td class="juno-text-muted" style="font-size:11px;">Nominal</td></tr>
-            <tr style="background:var(--juno-s2);"><td class="juno-table__id">Zebra</td><td class="juno-table__id">cdn-edge</td><td class="juno-table__mono">global</td><td class="juno-table__num">33</td><td class="juno-text-muted" style="font-size:11px;">Nominal</td></tr>
-            <tr aria-selected="true"><td class="juno-table__id" style="color:var(--juno-active);">Selected</td><td class="juno-table__id">api-gateway</td><td class="juno-table__mono">us-east-1</td><td class="juno-table__num">62</td><td class="juno-text-active" style="font-size:11px;">In selection set</td></tr>
-            <tr><td class="juno-table__id">Caution</td><td class="juno-table__id">worker-pool</td><td class="juno-table__mono">us-east-1</td><td class="juno-table__num juno-text-caution">88</td><td class="juno-mono juno-text-caution" style="font-size:11px;">High CPU — 88%</td></tr>
-            <tr><td class="juno-table__id">Warning</td><td class="juno-table__id">cache-redis</td><td class="juno-table__mono">eu-west-1</td><td class="juno-table__num juno-text-warning">—</td><td class="juno-mono juno-text-warning" style="font-size:11px;">Unreachable · 0 rps</td></tr>
+            <tr><td><span style="display:inline-flex;align-items:center;gap:9px;"><span style="inline-size:9px;block-size:9px;border-radius:2px;background:var(--juno-border);"></span><span style="font-weight:700;color:var(--juno-data);">Default</span></span></td><td class="juno-table__id">search-index</td><td class="juno-table__mono">ap-south-1</td><td class="juno-table__num">55</td><td class="juno-text-muted" style="font-size:11px;">Nominal</td></tr>
+            <tr style="background:var(--juno-s2);"><td><span style="display:inline-flex;align-items:center;gap:9px;"><span style="inline-size:9px;block-size:9px;border-radius:2px;background:var(--juno-border);"></span><span style="font-weight:700;color:var(--juno-data);">Zebra</span></span></td><td class="juno-table__id">cdn-edge</td><td class="juno-table__mono">global</td><td class="juno-table__num">33</td><td class="juno-text-muted" style="font-size:11px;">Alt-row tint (s2)</td></tr>
+            <tr style="background:var(--juno-s2);"><td><span style="display:inline-flex;align-items:center;gap:9px;"><span style="inline-size:9px;block-size:9px;border-radius:2px;background:var(--juno-muted);"></span><span style="font-weight:700;color:var(--juno-data);">Hover</span></span></td><td class="juno-table__id">auth-service</td><td class="juno-table__mono">eu-west-1</td><td class="juno-table__num">41</td><td class="juno-text-muted" style="font-size:11px;">Pointer over row</td></tr>
+            <tr aria-selected="true"><td><span style="display:inline-flex;align-items:center;gap:9px;"><span style="inline-size:9px;block-size:9px;border-radius:2px;background:var(--juno-active);"></span><span style="font-weight:700;color:var(--juno-active);">Selected</span></span></td><td class="juno-table__id">api-gateway</td><td class="juno-table__mono">us-east-1</td><td class="juno-table__num">62</td><td class="juno-text-active" style="font-size:11px;">In selection set</td></tr>
+            <tr><td><span style="display:inline-flex;align-items:center;gap:9px;"><span style="inline-size:9px;block-size:9px;border-radius:2px;background:var(--juno-caution);box-shadow:0 0 6px color-mix(in srgb, var(--juno-caution) 70%, transparent);"></span><span style="font-weight:700;color:var(--juno-caution);">Caution</span></span></td><td class="juno-table__id">worker-pool</td><td class="juno-table__mono">us-east-1</td><td class="juno-table__num juno-text-caution">88</td><td class="juno-mono juno-text-caution" style="font-size:11px;">High CPU — 88%</td></tr>
+            <tr><td><span style="display:inline-flex;align-items:center;gap:9px;"><span style="inline-size:9px;block-size:9px;border-radius:2px;background:var(--juno-warning);box-shadow:0 0 6px color-mix(in srgb, var(--juno-warning) 70%, transparent);"></span><span style="font-weight:700;color:var(--juno-warning);">Warning</span></span></td><td class="juno-table__id">cache-redis</td><td class="juno-table__mono">eu-west-1</td><td class="juno-table__num juno-text-warning">—</td><td class="juno-mono juno-text-warning" style="font-size:11px;">Unreachable · 0 rps</td></tr>
           </tbody>
         </table>
       </div>

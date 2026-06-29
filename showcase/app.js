@@ -222,12 +222,18 @@ function initTables() {
               : val(b).localeCompare(val(a));
           })
           .forEach((r) => tbody.appendChild(r));
+        render();
       });
     });
 
     // selection — checkbox column + select-all + bulk bar
     const bar = document.querySelector(`[data-bulk="${table.id}"]`);
     const all = table.querySelector('[data-select-all]');
+    const setRow = (tr, on) => {
+      tr.setAttribute('aria-selected', String(on));
+      const cb = tr.querySelector('[data-row-check]');
+      if (cb) cb.checked = on;
+    };
     const sync = () => {
       const vis = visibleRows();
       const selVis = vis.filter((r) => r.getAttribute('aria-selected') === 'true');
@@ -241,11 +247,6 @@ function initTables() {
         const c = bar.querySelector('.juno-table__bulk-count');
         if (c) c.textContent = `${n} SELECTED`;
       }
-    };
-    const setRow = (tr, on) => {
-      tr.setAttribute('aria-selected', String(on));
-      const cb = tr.querySelector('[data-row-check]');
-      if (cb) cb.checked = on;
     };
     tbody.querySelectorAll('[data-row-check]').forEach((cb) => {
       cb.addEventListener('change', () => {
@@ -262,17 +263,90 @@ function initTables() {
       sync();
     });
 
-    // filter — hide rows whose text doesn't match; update the count
+    // bulk actions — operate on the current selection, then clear it
+    const setStatus = (row, text, role) => {
+      const b = row.querySelector('.juno-badge');
+      if (!b) return;
+      b.className = `juno-badge juno-badge--soft juno--${role}`;
+      b.textContent = text;
+    };
+    bar?.querySelectorAll('[data-bulk-action]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sel = rows().filter((r) => r.getAttribute('aria-selected') === 'true');
+        const act = btn.dataset.bulkAction;
+        if (act === 'scale') sel.forEach((r) => r.remove());
+        else if (act === 'restart') sel.forEach((r) => setStatus(r, 'RESTARTING', 'active'));
+        else if (act === 'drain') sel.forEach((r) => setStatus(r, 'DRAINING', 'caution'));
+        sel.forEach((r) => r.isConnected && setRow(r, false));
+        render();
+      });
+    });
+
+    // filter + pagination — one render() applies both and updates the footer
     const input = document.querySelector(`[data-filter="${table.id}"]`);
     const count = document.querySelector(`[data-count="${table.id}"]`);
-    input?.addEventListener('input', () => {
-      const q = input.value.trim().toLowerCase();
+    const rangeEl = document.querySelector(`[data-range="${table.id}"]`);
+    const pageEl = document.querySelector(`[data-page="${table.id}"]`);
+    const prevBtn = document.querySelector(`[data-prev="${table.id}"]`);
+    const nextBtn = document.querySelector(`[data-next="${table.id}"]`);
+    const sizeGroup = document.querySelector(`[data-pagesize="${table.id}"]`);
+    let page = 0;
+    let pageSize = 5;
+
+    function render() {
+      const q = (input?.value || '').trim().toLowerCase();
+      const matched = rows().filter((r) => q === '' || r.textContent.toLowerCase().includes(q));
+      const size = pageSize === 'all' ? Math.max(1, matched.length) : pageSize;
+      const pageCount = Math.max(1, Math.ceil(matched.length / size));
+      page = Math.min(Math.max(0, page), pageCount - 1);
+      const start = page * size;
       rows().forEach((r) => {
-        r.hidden = q !== '' && !r.textContent.toLowerCase().includes(q);
+        r.hidden = true;
       });
-      if (count) count.textContent = `${visibleRows().length} / ${rows().length}`;
+      matched.forEach((r, i) => {
+        r.hidden = !(i >= start && i < start + size);
+      });
+      if (count) count.textContent = `${matched.length} / ${rows().length}`;
+      if (rangeEl)
+        rangeEl.textContent = matched.length
+          ? `${start + 1}–${Math.min(start + size, matched.length)} of ${matched.length}`
+          : '0 of 0';
+      if (pageEl) pageEl.textContent = `${page + 1} / ${pageCount}`;
+      if (prevBtn) prevBtn.disabled = page === 0;
+      if (nextBtn) nextBtn.disabled = page >= pageCount - 1;
+      sizeGroup
+        ?.querySelectorAll('[data-page-size]')
+        .forEach((b) =>
+          b.classList.toggle('juno-btn--ghost', String(pageSize) !== b.dataset.pageSize),
+        );
       sync();
+    }
+
+    input?.addEventListener('input', () => {
+      page = 0;
+      render();
     });
+    prevBtn?.addEventListener('click', () => {
+      page -= 1;
+      render();
+    });
+    nextBtn?.addEventListener('click', () => {
+      page += 1;
+      render();
+    });
+    sizeGroup?.querySelectorAll('[data-page-size]').forEach((b) => {
+      b.addEventListener('click', () => {
+        pageSize = b.dataset.pageSize === 'all' ? 'all' : Number(b.dataset.pageSize);
+        page = 0;
+        render();
+      });
+    });
+
+    // zebra toggle
+    const zebra = document.querySelector(`[data-zebra="${table.id}"]`);
+    zebra?.addEventListener('change', () =>
+      table.classList.toggle('juno-table--zebra', zebra.checked),
+    );
 
     // inline edit — double-click a marked cell; Enter commits, Esc cancels
     tbody.querySelectorAll('td[data-edit]').forEach((td) => {
@@ -301,7 +375,7 @@ function initTables() {
       });
     });
 
-    sync();
+    render();
   });
 }
 

@@ -224,15 +224,17 @@
 
 .juno-table__action:hover { color: var(--juno-data); background: var(--juno-s2); }
 
-/* ── overflow behaviors (set on a cell) ───────────────────────────────── */
-.juno-table__truncate {
+/* ── overflow behaviors (set on a cell) ───────────────────────────────────
+   Scoped under `.juno-table td` so they out-specify the base `white-space:
+   nowrap` on body cells — otherwise wrap / clamp would never break. */
+.juno-table td.juno-table__truncate {
   max-inline-size: var(--juno-cell-max, 240px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.juno-table__clamp {
+.juno-table td.juno-table__clamp {
   max-inline-size: var(--juno-cell-max, 240px);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -242,7 +244,7 @@
   white-space: normal;
 }
 
-.juno-table__wrap {
+.juno-table td.juno-table__wrap {
   max-inline-size: var(--juno-cell-max, 240px);
   white-space: normal;
   overflow-wrap: anywhere;
@@ -298,7 +300,8 @@
 .juno-table__toolbar { border-block-end: var(--juno-border-width-1) solid var(--juno-border); }
 .juno-table__foot { border-block-start: var(--juno-border-width-1) solid var(--juno-border); }
 
-/* selection / bulk-action bar — shown by the app while rows are selected */
+/* selection / bulk-action bar — shown by the app while rows are selected.
+   The [hidden] override is required: a class `display` beats the UA [hidden]. */
 .juno-table__bulk {
   display: flex;
   align-items: center;
@@ -307,6 +310,8 @@
   background: color-mix(in srgb, var(--juno-active) 10%, transparent);
   border-block-end: var(--juno-border-width-1) solid var(--juno-active);
 }
+
+.juno-table__bulk[hidden] { display: none; }
 
 .juno-table__bulk-count {
   font-family: var(--juno-font-family-mono);
