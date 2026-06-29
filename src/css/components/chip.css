@@ -1,0 +1,89 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Chip / Tag  ·  compact interactive token
+ *  A pill that represents a discrete entity: a filter, a selected value,
+ *  a removable tag. Unlike a badge (a static status label), a chip is
+ *  interactive — selectable and/or dismissible. Reads --juno-role for its
+ *  accent. Use a <button> for a toggle chip; add a remove button for a
+ *  dismissible one. Zero JS — the app owns selection / removal.
+ *  Usage:
+ *    <span class="juno-chip">us-east-1</span>
+ *    <button class="juno-chip juno-chip--toggle" aria-pressed="true">Active</button>
+ *    <span class="juno-chip juno--active">
+ *      filter:prod
+ *      <button class="juno-chip__remove" aria-label="Remove">
+ *        <svg class="juno-icon juno-icon--sm"><use href="…#juno-i-x" /></svg>
+ *      </button>
+ *    </span>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-chip {
+  --juno-role: var(--juno-label);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+  block-size: var(--juno-space-24);
+  padding-inline: var(--juno-space-12);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
+  border-radius: 999px;
+  background: var(--juno-control-surface);
+  color: var(--juno-data);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-12);
+  letter-spacing: var(--juno-font-tracking-tight);
+  white-space: nowrap;
+}
+
+/* leading accent dot — reads the role; appears when a role class is set */
+.juno-chip.juno--nominal,
+.juno-chip.juno--active,
+.juno-chip.juno--target,
+.juno-chip.juno--caution,
+.juno-chip.juno--warning {
+  border-color: var(--juno-role);
+  color: var(--juno-role);
+  background: color-mix(in srgb, var(--juno-role) 12%, var(--juno-control-surface));
+}
+
+/* toggle chip — a real <button>; pressed = filled accent */
+button.juno-chip {
+  cursor: pointer;
+  transition:
+    border-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-chip--toggle[aria-pressed='true'] {
+  border-color: var(--juno-role);
+  background: color-mix(in srgb, var(--juno-role) 18%, var(--juno-control-surface));
+  color: var(--juno-role);
+}
+
+.juno-chip:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+}
+
+/* remove affordance — a tiny inset button at the trailing edge */
+.juno-chip__remove {
+  display: inline-grid;
+  place-content: center;
+  margin-inline-end: calc(var(--juno-space-4) * -1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  opacity: var(--juno-opacity-muted);
+  cursor: pointer;
+}
+
+.juno-chip__remove:hover,
+.juno-chip__remove:focus-visible {
+  opacity: 1;
+}
+
+.juno-chip:disabled,
+.juno-chip[aria-disabled='true'] {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
