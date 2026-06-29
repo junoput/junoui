@@ -65,6 +65,21 @@ Changing a token value or removing a token is a **breaking change** (semver majo
 
 ## Releasing
 
-Bump the version, update `CHANGELOG.md`, tag `vX.Y.Z`. CI builds, runs lint + tests,
-verifies all `dist` outputs and the token reference, then publishes to npm.
-Token contract changes → major; additive tokens/components → minor; fixes → patch.
+Versioning + changelog are automated with [Changesets](https://github.com/changesets/changesets).
+
+1. With your change, add a changeset describing it:
+
+   ```sh
+   npm run changeset      # pick a bump, write a one-line summary
+   ```
+
+   Choose the bump by the **token contract**: removing/renaming a token or class →
+   _major_; additive tokens/components → _minor_; fixes → _patch_. (Pre-1.0, a "major"
+   bump lands as the next `0.x`.) Commit the generated `.changeset/*.md` with your PR.
+
+2. On merge to `main`, CI opens a **"Version Packages"** PR that consumes the pending
+   changesets — bumping `package.json` + writing `CHANGELOG.md`.
+
+3. Merging that PR publishes to npm (CI runs `npm run release` → build + `changeset publish`).
+
+Manual fallback: `npm run version` (apply changesets locally) then `npm run release`.

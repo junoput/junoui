@@ -46,12 +46,12 @@ usage: [design-guidelines.md](./design-guidelines.md).
 
 ## Quality / infra
 
-| Missing                                          | Why                                                                          | Priority |
-| ------------------------------------------------ | ---------------------------------------------------------------------------- | -------- |
-| ~~**Visual regression** snapshots (Playwright)~~ | ✅ shipped — `npm run test:visual` diffs every showcase page (dark + light). | ✅       |
-| **Changesets**                                   | Automate semver + changelog from the token contract.                         | 🟡       |
-| ~~**Icon convention / set**~~                    | ✅ shipped — `.juno-icon` + SVG sprite (Phosphor bold, MIT).                 | ✅       |
-| **eslint** (flat config)                         | JS surface is small; prettier + tests cover most.                            | 🟢       |
+| Missing                                          | Why                                                                           | Priority |
+| ------------------------------------------------ | ----------------------------------------------------------------------------- | -------- |
+| ~~**Visual regression** snapshots (Playwright)~~ | ✅ shipped — `npm run test:visual` diffs every showcase page (dark + light).  | ✅       |
+| ~~**Changesets**~~                               | ✅ shipped — `npm run changeset`; CI opens a Version PR → publishes on merge. | ✅       |
+| ~~**Icon convention / set**~~                    | ✅ shipped — `.juno-icon` + SVG sprite (Phosphor bold, MIT).                  | ✅       |
+| **eslint** (flat config)                         | JS surface is small; prettier + tests cover most.                             | 🟢       |
 
 Done already: stylelint + prettier, `node:test` integrity suite, a11y doc + ARIA
 contract, forced-colors, RTL via logical properties, CI gate.
@@ -62,6 +62,6 @@ contract, forced-colors, RTL via logical properties, CI gate.
 2. ~~**Form controls + field** — the single biggest capability gap.~~ ✅ done.
 3. ~~**Overlays** — modal, tooltip, menu.~~ ✅ done.
 4. ~~**Table / data grid** — sortable header, cell types, row states, overflow, skeleton/empty.~~ ✅ done.
-5. **Quality** — visual-regression snapshots + changesets. _(next)_
+5. ~~**Quality** — visual-regression snapshots + changesets.~~ ✅ done.
 
 Biggest leverage: **#1 + #2.**
