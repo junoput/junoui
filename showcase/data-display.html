@@ -150,6 +150,34 @@
       <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Initials scale with the avatar. The ring is decorative — pair with a <code class="juno-mono">title</code> so status isn't color-only. An <code class="juno-mono">&lt;img&gt;</code> fills the circle via <code class="juno-mono">object-fit:cover</code>.</p>
     </section>
 
+    <!-- 06 CHIPS + DIVIDERS -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
+        <span class="juno-eyebrow">Chips — tags · filters · removable</span>
+      </div>
+      <div class="demo-row" style="align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="juno-chip">us-east-1</span>
+        <span class="juno-chip juno--nominal">healthy</span>
+        <span class="juno-chip juno--caution">degraded</span>
+        <span class="juno-chip juno--warning">down</span>
+      </div>
+      <div class="juno-divider juno-divider--label" style="margin:18px 0;">filters (toggle)</div>
+      <div class="demo-row" style="align-items:center;gap:10px;flex-wrap:wrap;">
+        <button class="juno-chip juno-chip--toggle juno--active" aria-pressed="true">Errors</button>
+        <button class="juno-chip juno-chip--toggle juno--active" aria-pressed="false">Warnings</button>
+        <button class="juno-chip juno-chip--toggle juno--active" aria-pressed="false">Info</button>
+        <span class="juno-divider juno-divider--vertical" style="margin-inline:6px;"></span>
+        <span class="juno-chip">region:eu-west-1
+          <button class="juno-chip__remove" aria-label="Remove region filter"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button>
+        </span>
+        <span class="juno-chip juno--target">env:prod
+          <button class="juno-chip__remove" aria-label="Remove env filter"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button>
+        </span>
+      </div>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:12px;">Toggle chips are <code class="juno-mono">&lt;button aria-pressed&gt;</code> (wired in <code class="juno-mono">app.js</code>); remove buttons need an <code class="juno-mono">aria-label</code>. Chip = interactive; <a href="./data-display.html">badge</a> = static status.</p>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>

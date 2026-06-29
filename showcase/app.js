@@ -236,6 +236,15 @@ document.addEventListener('click', (e) => {
 
   const tb = e.target.closest('.juno-toggle-btn:not(:disabled)');
   if (tb) tb.setAttribute('aria-pressed', String(tb.getAttribute('aria-pressed') !== 'true'));
+
+  // chips: toggle filter chips, and dismiss removable ones (demo wiring)
+  const rm = e.target.closest('.juno-chip__remove');
+  if (rm) {
+    rm.closest('.juno-chip')?.remove();
+    return;
+  }
+  const ct = e.target.closest('.juno-chip--toggle:not(:disabled)');
+  if (ct) ct.setAttribute('aria-pressed', String(ct.getAttribute('aria-pressed') !== 'true'));
 });
 
 // ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
