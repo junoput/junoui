@@ -46,7 +46,7 @@ build-time sRGB hex (identical rendering).
 | [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt) |
 | [Accessibility](./docs/accessibility.md)                                         | Color, focus, motion, targets, forced-colors, RTL, ARIA      |
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)              |
-| [Components](./docs/components/README.md)                                        | Badge, button, card, readout, status dot, loaders            |
+| [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more |
 | [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                   |
 | [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                            |
 
