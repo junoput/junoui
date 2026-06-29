@@ -25,7 +25,7 @@
   padding: 0;
   overflow: hidden;
   background: var(--juno-control-surface);
-  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
   border-radius: var(--juno-radius-4);
   text-align: start;
   cursor: pointer;

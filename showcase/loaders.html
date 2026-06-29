@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>junoui — Loaders</title>
+<script>
+  // apply persisted theme before first paint (no FOUC on page navigation)
+  try {
+    var h = document.documentElement;
+    var p = localStorage.getItem('juno:palette'); if (p) h.dataset.junoPalette = p;
+    var m = localStorage.getItem('juno:mode'); if (m) h.dataset.junoMode = m;
+    var d = localStorage.getItem('juno:density'); if (d) h.dataset.junoDensity = d;
+    var t = localStorage.getItem('juno:text'); if (t) h.dataset.junoText = t;
+  } catch (e) {}
+</script>
 <link rel="stylesheet" href="../dist/css/juno.css">
 <link rel="stylesheet" href="./demo.css">
 </head>

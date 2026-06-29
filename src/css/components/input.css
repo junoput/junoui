@@ -14,7 +14,7 @@
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-input {
-  --juno-role: var(--juno-control-edge);
+  --juno-role: var(--juno-control-edge-strong);
 
   display: block;
   inline-size: 100%;

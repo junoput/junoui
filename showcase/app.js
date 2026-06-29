@@ -79,6 +79,13 @@ function renderChrome() {
       <button class="demo-toggle" data-density="compact">COMPACT</button>
     </div>
     <div class="demo-divider"></div>
+    <span class="juno-eyebrow">Text</span>
+    <div style="display:flex;gap:4px;">
+      <button class="demo-toggle" data-text="base">A</button>
+      <button class="demo-toggle" data-text="large">A+</button>
+      <button class="demo-toggle" data-text="xl">A++</button>
+    </div>
+    <div class="demo-divider"></div>
     <span class="juno-mono juno-text-data" id="clock" style="font-size:13px;"></span>`;
 
   const navEl = document.createElement('nav');
@@ -98,7 +105,7 @@ function renderChrome() {
 
 // ── theme toggles ────────────────────────────────────────────────────────
 function syncToggles() {
-  const { junoPalette: p, junoMode: m, junoDensity: d } = html.dataset;
+  const { junoPalette: p, junoMode: m, junoDensity: d, junoText: tx } = html.dataset;
   document
     .querySelectorAll('[data-palette]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.palette === p)));
@@ -108,19 +115,39 @@ function syncToggles() {
   document
     .querySelectorAll('[data-density]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.density === d)));
+  document
+    .querySelectorAll('[data-text]')
+    .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.text === (tx || 'base'))));
   const cap = document.getElementById('tokens-caption');
   if (cap) cap.textContent = `Color tokens — ${p} / ${m}`;
   renderTokens();
 }
 
+// theme persists across page navigation + refresh (per-browser)
+const PREFS = {
+  palette: 'juno:palette',
+  mode: 'juno:mode',
+  density: 'juno:density',
+  text: 'juno:text',
+};
+const savePref = (key, val) => {
+  try {
+    localStorage.setItem(key, val);
+  } catch {
+    /* private mode / disabled storage — fall back to in-memory only */
+  }
+};
+
 document.addEventListener('click', (e) => {
   const pb = e.target.closest('[data-palette]');
   const mb = e.target.closest('[data-mode]');
   const db = e.target.closest('[data-density]');
-  if (pb) html.dataset.junoPalette = pb.dataset.palette;
-  if (mb) html.dataset.junoMode = mb.dataset.mode;
-  if (db) html.dataset.junoDensity = db.dataset.density;
-  if (pb || mb || db) syncToggles();
+  const xb = e.target.closest('[data-text]');
+  if (pb) savePref(PREFS.palette, (html.dataset.junoPalette = pb.dataset.palette));
+  if (mb) savePref(PREFS.mode, (html.dataset.junoMode = mb.dataset.mode));
+  if (db) savePref(PREFS.density, (html.dataset.junoDensity = db.dataset.density));
+  if (xb) savePref(PREFS.text, (html.dataset.junoText = xb.dataset.text));
+  if (pb || mb || db || xb) syncToggles();
 });
 
 // ── modal + pressed toggles (demo wiring — apps own this, not junoui) ─────
@@ -497,9 +524,17 @@ function driveProgress() {
 }
 
 renderChrome();
-html.dataset.junoPalette ??= 'standard';
-html.dataset.junoMode ??= 'dark';
-html.dataset.junoDensity ??= 'comfortable';
+const loadPref = (key) => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+html.dataset.junoPalette = loadPref(PREFS.palette) ?? html.dataset.junoPalette ?? 'standard';
+html.dataset.junoMode = loadPref(PREFS.mode) ?? html.dataset.junoMode ?? 'dark';
+html.dataset.junoDensity = loadPref(PREFS.density) ?? html.dataset.junoDensity ?? 'comfortable';
+html.dataset.junoText = loadPref(PREFS.text) ?? html.dataset.junoText ?? 'base';
 initSliders();
 initTooltips();
 initTables();

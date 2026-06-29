@@ -18,11 +18,28 @@
 :root[data-juno-mode='dark'] {
   --juno-control-surface: var(--juno-s2);
   --juno-control-edge: var(--juno-muted);
+
+  /* Knob + track-rim of the lever controls (switch / slider). Edge and knob
+     are lifted well clear of the track so the control reads at a squint: a
+     light grey lever (face hi→lo) with dark grip lines on a dark track. */
+  --juno-control-edge-strong: var(--juno-label);
+  --juno-knob-edge: var(--juno-label);
+  --juno-knob-face-hi: var(--juno-label);
+  --juno-knob-face-lo: var(--juno-muted);
+  --juno-knob-grip: var(--juno-s0);
 }
 
 :root[data-juno-mode='light'] {
   --juno-control-surface: var(--juno-s0);
   --juno-control-edge: var(--juno-border);
+
+  /* Light mode inverts: a dark grey lever with light grip lines on a near-
+     white track. Same vars, so switch + slider stay in lockstep. */
+  --juno-control-edge-strong: var(--juno-label);
+  --juno-knob-edge: var(--juno-label);
+  --juno-knob-face-hi: var(--juno-muted);
+  --juno-knob-face-lo: var(--juno-label);
+  --juno-knob-grip: var(--juno-s0);
 }
 
 * { margin: 0; padding: 0; }

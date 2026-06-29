@@ -1,0 +1,27 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  junoui — type-scale layer
+ *  One multiplier, --juno-font-scale, scales every --juno-font-size-*
+ *  token (the generated token CSS routes each size through it). Set it
+ *  per [data-juno-text] to enlarge all UI text without touching density:
+ *
+ *      <html data-juno-text="large">   →  +12.5% type
+ *      <html data-juno-text="xl">      →  +25% type
+ *      <html>                          →  base (default)
+ *
+ *  Orthogonal to density: density changes padding/gap, type-scale changes
+ *  glyph size. Combine freely. Larger text aids low-vision / squint
+ *  legibility (WCAG 1.4.4 resize text).
+ * ════════════════════════════════════════════════════════════════════ */
+
+:root,
+[data-juno-text='base'] {
+  --juno-font-scale: 1;
+}
+
+[data-juno-text='large'] {
+  --juno-font-scale: 1.125;
+}
+
+[data-juno-text='xl'] {
+  --juno-font-scale: 1.25;
+}

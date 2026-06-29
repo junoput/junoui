@@ -35,7 +35,7 @@
   display: inline-grid;
   place-content: center;
   background: var(--juno-control-surface);
-  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
   cursor: pointer;
   transition:
     border-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),

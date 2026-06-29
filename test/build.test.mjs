@@ -69,9 +69,15 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
   // runtime / component-local props set in-component or by the consumer:
   const local = new Set([
     'juno-role',
+    'juno-font-scale',
     'juno-slider-pct',
     'juno-control-surface',
     'juno-control-edge',
+    'juno-control-edge-strong',
+    'juno-knob-edge',
+    'juno-knob-face-hi',
+    'juno-knob-face-lo',
+    'juno-knob-grip',
     'juno-pad-control-block',
     'juno-pad-control-inline',
     'juno-pad-surface-block',
