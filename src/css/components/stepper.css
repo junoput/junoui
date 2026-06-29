@@ -1,0 +1,121 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Stepper  ·  multi-step progress
+ *  A horizontal sequence of steps with numbered markers and connectors.
+ *  Each step carries data-state: complete · current · upcoming. Mark the
+ *  active step aria-current="step". Built on a real <ol>; the app sets the
+ *  states. Zero JS. Reads --juno-role (default active) for the accent.
+ *  Usage:
+ *    <ol class="juno-stepper">
+ *      <li class="juno-stepper__step" data-state="complete">
+ *        <span class="juno-stepper__marker">
+ *          <svg class="juno-icon juno-icon--sm"><use href="…#juno-i-check" /></svg>
+ *        </span>
+ *        <span class="juno-stepper__label">Plan</span>
+ *      </li>
+ *      <li class="juno-stepper__step" data-state="current" aria-current="step">
+ *        <span class="juno-stepper__marker">2</span>
+ *        <span class="juno-stepper__label">Build</span>
+ *      </li>
+ *      <li class="juno-stepper__step" data-state="upcoming">
+ *        <span class="juno-stepper__marker">3</span>
+ *        <span class="juno-stepper__label">Ship</span>
+ *      </li>
+ *    </ol>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-stepper {
+  --juno-stepper-marker: var(--juno-space-28);
+  --juno-role: var(--juno-active);
+
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.juno-stepper__step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--juno-space-8);
+  text-align: center;
+}
+
+/* connector — a line from the previous marker into this one */
+.juno-stepper__step:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(var(--juno-stepper-marker) / 2);
+  inset-inline-end: 50%;
+  inline-size: 100%;
+  block-size: var(--juno-border-width-1);
+  background: var(--juno-muted);
+}
+
+/* a reached step (complete or current) lights its incoming connector */
+.juno-stepper__step[data-state='complete']::before,
+.juno-stepper__step[data-state='current']::before {
+  background: var(--juno-role);
+}
+
+.juno-stepper__marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  inline-size: var(--juno-stepper-marker);
+  block-size: var(--juno-stepper-marker);
+  border-radius: 50%;
+  border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
+  background: var(--juno-control-surface);
+  color: var(--juno-label);
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-12);
+  font-weight: var(--juno-font-weight-bold);
+}
+
+.juno-stepper__step[data-state='complete'] .juno-stepper__marker {
+  border-color: var(--juno-role);
+  background: color-mix(in srgb, var(--juno-role) 18%, var(--juno-control-surface));
+  color: var(--juno-role);
+}
+
+.juno-stepper__step[data-state='current'] .juno-stepper__marker {
+  border-color: var(--juno-role);
+  color: var(--juno-role);
+  box-shadow: 0 0 0 var(--juno-border-width-2) color-mix(in srgb, var(--juno-role) 30%, transparent);
+}
+
+.juno-stepper__label {
+  max-inline-size: 14ch;
+  color: var(--juno-label);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-12);
+}
+
+.juno-stepper__step[data-state='complete'] .juno-stepper__label,
+.juno-stepper__step[data-state='current'] .juno-stepper__label {
+  color: var(--juno-data);
+}
+
+/* vertical — steps stack; connector runs down the marker column */
+.juno-stepper--vertical {
+  flex-direction: column;
+}
+
+.juno-stepper--vertical .juno-stepper__step {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--juno-space-12);
+  text-align: start;
+  padding-block-end: var(--juno-space-16);
+}
+
+.juno-stepper--vertical .juno-stepper__step:not(:first-child)::before {
+  inset-block: calc(var(--juno-stepper-marker) / -2) auto;
+  inset-inline: calc(var(--juno-stepper-marker) / 2) auto;
+  inline-size: var(--juno-border-width-1);
+  block-size: 100%;
+}
