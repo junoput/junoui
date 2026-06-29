@@ -14,13 +14,17 @@ npm install junoui
 ```
 
 ```js
-import 'junoui/css'; // styles + components
+import 'junoui/css'; // styles + 30+ components
 import { TOKENS, getTokens } from 'junoui'; // values in JS/TS
+// icons: the SVG sprite resolves at 'junoui/icons'
 ```
 
 ```html
 <html data-juno-palette="standard" data-juno-mode="dark">
   <span class="juno-badge juno--warning">WARNING</span>
+  <svg class="juno-icon juno--active" aria-hidden="true">
+    <use href="node_modules/junoui/dist/icons/juno-icons.svg#juno-i-bell" />
+  </svg>
 </html>
 ```
 
@@ -55,6 +59,7 @@ build-time sRGB hex (identical rendering).
 ```
 tokens/        DTCG token source — the single source of truth
 src/css/       authored CSS layer (base, utilities, components)
+src/icons/     vendored SVG icon sources (Phosphor bold, MIT) → sprite
 dist/          built outputs (generated; gitignored)
 docs/          guides + generated token reference
 showcase/      interactive demo (repo-only — not in the npm package)
@@ -66,9 +71,11 @@ design/        original Claude Design canvas source (reference)
 
 ```sh
 npm install          # installs deps and builds dist/ (prepare)
-npm run build        # tokens (Style Dictionary) + CSS bundle
+npm run build        # tokens (Style Dictionary) + CSS bundle + icon sprite
 npm run gen-docs     # regenerate docs/tokens-reference.md
-npm run serve        # build + serve the showcase at :8137
+npm run showcase     # build + serve the showcase at :8137
+npm test             # build + node:test integrity suite
+npm run test:visual  # Playwright screenshot diff (needs `npx playwright install chromium`)
 ```
 
 Edit values in `tokens/`, rebuild, and every platform updates together.
@@ -76,8 +83,11 @@ The interactive demo lives at `showcase/` and is excluded from the published pac
 
 ## Releasing
 
-Tag `vX.Y.Z` → CI builds, verifies all `dist` outputs, checks the token reference is
-current, and publishes to npm. Token value/name changes are breaking (semver major).
+Versioning + changelog are automated with [Changesets](https://github.com/changesets/changesets).
+Add a changeset with your change (`npm run changeset`); on merge to `main`, CI opens a
+"Version Packages" PR, and merging that publishes to npm. Bump by the token contract:
+remove/rename a token or class → major, additive → minor, fix → patch. See
+[CONTRIBUTING](./CONTRIBUTING.md#releasing).
 
 ## License
 
