@@ -2,3 +2,9 @@ node_modules/
 dist/
 *.log
 .DS_Store
+
+# Playwright (commit only the baseline __screenshots__)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

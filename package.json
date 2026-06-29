@@ -65,9 +65,12 @@
     "lint": "npm run lint:css && npm run format:check",
     "test": "npm run build && node --test \"test/**/*.test.mjs\"",
     "prepare": "npm run build",
-    "showcase": "npm run build && node scripts/serve.mjs"
+    "showcase": "npm run build && node scripts/serve.mjs",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "prettier": "^3.8.4",
     "style-dictionary": "^4.4.0",
     "stylelint": "^17.13.0",
