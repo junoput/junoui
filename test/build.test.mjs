@@ -70,6 +70,7 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
   const local = new Set([
     'juno-role',
     'juno-font-scale',
+    'juno-icon-size',
     'juno-slider-pct',
     'juno-control-surface',
     'juno-control-edge',

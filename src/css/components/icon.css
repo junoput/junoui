@@ -1,0 +1,35 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Icon  ·  inline SVG glyph
+ *  A zero-JS icon primitive. Reference a symbol from the sprite; the glyph
+ *  inherits the current text color (so a .juno--<role> ancestor tints it)
+ *  and sizes in `em`, tracking font-size and the [data-juno-text] scale.
+ *  Usage:
+ *    <svg class="juno-icon" aria-hidden="true">
+ *      <use href="path/to/juno-icons.svg#juno-i-gear" />
+ *    </svg>
+ *    <svg class="juno-icon juno-icon--lg juno--warning" role="img"
+ *         aria-label="Warning">
+ *      <use href="…#juno-i-warning" />
+ *    </svg>
+ *  Sizing: --juno-icon-size (default 1.25em). Color: currentColor — set
+ *  color, or add .juno-icon--role to read var(--juno-role).
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-icon {
+  --juno-icon-size: 1.25em;
+
+  display: inline-block;
+  inline-size: var(--juno-icon-size);
+  block-size: var(--juno-icon-size);
+  flex-shrink: 0;
+  vertical-align: -0.2em; /* optical baseline alignment next to text */
+  fill: currentcolor;
+}
+
+/* tint by semantic role instead of the surrounding text color */
+.juno-icon--role { color: var(--juno-role); }
+
+/* sizes — relative, so they ride the type scale */
+.juno-icon--sm { --juno-icon-size: 1em; }
+.juno-icon--lg { --juno-icon-size: 1.75em; }
+.juno-icon--xl { --juno-icon-size: 2.5em; }

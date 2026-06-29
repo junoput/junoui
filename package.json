@@ -40,18 +40,21 @@
     "./android/dimens": "./dist/android/dimens.xml",
     "./ios": "./dist/ios/JunoTokens.swift",
     "./flutter": "./dist/flutter/juno_tokens.dart",
+    "./icons": "./dist/icons/juno-icons.svg",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
     "src/css",
+    "src/icons",
     "README.md",
     "CHANGELOG.md"
   ],
   "scripts": {
     "build:tokens": "node style-dictionary.config.mjs",
+    "build:icons": "node scripts/build-icons.mjs",
     "build:css": "node scripts/bundle-css.mjs",
-    "build": "npm run build:tokens && npm run build:css",
+    "build": "npm run build:tokens && npm run build:icons && npm run build:css",
     "gen-docs": "node scripts/gen-docs.mjs",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
     "lint:css": "stylelint \"src/css/**/*.css\"",

@@ -41,8 +41,64 @@ const PAGES = [
   ['overlays.html', 'Overlays'],
   ['alerts.html', 'Alerts'],
   ['tabs.html', 'Tabs'],
+  ['icons.html', 'Icons'],
   ['layout.html', 'Layout'],
 ];
+
+// icon set — symbol ids in dist/icons/juno-icons.svg (without the juno-i- prefix)
+const ICONS = [
+  'house',
+  'gear',
+  'sliders-horizontal',
+  'user',
+  'users',
+  'magnifying-glass',
+  'funnel',
+  'bell',
+  'envelope',
+  'chat-circle',
+  'calendar-blank',
+  'clock',
+  'check',
+  'check-circle',
+  'x',
+  'x-circle',
+  'warning',
+  'warning-circle',
+  'info',
+  'question',
+  'plus',
+  'minus',
+  'trash',
+  'pencil-simple',
+  'copy',
+  'floppy-disk',
+  'download',
+  'upload',
+  'link',
+  'folder',
+  'file',
+  'list',
+  'dots-three',
+  'dots-three-vertical',
+  'caret-up',
+  'caret-down',
+  'caret-left',
+  'caret-right',
+  'arrow-up',
+  'arrow-down',
+  'arrow-left',
+  'arrow-right',
+  'eye',
+  'eye-slash',
+  'lock',
+  'lock-open',
+  'heart',
+  'star',
+  'sun',
+  'moon',
+];
+const ICON_SPRITE = '../dist/icons/juno-icons.svg';
 
 // ── shared chrome (header + nav + footer) ────────────────────────────────
 function renderChrome() {
@@ -499,6 +555,21 @@ function renderTokens() {
   ).join('');
 }
 
+// ── icon gallery (demo only — reads symbol ids from the sprite) ──────────
+function renderIcons() {
+  const grid = document.getElementById('icon-gallery');
+  if (!grid) return;
+  const count = document.getElementById('icon-count');
+  if (count) count.textContent = ICONS.length;
+  grid.innerHTML = ICONS.map(
+    (name) => `
+    <div title="${name}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:var(--juno-s1);border:1px solid var(--juno-border);border-radius:var(--juno-radius-4);">
+      <svg class="juno-icon juno-icon--lg"><use href="${ICON_SPRITE}#juno-i-${name}" /></svg>
+      <code class="juno-mono juno-text-label" style="font-size:10px;text-align:center;">${name}</code>
+    </div>`,
+  ).join('');
+}
+
 // ── live clock ──────────────────────────────────────────────────────────
 function tick() {
   const el = document.getElementById('clock');
@@ -540,6 +611,7 @@ initTooltips();
 initTables();
 initAlerts();
 initTabs();
+renderIcons();
 syncToggles();
 tick();
 setInterval(tick, 1000);

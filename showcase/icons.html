@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Icons</title>
+<script>
+  // apply persisted theme before first paint (no FOUC on page navigation)
+  try {
+    var h = document.documentElement;
+    var p = localStorage.getItem('juno:palette'); if (p) h.dataset.junoPalette = p;
+    var m = localStorage.getItem('juno:mode'); if (m) h.dataset.junoMode = m;
+    var d = localStorage.getItem('juno:density'); if (d) h.dataset.junoDensity = d;
+    var t = localStorage.getItem('juno:text'); if (t) h.dataset.junoText = t;
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Icons</span>
+      <h1>One sprite, currentColor, zero JS.</h1>
+      <p>Phosphor (bold) bundled as an SVG sprite. Each glyph inherits text color — wrap in
+        <code class="juno-mono">.juno--&lt;role&gt;</code> to tint by status — and sizes in
+        <code class="juno-mono">em</code>, so it rides the type scale and the
+        <code class="juno-mono">Text</code> switcher. MIT-licensed; free to ship and sell.</p>
+    </div>
+
+    <!-- Sizes + roles -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Size × role</span>
+      </div>
+      <div class="demo-row" style="align-items:center;gap:24px;">
+        <svg class="juno-icon juno-icon--sm"><use href="../dist/icons/juno-icons.svg#juno-i-gear" /></svg>
+        <svg class="juno-icon"><use href="../dist/icons/juno-icons.svg#juno-i-gear" /></svg>
+        <svg class="juno-icon juno-icon--lg"><use href="../dist/icons/juno-icons.svg#juno-i-gear" /></svg>
+        <svg class="juno-icon juno-icon--xl"><use href="../dist/icons/juno-icons.svg#juno-i-gear" /></svg>
+        <div class="demo-divider"></div>
+        <svg class="juno-icon juno-icon--lg juno-icon--role juno--nominal"><use href="../dist/icons/juno-icons.svg#juno-i-check-circle" /></svg>
+        <svg class="juno-icon juno-icon--lg juno-icon--role juno--active"><use href="../dist/icons/juno-icons.svg#juno-i-info" /></svg>
+        <svg class="juno-icon juno-icon--lg juno-icon--role juno--caution"><use href="../dist/icons/juno-icons.svg#juno-i-warning" /></svg>
+        <svg class="juno-icon juno-icon--lg juno-icon--role juno--warning"><use href="../dist/icons/juno-icons.svg#juno-i-warning-circle" /></svg>
+      </div>
+    </section>
+
+    <!-- In context -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">In buttons + inline with text</span>
+      </div>
+      <div class="demo-row" style="align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="juno-btn juno--active">
+          <svg class="juno-icon juno-icon--sm"><use href="../dist/icons/juno-icons.svg#juno-i-magnifying-glass" /></svg>
+          Search
+        </button>
+        <button class="juno-btn juno--nominal">
+          <svg class="juno-icon juno-icon--sm"><use href="../dist/icons/juno-icons.svg#juno-i-floppy-disk" /></svg>
+          Save
+        </button>
+        <button class="juno-btn juno--warning">
+          <svg class="juno-icon juno-icon--sm"><use href="../dist/icons/juno-icons.svg#juno-i-trash" /></svg>
+          Delete
+        </button>
+        <p style="margin:0;">Settings live behind the
+          <svg class="juno-icon juno-icon--sm"><use href="../dist/icons/juno-icons.svg#juno-i-gear" /></svg>
+          icon.</p>
+      </div>
+    </section>
+
+    <!-- Full set -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">The set — <span id="icon-count"></span> icons</span>
+      </div>
+      <div id="icon-gallery" class="demo-grid"
+        style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:2px;"></div>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
