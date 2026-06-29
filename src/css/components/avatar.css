@@ -26,6 +26,7 @@
   border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
   color: var(--juno-label);
   font-family: var(--juno-font-family-sans);
+
   /* initials scale with the avatar (~40% of its box) */
   font-size: calc(var(--juno-avatar-size) * 0.4);
   font-weight: var(--juno-font-weight-semibold);
@@ -56,9 +57,11 @@
 .juno-avatar--sm {
   --juno-avatar-size: var(--juno-space-24);
 }
+
 .juno-avatar--lg {
   --juno-avatar-size: var(--juno-space-40);
 }
+
 .juno-avatar--xl {
   --juno-avatar-size: var(--juno-space-56);
 }
