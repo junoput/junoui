@@ -28,11 +28,11 @@
           "$description": "Primary numeric readouts and live values. Brightest text."
         },
         "label": {
-          "$value": "oklch(57% 0.012 85)",
+          "$value": "oklch(59% 0.012 85)",
           "$description": "Labels, units, helper and secondary text. Never for values."
         },
         "muted": {
-          "$value": "oklch(35% 0.010 85)",
+          "$value": "oklch(48.5% 0.010 85)",
           "$description": "Disabled, placeholder, decorative separators. No meaning."
         },
         "border": {
@@ -86,7 +86,7 @@
           "$description": "Labels, units, helper and secondary text. Never for values."
         },
         "muted": {
-          "$value": "oklch(70% 0.008 85)",
+          "$value": "oklch(63% 0.008 85)",
           "$description": "Disabled, placeholder, decorative separators. No meaning."
         },
         "border": {
