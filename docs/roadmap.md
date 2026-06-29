@@ -41,7 +41,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | ~~**Alert / toast / inline notification**~~                                      | ✅ shipped |
 | ~~**Tabs**, accordion / disclosure~~                                             | ✅ shipped |
 | ~~**Skeleton** loading placeholder (pairs with loaders)~~                        | ✅ shipped |
-| Avatar, chip/tag, divider, breadcrumb, pagination, stepper                       | 🟢         |
+| ~~Avatar, chip/tag, divider~~ shipped · breadcrumb, pagination, stepper          | 🟢         |
 | Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)            | 🟢         |
 
 ## Quality / infra
