@@ -1,0 +1,61 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Skeleton  ·  loading placeholder
+ *  A shimmering block that stands in for content not yet loaded. Same
+ *  shimmer language as the table's row skeleton, generalized: text lines,
+ *  blocks, and circles (avatars). Zero JS — size it with width / height or
+ *  --juno-skeleton-h. Honors prefers-reduced-motion (shimmer → static).
+ *  Mark the loading region aria-busy="true" so AT announces it.
+ *  Usage:
+ *    <div aria-busy="true" aria-live="polite">
+ *      <span class="juno-skeleton juno-skeleton--circle" style="--juno-skeleton-h: 48px;"></span>
+ *      <span class="juno-skeleton juno-skeleton--text" style="inline-size: 60%;"></span>
+ *      <span class="juno-skeleton juno-skeleton--text"></span>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-skeleton {
+  --juno-skeleton-h: var(--juno-space-16);
+
+  display: block;
+  inline-size: 100%;
+  block-size: var(--juno-skeleton-h);
+  border-radius: var(--juno-radius-3);
+  background: linear-gradient(90deg, var(--juno-s2) 0%, var(--juno-s3) 50%, var(--juno-s2) 100%);
+  background-size: 200% 100%;
+  animation: juno-skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+/* a text line — caps height to one line, soft radius */
+.juno-skeleton--text {
+  --juno-skeleton-h: 1em;
+
+  border-radius: var(--juno-radius-2);
+}
+
+/* round avatar / icon placeholder — keep it square via the inline size */
+.juno-skeleton--circle {
+  inline-size: var(--juno-skeleton-h);
+  border-radius: 50%;
+}
+
+/* a larger surface (card / media) */
+.juno-skeleton--block {
+  --juno-skeleton-h: var(--juno-space-56);
+
+  border-radius: var(--juno-radius-4);
+}
+
+@keyframes juno-skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .juno-skeleton {
+    animation: none;
+  }
+}
