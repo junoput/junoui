@@ -67,9 +67,13 @@
     "prepare": "npm run build",
     "showcase": "npm run build && node scripts/serve.mjs",
     "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots"
+    "test:visual:update": "playwright test --update-snapshots",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "npm run build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@playwright/test": "^1.61.1",
     "prettier": "^3.8.4",
     "style-dictionary": "^4.4.0",
