@@ -101,6 +101,37 @@
       </div>
     </section>
 
+    <!-- 03 SKELETON -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Skeleton — placeholder while content loads</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+        <!-- media card -->
+        <div class="juno-card"><div class="juno-card__body" aria-busy="true" aria-live="polite">
+          <span class="juno-skeleton juno-skeleton--block"></span>
+          <span class="juno-skeleton juno-skeleton--text" style="inline-size:70%;margin-top:14px;"></span>
+          <span class="juno-skeleton juno-skeleton--text" style="margin-top:8px;"></span>
+          <span class="juno-skeleton juno-skeleton--text" style="inline-size:40%;margin-top:8px;"></span>
+        </div></div>
+        <!-- profile row -->
+        <div class="juno-card"><div class="juno-card__body" aria-busy="true" aria-live="polite">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <span class="juno-skeleton juno-skeleton--circle" style="--juno-skeleton-h:48px;"></span>
+            <div style="flex:1;">
+              <span class="juno-skeleton juno-skeleton--text" style="inline-size:50%;"></span>
+              <span class="juno-skeleton juno-skeleton--text" style="inline-size:80%;margin-top:8px;"></span>
+            </div>
+          </div>
+          <span class="juno-skeleton juno-skeleton--text" style="margin-top:18px;"></span>
+          <span class="juno-skeleton juno-skeleton--text" style="margin-top:8px;"></span>
+          <span class="juno-skeleton juno-skeleton--text" style="inline-size:60%;margin-top:8px;"></span>
+        </div></div>
+      </div>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Mirror the shape of the real content so layout doesn't jump. Mark the region <code class="juno-mono">aria-busy="true"</code>; shimmer goes static under <code class="juno-mono">prefers-reduced-motion</code>.</p>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>
