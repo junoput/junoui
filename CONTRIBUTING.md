@@ -11,7 +11,17 @@ npm install        # installs deps and builds dist/ (prepare)
 npm run build      # tokens (Style Dictionary) + CSS bundle
 npm test           # build + node:test suite
 npm run lint       # stylelint + prettier --check
+npm run test:visual # Playwright screenshot diff of every showcase page
 ```
+
+### Visual regression
+
+`npm run test:visual` snapshots every showcase page (dark + light) and diffs against the
+committed baselines in `test/visual/__screenshots__/`. After an **intentional** visual
+change, re-record with `npm run test:visual:update` and commit the new PNGs. Baselines are
+OS-scoped (filename ends `-<platform>`), since font rendering differs per platform —
+generate them on the same OS you compare on. Run separate from `npm test` (needs the
+Playwright browser: `npx playwright install chromium`).
 
 ## Project layout
 
