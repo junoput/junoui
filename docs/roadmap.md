@@ -40,7 +40,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | ~~**Table / data grid** styling~~                                                | ✅ shipped |
 | ~~**Alert / toast / inline notification**~~                                      | ✅ shipped |
 | ~~**Tabs**, accordion / disclosure~~                                             | ✅ shipped |
-| **Skeleton** loading placeholder (pairs with loaders)                            | 🟡         |
+| ~~**Skeleton** loading placeholder (pairs with loaders)~~                        | ✅ shipped |
 | Avatar, chip/tag, divider, breadcrumb, pagination, stepper                       | 🟢         |
 | Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)            | 🟢         |
 
