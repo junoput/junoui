@@ -193,10 +193,34 @@
       <a class="demo-more" href="./alerts.html">See all alerts &amp; toasts — roles · actions · dismiss · solid · toast stack →</a>
     </section>
 
-    <!-- Layout -->
+    <!-- Tabs -->
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">09</span>
+        <span class="juno-eyebrow">Tabs &amp; accordion</span>
+      </div>
+      <div class="juno-tabs" style="max-inline-size:680px;">
+        <div class="juno-tabs__list" role="tablist" aria-label="Demo">
+          <button class="juno-tabs__tab" role="tab" id="ot-a" aria-controls="op-a" aria-selected="true">OVERVIEW</button>
+          <button class="juno-tabs__tab" role="tab" id="ot-b" aria-controls="op-b" aria-selected="false">METRICS</button>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="op-a" aria-labelledby="ot-a">
+          <p class="juno-label">Tabs swap panels in place with an active-cyan underline.</p>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="op-b" aria-labelledby="ot-b" hidden>
+          <div class="demo-row" style="gap:16px;">
+            <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">62</span><span class="juno-readout__unit">%</span></div>
+            <div class="juno-readout juno--caution"><span class="juno-readout__label">P95</span><span class="juno-readout__value">128</span><span class="juno-readout__unit">ms</span></div>
+          </div>
+        </div>
+      </div>
+      <a class="demo-more" href="./tabs.html">See all tabs &amp; accordion — switching · disabled · native disclosure →</a>
+    </section>
+
+    <!-- Layout -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">10</span>
         <span class="juno-eyebrow">Layout</span>
       </div>
       <p class="juno-eyebrow demo-lead">.juno-grid-auto — columns collapse on their own (no breakpoints)</p>

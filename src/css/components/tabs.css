@@ -1,0 +1,60 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Tabs
+ *  A horizontal tablist with an active-cyan underline indicator; the
+ *  selected tab shows its panel. junoui ships the look + the ARIA
+ *  contract; the app owns switching (aria-selected, panel visibility,
+ *  arrow-key roving focus).
+ *  Usage:
+ *    <div class="juno-tabs">
+ *      <div class="juno-tabs__list" role="tablist" aria-label="Service">
+ *        <button class="juno-tabs__tab" role="tab" id="t1"
+ *                aria-controls="p1" aria-selected="true">OVERVIEW</button>
+ *        <button class="juno-tabs__tab" role="tab" id="t2"
+ *                aria-controls="p2" aria-selected="false">METRICS</button>
+ *      </div>
+ *      <div class="juno-tabs__panel" role="tabpanel" id="p1" aria-labelledby="t1">…</div>
+ *      <div class="juno-tabs__panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>…</div>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-tabs__list {
+  display: flex;
+  gap: var(--juno-space-2);
+  border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+.juno-tabs__tab {
+  appearance: none;
+  margin: 0;
+  margin-block-end: calc(-1 * var(--juno-border-width-1));
+  padding: var(--juno-space-10) var(--juno-space-16);
+  background: transparent;
+  border: none;
+  border-block-end: var(--juno-border-width-2) solid transparent;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  font-weight: var(--juno-font-weight-medium);
+  letter-spacing: var(--juno-font-tracking-label);
+  color: var(--juno-label);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-tabs__tab:hover { color: var(--juno-data); }
+
+.juno-tabs__tab[aria-selected='true'] {
+  color: var(--juno-active);
+  border-block-end-color: var(--juno-active);
+}
+
+.juno-tabs__tab:disabled {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.juno-tabs__panel {
+  padding-block-start: var(--juno-space-20);
+}
+
+.juno-tabs__panel[hidden] { display: none; }

@@ -89,5 +89,5 @@ Full gap analysis + priorities: **[docs/roadmap.md](./docs/roadmap.md)**. Done:
 foundation tokens (motion/z-index/elevation/opacity), density modes, form controls +
 field, overlays (modal/drawer/tooltip/popover/menu), table/data-grid (sortable header,
 cell types, row states, overflow, skeleton/empty), alert + toast (role-tinted, alert
-layer). Next: tabs/accordion, then visual-regression snapshots + changesets. junoui
-ships the look + a11y spec; stateful behavior stays out.
+layer), tabs + accordion (native <details>). Next: visual-regression snapshots +
+changesets. junoui ships the look + a11y spec; stateful behavior stays out.

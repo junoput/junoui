@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Tabs &amp; accordion</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Tabs &amp; accordion</span>
+      <h1>Switch views; fold detail away.</h1>
+      <p>Tabs swap panels in place with an active-cyan underline; the accordion expands
+        stacked sections. The accordion is native <code class="juno-mono">&lt;details&gt;</code> —
+        zero JS. Tabs ship the look + the ARIA contract; the app owns switching and arrow-key
+        roving focus.</p>
+    </div>
+
+    <!-- 01 TABS -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Tabs — click or ← → to switch</span>
+      </div>
+      <div class="juno-tabs">
+        <div class="juno-tabs__list" role="tablist" aria-label="Service detail">
+          <button class="juno-tabs__tab" role="tab" id="t-ov" aria-controls="p-ov" aria-selected="true">OVERVIEW</button>
+          <button class="juno-tabs__tab" role="tab" id="t-me" aria-controls="p-me" aria-selected="false">METRICS</button>
+          <button class="juno-tabs__tab" role="tab" id="t-lo" aria-controls="p-lo" aria-selected="false">LOGS</button>
+          <button class="juno-tabs__tab" role="tab" id="t-cf" aria-controls="p-cf" aria-selected="false" disabled>CONFIG</button>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="p-ov" aria-labelledby="t-ov">
+          <article class="juno-card"><div class="juno-card__body">
+            <div class="juno-card__row"><span class="juno-label">Service</span><span class="juno-value juno-mono" style="font-size:var(--juno-font-size-16);">api-gateway</span></div>
+            <div class="juno-card__row"><span class="juno-label">Status</span><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></div>
+            <div class="juno-card__row"><span class="juno-label">Region</span><span class="juno-value juno-mono">us-east-1</span></div>
+          </div></article>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="p-me" aria-labelledby="t-me" hidden>
+          <div class="demo-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">62</span><span class="juno-readout__unit">%</span></div>
+            <div class="juno-readout juno--active"><span class="juno-readout__label">Req/s</span><span class="juno-readout__value">4,780</span><span class="juno-readout__unit">rps</span></div>
+            <div class="juno-readout juno--caution"><span class="juno-readout__label">P95</span><span class="juno-readout__value">128</span><span class="juno-readout__unit">ms</span></div>
+          </div>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="p-lo" aria-labelledby="t-lo" hidden>
+          <article class="juno-card"><div class="juno-card__body">
+            <pre class="juno-mono" style="font-size:12px;color:var(--juno-label);line-height:1.7;margin:0;white-space:pre-wrap;">14:32:01  INF  request /v1/orders 200 18ms
+14:32:01  INF  cache hit ratio 0.99
+14:32:02  WRN  upstream worker-pool slow 402ms
+14:32:03  INF  request /v1/orders 200 21ms</pre>
+          </div></article>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="p-cf" aria-labelledby="t-cf" hidden>
+          <p class="juno-label">Config is disabled for this role.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 ACCORDION -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Accordion — native &lt;details&gt;, zero JS</span>
+      </div>
+      <div class="juno-accordion" style="max-inline-size:680px;">
+        <details class="juno-accordion__item" open>
+          <summary class="juno-accordion__summary">Region · us-east-1<span class="juno-badge juno-badge--soft juno--nominal" style="margin-inline-start:auto;">HEALTHY</span></summary>
+          <div class="juno-accordion__body">Primary region. 3 replicas, auto-scaling on. CPU 62%, P95 128ms. Last deploy 14:32 UTC.</div>
+        </details>
+        <details class="juno-accordion__item">
+          <summary class="juno-accordion__summary">Region · eu-west-1<span class="juno-badge juno-badge--soft juno--warning" style="margin-inline-start:auto;">DEGRADED</span></summary>
+          <div class="juno-accordion__body">cache-redis unreachable. Failover to us-east-1 armed. 1 of 3 replicas reporting.</div>
+        </details>
+        <details class="juno-accordion__item">
+          <summary class="juno-accordion__summary">Region · ap-south-1<span class="juno-badge juno-badge--soft juno--caution" style="margin-inline-start:auto;">CAUTION</span></summary>
+          <div class="juno-accordion__body">queue-consumer backlog rising. 560 jobs pending, P95 climbing. Watching.</div>
+        </details>
+      </div>
+
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Lone disclosure (no wrapper)</p>
+      <details class="juno-accordion__item" style="max-inline-size:680px;">
+        <summary class="juno-accordion__summary">Advanced options</summary>
+        <div class="juno-accordion__body">A single <code class="juno-mono">&lt;details&gt;</code> frames itself. Use for one-off "show more" toggles.</div>
+      </details>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

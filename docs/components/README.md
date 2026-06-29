@@ -44,5 +44,7 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Table / data grid            | `.juno-table`                          | [table.md](./table.md)                 |
 | Alert / inline notification  | `.juno-alert`                          | [alert.md](./alert.md)                 |
 | Toast / snackbar             | `.juno-toast`                          | [toast.md](./toast.md)                 |
+| Tabs                         | `.juno-tabs`                           | [tabs.md](./tabs.md)                   |
+| Accordion / disclosure       | `.juno-accordion`                      | [accordion.md](./accordion.md)         |
 
 Always pair a status color with a text label — color is never the only signal.

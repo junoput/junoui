@@ -40,6 +40,7 @@ const PAGES = [
   ['loaders.html', 'Loaders'],
   ['overlays.html', 'Overlays'],
   ['alerts.html', 'Alerts'],
+  ['tabs.html', 'Tabs'],
   ['layout.html', 'Layout'],
 ];
 
@@ -416,6 +417,45 @@ function initAlerts() {
   });
 }
 
+// ── tabs (demo: app owns switching + roving focus; junoui ships the look) ─
+function initTabs() {
+  document.querySelectorAll('.juno-tabs').forEach((tabs) => {
+    const tablist = tabs.querySelector('[role="tablist"]');
+    if (!tablist) return;
+    const items = [...tablist.querySelectorAll('[role="tab"]')];
+    const select = (tab) => {
+      items.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on;
+      });
+    };
+    items.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        if (!tab.disabled) select(tab);
+      });
+      tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
+    });
+    tablist.addEventListener('keydown', (e) => {
+      const enabled = items.filter((t) => !t.disabled);
+      const i = enabled.indexOf(document.activeElement);
+      if (i < 0) return;
+      let next;
+      if (e.key === 'ArrowRight') next = enabled[(i + 1) % enabled.length];
+      else if (e.key === 'ArrowLeft') next = enabled[(i - 1 + enabled.length) % enabled.length];
+      else if (e.key === 'Home') next = enabled[0];
+      else if (e.key === 'End') next = enabled[enabled.length - 1];
+      if (next) {
+        e.preventDefault();
+        select(next);
+        next.focus();
+      }
+    });
+  });
+}
+
 // ── token table (values straight from the JS module) ────────────────────
 function renderTokens() {
   const grid = document.getElementById('token-grid');
@@ -464,6 +504,7 @@ initSliders();
 initTooltips();
 initTables();
 initAlerts();
+initTabs();
 syncToggles();
 tick();
 setInterval(tick, 1000);

@@ -1,0 +1,83 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Accordion / disclosure
+ *  Stacked, expandable sections built on native <details>/<summary> —
+ *  keyboard + screen-reader native, ZERO JS. A chevron rotates on open.
+ *  Use a lone <details> for a single disclosure; group them in
+ *  .juno-accordion for a bordered set.
+ *  Usage:
+ *    <div class="juno-accordion">
+ *      <details class="juno-accordion__item" open>
+ *        <summary class="juno-accordion__summary">Region · us-east-1</summary>
+ *        <div class="juno-accordion__body">…</div>
+ *      </details>
+ *      <details class="juno-accordion__item">
+ *        <summary class="juno-accordion__summary">Region · eu-west-1</summary>
+ *        <div class="juno-accordion__body">…</div>
+ *      </details>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-accordion {
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-5);
+  overflow: hidden;
+}
+
+.juno-accordion__item {
+  border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+.juno-accordion__item:last-child { border-block-end: none; }
+
+.juno-accordion__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--juno-space-12);
+  padding: var(--juno-pad-control-block) var(--juno-pad-surface-inline);
+  background: var(--juno-s1);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  font-weight: var(--juno-font-weight-medium);
+  color: var(--juno-data);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+/* hide the native disclosure triangle (both engines) */
+.juno-accordion__summary::-webkit-details-marker { display: none; }
+
+.juno-accordion__summary:hover { background: var(--juno-s2); }
+
+/* chevron — a rotated corner that flips when the item is open */
+.juno-accordion__summary::after {
+  content: '';
+  flex-shrink: 0;
+  inline-size: var(--juno-space-8);
+  block-size: var(--juno-space-8);
+  border-inline-end: var(--juno-border-width-2) solid var(--juno-muted);
+  border-block-end: var(--juno-border-width-2) solid var(--juno-muted);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-accordion__item[open] > .juno-accordion__summary::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.juno-accordion__body {
+  padding: var(--juno-space-12) var(--juno-pad-surface-inline) var(--juno-pad-surface-block);
+  background: var(--juno-s0);
+  border-block-start: var(--juno-border-width-1) solid var(--juno-border);
+  font-size: var(--juno-font-size-13);
+  line-height: var(--juno-font-lineHeight-relaxed);
+  color: var(--juno-label);
+}
+
+/* a lone disclosure (no .juno-accordion wrapper) gets its own frame */
+details.juno-accordion__item:only-child {
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-5);
+  overflow: hidden;
+}

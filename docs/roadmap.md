@@ -39,7 +39,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | ~~**Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown~~         | ✅ shipped |
 | ~~**Table / data grid** styling~~                                                | ✅ shipped |
 | ~~**Alert / toast / inline notification**~~                                      | ✅ shipped |
-| **Tabs**, accordion / disclosure                                                 | 🟡         |
+| ~~**Tabs**, accordion / disclosure~~                                             | ✅ shipped |
 | **Skeleton** loading placeholder (pairs with loaders)                            | 🟡         |
 | Avatar, chip/tag, divider, breadcrumb, pagination, stepper                       | 🟢         |
 | Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)            | 🟢         |
