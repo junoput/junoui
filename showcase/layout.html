@@ -124,6 +124,53 @@
       </div>
     </section>
 
+    <!-- 07 NAVIGATION PATTERNS -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">07</span>
+        <span class="juno-eyebrow">Navigation — breadcrumb · pagination · stepper</span>
+      </div>
+
+      <nav class="juno-breadcrumb" aria-label="Breadcrumb" style="margin-bottom:24px;">
+        <ol>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Fleet</a></li>
+          <li><a href="#">us-east-1</a></li>
+          <li><a aria-current="page">api-gateway</a></li>
+        </ol>
+      </nav>
+
+      <nav class="juno-pagination" aria-label="Pagination" style="margin-bottom:28px;">
+        <button class="juno-pagination__item" aria-label="Previous page" disabled><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-left" /></svg></button>
+        <button class="juno-pagination__item" aria-current="page">1</button>
+        <button class="juno-pagination__item">2</button>
+        <button class="juno-pagination__item">3</button>
+        <span class="juno-pagination__gap">…</span>
+        <button class="juno-pagination__item">9</button>
+        <button class="juno-pagination__item" aria-label="Next page"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></button>
+      </nav>
+
+      <ol class="juno-stepper" style="max-inline-size:560px;">
+        <li class="juno-stepper__step" data-state="complete">
+          <span class="juno-stepper__marker"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-check" /></svg></span>
+          <span class="juno-stepper__label">Plan</span>
+        </li>
+        <li class="juno-stepper__step" data-state="complete">
+          <span class="juno-stepper__marker"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-check" /></svg></span>
+          <span class="juno-stepper__label">Build</span>
+        </li>
+        <li class="juno-stepper__step" data-state="current" aria-current="step">
+          <span class="juno-stepper__marker">3</span>
+          <span class="juno-stepper__label">Review</span>
+        </li>
+        <li class="juno-stepper__step" data-state="upcoming">
+          <span class="juno-stepper__marker">4</span>
+          <span class="juno-stepper__label">Ship</span>
+        </li>
+      </ol>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:12px;">All three are real <code class="juno-mono">&lt;nav&gt;</code> / <code class="juno-mono">&lt;ol&gt;</code> markup; the app sets <code class="juno-mono">aria-current</code> and step <code class="juno-mono">data-state</code>. junoui ships the look.</p>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>
