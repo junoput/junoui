@@ -49,5 +49,6 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Icon                           | `.juno-icon`                           | [icon.md](./icon.md)                   |
 | Skeleton / loading placeholder | `.juno-skeleton`                       | [skeleton.md](./skeleton.md)           |
 | Avatar                         | `.juno-avatar`                         | [avatar.md](./avatar.md)               |
+| Divider / separator            | `.juno-divider`                        | [divider.md](./divider.md)             |
 
 Always pair a status color with a text label — color is never the only signal.
