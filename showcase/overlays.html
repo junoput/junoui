@@ -83,7 +83,7 @@
       <article class="juno-card"><div class="juno-card__body">
         <div class="juno-cluster" style="--juno-cluster-space:12px;align-items:center;">
           <span class="juno-popover-anchor">
-            <button class="juno-btn juno-btn--ghost" popovertarget="ov-pop" aria-haspopup="dialog">RANGE FILTER ▾</button>
+            <button class="juno-btn juno-btn--ghost" popovertarget="ov-pop" aria-haspopup="dialog">RANGE FILTER <svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-down" /></svg></button>
             <div class="juno-popover" id="ov-pop" popover role="dialog" aria-label="Range filter">
               <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Request filter</span>
               <div class="juno-field"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span class="juno-field__label">Window (min)</span><span class="juno-value juno-text-active js-sval" style="font-size:16px;">40</span></div>
@@ -93,13 +93,13 @@
             </div>
           </span>
           <span class="juno-popover-anchor">
-            <button class="juno-btn juno-btn--ghost" popovertarget="ov-menu" aria-haspopup="menu">ACTIONS ▾</button>
+            <button class="juno-btn juno-btn--ghost" popovertarget="ov-menu" aria-haspopup="menu">ACTIONS <svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-down" /></svg></button>
             <ul class="juno-menu" id="ov-menu" popover role="menu">
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⤓</span>Import data<span class="juno-menu__kbd">⌘O</span></button></li>
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">✎</span>Edit settings<span class="juno-menu__kbd">⌘E</span></button></li>
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⎘</span>Duplicate<span class="juno-menu__kbd">⌘D</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-download" /></svg></span>Import data<span class="juno-menu__kbd">⌘O</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-pencil-simple" /></svg></span>Edit settings<span class="juno-menu__kbd">⌘E</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-copy" /></svg></span>Duplicate<span class="juno-menu__kbd">⌘D</span></button></li>
               <li class="juno-menu__sep" role="separator"></li>
-              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon">⨯</span>Delete project<span class="juno-menu__kbd">⌫</span></button></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="ov-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-trash" /></svg></span>Delete project<span class="juno-menu__kbd">⌫</span></button></li>
             </ul>
           </span>
         </div>
@@ -111,7 +111,7 @@
     <dialog class="juno-modal" id="ov-modal" aria-labelledby="ov-modal-t">
       <div class="juno-modal__stripe"></div>
       <div class="juno-modal__head"><span class="juno-modal__tag">DEPLOYMENT</span>
-        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">
         <h2 class="juno-modal__title" id="ov-modal-t">Promote build to production?</h2>
         <p class="juno-modal__text">Build #482 passed all checks. Promoting routes production traffic to the new version and updates the rollout plan.</p>
@@ -122,7 +122,7 @@
     <dialog class="juno-modal juno--warning" id="ov-modal-danger" aria-labelledby="ov-dd-t">
       <div class="juno-modal__stripe"></div>
       <div class="juno-modal__head"><span class="juno-modal__tag">CONFIRMATION REQUIRED</span>
-        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">
         <h2 class="juno-modal__title" id="ov-dd-t">Delete this project?</h2>
         <p class="juno-modal__text">This removes the project and all of its data and settings. Cannot be undone.</p>
@@ -132,7 +132,7 @@
 
     <dialog class="juno-modal juno-drawer" id="ov-drawer-end" aria-labelledby="ov-de-t">
       <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-de-t">DISPLAY SETTINGS · END</span>
-        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">
         <p class="juno-modal__text" style="margin-bottom:16px;">Edge-anchored panel (inline-end) for settings that don't warrant leaving context.</p>
         <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>Live updates</span></label>
@@ -142,7 +142,7 @@
 
     <dialog class="juno-modal juno-drawer juno-drawer--start" id="ov-drawer-start" aria-labelledby="ov-ds-t">
       <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-ds-t">NAV · START</span>
-        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">
         <p class="juno-modal__text">Anchored to the inline-start edge (mirrors under RTL).</p>
         <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button></form>
@@ -151,7 +151,7 @@
 
     <dialog class="juno-modal juno-drawer juno-drawer--bottom" id="ov-drawer-bottom" aria-labelledby="ov-db-t">
       <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-db-t">QUICK ACTIONS · BOTTOM</span>
-        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">
         <p class="juno-modal__text">Slides up from the block-end edge — good for mobile sheets.</p>
         <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button><button class="juno-btn">CONFIRM</button></form>

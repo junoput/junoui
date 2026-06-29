@@ -85,6 +85,7 @@ const ICONS = [
   'caret-down',
   'caret-left',
   'caret-right',
+  'arrow-clockwise',
   'arrow-up',
   'arrow-down',
   'arrow-left',
@@ -99,6 +100,22 @@ const ICONS = [
   'moon',
 ];
 const ICON_SPRITE = '../dist/icons/juno-icons.svg';
+
+// inline the sprite once so every page can reference symbols by short id
+// (#juno-i-<name>) — keeps currentColor tinting reliable inside role contexts.
+async function injectSprite() {
+  try {
+    const res = await fetch(ICON_SPRITE);
+    const div = document.createElement('div');
+    div.hidden = true;
+    div.innerHTML = await res.text();
+    document.body.prepend(div);
+  } catch {
+    /* offline / file:// — static external <use href> refs still work over http */
+  }
+}
+const icon = (name, cls = '') =>
+  `<svg class="juno-icon ${cls}" aria-hidden="true"><use href="#juno-i-${name}" /></svg>`;
 
 // ── shared chrome (header + nav + footer) ────────────────────────────────
 function renderChrome() {
@@ -125,8 +142,8 @@ function renderChrome() {
     <div class="demo-divider"></div>
     <span class="juno-eyebrow">Mode</span>
     <div style="display:flex;gap:4px;">
-      <button class="demo-toggle" data-mode="dark">◑ DARK</button>
-      <button class="demo-toggle" data-mode="light">◐ LIGHT</button>
+      <button class="demo-toggle" data-mode="dark">${icon('moon', 'juno-icon--sm')} DARK</button>
+      <button class="demo-toggle" data-mode="light">${icon('sun', 'juno-icon--sm')} LIGHT</button>
     </div>
     <div class="demo-divider"></div>
     <span class="juno-eyebrow">Density</span>
@@ -465,15 +482,21 @@ function initTables() {
 }
 
 // ── alerts + toasts (demo: app owns dismiss + auto-timeout) ──────────────
-const TOAST_ICON = { nominal: '✓', active: 'ℹ', target: '◎', caution: '▲', warning: '⚠' };
+const TOAST_ICON = {
+  nominal: 'check-circle',
+  active: 'info',
+  target: 'check-circle',
+  caution: 'warning',
+  warning: 'warning-circle',
+};
 function showToast(stack, role, msg) {
   const t = document.createElement('div');
   t.className = `juno-toast juno--${role}`;
   t.setAttribute('role', 'status');
   t.innerHTML =
-    `<span class="juno-toast__icon" aria-hidden="true">${TOAST_ICON[role] || 'ℹ'}</span>` +
+    `<span class="juno-toast__icon">${icon(TOAST_ICON[role] || 'info')}</span>` +
     `<span class="juno-toast__text">${msg}</span>` +
-    `<button class="juno-toast__close" aria-label="Dismiss">✕</button>`;
+    `<button class="juno-toast__close" aria-label="Dismiss">${icon('x', 'juno-icon--sm')}</button>`;
   stack.appendChild(t);
   let gone = false;
   const remove = () => {
@@ -595,6 +618,7 @@ function driveProgress() {
 }
 
 renderChrome();
+injectSprite();
 const loadPref = (key) => {
   try {
     return localStorage.getItem(key);

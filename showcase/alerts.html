@@ -37,19 +37,19 @@
       </div>
       <div class="demo-stack" style="gap:12px;max-inline-size:680px;">
         <div class="juno-alert juno--active" role="status">
-          <span class="juno-alert__icon" aria-hidden="true">ℹ</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-info" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Heads up</span><span class="juno-alert__text">A new build is rolling out to 10% of traffic.</span></div>
         </div>
         <div class="juno-alert juno--nominal" role="status">
-          <span class="juno-alert__icon" aria-hidden="true">✓</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-check-circle" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Deploy succeeded</span><span class="juno-alert__text">api-gateway is healthy on all regions.</span></div>
         </div>
         <div class="juno-alert juno--caution" role="status">
-          <span class="juno-alert__icon" aria-hidden="true">▲</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Elevated latency</span><span class="juno-alert__text">P95 on worker-pool is 402 ms — above the 300 ms target.</span></div>
         </div>
         <div class="juno-alert juno--warning" role="alert">
-          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning-circle" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Service down</span><span class="juno-alert__text">cache-redis is unreachable in eu-west-1.</span></div>
         </div>
       </div>
@@ -64,7 +64,7 @@
       <div class="demo-stack" style="gap:12px;max-inline-size:680px;">
         <!-- with actions -->
         <div class="juno-alert juno--warning" role="alert">
-          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning-circle" /></svg></span>
           <div class="juno-alert__body">
             <span class="juno-alert__title">Deploy blocked</span>
             <span class="juno-alert__text">Two required checks are still failing on this branch.</span>
@@ -73,17 +73,17 @@
               <button class="juno-btn juno-btn--ghost">VIEW LOG</button>
             </div>
           </div>
-          <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+          <button class="juno-alert__close" aria-label="Dismiss"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button>
         </div>
         <!-- text-only + dismiss -->
         <div class="juno-alert juno--active" role="status">
-          <span class="juno-alert__icon" aria-hidden="true">ℹ</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-info" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__text">Maintenance window scheduled for 02:00–02:30 UTC. Dismiss me →</span></div>
-          <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+          <button class="juno-alert__close" aria-label="Dismiss"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button>
         </div>
         <!-- solid, high-emphasis -->
         <div class="juno-alert juno-alert--solid juno--warning" role="alert">
-          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning-circle" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Quota exceeded</span><span class="juno-alert__text">Write traffic is being throttled. Upgrade the plan to restore full throughput.</span></div>
         </div>
       </div>

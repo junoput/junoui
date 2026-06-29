@@ -95,9 +95,9 @@
             <button class="juno-btn juno-btn--ghost" data-page-size="all">ALL</button>
           </div>
           <span style="inline-size:1px;block-size:18px;background:var(--juno-border);"></span>
-          <button class="juno-btn juno-btn--ghost" data-prev="grid-fleet">‹ PREV</button>
+          <button class="juno-btn juno-btn--ghost" data-prev="grid-fleet"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-left" /></svg> PREV</button>
           <span class="juno-mono juno-text-data" style="font-size:12px;min-inline-size:54px;text-align:center;" data-page="grid-fleet">1 / 2</span>
-          <button class="juno-btn juno-btn--ghost" data-next="grid-fleet">NEXT ›</button>
+          <button class="juno-btn juno-btn--ghost" data-next="grid-fleet">NEXT <svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></button>
         </div>
       </div>
       <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Filter, sort, checkbox-select, and double-click-to-edit (CPU / P95) are all wired in <code class="juno-mono">app.js</code> — junoui ships the look, the app drives the behavior.</p>
@@ -120,7 +120,7 @@
             <tr><td class="juno-table__id">Progress</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:64;justify-content:flex-start;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">64%</span></span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Bounded quantity — track + fill, value follows.</td></tr>
             <tr><td class="juno-table__id">Trend / delta</td><td><span class="juno-table__trend juno--nominal">▲ +1,200</span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Change vs. prior — arrow + signed mono value.</td></tr>
             <tr><td class="juno-table__id">Timestamp</td><td class="juno-table__time" style="text-align:start;">14:32 UTC</td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Times — mono, muted.</td></tr>
-            <tr><td class="juno-table__id">Actions</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry">⤺</button><button class="juno-table__action" aria-label="More">⋯</button></span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Row operations — icon buttons, revealed on hover.</td></tr>
+            <tr><td class="juno-table__id">Actions</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button><button class="juno-table__action" aria-label="More"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-dots-three" /></svg></button></span></td><td class="juno-table__wrap" style="--juno-cell-max:none;white-space:normal;color:var(--juno-label);">Row operations — icon buttons, revealed on hover.</td></tr>
           </tbody>
         </table>
       </div>
@@ -165,7 +165,7 @@
             </tr>
             <tr>
               <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="inline-size:7px;block-size:7px;border-radius:2px;background:var(--juno-caution);"></span>Clamp · two lines</span></td>
-              <td class="juno-table__clamp">Primary database cluster — read replica us-east-1c, lag 240ms, failover armed</td>
+              <td class="juno-table__clamp"><span class="juno-table__clamp-text">Primary database cluster — read replica us-east-1c, lag 240ms, failover armed</span></td>
               <td class="juno-table__wrap" style="--juno-cell-max:none;color:var(--juno-label);font-size:12px;">When a little more context helps and rows may breathe. Caps at two lines, then ellipsis.</td>
             </tr>
             <tr>
@@ -197,7 +197,7 @@
         <div class="juno-card" style="display:flex;flex-direction:column;">
           <div class="juno-table__toolbar" style="text-transform:uppercase;font-size:10px;letter-spacing:.2em;color:var(--juno-label);">Empty — no data</div>
           <div class="juno-table__empty" style="flex:1;">
-            <div class="juno-table__empty-icon">▦</div>
+            <div class="juno-table__empty-icon"><svg class="juno-icon juno-icon--xl" aria-hidden="true"><use href="#juno-i-folder" /></svg></div>
             <div>
               <div style="font-size:14px;color:var(--juno-data);margin-bottom:5px;">No active services</div>
               <div style="font-size:12px;color:var(--juno-label);line-height:1.5;max-inline-size:240px;">The fleet is idle. Services appear here as soon as a deployment is rolled out.</div>

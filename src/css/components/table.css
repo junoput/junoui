@@ -234,14 +234,20 @@
   white-space: nowrap;
 }
 
+/* Line-clamp must live on a block child: a <td> stays `table-cell` and ignores
+   `display: -webkit-box`, so clamping it leaks the overflowing line. The td just
+   sets the width + wrap; the inner element does the clamp. */
 .juno-table td.juno-table__clamp {
   max-inline-size: var(--juno-cell-max, 240px);
+  white-space: normal;
+}
+
+.juno-table__clamp-text {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  white-space: normal;
 }
 
 .juno-table td.juno-table__wrap {

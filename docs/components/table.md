@@ -55,11 +55,11 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 
 ### Overflow (set on a cell)
 
-| Class                   | Behavior                                                         |
-| ----------------------- | ---------------------------------------------------------------- |
-| `.juno-table__truncate` | Single line + ellipsis (default). Pair with a `title` / tooltip. |
-| `.juno-table__clamp`    | Two lines, then ellipsis.                                        |
-| `.juno-table__wrap`     | Full value; row grows. Reserve for one descriptive column.       |
+| Class                   | Behavior                                                              |
+| ----------------------- | --------------------------------------------------------------------- |
+| `.juno-table__truncate` | Single line + ellipsis (default). Pair with a `title` / tooltip.      |
+| `.juno-table__clamp`    | Two lines, then ellipsis. Wrap the text in `.juno-table__clamp-text`. |
+| `.juno-table__wrap`     | Full value; row grows. Reserve for one descriptive column.            |
 
 All three cap at `--juno-cell-max` (default 240px).
 

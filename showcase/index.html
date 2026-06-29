@@ -168,11 +168,11 @@
             <span class="juno-tooltip__bubble" role="tooltip">Requests / sec · 248<span class="juno-tooltip__arrow"></span></span>
           </span>
           <span class="juno-popover-anchor">
-            <button class="juno-btn juno-btn--ghost" popovertarget="o-menu" aria-haspopup="menu">ACTIONS ▾</button>
+            <button class="juno-btn juno-btn--ghost" popovertarget="o-menu" aria-haspopup="menu">ACTIONS <svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-down" /></svg></button>
             <ul class="juno-menu" id="o-menu" popover role="menu">
-              <li><button class="juno-menu__item" role="menuitem" popovertarget="o-menu" popovertargetaction="hide"><span class="juno-menu__icon">⤓</span>Import data<span class="juno-menu__kbd">⌘O</span></button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="o-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-download" /></svg></span>Import data<span class="juno-menu__kbd">⌘O</span></button></li>
               <li class="juno-menu__sep" role="separator"></li>
-              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="o-menu" popovertargetaction="hide"><span class="juno-menu__icon">⨯</span>Delete project<span class="juno-menu__kbd">⌫</span></button></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="o-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-trash" /></svg></span>Delete project<span class="juno-menu__kbd">⌫</span></button></li>
             </ul>
           </span>
         </div>
@@ -188,12 +188,12 @@
       </div>
       <div class="demo-stack" style="gap:12px;max-inline-size:680px;">
         <div class="juno-alert juno--nominal" role="status">
-          <span class="juno-alert__icon" aria-hidden="true">✓</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-check-circle" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Deploy succeeded</span><span class="juno-alert__text">api-gateway is healthy on all regions.</span></div>
-          <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+          <button class="juno-alert__close" aria-label="Dismiss"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button>
         </div>
         <div class="juno-alert juno--warning" role="alert">
-          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning-circle" /></svg></span>
           <div class="juno-alert__body"><span class="juno-alert__title">Service down</span><span class="juno-alert__text">cache-redis is unreachable in eu-west-1.</span></div>
         </div>
       </div>
@@ -245,7 +245,7 @@
     <dialog class="juno-modal" id="o-modal" aria-labelledby="o-modal-t">
       <div class="juno-modal__stripe"></div>
       <div class="juno-modal__head"><span class="juno-modal__tag">DEPLOYMENT</span>
-        <form method="dialog"><button class="juno-modal__close" aria-label="Close">✕</button></form></div>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">
         <h2 class="juno-modal__title" id="o-modal-t">Promote build to production?</h2>
         <p class="juno-modal__text">Build #482 passed all checks. Promoting routes production traffic to the new version and updates the rollout plan.</p>

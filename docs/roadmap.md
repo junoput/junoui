@@ -50,7 +50,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | -------------------------------------------- | -------------------------------------------------------------- | -------- |
 | **Visual regression** snapshots (Playwright) | Catch unintended visual changes; token edits can shift output. | 🟡       |
 | **Changesets**                               | Automate semver + changelog from the token contract.           | 🟡       |
-| **Icon convention / set**                    | No icon system; most design systems ship or specify one.       | 🟡       |
+| ~~**Icon convention / set**~~                | ✅ shipped — `.juno-icon` + SVG sprite (Phosphor bold, MIT).   | ✅       |
 | **eslint** (flat config)                     | JS surface is small; prettier + tests cover most.              | 🟢       |
 
 Done already: stylelint + prettier, `node:test` integrity suite, a11y doc + ARIA

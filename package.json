@@ -18,7 +18,8 @@
     "dark-mode",
     "accessibility",
     "colorblind",
-    "dashboard"
+    "dashboard",
+    "icons"
   ],
   "main": "./dist/js/tokens.js",
   "module": "./dist/js/tokens.js",
