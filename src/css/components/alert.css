@@ -1,0 +1,90 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Alert / inline notification
+ *  A role-tinted banner for in-context messages: validation summaries,
+ *  system status, callouts. Soft-fill by default with a role accent rail;
+ *  icon + title + text + optional actions + optional dismiss. Color comes
+ *  from --juno-role (set by a .juno--<role> class); default informational.
+ *  Usage:
+ *    <div class="juno-alert juno--warning" role="alert">
+ *      <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+ *      <div class="juno-alert__body">
+ *        <span class="juno-alert__title">Deploy blocked</span>
+ *        <span class="juno-alert__text">Two checks are still failing.</span>
+ *      </div>
+ *      <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-alert {
+  --juno-role: var(--juno-active);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--juno-space-12);
+  padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
+  background: color-mix(in srgb, var(--juno-role) 10%, transparent);
+  border: var(--juno-border-width-1) solid color-mix(in srgb, var(--juno-role) 30%, transparent);
+  border-inline-start: var(--juno-border-width-3) solid var(--juno-role);
+  border-radius: var(--juno-radius-5);
+  color: var(--juno-data);
+}
+
+.juno-alert__icon {
+  flex-shrink: 0;
+  color: var(--juno-role);
+  font-size: var(--juno-font-size-16);
+  line-height: var(--juno-font-lineHeight-none);
+}
+
+.juno-alert__body {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-2);
+}
+
+.juno-alert__title {
+  font-family: var(--juno-font-family-sans);
+  font-weight: var(--juno-font-weight-semibold);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+}
+
+.juno-alert__text {
+  font-size: var(--juno-font-size-13);
+  line-height: var(--juno-font-lineHeight-relaxed);
+  color: var(--juno-label);
+}
+
+.juno-alert__actions {
+  display: flex;
+  gap: var(--juno-space-8);
+  margin-block-start: var(--juno-space-8);
+}
+
+.juno-alert__close {
+  flex-shrink: 0;
+  appearance: none;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--juno-muted);
+  font-size: var(--juno-font-size-16);
+  line-height: var(--juno-font-lineHeight-none);
+  cursor: pointer;
+}
+
+.juno-alert__close:hover { color: var(--juno-data); }
+
+/* solid — high-emphasis variant: full role fill, text on the base surface */
+.juno-alert--solid {
+  background: var(--juno-role);
+  border-color: var(--juno-role);
+  color: var(--juno-s0);
+}
+
+.juno-alert--solid .juno-alert__icon,
+.juno-alert--solid .juno-alert__title,
+.juno-alert--solid .juno-alert__text,
+.juno-alert--solid .juno-alert__close { color: var(--juno-s0); }

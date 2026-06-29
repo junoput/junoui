@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Alerts</title>
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Alerts &amp; toasts</span>
+      <h1>Say it once, in the right color.</h1>
+      <p>Inline alerts carry in-context messages; toasts float transient confirmations on the
+        reserved alert layer. Both read <code class="juno-mono">var(--juno-role)</code> set by a
+        <code class="juno-mono">.juno--&lt;role&gt;</code> class — color reinforces the icon + word,
+        never replaces it. junoui ships the look + motion; the app owns dismiss and timing.</p>
+    </div>
+
+    <!-- 01 INLINE ALERTS -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">Inline alerts — every role</span>
+      </div>
+      <div class="demo-stack" style="gap:12px;max-inline-size:680px;">
+        <div class="juno-alert juno--active" role="status">
+          <span class="juno-alert__icon" aria-hidden="true">ℹ</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Heads up</span><span class="juno-alert__text">A new build is rolling out to 10% of traffic.</span></div>
+        </div>
+        <div class="juno-alert juno--nominal" role="status">
+          <span class="juno-alert__icon" aria-hidden="true">✓</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Deploy succeeded</span><span class="juno-alert__text">api-gateway is healthy on all regions.</span></div>
+        </div>
+        <div class="juno-alert juno--caution" role="status">
+          <span class="juno-alert__icon" aria-hidden="true">▲</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Elevated latency</span><span class="juno-alert__text">P95 on worker-pool is 402 ms — above the 300 ms target.</span></div>
+        </div>
+        <div class="juno-alert juno--warning" role="alert">
+          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Service down</span><span class="juno-alert__text">cache-redis is unreachable in eu-west-1.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 ANATOMY -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">Title · text · actions · dismiss · solid</span>
+      </div>
+      <div class="demo-stack" style="gap:12px;max-inline-size:680px;">
+        <!-- with actions -->
+        <div class="juno-alert juno--warning" role="alert">
+          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <div class="juno-alert__body">
+            <span class="juno-alert__title">Deploy blocked</span>
+            <span class="juno-alert__text">Two required checks are still failing on this branch.</span>
+            <div class="juno-alert__actions">
+              <button class="juno-btn juno--warning">RE-RUN CHECKS</button>
+              <button class="juno-btn juno-btn--ghost">VIEW LOG</button>
+            </div>
+          </div>
+          <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+        </div>
+        <!-- text-only + dismiss -->
+        <div class="juno-alert juno--active" role="status">
+          <span class="juno-alert__icon" aria-hidden="true">ℹ</span>
+          <div class="juno-alert__body"><span class="juno-alert__text">Maintenance window scheduled for 02:00–02:30 UTC. Dismiss me →</span></div>
+          <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+        </div>
+        <!-- solid, high-emphasis -->
+        <div class="juno-alert juno-alert--solid juno--warning" role="alert">
+          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Quota exceeded</span><span class="juno-alert__text">Write traffic is being throttled. Upgrade the plan to restore full throughput.</span></div>
+        </div>
+      </div>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Dismiss buttons are wired in <code class="juno-mono">app.js</code> (remove the alert). Use <code class="juno-mono">role="alert"</code> for urgent, <code class="juno-mono">role="status"</code> for passive.</p>
+    </section>
+
+    <!-- 03 TOASTS -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">Toasts — floating, auto-dismiss (4s)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row">
+          <button class="juno-btn juno--nominal" data-toast="nominal" data-msg="Build promoted to production.">SUCCESS</button>
+          <button class="juno-btn juno--active" data-toast="active" data-msg="Rollout is now at 50%.">INFO</button>
+          <button class="juno-btn juno--caution" data-toast="caution" data-msg="Latency climbing on worker-pool.">CAUTION</button>
+          <button class="juno-btn juno--warning" data-toast="warning" data-msg="cache-redis is unreachable.">WARNING</button>
+        </div>
+        <p class="juno-text-muted" style="font-size:11px;margin-top:4px;">Click to spawn a toast bottom-end. It auto-dismisses after 4s, slides out, and stacks if you fire several. ✕ dismisses early.</p>
+      </div></article>
+    </section>
+
+  </main>
+
+  <!-- toast stack — the app appends toasts here (top layer, alert altitude) -->
+  <div class="juno-toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

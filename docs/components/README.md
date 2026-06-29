@@ -42,5 +42,7 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Popover                      | `.juno-popover`                        | [popover.md](./popover.md)             |
 | Menu / dropdown              | `.juno-menu`                           | [menu.md](./menu.md)                   |
 | Table / data grid            | `.juno-table`                          | [table.md](./table.md)                 |
+| Alert / inline notification  | `.juno-alert`                          | [alert.md](./alert.md)                 |
+| Toast / snackbar             | `.juno-toast`                          | [toast.md](./toast.md)                 |
 
 Always pair a status color with a text label — color is never the only signal.

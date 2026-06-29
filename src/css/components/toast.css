@@ -1,0 +1,90 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Toast / snackbar
+ *  A transient, floating notification. Same role-rail language as the
+ *  alert, but elevated (shadow) and stacked in a fixed corner on the
+ *  reserved alert layer (--juno-z-alert, above modals). junoui ships the
+ *  look + enter/exit motion; the app owns creation, auto-dismiss timing,
+ *  and live-region announcement.
+ *  Usage:
+ *    <div class="juno-toast-stack" id="toasts" aria-live="polite"></div>
+ *    // app appends:
+ *    <div class="juno-toast juno--nominal" role="status">
+ *      <span class="juno-toast__icon" aria-hidden="true">✓</span>
+ *      <span class="juno-toast__text">Build promoted.</span>
+ *      <button class="juno-toast__close" aria-label="Dismiss">✕</button>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-toast-stack {
+  position: fixed;
+  z-index: var(--juno-z-alert);
+  inset-block-end: var(--juno-space-24);
+  inset-inline-end: var(--juno-space-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-12);
+  inline-size: min(360px, calc(100vw - var(--juno-space-32)));
+  pointer-events: none;
+}
+
+/* placements */
+.juno-toast-stack--top { inset-block: var(--juno-space-24) auto; }
+.juno-toast-stack--start { inset-inline: var(--juno-space-24) auto; }
+
+.juno-toast {
+  --juno-role: var(--juno-active);
+
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-12);
+  padding: var(--juno-space-12) var(--juno-space-16);
+  background: var(--juno-s2);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-inline-start: var(--juno-border-width-3) solid var(--juno-role);
+  border-radius: var(--juno-radius-5);
+  box-shadow: var(--juno-shadow-2);
+  color: var(--juno-data);
+  transition:
+    opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
+    transform var(--juno-motion-duration-quick) var(--juno-motion-ease-decel);
+}
+
+/* enter (freshly inserted) + leaving (app adds the class before removal) */
+@starting-style {
+  .juno-toast { opacity: 0; transform: translateX(var(--juno-space-16)); }
+}
+
+.juno-toast--leaving { opacity: 0; transform: translateX(var(--juno-space-16)); }
+
+.juno-toast__icon {
+  flex-shrink: 0;
+  color: var(--juno-role);
+  font-size: var(--juno-font-size-16);
+  line-height: var(--juno-font-lineHeight-none);
+}
+
+.juno-toast__text {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+}
+
+.juno-toast__close {
+  flex-shrink: 0;
+  appearance: none;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--juno-muted);
+  font-size: var(--juno-font-size-16);
+  line-height: var(--juno-font-lineHeight-none);
+  cursor: pointer;
+}
+
+.juno-toast__close:hover { color: var(--juno-data); }
+
+@media (prefers-reduced-motion: reduce) {
+  .juno-toast { transition: none; }
+}

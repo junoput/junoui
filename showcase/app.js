@@ -39,6 +39,7 @@ const PAGES = [
   ['tables.html', 'Tables'],
   ['loaders.html', 'Loaders'],
   ['overlays.html', 'Overlays'],
+  ['alerts.html', 'Alerts'],
   ['layout.html', 'Layout'],
 ];
 
@@ -379,6 +380,42 @@ function initTables() {
   });
 }
 
+// ── alerts + toasts (demo: app owns dismiss + auto-timeout) ──────────────
+const TOAST_ICON = { nominal: '✓', active: 'ℹ', target: '◎', caution: '▲', warning: '⚠' };
+function showToast(stack, role, msg) {
+  const t = document.createElement('div');
+  t.className = `juno-toast juno--${role}`;
+  t.setAttribute('role', 'status');
+  t.innerHTML =
+    `<span class="juno-toast__icon" aria-hidden="true">${TOAST_ICON[role] || 'ℹ'}</span>` +
+    `<span class="juno-toast__text">${msg}</span>` +
+    `<button class="juno-toast__close" aria-label="Dismiss">✕</button>`;
+  stack.appendChild(t);
+  let gone = false;
+  const remove = () => {
+    if (gone) return;
+    gone = true;
+    t.classList.add('juno-toast--leaving');
+    t.addEventListener('transitionend', () => t.remove(), { once: true });
+    setTimeout(() => t.remove(), 400);
+  };
+  t.querySelector('.juno-toast__close').addEventListener('click', remove);
+  setTimeout(remove, 4000);
+}
+
+function initAlerts() {
+  document.addEventListener('click', (e) => {
+    const close = e.target.closest('.juno-alert__close');
+    if (close) close.closest('.juno-alert')?.remove();
+
+    const trig = e.target.closest('[data-toast]');
+    if (trig) {
+      const stack = document.getElementById(trig.dataset.toastStack || 'toast-stack');
+      if (stack) showToast(stack, trig.dataset.toast, trig.dataset.msg || 'Notification');
+    }
+  });
+}
+
 // ── token table (values straight from the JS module) ────────────────────
 function renderTokens() {
   const grid = document.getElementById('token-grid');
@@ -426,6 +463,7 @@ html.dataset.junoDensity ??= 'comfortable';
 initSliders();
 initTooltips();
 initTables();
+initAlerts();
 syncToggles();
 tick();
 setInterval(tick, 1000);

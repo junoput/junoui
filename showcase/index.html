@@ -170,10 +170,33 @@
       <a class="demo-more" href="./overlays.html">See all overlays — modal · drawer · tooltip placements · popover · menu →</a>
     </section>
 
-    <!-- Layout -->
+    <!-- Alerts -->
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">08</span>
+        <span class="juno-eyebrow">Alerts &amp; toasts</span>
+      </div>
+      <div class="demo-stack" style="gap:12px;max-inline-size:680px;">
+        <div class="juno-alert juno--nominal" role="status">
+          <span class="juno-alert__icon" aria-hidden="true">✓</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Deploy succeeded</span><span class="juno-alert__text">api-gateway is healthy on all regions.</span></div>
+          <button class="juno-alert__close" aria-label="Dismiss">✕</button>
+        </div>
+        <div class="juno-alert juno--warning" role="alert">
+          <span class="juno-alert__icon" aria-hidden="true">⚠</span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Service down</span><span class="juno-alert__text">cache-redis is unreachable in eu-west-1.</span></div>
+        </div>
+      </div>
+      <div class="demo-row" style="margin-top:14px;">
+        <button class="juno-btn juno--nominal" data-toast="nominal" data-msg="Build promoted to production.">SHOW TOAST</button>
+      </div>
+      <a class="demo-more" href="./alerts.html">See all alerts &amp; toasts — roles · actions · dismiss · solid · toast stack →</a>
+    </section>
+
+    <!-- Layout -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">09</span>
         <span class="juno-eyebrow">Layout</span>
       </div>
       <p class="juno-eyebrow demo-lead">.juno-grid-auto — columns collapse on their own (no breakpoints)</p>
@@ -200,6 +223,9 @@
     </dialog>
 
   </main>
+
+  <div class="juno-toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>

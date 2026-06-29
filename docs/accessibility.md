@@ -71,6 +71,8 @@ junoui gives structure + style; you add roles/state:
 | Popover                   | Native `popover` + `popovertarget` button (top layer; ESC + outside-click dismiss + `aria-expanded` come free). Keep `aria-haspopup`; move focus in on open, restore on close.                                         |
 | Menu / dropdown           | `role="menu"` + `role="menuitem"`; native `popover` + `popovertarget` (free dismiss/ESC/`aria-expanded`), items `popovertargetaction="hide"`. App wires arrow-key roving focus + Enter.                                |
 | Table / data grid         | Real `<table>`/`<th>`/`<td>` (use `scope`). Sortable headers: `aria-sort` per column, kept in sync as you reorder. Selected rows: `aria-selected="true"`. Truncated cells: a `title` (or tooltip) with the full value. |
+| Alert                     | `role="alert"` for urgent (assertive), `role="status"` for passive. Icon is `aria-hidden`; the message text carries the meaning. Dismiss is a real `<button>` with `aria-label`.                                       |
+| Toast                     | Stack is a live region: `aria-live="polite"` (`assertive` for errors). Each toast `role="status"`; keep it short. Dismiss `<button>` + `aria-label`; don't rely on the auto-timeout alone for critical info.           |
 
 These are interaction concerns — junoui can't enforce them in CSS, so they're your
 responsibility (or the widget package's).

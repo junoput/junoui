@@ -38,7 +38,7 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | ~~**Field** wrapper — label + control + help + error + required~~                | ✅ shipped |
 | ~~**Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown~~         | ✅ shipped |
 | ~~**Table / data grid** styling~~                                                | ✅ shipped |
-| **Alert / toast / inline notification**                                          | 🟡         |
+| ~~**Alert / toast / inline notification**~~                                      | ✅ shipped |
 | **Tabs**, accordion / disclosure                                                 | 🟡         |
 | **Skeleton** loading placeholder (pairs with loaders)                            | 🟡         |
 | Avatar, chip/tag, divider, breadcrumb, pagination, stepper                       | 🟢         |
