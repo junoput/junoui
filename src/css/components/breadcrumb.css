@@ -1,0 +1,64 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Breadcrumb  ·  hierarchy trail
+ *  A horizontal path of links to ancestor pages, ending at the current
+ *  page. Built on a real <nav><ol>; the separator is a CSS chevron (no
+ *  glyph font). Mark the last crumb aria-current="page". Zero JS.
+ *  Usage:
+ *    <nav class="juno-breadcrumb" aria-label="Breadcrumb">
+ *      <ol>
+ *        <li><a href="/">Home</a></li>
+ *        <li><a href="/fleet">Fleet</a></li>
+ *        <li><a aria-current="page">api-gateway</a></li>
+ *      </ol>
+ *    </nav>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--juno-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+}
+
+.juno-breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+}
+
+.juno-breadcrumb a {
+  color: var(--juno-label);
+  text-decoration: none;
+  border-radius: var(--juno-radius-2);
+}
+
+.juno-breadcrumb a[href]:hover {
+  color: var(--juno-data);
+  text-decoration: underline;
+}
+
+.juno-breadcrumb a:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+}
+
+/* current page — not a link; brightest */
+.juno-breadcrumb [aria-current='page'] {
+  color: var(--juno-data);
+  font-weight: var(--juno-font-weight-semibold);
+}
+
+/* separator — a CSS chevron between items (no glyph font) */
+.juno-breadcrumb li + li::before {
+  content: '';
+  inline-size: var(--juno-space-4);
+  block-size: var(--juno-space-4);
+  border-block-start: var(--juno-border-width-1) solid var(--juno-muted);
+  border-inline-end: var(--juno-border-width-1) solid var(--juno-muted);
+  transform: rotate(45deg); /* points to the inline-end (flips under RTL via dir) */
+}
