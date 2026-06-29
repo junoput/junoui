@@ -1,0 +1,79 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Avatar  ·  user / entity portrait
+ *  A round (or squared) portrait that holds an <img>, initials, or an
+ *  icon fallback. Sizes ride one custom property; an optional role ring
+ *  marks status (online, alert…). Zero JS. Pairs with a
+ *  .juno-skeleton--circle placeholder while the image loads.
+ *  Usage:
+ *    <span class="juno-avatar"><img src="…" alt="Ada Lovelace" /></span>
+ *    <span class="juno-avatar juno-avatar--lg">AL</span>
+ *    <span class="juno-avatar juno-avatar--ring juno--nominal">
+ *      <svg class="juno-icon"><use href="…#juno-i-user" /></svg>
+ *    </span>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-avatar {
+  --juno-avatar-size: var(--juno-space-32);
+
+  display: inline-grid;
+  place-content: center;
+  flex-shrink: 0;
+  inline-size: var(--juno-avatar-size);
+  block-size: var(--juno-avatar-size);
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--juno-control-surface);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
+  color: var(--juno-label);
+  font-family: var(--juno-font-family-sans);
+  /* initials scale with the avatar (~40% of its box) */
+  font-size: calc(var(--juno-avatar-size) * 0.4);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-tight);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* the image fills the circle */
+.juno-avatar img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* a square / rounded-rect portrait instead of a circle */
+.juno-avatar--square {
+  border-radius: var(--juno-radius-4);
+}
+
+/* status ring — reads the role; pair with a label / title for meaning */
+.juno-avatar--ring {
+  border-color: var(--juno-role);
+  box-shadow: 0 0 0 var(--juno-border-width-2) color-mix(in srgb, var(--juno-role) 30%, transparent);
+}
+
+/* sizes */
+.juno-avatar--sm {
+  --juno-avatar-size: var(--juno-space-24);
+}
+.juno-avatar--lg {
+  --juno-avatar-size: var(--juno-space-40);
+}
+.juno-avatar--xl {
+  --juno-avatar-size: var(--juno-space-56);
+}
+
+/* overlapping cluster — a row of avatars that tuck under each other */
+.juno-avatar-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.juno-avatar-group .juno-avatar {
+  border-color: var(--juno-s0);
+  border-width: var(--juno-border-width-2);
+}
+
+.juno-avatar-group .juno-avatar + .juno-avatar {
+  margin-inline-start: calc(var(--juno-avatar-size) * -0.3);
+}

@@ -72,6 +72,7 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-font-scale',
     'juno-icon-size',
     'juno-skeleton-h',
+    'juno-avatar-size',
     'juno-slider-pct',
     'juno-control-surface',
     'juno-control-edge',
