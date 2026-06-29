@@ -68,6 +68,17 @@
 .juno-checkbox:checked::before,
 .juno-radio:checked::before { transform: scale(1); }
 
+/* indeterminate (e.g. a "select all" with a partial set) — a dash, not a core */
+.juno-checkbox:indeterminate {
+  border-color: var(--juno-role);
+  box-shadow: 0 0 0 var(--juno-border-width-3) color-mix(in srgb, var(--juno-role) 22%, transparent);
+}
+
+.juno-checkbox:indeterminate::before {
+  transform: scale(1);
+  block-size: 2px;
+}
+
 .juno-checkbox:disabled,
 .juno-radio:disabled {
   background: var(--juno-s1);

@@ -192,19 +192,25 @@ function initTooltips() {
   });
 }
 
-// ── tables (demo: app owns sort + selection; junoui ships the look) ──────
+// ── tables (demo: app owns sort/filter/select/edit; junoui ships the look) ─
 function initTables() {
   document.querySelectorAll('.juno-table[data-interactive]').forEach((table) => {
     const tbody = table.tBodies[0];
-    const headers = [...table.querySelectorAll('thead th[aria-sort]')];
-    headers.forEach((th, ci) => {
+    const rows = () => [...tbody.rows];
+    const visibleRows = () => rows().filter((r) => !r.hidden);
+
+    // sort — by actual column index so a checkbox column doesn't offset it
+    table.querySelectorAll('thead th[aria-sort]').forEach((th) => {
       th.addEventListener('click', () => {
+        const ci = th.cellIndex;
         const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
-        headers.forEach((o) => o.setAttribute('aria-sort', 'none'));
+        table
+          .querySelectorAll('thead th[aria-sort]')
+          .forEach((o) => o.setAttribute('aria-sort', 'none'));
         th.setAttribute('aria-sort', dir);
         const num = th.classList.contains('juno-table__num');
         const val = (tr) => tr.cells[ci].textContent.trim();
-        [...tbody.rows]
+        rows()
           .sort((a, b) => {
             if (num) {
               const x = parseFloat(val(a).replace(/[^0-9.-]/g, '')) || 0;
@@ -219,30 +225,82 @@ function initTables() {
       });
     });
 
+    // selection — checkbox column + select-all + bulk bar
     const bar = document.querySelector(`[data-bulk="${table.id}"]`);
+    const all = table.querySelector('[data-select-all]');
     const sync = () => {
-      const n = tbody.querySelectorAll('tr[aria-selected="true"]').length;
-      if (!bar) return;
-      bar.hidden = n === 0;
-      const c = bar.querySelector('.juno-table__bulk-count');
-      if (c) c.textContent = `${n} SELECTED`;
+      const vis = visibleRows();
+      const selVis = vis.filter((r) => r.getAttribute('aria-selected') === 'true');
+      if (all) {
+        all.checked = vis.length > 0 && selVis.length === vis.length;
+        all.indeterminate = selVis.length > 0 && selVis.length < vis.length;
+      }
+      if (bar) {
+        const n = rows().filter((r) => r.getAttribute('aria-selected') === 'true').length;
+        bar.hidden = n === 0;
+        const c = bar.querySelector('.juno-table__bulk-count');
+        if (c) c.textContent = `${n} SELECTED`;
+      }
     };
-    tbody.querySelectorAll('tr').forEach((tr) => {
-      tr.addEventListener('click', (e) => {
-        if (e.target.closest('.juno-table__action')) return;
-        tr.setAttribute(
-          'aria-selected',
-          tr.getAttribute('aria-selected') === 'true' ? 'false' : 'true',
-        );
+    const setRow = (tr, on) => {
+      tr.setAttribute('aria-selected', String(on));
+      const cb = tr.querySelector('[data-row-check]');
+      if (cb) cb.checked = on;
+    };
+    tbody.querySelectorAll('[data-row-check]').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        setRow(cb.closest('tr'), cb.checked);
         sync();
       });
     });
-    bar?.querySelector('[data-bulk-clear]')?.addEventListener('click', () => {
-      tbody
-        .querySelectorAll('tr[aria-selected="true"]')
-        .forEach((tr) => tr.setAttribute('aria-selected', 'false'));
+    all?.addEventListener('change', () => {
+      visibleRows().forEach((r) => setRow(r, all.checked));
       sync();
     });
+    bar?.querySelector('[data-bulk-clear]')?.addEventListener('click', () => {
+      rows().forEach((r) => setRow(r, false));
+      sync();
+    });
+
+    // filter — hide rows whose text doesn't match; update the count
+    const input = document.querySelector(`[data-filter="${table.id}"]`);
+    const count = document.querySelector(`[data-count="${table.id}"]`);
+    input?.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      rows().forEach((r) => {
+        r.hidden = q !== '' && !r.textContent.toLowerCase().includes(q);
+      });
+      if (count) count.textContent = `${visibleRows().length} / ${rows().length}`;
+      sync();
+    });
+
+    // inline edit — double-click a marked cell; Enter commits, Esc cancels
+    tbody.querySelectorAll('td[data-edit]').forEach((td) => {
+      td.addEventListener('dblclick', () => {
+        if (td.querySelector('.juno-table__edit-input')) return;
+        const mark = td.querySelector('.juno-table__mark');
+        const prev = mark ? mark.textContent : td.textContent.trim();
+        const field = document.createElement('input');
+        field.className = 'juno-table__edit-input';
+        field.value = prev;
+        td.textContent = '';
+        td.appendChild(field);
+        field.focus();
+        field.select();
+        const commit = () => {
+          let v = field.value.trim();
+          if (td.dataset.edit === 'num') v = v.replace(/[^0-9.-]/g, '') || prev;
+          td.innerHTML = '<span class="juno-table__mark"></span>';
+          td.querySelector('.juno-table__mark').textContent = v || prev;
+        };
+        field.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') (e.preventDefault(), field.blur());
+          else if (e.key === 'Escape') (e.preventDefault(), (field.value = prev), field.blur());
+        });
+        field.addEventListener('blur', commit, { once: true });
+      });
+    });
+
     sync();
   });
 }

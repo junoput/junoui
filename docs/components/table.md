@@ -40,16 +40,18 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 
 ### Cell flavors
 
-| Class                  | Use                                                                |
-| ---------------------- | ------------------------------------------------------------------ |
-| `.juno-table__id`      | Identifier — mono, bold (codes, hostnames, IDs).                   |
-| `.juno-table__num`     | Numeric — mono, bold, end-aligned (measured values).               |
-| `.juno-table__mono`    | Secondary mono (routes, sub-codes) — quieter `label` color.        |
-| `.juno-table__time`    | Timestamp — mono, end-aligned, muted.                              |
-| `.juno-table__trend`   | Role-colored mono delta; author supplies the `▲` / `▼` + sign.     |
-| `.juno-table__meter`   | Inline track + role fill + value; set `--juno-table-fill` (0–100). |
-| `.juno-table__actions` | Icon buttons (`__action`), revealed on row hover / focus.          |
-| `.juno-badge--soft`    | Status as a low-fill role chip (see [badge](./badge.md)).          |
+| Class                   | Use                                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `.juno-table__id`       | Identifier — mono, bold (codes, hostnames, IDs).                                                                           |
+| `.juno-table__num`      | Numeric — mono, bold, end-aligned (measured values).                                                                       |
+| `.juno-table__mono`     | Secondary mono (routes, sub-codes) — quieter `label` color.                                                                |
+| `.juno-table__time`     | Timestamp — mono, end-aligned, muted.                                                                                      |
+| `.juno-table__trend`    | Role-colored mono delta; author supplies the `▲` / `▼` + sign.                                                             |
+| `.juno-table__meter`    | Inline track + role fill + value; set `--juno-table-fill` (0–100).                                                         |
+| `.juno-table__actions`  | Icon buttons (`__action`), revealed on row hover / focus.                                                                  |
+| `.juno-badge--soft`     | Status as a low-fill role chip (see [badge](./badge.md)).                                                                  |
+| `.juno-table__check`    | Selection-column cell (44px, centered). Holds a `.juno-checkbox`.                                                          |
+| `.juno-table__editable` | Editable cell: dashed `__mark` underline + hover ring. App swaps `__mark` for a `.juno-table__edit-input` on double-click. |
 
 ### Overflow (set on a cell)
 
@@ -88,8 +90,10 @@ junoui can't sort or select in CSS — wire these and keep the ARIA in sync:
 
 - **Sort:** click a `th`; set its `aria-sort` to `ascending` / `descending` (others to
   `none`) and reorder the rows.
-- **Select:** toggle `aria-selected` on the `<tr>`; reflect the count in a
-  `.juno-table__bulk` bar. A header "select all" checkbox is yours to wire.
+- **Select:** a `.juno-checkbox` per row (in a `.juno-table__check` cell) toggles
+  `aria-selected` on the `<tr>`; reflect the count in a `.juno-table__bulk` bar. The
+  header "select all" checkbox drives every visible row (use `indeterminate` for a
+  partial set).
 - **Inline edit:** swap the cell's text for an [`.juno-input`](./input.md) on
   double-click; Enter commits, Esc cancels.
 - **Paginate / filter:** owned by the app; `.juno-table__foot` is just the frame.
