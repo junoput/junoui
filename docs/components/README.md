@@ -53,5 +53,6 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Chip / tag                     | `.juno-chip`                           | [chip.md](./chip.md)                   |
 | Breadcrumb                     | `.juno-breadcrumb`                     | [breadcrumb.md](./breadcrumb.md)       |
 | Pagination                     | `.juno-pagination`                     | [pagination.md](./pagination.md)       |
+| Stepper                        | `.juno-stepper`                        | [stepper.md](./stepper.md)             |
 
 Always pair a status color with a text label — color is never the only signal.
