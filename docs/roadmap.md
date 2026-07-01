@@ -32,17 +32,18 @@ usage: [design-guidelines.md](./design-guidelines.md).
 
 ## Components
 
-| Missing                                                                          | Priority   |
-| -------------------------------------------------------------------------------- | ---------- |
-| ~~**Form controls** — input, textarea, select, checkbox, radio, switch, slider~~ | ✅ shipped |
-| ~~**Field** wrapper — label + control + help + error + required~~                | ✅ shipped |
-| ~~**Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown~~         | ✅ shipped |
-| ~~**Table / data grid** styling~~                                                | ✅ shipped |
-| ~~**Alert / toast / inline notification**~~                                      | ✅ shipped |
-| ~~**Tabs**, accordion / disclosure~~                                             | ✅ shipped |
-| ~~**Skeleton** loading placeholder (pairs with loaders)~~                        | ✅ shipped |
-| ~~Avatar, chip/tag, divider, breadcrumb, pagination, stepper~~                   | ✅ shipped |
-| Dumb chat/calendar **visuals** (message bubble, event chip, day-cell)            | 🟢         |
+| Missing                                                                                                                                                                                                          | Priority   |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| ~~**Form controls** — input, textarea, select, checkbox, radio, switch, slider~~                                                                                                                                 | ✅ shipped |
+| ~~**Field** wrapper — label + control + help + error + required~~                                                                                                                                                | ✅ shipped |
+| ~~**Overlays** — modal/dialog, drawer, tooltip, popover, menu/dropdown~~                                                                                                                                         | ✅ shipped |
+| ~~**Table / data grid** styling~~                                                                                                                                                                                | ✅ shipped |
+| ~~**Alert / toast / inline notification**~~                                                                                                                                                                      | ✅ shipped |
+| ~~**Tabs**, accordion / disclosure~~                                                                                                                                                                             | ✅ shipped |
+| ~~**Skeleton** loading placeholder (pairs with loaders)~~                                                                                                                                                        | ✅ shipped |
+| ~~Avatar, chip/tag, divider, breadcrumb, pagination, stepper~~                                                                                                                                                   | ✅ shipped |
+| **Chat layer** (`junoui-chat`) — message bubble, list, day separator, system pill, attachment cards, conversation header, chat-row, rail. Requested by the buzz integration; highest-leverage gap for chat apps. | 🟡         |
+| Calendar **visuals** (event chip, day-cell)                                                                                                                                                                      | 🟢         |
 
 ## Quality / infra
 
