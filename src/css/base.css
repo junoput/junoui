@@ -1,11 +1,10 @@
 /* ════════════════════════════════════════════════════════════════════
  *  junoui — base layer
- *  Reset + document defaults. Pulls the B612 typeface (high-legibility
- *  readability). If you self-host or already load the fonts, drop the
- *  @import.
+ *  Reset + document defaults. Sets B612 as the type family but does NOT
+ *  fetch it — that would break under a strict CSP and phone home. Supply the
+ *  fonts yourself, or opt into the self-hosted set: `import 'junoui/fonts.css'`
+ *  (see src/css/fonts.css). Falls back to system sans/mono until then.
  * ════════════════════════════════════════════════════════════════════ */
-
-@import url('https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=B612+Mono:ital,wght@0,400;0,700&display=swap');
 
 *,
 *::before,

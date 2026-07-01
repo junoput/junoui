@@ -35,6 +35,7 @@
     },
     "./css": "./dist/css/juno.css",
     "./css/tokens": "./dist/css/juno-tokens.css",
+    "./fonts.css": "./dist/css/juno-fonts.css",
     "./scss": "./dist/scss/_juno-tokens.scss",
     "./tokens.json": "./dist/json/tokens.json",
     "./android/colors": "./dist/android/colors.xml",
@@ -48,6 +49,7 @@
     "dist",
     "src/css",
     "src/icons",
+    "src/fonts",
     "README.md",
     "CHANGELOG.md"
   ],

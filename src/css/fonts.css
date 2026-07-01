@@ -1,0 +1,45 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  junoui — fonts (opt-in)
+ *  Self-hosted B612 / B612 Mono (@font-face, local woff2). This file is NOT
+ *  bundled into juno.css — import it separately if you want junoui to supply
+ *  the typeface, or skip it and load B612 yourself (e.g. @fontsource):
+ *
+ *      import 'junoui/css';        // tokens + components (no network fonts)
+ *      import 'junoui/fonts.css';  // ← only if you want junoui's fonts
+ *
+ *  Never fetches cross-origin, so it is safe under a strict CSP. Paths are
+ *  relative to dist/css/, resolving to the woff2 shipped in dist/fonts/.
+ *  B612 is licensed under the SIL OFL 1.1 — see the fonts' LICENSE.
+ * ════════════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'B612';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/b612-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'B612';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/b612-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'B612 Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/b612-mono-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'B612 Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/b612-mono-700.woff2') format('woff2');
+}

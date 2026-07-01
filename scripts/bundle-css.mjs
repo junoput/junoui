@@ -10,7 +10,14 @@
 //  Run after the token build: `npm run build:css` (or `npm run build`).
 // ════════════════════════════════════════════════════════════════════════
 
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import {
+  readFileSync,
+  writeFileSync,
+  readdirSync,
+  existsSync,
+  mkdirSync,
+  copyFileSync,
+} from 'node:fs';
 import { join } from 'node:path';
 
 const TOKENS = 'dist/css/juno-tokens.css';
@@ -60,3 +67,15 @@ const banner = `/**
 const head = [banner, ...imports].join('\n');
 writeFileSync(OUT, head + '\n\n' + body + '\n');
 console.log(`✓ bundled ${parts.length} layers (${imports.length} @import hoisted) → ${OUT}`);
+
+// Fonts are opt-in and NOT part of juno.css (no forced network / CSP break).
+// Ship the self-hosted @font-face sheet + woff2 alongside the bundle so
+// `import 'junoui/fonts.css'` resolves to local files under dist/fonts/.
+const FONT_SRC = 'src/fonts';
+if (existsSync(join(SRC, 'fonts.css')) && existsSync(FONT_SRC)) {
+  writeFileSync('dist/css/juno-fonts.css', read(join(SRC, 'fonts.css')) + '\n');
+  mkdirSync('dist/fonts', { recursive: true });
+  const fonts = readdirSync(FONT_SRC).filter((f) => f.endsWith('.woff2'));
+  for (const f of fonts) copyFileSync(join(FONT_SRC, f), join('dist/fonts', f));
+  console.log(`✓ fonts: juno-fonts.css + ${fonts.length} woff2 → dist/fonts/`);
+}
