@@ -45,6 +45,7 @@ build-time sRGB hex (identical rendering).
 |                                                                                  |                                                              |
 | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | [Getting started](./docs/getting-started.md)                                     | Install, model, what ships                                   |
+| [Integration](./docs/integration.md)                                             | Consuming in an app: import order, fonts, token bridge       |
 | [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                           |
 | [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                         |
 | [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt) |
