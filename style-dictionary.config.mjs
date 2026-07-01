@@ -20,9 +20,14 @@ const colorTokens = (d) => d.allTokens.filter((t) => isColorToken(t));
 
 // CSS/SCSS variable name from token path: space.16 → juno-space-16
 const flatName = (t) => 'juno-' + t.path.join('-');
-// camelCase identifier: color.standard.dark.nominal → colorStandardDarkNominal
+// camelCase identifier: color.standard.dark.nominal → colorStandardDarkNominal.
+// Hyphens in a segment (e.g. data-dim) are word breaks so native identifiers
+// stay valid: ['standard','dark','data-dim'] → standardDarkDataDim.
 const camel = (parts) =>
-  parts.map((p, i) => (i === 0 ? p : p.charAt(0).toUpperCase() + p.slice(1))).join('');
+  parts
+    .flatMap((p) => String(p).split('-'))
+    .map((w, i) => (i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join('');
 
 // ── group color tokens into { palette: { mode: { role: value } } } ──────
 function byTheme(d, transform = (x) => x) {
@@ -40,9 +45,11 @@ const ROLES = [
   'caution',
   'warning',
   'data',
+  'data-dim',
   'label',
   'muted',
   'border',
+  'border-strong',
   's0',
   's1',
   's2',
@@ -170,7 +177,10 @@ StyleDictionary.registerFormat({
   name: 'android/juno-colors',
   format: ({ dictionary }) => {
     const rows = colorTokens(dictionary)
-      .map((t) => `  <color name="${t.path.slice(1).join('_')}">${toHex(val(t))}</color>`)
+      .map(
+        (t) =>
+          `  <color name="${t.path.slice(1).join('_').replace(/-/g, '_')}">${toHex(val(t))}</color>`,
+      )
       .join('\n');
     return `<?xml version="1.0" encoding="utf-8"?>\n<!-- junoui color tokens. Generated; do not edit. -->\n<resources>\n${rows}\n</resources>\n`;
   },

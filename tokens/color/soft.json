@@ -54,6 +54,14 @@
         "s3": {
           "$value": "oklch(25% 0.012 88)",
           "$description": "Surface — selected / overlay."
+        },
+        "data-dim": {
+          "$value": "oklch(39% 0.010 88)",
+          "$description": "Faint metadata — timestamps, tick labels. Decorative; sits below muted."
+        },
+        "border-strong": {
+          "$value": "oklch(35% 0.010 88)",
+          "$description": "Divider / stronger rule — heavier than the hairline border."
         }
       },
       "light": {
@@ -108,6 +116,14 @@
         "s3": {
           "$value": "oklch(84% 0.010 88)",
           "$description": "Surface — selected / overlay."
+        },
+        "data-dim": {
+          "$value": "oklch(69% 0.008 88)",
+          "$description": "Faint metadata — timestamps, tick labels. Decorative; sits below muted."
+        },
+        "border-strong": {
+          "$value": "oklch(76% 0.010 88)",
+          "$description": "Divider / stronger rule — heavier than the hairline border."
         }
       }
     }
