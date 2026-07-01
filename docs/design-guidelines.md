@@ -17,13 +17,15 @@ Every hue has one assigned role. Never reuse a status color as styling.
 
 Neutral / structural roles carry no status meaning:
 
-| Role      | Use                                                             |
-| --------- | --------------------------------------------------------------- |
-| `data`    | Primary numeric readouts and live values — the brightest text.  |
-| `label`   | Labels, units, helper and secondary text. Never for values.     |
-| `muted`   | Disabled, placeholder, decorative separators.                   |
-| `border`  | Hairline borders and dividers.                                  |
-| `s0`–`s3` | Surface depth: base → panel → elevated card → selected/overlay. |
+| Role            | Use                                                                |
+| --------------- | ------------------------------------------------------------------ |
+| `data`          | Primary numeric readouts and live values — the brightest text.     |
+| `data-dim`      | Faint metadata — timestamps, tick labels. Decorative; below muted. |
+| `label`         | Labels, units, helper and secondary text. Never for values.        |
+| `muted`         | Disabled, placeholder, decorative separators.                      |
+| `border`        | Hairline borders and dividers.                                     |
+| `border-strong` | Divider / stronger rule — heavier than the hairline border.        |
+| `s0`–`s3`       | Surface depth: base → panel → elevated card → selected/overlay.    |
 
 ## More principles
 

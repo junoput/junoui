@@ -43,19 +43,22 @@ Responsive behavior (how blocks adapt on resize) is its own layer:
 
 ## What ships
 
-`npm install junoui` delivers `dist/` (all platform outputs) and `src/css/`
-(authored stylesheet sources). The interactive demo in `showcase/` is **not**
+`npm install junoui` delivers `dist/` (all platform outputs), `src/css/` (authored
+stylesheet sources), `src/icons/` (SVG icon sources + license), and `src/fonts/`
+(self-hosted B612 woff2 + OFL license). The interactive demo in `showcase/` is **not**
 shipped — it lives in the repo for development only.
 
 ## Build outputs
 
-| Path                                     | Platform                                     |
-| ---------------------------------------- | -------------------------------------------- |
-| `dist/css/juno.css`                      | Web — tokens + base + utilities + components |
-| `dist/css/juno-tokens.css`               | Web — CSS variables only                     |
-| `dist/scss/_juno-tokens.scss`            | Web — SCSS variables                         |
-| `dist/js/tokens.js` + `.d.ts`            | JS / TS — `TOKENS`, `CORE`, `getTokens()`    |
-| `dist/json/tokens.json`                  | W3C DTCG — any tool                          |
-| `dist/android/colors.xml` · `dimens.xml` | Android                                      |
-| `dist/ios/JunoTokens.swift`              | iOS                                          |
-| `dist/flutter/juno_tokens.dart`          | Flutter                                      |
+| Path                                      | Platform                                           |
+| ----------------------------------------- | -------------------------------------------------- |
+| `dist/css/juno.css`                       | Web — tokens + base + utilities + components       |
+| `dist/css/juno-tokens.css`                | Web — CSS variables only                           |
+| `dist/css/juno-fonts.css` + `dist/fonts/` | Web — opt-in self-hosted B612 (`junoui/fonts.css`) |
+| `dist/icons/juno-icons.svg`               | Web — icon sprite (`junoui/icons`)                 |
+| `dist/scss/_juno-tokens.scss`             | Web — SCSS variables                               |
+| `dist/js/tokens.js` + `.d.ts`             | JS / TS — `TOKENS`, `CORE`, `getTokens()`          |
+| `dist/json/tokens.json`                   | W3C DTCG — any tool                                |
+| `dist/android/colors.xml` · `dimens.xml`  | Android                                            |
+| `dist/ios/JunoTokens.swift`               | iOS                                                |
+| `dist/flutter/juno_tokens.dart`           | Flutter                                            |

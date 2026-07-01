@@ -63,6 +63,13 @@ Types ship with the package (`JunoPalette`, `JunoMode`, `JunoRole`, `JunoTheme`)
 
 ## Fonts
 
-`base.css` `@import`s the B612 / B612 Mono families from Google Fonts. Self-hosting?
-Remove that `@import` (edit `src/css/base.css`) and load the fonts yourself; the
-`--juno-font-family-*` tokens already name them.
+junoui **never fetches fonts** (a cross-origin `@import` would break a strict CSP and
+phone home). `base.css` names B612 / B612 Mono via `--juno-font-family-*` but doesn't
+load them. Two options:
+
+```js
+import 'junoui/fonts.css'; // opt-in: self-hosted B612 woff2, no network (CSP-safe)
+```
+
+…or bring your own B612 (e.g. `@fontsource/b612`). Without either, the UI falls back to
+system sans/mono. See [integration.md](./integration.md#2-fonts-opt-in-csp-safe).
