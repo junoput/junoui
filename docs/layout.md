@@ -27,15 +27,16 @@ in a 280px sidebar or full width — so it adapts to its container:
 Wrap a region; it adapts on resize. Every knob is a custom property with a token
 default — override per instance inline.
 
-| Class             | Does                                     | Key knob (default)                    |
-| ----------------- | ---------------------------------------- | ------------------------------------- |
-| `.juno-center`    | Max-measure wrapper, fluid gutters       | `--juno-measure` (`bp-xl`)            |
-| `.juno-stack`     | Vertical rhythm between children         | `--juno-stack-space` (`space-16`)     |
-| `.juno-cluster`   | Wrapping inline group (toolbars, tags)   | `--juno-cluster-space` (`space-8`)    |
-| `.juno-grid-auto` | Cards that collapse columns themselves   | `--juno-grid-min` (`240px`)           |
-| `.juno-sidebar`   | Aside + fluid content, stacks when tight | `--juno-sidebar-width` (`280px`)      |
-| `.juno-switcher`  | N-up or all-stacked at a threshold       | `--juno-switcher-threshold` (`bp-sm`) |
-| `.juno-reel`      | Horizontal scroll-snap row               | `--juno-reel-space` (`space-12`)      |
+| Class                    | Does                                     | Key knob (default)                       |
+| ------------------------ | ---------------------------------------- | ---------------------------------------- |
+| `.juno-center`           | Max-measure wrapper, fluid gutters       | `--juno-measure` (`bp-xl`)               |
+| `.juno-stack`            | Vertical rhythm between children         | `--juno-stack-space` (`space-16`)        |
+| `.juno-cluster`          | Wrapping inline group (toolbars, tags)   | `--juno-cluster-space` (`space-8`)       |
+| `.juno-grid-auto`        | Cards that collapse columns themselves   | `--juno-grid-min` (`240px`)              |
+| `.juno-grid-auto--tiles` | Media wall wired to the density layer    | `--juno-tile-min` / `--juno-gap-content` |
+| `.juno-sidebar`          | Aside + fluid content, stacks when tight | `--juno-sidebar-width` (`280px`)         |
+| `.juno-switcher`         | N-up or all-stacked at a threshold       | `--juno-switcher-threshold` (`bp-sm`)    |
+| `.juno-reel`             | Horizontal scroll-snap row               | `--juno-reel-space` (`space-12`)         |
 
 ### Examples
 
@@ -64,7 +65,68 @@ default — override per instance inline.
   <div>A</div>
   <div>B</div>
 </div>
+
+<!-- media wall: tile size + gap follow [data-juno-density] -->
+<div class="juno-grid-auto juno-grid-auto--tiles"><img … /><img … /><img … /></div>
 ```
+
+`--tiles` reads `--juno-tile-min` / `--juno-gap-content` from the density layer
+(`150px` / `space-10` comfortable, `108px` / `space-4` compact), so one
+`data-juno-density` attribute re-densifies controls, surfaces **and** content
+grids together.
+
+## App shell
+
+Every product app assembles the same frame; here it is once, from existing
+parts — a collapsible [rail](./components/rail.md), a topbar, a content outlet,
+and a [slide-over](./components/drawer.md#the-slide-over-pattern) for trays.
+
+```html
+<div class="juno-shell">
+  <nav class="juno-rail" aria-label="Primary">
+    <div class="juno-rail__brand">JUNO</div>
+    <a class="juno-rail__item" href="/library" aria-current="page">
+      <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+      <span class="juno-rail__label">Library</span>
+    </a>
+  </nav>
+  <div>
+    <header class="juno-shell__topbar">
+      <input class="juno-input" type="search" placeholder="SEARCH…" />
+      <span class="juno-badge juno-badge--soft juno--nominal">ONLINE</span>
+    </header>
+    <main class="juno-shell__main">…</main>
+  </div>
+</div>
+
+<style>
+  /* the shell is three declarations — junoui ships the pieces, not a cage */
+  .juno-shell {
+    display: flex;
+    min-block-size: 100dvh;
+  }
+  .juno-shell > div {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .juno-shell__topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--juno-space-12);
+    block-size: 46px;
+    padding-inline: var(--juno-pad-surface-inline);
+    background: var(--juno-s1);
+    border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+  }
+  .juno-shell__main {
+    padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
+  }
+</style>
+```
+
+Collapse the rail by toggling `.juno-rail--collapsed` (one class; the width
+transition and label hiding are built in). Trays/detail panels: the
+slide-over pattern in the drawer doc.
 
 ## Adopting in an existing project
 

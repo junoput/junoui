@@ -18,6 +18,7 @@ A labeled rocker: a squared track that lights green (`nominal`) when ON, with an
 | `.juno-switch`           | Inline-flex label row; `gap-control`, `data` text.                                 |
 | `.juno-switch__input`    | The checkbox — visually hidden, still focusable / tab-ordered.                     |
 | `.juno-switch__track`    | 70 × `space.28` track; OFF = `control-edge`, ON = role (`nominal`). Legend + knob. |
+| `.juno-switch--sm`       | Quiet 40 × `space.20` track: no printed legend, smaller knob. For per-row toggles. |
 | `.juno--<role>`          | On-color of the track (put on `__track`).                                          |
 | `:checked` / `:disabled` | Slides the knob to inline-end + legend ON / dims.                                  |
 
@@ -32,4 +33,6 @@ A labeled rocker: a squared track that lights green (`nominal`) when ON, with an
 
 - Switch = immediate state change (a setting that takes effect now). For form values
   submitted later, prefer a [checkbox](./checkbox.md).
+- The default rocker is for settings panels; `--sm` for columns of row toggles
+  (plugin lists, table rows) where five rockers would shout.
 - Add `role="switch"`; the app toggles `checked` + `aria-checked`.

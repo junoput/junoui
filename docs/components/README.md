@@ -29,11 +29,14 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Data readout                   | `.juno-readout`                        | [readout.md](./readout.md)             |
 | Status dot                     | `.juno-status`                         | [status.md](./status.md)               |
 | Loaders (arc · beacon · bar)   | `.juno-arc` `.juno-beacon` `.juno-bar` | [loader.md](./loader.md)               |
+| Gauge (metric ring)            | `.juno-gauge`                          | [gauge.md](./gauge.md)                 |
+| Spark (sparkline contract)     | `.juno-spark`                          | [spark.md](./spark.md)                 |
 | Field wrapper                  | `.juno-field`                          | [field.md](./field.md)                 |
 | Input / textarea               | `.juno-input`                          | [input.md](./input.md)                 |
 | Select                         | `.juno-select`                         | [select.md](./select.md)               |
 | Checkbox / radio               | `.juno-checkbox` `.juno-radio`         | [checkbox.md](./checkbox.md)           |
 | Switch                         | `.juno-switch`                         | [switch.md](./switch.md)               |
+| Segmented control              | `.juno-seg`                            | [segmented.md](./segmented.md)         |
 | Toggle button                  | `.juno-toggle-btn`                     | [toggle-button.md](./toggle-button.md) |
 | Slider                         | `.juno-slider`                         | [slider.md](./slider.md)               |
 | Modal / dialog                 | `.juno-modal`                          | [modal.md](./modal.md)                 |
@@ -54,5 +57,6 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Breadcrumb                     | `.juno-breadcrumb`                     | [breadcrumb.md](./breadcrumb.md)       |
 | Pagination                     | `.juno-pagination`                     | [pagination.md](./pagination.md)       |
 | Stepper                        | `.juno-stepper`                        | [stepper.md](./stepper.md)             |
+| Rail (app-shell nav)           | `.juno-rail`                           | [rail.md](./rail.md)                   |
 
 Always pair a status color with a text label — color is never the only signal.

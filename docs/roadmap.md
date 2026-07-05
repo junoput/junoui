@@ -45,6 +45,25 @@ usage: [design-guidelines.md](./design-guidelines.md).
 | **Chat layer** (`junoui-chat`) — message bubble, list, day separator, system pill, attachment cards, conversation header, chat-row, rail. Requested by the buzz integration; highest-leverage gap for chat apps. | 🟡         |
 | Calendar **visuals** (event chip, day-cell)                                                                                                                                                                      | 🟢         |
 
+## Field-driven — ✅ shipped 2026-07
+
+Gaps surfaced by the first production consumer (a media-server web client, 2026-07):
+everything a real app had to hand-roll on top of junoui, rebuilt here as generic,
+reusable pieces. The rule stands — features land app-agnostic; only the origin is
+logged.
+
+| Done                   | What shipped                                                                                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Dense sizes**        | `.juno-btn--sm` + `.juno-switch--sm` for 40–46px toolbar chrome / per-row toggles.                                                                                                               |
+| **Segmented control**  | `.juno-seg` — radio-driven exclusive pill row, zero JS; `aria-pressed` button flavor.                                                                                                            |
+| **Gauge**              | `.juno-gauge` — determinate metric ring (conic-gradient), value centered, threshold recipe doc.                                                                                                  |
+| **Spark**              | `.juno-spark` — sparkline size/stroke/color contract (app supplies points; no charting shipped).                                                                                                 |
+| **Micro badge**        | `.juno-badge--micro` — mono data-UI atom for provenance/kind tags + threshold values.                                                                                                            |
+| **Rail + app shell**   | `.juno-rail` (collapsible, `aria-current`-styled) + `layout.md#app-shell` recipe.                                                                                                                |
+| **Content density**    | `--juno-tile-min`/`--juno-gap-content` archetype + `.juno-grid-auto--tiles`.                                                                                                                     |
+| **Slide-over recipe**  | Drawer doc: scrim + header/body/pinned-footer composition from existing parts.                                                                                                                   |
+| **Media/system icons** | 14 Phosphor glyphs: squares-four · images · hexagon · puzzle-piece · play · film-strip · cloud · cloud-arrow-down · arrows-clockwise · cpu · hard-drives · sliders · arrows-out · upload-simple. |
+
 ## Quality / infra
 
 | Missing                                          | Why                                                                           | Priority |

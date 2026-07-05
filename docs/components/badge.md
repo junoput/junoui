@@ -9,12 +9,13 @@ A compact, uppercase status label.
 <span class="juno-badge juno-badge--outline juno--caution">CAUTION</span>
 ```
 
-| Class                  | Effect                                        |
-| ---------------------- | --------------------------------------------- |
-| `.juno-badge`          | Base. Filled: background = role, text = `s0`. |
-| `.juno-badge--outline` | Transparent fill, text + border = role.       |
-| `.juno-badge--soft`    | Low-fill chip: role text on a 13% role wash.  |
-| `.juno--<role>`        | Sets the color (required).                    |
+| Class                  | Effect                                         |
+| ---------------------- | ---------------------------------------------- |
+| `.juno-badge`          | Base. Filled: background = role, text = `s0`.  |
+| `.juno-badge--outline` | Transparent fill, text + border = role.        |
+| `.juno-badge--soft`    | Low-fill chip: role text on a 13% role wash.   |
+| `.juno-badge--micro`   | Data-UI atom: mono 10px, hairline role border. |
+| `.juno--<role>`        | Sets the color (required).                     |
 
 ## Anatomy (any platform)
 
@@ -27,3 +28,8 @@ A compact, uppercase status label.
 
 - Use the semantic roles for status; `muted` for inactive/disabled.
 - Keep the text the literal status word — color reinforces, never replaces it.
+- `--micro` is for provenance/kind tags (`device`, `TRANSCODE`, model names) and
+  threshold values that repeat dozens of times per screen. Threshold coloring is app
+  policy — map value → role class yourself, e.g.
+  `juno-badge--micro juno--nominal` for a ≥ 90% confidence. Same recipe as the
+  [gauge](./gauge.md) thresholds.
