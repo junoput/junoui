@@ -34,7 +34,6 @@ const parts = [];
 
 parts.push(read(TOKENS));
 parts.push(read(join(SRC, 'base.css')));
-parts.push(read(join(SRC, 'utilities.css')));
 parts.push(read(join(SRC, 'layout.css')));
 parts.push(read(join(SRC, 'density.css')));
 parts.push(read(join(SRC, 'typescale.css')));
@@ -45,6 +44,12 @@ for (const f of readdirSync(compDir)
   .sort()) {
   parts.push(read(join(compDir, f)));
 }
+
+// Utilities LAST: role helpers (.juno--nominal …) set --juno-role at the same
+// specificity as component defaults (.juno-gauge { --juno-role: … }), so they
+// must come later in the source order or every role recolor silently loses
+// the cascade to the component's own default.
+parts.push(read(join(SRC, 'utilities.css')));
 
 let body = parts.join('\n\n');
 
