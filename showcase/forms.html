@@ -124,6 +124,11 @@
           <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track juno--caution"></span><span>CAUTION ON</span></label>
           <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked disabled /><span class="juno-switch__track"></span><span>DISABLED</span></label>
         </div>
+        <div class="demo-row" style="gap:32px;">
+          <label class="juno-switch juno-switch--sm"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>SMALL — per-row toggle</span></label>
+          <label class="juno-switch juno-switch--sm"><input class="juno-switch__input" type="checkbox" role="switch" /><span class="juno-switch__track"></span><span>OFF</span></label>
+          <label class="juno-switch juno-switch--sm"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track juno--active"></span><span>ACTIVE ON</span></label>
+        </div>
       </div></article>
     </section>
 
@@ -177,6 +182,43 @@
             <span class="juno-toggle-btn__strip"></span>
             <span class="juno-toggle-btn__row"><span class="juno-toggle-btn__text"><span class="juno-toggle-btn__legend">MAINTENANCE</span><span class="juno-toggle-btn__desc">Guarded — disabled</span></span><span class="juno-toggle-btn__status">LOCK</span></span>
           </button>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Segmented -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
+        <span class="juno-eyebrow">Segmented control — exclusive-choice pills (native radios, zero JS)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body" style="gap:20px;">
+        <div class="demo-row" style="gap:32px;">
+          <fieldset class="juno-seg juno--active">
+            <legend class="juno-sr-only">Kind</legend>
+            <label class="juno-seg__opt"><input type="radio" name="demo-kind" checked /><span>ALL</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-kind" /><span>PHOTOS</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-kind" /><span>VIDEO</span></label>
+          </fieldset>
+          <fieldset class="juno-seg juno--nominal">
+            <legend class="juno-sr-only">Connection</legend>
+            <label class="juno-seg__opt"><input type="radio" name="demo-conn" /><span>STANDALONE</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-conn" checked /><span>ONLINE</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-conn" /><span>OFFLINE</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-conn" disabled /><span>SYNCING</span></label>
+          </fieldset>
+        </div>
+        <div class="demo-row" style="gap:32px;">
+          <fieldset class="juno-seg juno-seg--sm juno--target">
+            <legend class="juno-sr-only">Sort (small)</legend>
+            <label class="juno-seg__opt"><input type="radio" name="demo-sort" checked /><span>NEWEST</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-sort" /><span>NAME</span></label>
+            <label class="juno-seg__opt"><input type="radio" name="demo-sort" /><span>SIZE</span></label>
+          </fieldset>
+          <div class="juno-seg" role="group" aria-label="View (aria-pressed buttons)">
+            <button class="juno-seg__opt" aria-pressed="true">GRID</button>
+            <button class="juno-seg__opt" aria-pressed="false">LIST</button>
+          </div>
         </div>
       </div></article>
     </section>

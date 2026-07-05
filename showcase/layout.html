@@ -172,6 +172,48 @@
       <p class="juno-text-muted" style="font-size:11px;margin-top:12px;">All three are real <code class="juno-mono">&lt;nav&gt;</code> / <code class="juno-mono">&lt;ol&gt;</code> markup; the app sets <code class="juno-mono">aria-current</code> and step <code class="juno-mono">data-state</code>. junoui ships the look.</p>
     </section>
 
+    <!-- Tiles + density -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">08</span>
+        <span class="juno-eyebrow">.juno-grid-auto--tiles — tile size + gap follow <code class="juno-mono">data-juno-density</code> (flip density in the header)</span>
+      </div>
+      <div class="juno-grid-auto juno-grid-auto--tiles">
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+      </div>
+    </section>
+
+    <!-- Rail / app shell -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">09</span>
+        <span class="juno-eyebrow">.juno-rail — app-shell nav (active = <code class="juno-mono">aria-current</code>; toggle collapses)</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;"><div style="display:flex;min-height:260px;">
+        <nav class="juno-rail" id="demo-rail" aria-label="Demo">
+          <div class="juno-rail__brand"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-rail__label">JUNO</span></div>
+          <a class="juno-rail__item" href="#" aria-current="page" aria-label="Library"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-rail__label">Library</span></a>
+          <a class="juno-rail__item" href="#" aria-label="Albums"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-rail__label">Albums</span></a>
+          <a class="juno-rail__item" href="#" aria-label="Nodes"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-rail__label">Nodes</span></a>
+          <a class="juno-rail__item" href="#" aria-label="Plugins"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-puzzle-piece" /></svg><span class="juno-rail__label">Plugins</span></a>
+        </nav>
+        <div style="flex:1;min-width:0;">
+          <header style="display:flex;align-items:center;gap:12px;height:46px;padding-inline:16px;background:var(--juno-s1);border-bottom:1px solid var(--juno-border);">
+            <button class="juno-btn juno-btn--sm juno-btn--ghost" onclick="document.getElementById('demo-rail').classList.toggle('juno-rail--collapsed')">☰ COLLAPSE</button>
+            <span class="juno-badge juno-badge--soft juno--nominal">ONLINE</span>
+          </header>
+          <div style="padding:16px;"><span class="juno-label">Content outlet — the shell recipe is three declarations; see layout.md#app-shell.</span></div>
+        </div>
+      </div></article>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>

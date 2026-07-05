@@ -43,6 +43,7 @@
           <button class="juno-btn juno-btn--ghost" data-open="ov-drawer-end">DRAWER · END</button>
           <button class="juno-btn juno-btn--ghost" data-open="ov-drawer-start">DRAWER · START</button>
           <button class="juno-btn juno-btn--ghost" data-open="ov-drawer-bottom">DRAWER · BOTTOM</button>
+          <button class="juno-btn juno-btn--ghost" data-open="ov-slideover">SLIDE-OVER · TRAY</button>
         </div>
       </div></article>
     </section>
@@ -157,6 +158,31 @@
         <p class="juno-modal__text">Slides up from the block-end edge — good for mobile sheets.</p>
         <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button><button class="juno-btn">CONFIRM</button></form>
       </div>
+    </dialog>
+
+    <!-- slide-over pattern: scrolling body + pinned footer (drawer.md#the-slide-over-pattern) -->
+    <style>
+      /* only when open — an inline display would override the closed dialog's display:none */
+      #ov-slideover[open] { display: flex; flex-direction: column; }
+    </style>
+    <dialog class="juno-modal juno-drawer" id="ov-slideover" aria-labelledby="ov-so-t">
+      <div class="juno-modal__stripe juno--active" style="flex-shrink:0;"></div>
+      <div class="juno-modal__head" style="flex-shrink:0;"><span class="juno-modal__tag" id="ov-so-t">ACTIVE JOBS</span>
+        <form method="dialog"><button class="juno-modal__close" autofocus aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+      <div class="juno-modal__body" style="flex:1;overflow:auto;">
+        <div class="juno-stack" style="--juno-stack-space:12px;">
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span class="juno-label">transcode · clip-0031</span><span class="juno-badge juno-badge--micro juno--active">RUNNING</span></div>
+            <div class="juno-bar juno--active"><span class="juno-bar__fill" style="--juno-progress:72;"></span></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span class="juno-label">index · album-daily</span><span class="juno-badge juno-badge--micro juno--nominal">DONE</span></div>
+            <div class="juno-bar juno--nominal"><span class="juno-bar__fill" style="--juno-progress:100;"></span></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span class="juno-label">replicate · node-04</span><span class="juno-badge juno-badge--micro juno--caution">STALLED</span></div>
+            <div class="juno-bar juno--caution"><span class="juno-bar__fill" style="--juno-progress:38;"></span></div></div>
+        </div>
+      </div>
+      <form method="dialog" class="juno-modal__foot" style="flex-shrink:0;padding:12px 16px;border-top:1px solid var(--juno-border);">
+        <button class="juno-btn juno-btn--ghost juno-btn--sm">CLEAR DONE</button>
+        <button class="juno-btn juno-btn--sm juno--warning">PAUSE ALL</button>
+      </form>
     </dialog>
 
   </main>

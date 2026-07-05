@@ -100,6 +100,21 @@ const ICONS = [
   'star',
   'sun',
   'moon',
+  // media / distributed-systems domain (2026-07 batch)
+  'squares-four',
+  'images',
+  'hexagon',
+  'puzzle-piece',
+  'play',
+  'film-strip',
+  'cloud',
+  'cloud-arrow-down',
+  'arrows-clockwise',
+  'cpu',
+  'hard-drives',
+  'sliders',
+  'arrows-out',
+  'upload-simple',
 ];
 const ICON_SPRITE = '../dist/icons/juno-icons.svg';
 

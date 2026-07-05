@@ -51,6 +51,14 @@
           <span class="juno-badge juno-badge--outline juno--caution">CAUTION</span>
           <span class="juno-badge juno-badge--outline juno--warning">WARNING</span>
         </div>
+        <div class="demo-row" style="gap:8px;">
+          <span class="juno-badge juno-badge--micro">device</span>
+          <span class="juno-badge juno-badge--micro">clip-vit-l</span>
+          <span class="juno-badge juno-badge--micro juno--active">TRANSCODE</span>
+          <span class="juno-badge juno-badge--micro juno--nominal">94%</span>
+          <span class="juno-badge juno-badge--micro juno--caution">78%</span>
+          <span class="juno-eyebrow">micro — provenance tags + app-mapped thresholds</span>
+        </div>
       </div></article>
     </section>
 
@@ -177,6 +185,63 @@
         </span>
       </div>
       <p class="juno-text-muted" style="font-size:11px;margin-top:12px;">Toggle chips are <code class="juno-mono">&lt;button aria-pressed&gt;</code> (wired in <code class="juno-mono">app.js</code>); remove buttons need an <code class="juno-mono">aria-label</code>. Chip = interactive; <a href="./data-display.html">badge</a> = static status.</p>
+    </section>
+
+    <!-- Gauge -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">07</span>
+        <span class="juno-eyebrow">Gauge — determinate metric ring (<code class="juno-mono">--juno-gauge-value</code>; thresholds are app policy)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="demo-row" style="gap:32px;align-items:flex-end;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="juno-gauge juno-gauge--sm juno--nominal" style="--juno-gauge-value: 42" role="meter" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" aria-label="CPU"><span class="juno-gauge__value">42</span></div>
+            <span class="juno-gauge__label">CPU</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="juno-gauge juno-gauge--sm juno--caution" style="--juno-gauge-value: 81" role="meter" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100" aria-label="RAM"><span class="juno-gauge__value">81</span></div>
+            <span class="juno-gauge__label">RAM</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="juno-gauge juno-gauge--sm juno--warning" style="--juno-gauge-value: 93" role="meter" aria-valuenow="93" aria-valuemin="0" aria-valuemax="100" aria-label="DISK"><span class="juno-gauge__value">93</span></div>
+            <span class="juno-gauge__label">DISK</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="juno-gauge juno--active" style="--juno-gauge-value: 67" role="meter" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" aria-label="Default 64px"><span class="juno-gauge__value">67</span></div>
+            <span class="juno-gauge__label">DEFAULT</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="juno-gauge juno-gauge--lg juno--target" style="--juno-gauge-value: 58" role="meter" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" aria-label="Large"><span class="juno-gauge__value">58</span></div>
+            <span class="juno-gauge__label">LARGE</span>
+          </div>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Spark -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">08</span>
+        <span class="juno-eyebrow">Spark — sparkline contract (app supplies points; junoui supplies size · stroke · role)</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+        <article class="juno-card"><div class="juno-card__body">
+          <span class="juno-eyebrow">Throughput</span>
+          <svg class="juno-spark juno--nominal" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,18 8,15 16,17 24,12 32,14 40,9 48,11 56,7 64,10 72,5 80,8 88,4 96,7 104,3 112,5 120,2" /></svg>
+          <span class="juno-value" style="font-size:18px;">1.2K/s</span>
+        </div></article>
+        <article class="juno-card"><div class="juno-card__body">
+          <span class="juno-eyebrow">Queue depth</span>
+          <svg class="juno-spark juno--caution" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,20 8,19 16,16 24,17 32,12 40,13 48,9 56,11 64,6 72,8 80,5 88,7 96,4 104,6 112,3 120,4" /></svg>
+          <span class="juno-value" style="font-size:18px;">318</span>
+        </div></article>
+        <article class="juno-card"><div class="juno-card__body">
+          <span class="juno-eyebrow">Errors</span>
+          <svg class="juno-spark juno--warning" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,22 8,21 16,22 24,20 32,21 40,19 48,20 56,14 64,16 72,8 80,11 88,5 96,9 104,4 112,6 120,3" /></svg>
+          <span class="juno-value" style="font-size:18px;">27</span>
+        </div></article>
+      </div>
     </section>
 
   </main>
