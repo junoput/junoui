@@ -35,6 +35,18 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('Not found');
   }
-}).listen(PORT, () => {
-  console.log(`\n  junoui showcase → http://localhost:${PORT}/showcase/index.html\n`);
-});
+})
+  .listen(PORT, () => {
+    console.log(`\n  junoui showcase → http://localhost:${PORT}/showcase/index.html\n`);
+  })
+  .on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(
+        `\n  Port ${PORT} is already in use — a showcase server is probably still running` +
+          `\n  (http://localhost:${PORT}/showcase/index.html).` +
+          `\n  Stop it, or pick another port:  PORT=8138 npm run showcase\n`,
+      );
+      process.exit(1);
+    }
+    throw err;
+  });
