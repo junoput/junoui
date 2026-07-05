@@ -176,17 +176,17 @@
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">08</span>
-        <span class="juno-eyebrow">.juno-grid-auto--tiles — tile size + gap follow <code class="juno-mono">data-juno-density</code> (flip density in the header)</span>
+        <span class="juno-eyebrow">.juno-grid-auto--tiles + .juno-thumb — tile size + gap follow <code class="juno-mono">data-juno-density</code>; broken/missing media fall back to the placeholder</span>
       </div>
       <div class="juno-grid-auto juno-grid-auto--tiles">
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
-        <div class="juno-card" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;"><span class="juno-eyebrow">TILE</span></div>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%231a3a4a'/%3E%3Ccircle cx='140' cy='60' r='30' fill='%23387a8a'/%3E%3Cpath d='M0 200 80 90l50 60 30-34 40 84z' fill='%23244f5f'/%3E%3C/svg%3E" alt="Ridge at dusk" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23402a1c'/%3E%3Ccircle cx='60' cy='70' r='24' fill='%23885a34'/%3E%3Cpath d='M0 200 60 120l60 50 40-60 40 90z' fill='%23623f26'/%3E%3C/svg%3E" alt="Dune field" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="/showcase/missing-thumbnail.jpg" alt="Broken source — onerror removes it" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23203a24'/%3E%3Cpath d='M30 200V80l40 30V70l40 40V60l40 50V80l20 20v100z' fill='%233c6a44'/%3E%3C/svg%3E" alt="Forest line" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb juno-thumb--video" style="aspect-ratio:1;" role="img" aria-label="Video preview unavailable"><figcaption class="juno-thumb__label">No preview</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23222a3f'/%3E%3Ccircle cx='100' cy='150' r='60' fill='%23334066'/%3E%3Ccircle cx='150' cy='50' r='16' fill='%236d7ea8'/%3E%3C/svg%3E" alt="Harbor night" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;" role="img" aria-label="Thumbnail missing"><figcaption class="juno-thumb__label">Offline node</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%233a2a3e'/%3E%3Cpath d='M0 140h200v60H0z' fill='%23573f5e'/%3E%3Ccircle cx='60' cy='60' r='22' fill='%23815e8a'/%3E%3C/svg%3E" alt="Violet coast" onerror="this.remove()" /></figure>
       </div>
     </section>
 

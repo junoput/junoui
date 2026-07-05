@@ -95,6 +95,7 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-gauge-size',
     'juno-gauge-width',
     'juno-rail-width',
+    'juno-thumb-glyph',
     'juno-progress',
     'juno-arc-size',
     'juno-arc-width',
