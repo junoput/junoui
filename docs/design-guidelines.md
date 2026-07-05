@@ -41,6 +41,47 @@ Neutral / structural roles carry no status meaning:
 - **B612** — all non-numeric UI: headings, labels, navigation, buttons.
 - Headings are uppercase with wide tracking; values are mono and bright (`data`).
 
+## Date & time
+
+One fixed house format everywhere — no locale drift between screens. This is a
+**content convention**, not code: apps do the formatting; junoui specifies what it
+looks like.
+
+| What     | Format                    | Example              |
+| -------- | ------------------------- | -------------------- |
+| Date     | `dd.mm.yyyy`, zero-padded | `05.07.2026`         |
+| Time     | 24-hour `HH:MM`(`:SS`)    | `14:32` · `14:32:07` |
+| Combined | date first, interpunct    | `05.07.2026 · 14:32` |
+| Range    | en-dash, no spaces        | `14:00–15:30`        |
+| Open     | trailing en-dash          | `14:00–`             |
+
+Rendering rules:
+
+- Always mono + `tabular-nums` (the [Typography](#typography) value rule) — use
+  `.juno-value` or `.juno-mono`, wrapped in `<time>` with the machine-readable ISO
+  value: `<time class="juno-mono" datetime="2026-07-05T14:32">05.07.2026 · 14:32</time>`.
+- Never AM/PM, never month names in data UI (prose may spell them out).
+- Relative time ("2h ago") is app policy; when used, pair it with the absolute
+  timestamp in a `title` or adjacent text.
+
+App-side recipe (the `de-DE` locale happens to produce exactly this format):
+
+```js
+const fmt = new Intl.DateTimeFormat('de-DE', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+});
+fmt.format(date).replace(', ', ' · '); // "05.07.2026 · 14:32"
+```
+
+This is the junoui house format. Locale-sensitive consumer products may override it
+with `Intl` defaults — deviating is a per-app decision; log it like any other
+extension (see [integration.md](./integration.md)).
+
 ## Foundation tokens (motion, layering, depth, opacity)
 
 These scales exist so transitions, overlays, and surfaces stay consistent. junoui
