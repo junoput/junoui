@@ -1,0 +1,96 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Rail (app-shell side navigation)
+ *  A collapsible icon-and-label nav column: the left edge of the standard
+ *  junoui app shell (see docs/layout.md#app-shell). Zero JS here — the
+ *  app toggles .juno-rail--collapsed and sets aria-current="page"; the
+ *  active item is styled off the attribute, not a class.
+ *  Usage:
+ *    <nav class="juno-rail" aria-label="Primary">
+ *      <div class="juno-rail__brand">JUNO</div>
+ *      <a class="juno-rail__item" href="…" aria-current="page">
+ *        <svg class="juno-icon"><use href="…#juno-i-squares-four" /></svg>
+ *        <span class="juno-rail__label">Library</span>
+ *      </a>
+ *    </nav>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-rail {
+  --juno-role: var(--juno-active);
+  --juno-rail-width: 180px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-2);
+  inline-size: var(--juno-rail-width);
+  min-block-size: 100%;
+  padding-block: var(--juno-space-8);
+  background: var(--juno-s1);
+  border-inline-end: var(--juno-border-width-1) solid var(--juno-border);
+  transition: inline-size var(--juno-motion-duration-base) var(--juno-motion-ease-standard);
+}
+
+.juno-rail__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-gap-control);
+  padding: var(--juno-space-8) var(--juno-space-16);
+  margin-block-end: var(--juno-space-8);
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-13);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--juno-data);
+  white-space: nowrap;
+}
+
+.juno-rail__item {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-gap-control);
+  padding: var(--juno-space-8) var(--juno-space-16);
+  border-inline-start: var(--juno-border-width-2) solid transparent;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-12);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--juno-label);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.juno-rail__item:hover {
+  background: var(--juno-s2);
+  color: var(--juno-data);
+}
+
+/* active = attribute, not class: <a aria-current="page"> */
+.juno-rail__item[aria-current] {
+  background: var(--juno-s3);
+  border-inline-start-color: var(--juno-role);
+  color: var(--juno-data);
+}
+
+.juno-rail__item:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-space-2));
+}
+
+/* Collapsed — icons only; labels leave the accessibility tree too, so
+   give collapsed items a title or aria-label from the app. */
+.juno-rail--collapsed {
+  --juno-rail-width: var(--juno-space-56);
+}
+
+.juno-rail--collapsed .juno-rail__label,
+.juno-rail--collapsed .juno-rail__brand .juno-rail__label {
+  display: none;
+}
+
+.juno-rail--collapsed .juno-rail__item,
+.juno-rail--collapsed .juno-rail__brand {
+  justify-content: center;
+  padding-inline: 0;
+}

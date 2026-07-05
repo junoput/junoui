@@ -1,0 +1,78 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Gauge (determinate metric ring)
+ *  A fixed-value ring for readouts (CPU / RAM / DISK …) — the metric
+ *  cousin of the arc loader. Set --juno-gauge-value (0–100) inline or
+ *  from JS; color comes from --juno-role. junoui ships no threshold
+ *  policy: the app maps value → role class (see gauge.md for the
+ *  75/90 recipe).
+ *  Usage:
+ *    <div class="juno-gauge juno--nominal" style="--juno-gauge-value: 67">
+ *      <span class="juno-gauge__value">67</span>
+ *    </div>
+ *    <span class="juno-gauge__label">DISK</span>
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* registered so the sweep can transition when the value changes */
+@property --juno-gauge-value {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.juno-gauge {
+  --juno-role: var(--juno-active);
+  --juno-gauge-size: 64px;
+  --juno-gauge-width: 4px;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--juno-gauge-size);
+  block-size: var(--juno-gauge-size);
+}
+
+/* the ring lives on a pseudo-element: the punch-out mask would clip a
+   child, so the value stays a real child of the unmasked wrapper */
+.juno-gauge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--juno-role) calc(var(--juno-gauge-value) * 1%),
+    var(--juno-border) 0
+  );
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - var(--juno-gauge-width)), #000 calc(100% - var(--juno-gauge-width)));
+          mask: radial-gradient(farthest-side, #0000 calc(100% - var(--juno-gauge-width)), #000 calc(100% - var(--juno-gauge-width)));
+  transition: --juno-gauge-value var(--juno-motion-duration-base) var(--juno-motion-ease-standard);
+}
+
+.juno-gauge__value {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-13);
+  font-weight: var(--juno-font-weight-bold);
+  color: var(--juno-role);
+}
+
+/* caption under (or beside) the ring — a sibling, app-positioned */
+.juno-gauge__label {
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-10);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-caps);
+  text-transform: uppercase;
+  color: var(--juno-label);
+}
+
+.juno-gauge--sm {
+  --juno-gauge-size: 44px;
+  --juno-gauge-width: 3px;
+}
+.juno-gauge--sm .juno-gauge__value { font-size: var(--juno-font-size-11); }
+
+.juno-gauge--lg {
+  --juno-gauge-size: 96px;
+  --juno-gauge-width: 5px;
+}
+.juno-gauge--lg .juno-gauge__value { font-size: var(--juno-font-size-20); }

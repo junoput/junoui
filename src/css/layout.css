@@ -42,6 +42,14 @@
   grid-template-columns: repeat(auto-fit, minmax(min(var(--juno-grid-min, 240px), 100%), 1fr));
 }
 
+/* Tiles — a grid-auto wired to the density layer: min size + gap follow
+   [data-juno-density], so a whole media wall re-densifies from the one
+   attribute. auto-fill keeps tile size honest when few items remain. */
+.juno-grid-auto--tiles {
+  gap: var(--juno-grid-space, var(--juno-gap-content));
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--juno-grid-min, var(--juno-tile-min)), 100%), 1fr));
+}
+
 /* Sidebar — a fixed-ish aside next to fluid content; stacks when the content
    would get narrower than --juno-sidebar-content-min. No media query. */
 .juno-sidebar {

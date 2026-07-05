@@ -95,6 +95,31 @@
   inset-inline-start: calc(70px - 26px - var(--juno-space-2));
 }
 
+/* Small — quiet per-row toggle (plugin lists, table rows). Drops the printed
+   ON/OFF legend; keeps grip, role tint and inset shadow so it reads junoui. */
+.juno-switch--sm .juno-switch__track {
+  inline-size: var(--juno-space-40);
+  block-size: var(--juno-space-20);
+}
+
+.juno-switch--sm .juno-switch__track::after,
+.juno-switch--sm .juno-switch__input:checked + .juno-switch__track::after {
+  content: none;
+}
+
+.juno-switch--sm .juno-switch__track::before {
+  inline-size: var(--juno-space-16);
+  block-size: var(--juno-space-12);
+  background:
+    repeating-linear-gradient(90deg, var(--juno-knob-grip) 0 2px, transparent 2px 5px) center / 8px
+      8px no-repeat,
+    linear-gradient(180deg, var(--juno-knob-face-hi), var(--juno-knob-face-lo));
+}
+
+.juno-switch--sm .juno-switch__input:checked + .juno-switch__track::before {
+  inset-inline-start: calc(var(--juno-space-40) - var(--juno-space-16) - var(--juno-space-2));
+}
+
 .juno-switch__input:focus-visible + .juno-switch__track {
   outline: var(--juno-border-width-2) solid var(--juno-active);
   outline-offset: var(--juno-space-2);

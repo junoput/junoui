@@ -23,6 +23,10 @@
   /* surfaces — card / panel bodies */
   --juno-pad-surface-block: var(--juno-space-16);
   --juno-pad-surface-inline: var(--juno-space-16);
+
+  /* content — media/tile walls (.juno-grid-auto--tiles) re-densify too */
+  --juno-tile-min: 150px;
+  --juno-gap-content: var(--juno-space-10);
 }
 
 [data-juno-density='compact'] {
@@ -31,4 +35,6 @@
   --juno-gap-control: var(--juno-space-4);
   --juno-pad-surface-block: var(--juno-space-10);
   --juno-pad-surface-inline: var(--juno-space-12);
+  --juno-tile-min: 108px;
+  --juno-gap-content: var(--juno-space-4);
 }

@@ -31,6 +31,21 @@
   border-color: var(--juno-role);
 }
 
+/* micro — data-UI atom below the badge scale: provenance/kind tags, model
+   names, threshold values. Mono, outline-only, 10px floor (the type scale
+   stops there on purpose). Role via juno--* as usual. */
+.juno-badge--micro {
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-10);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-normal);
+  padding: var(--juno-space-2) var(--juno-space-4);
+  border-radius: var(--juno-radius-2);
+  background: transparent;
+  color: var(--juno-role);
+  border-color: color-mix(in srgb, var(--juno-role) 55%, transparent);
+}
+
 /* soft — low-fill chip: role text on a tinted wash + faint role border.
    Quieter than filled; ideal for in-table status (a phase/state per row). */
 .juno-badge--soft {

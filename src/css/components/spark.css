@@ -1,0 +1,26 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Spark (sparkline contract)
+ *  junoui ships no charting: the app generates the <polyline> points;
+ *  this class supplies the size / stroke / role-color contract so every
+ *  sparkline matches. Generator recipe: docs/components/spark.md.
+ *  Usage:
+ *    <svg class="juno-spark juno--nominal" viewBox="0 0 120 24" preserveAspectRatio="none">
+ *      <polyline points="0,20 8,14 16,17 …" />
+ *    </svg>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-spark {
+  --juno-role: var(--juno-active);
+
+  display: block;
+  inline-size: 100%;
+  block-size: var(--juno-space-24);
+}
+
+.juno-spark polyline {
+  fill: none;
+  stroke: var(--juno-role);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
