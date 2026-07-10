@@ -128,6 +128,33 @@ Collapse the rail by toggling `.juno-rail--collapsed` (one class; the width
 transition and label hiding are built in). Trays/detail panels: the
 slide-over pattern in the drawer doc.
 
+### Narrow viewports (phone)
+
+Below `md` the shell flips to the mobile frame: the rail hides and a
+[dock](./components/dock.md) — bottom tab bar — takes over primary nav. Two
+helpers, no JS:
+
+```html
+<div class="juno-shell">
+  <nav class="juno-rail juno-hide-below-md" aria-label="Primary">…</nav>
+  <div>
+    <header class="juno-shell__topbar">…</header>
+    <main class="juno-shell__main">…</main>
+    <nav class="juno-dock juno-hide-from-md" aria-label="Primary">
+      <a class="juno-dock__item" href="/library" aria-current="page">
+        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+        <span class="juno-dock__label">Library</span>
+      </a>
+    </nav>
+  </div>
+</div>
+```
+
+The dock is `position: sticky` — last in the scrolling column, it pins to the
+bottom without overlapping content and pads for the home indicator
+(`safe-area-inset-bottom`). Keep 3–5 destinations; the rest go behind a "More"
+item (drawer or menu).
+
 ## Adopting in an existing project
 
 No restructuring required — additive and incremental:

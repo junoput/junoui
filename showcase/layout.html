@@ -214,6 +214,33 @@
       </div></article>
     </section>
 
+    <!-- Dock / bottom nav -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">10</span>
+        <span class="juno-eyebrow">.juno-dock — bottom nav for narrow viewports (sticky; active = <code class="juno-mono">aria-current</code>)</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="height:300px;overflow:auto;display:flex;flex-direction:column;">
+          <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <span class="juno-label">Phone-width shell — scroll me; the dock stays pinned.</span>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+          </div>
+          <nav class="juno-dock" aria-label="Demo dock">
+            <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Library</span></a>
+            <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-dock__label">Albums</span></a>
+            <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-dock__label">Nodes</span></a>
+            <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-puzzle-piece" /></svg><span class="juno-dock__label">Plugins</span></a>
+          </nav>
+        </div>
+      </article>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>

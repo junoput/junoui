@@ -59,5 +59,6 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Pagination                     | `.juno-pagination`                     | [pagination.md](./pagination.md)       |
 | Stepper                        | `.juno-stepper`                        | [stepper.md](./stepper.md)             |
 | Rail (app-shell nav)           | `.juno-rail`                           | [rail.md](./rail.md)                   |
+| Dock (bottom nav, narrow)      | `.juno-dock`                           | [dock.md](./dock.md)                   |
 
 Always pair a status color with a text label — color is never the only signal.

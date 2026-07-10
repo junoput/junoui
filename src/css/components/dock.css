@@ -1,0 +1,74 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Dock (app-shell bottom navigation)
+ *  The narrow-viewport counterpart of the rail: 3–5 primary destinations
+ *  as icon-over-label tap targets pinned to the bottom edge. Zero JS —
+ *  the app sets aria-current="page"; the active item styles off the
+ *  attribute, exactly like the rail.
+ *
+ *  Sticky (not fixed) so it stays in flow: put it last inside the
+ *  scrolling column and it pins itself without overlapping content.
+ *  Pads for the home-indicator via safe-area-inset. Pair with the rail
+ *  using the viewport helpers (see docs/layout.md#app-shell):
+ *    <nav class="juno-rail juno-hide-below-md" …>
+ *    <nav class="juno-dock juno-hide-from-md" aria-label="Primary">
+ *      <a class="juno-dock__item" href="…" aria-current="page">
+ *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+ *        <span class="juno-dock__label">Library</span>
+ *      </a>
+ *    </nav>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-dock {
+  --juno-role: var(--juno-active);
+
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--juno-z-raised);
+  display: flex;
+  align-items: stretch;
+  background: var(--juno-s1);
+  border-block-start: var(--juno-border-width-1) solid var(--juno-border);
+  padding-block-end: env(safe-area-inset-bottom, 0);
+}
+
+.juno-dock__item {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  min-block-size: var(--juno-size-tap-comfortable);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--juno-space-2);
+  padding-block: var(--juno-space-4);
+  border-block-start: var(--juno-border-width-2) solid transparent;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-10);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--juno-label);
+  cursor: pointer;
+}
+
+.juno-dock__label {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.juno-dock__item:hover { color: var(--juno-data); }
+
+/* active = attribute, not class: <a aria-current="page"> */
+.juno-dock__item[aria-current] {
+  border-block-start-color: var(--juno-role);
+  background: var(--juno-s2);
+  color: var(--juno-data);
+}
+
+.juno-dock__item:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-space-2));
+}

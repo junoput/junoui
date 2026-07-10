@@ -3,6 +3,7 @@
 The side navigation column of the standard app shell — brand block on top, then
 icon + label items. Collapsible to icons-only. The full shell composition
 (rail + topbar + content + slide-over) is in [layout.md](../layout.md#app-shell).
+On phone widths the shell swaps the rail for a [dock](./dock.md) (bottom nav).
 
 ## Web
 
