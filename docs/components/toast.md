@@ -43,3 +43,6 @@ none` so only the toasts catch clicks.
 - Put `aria-live="polite"` on the stack (`assertive` for errors) so new toasts announce.
 - Keep messages short and self-contained; one line. For anything needing a decision, use a
   [modal](./modal.md) or inline [alert](./alert.md).
+- **Phone widths (< `bp.sm`) are automatic:** the stack goes full-width along the
+  bottom edge (thumb reach), clear of the home indicator, and toasts slide up
+  instead of sideways. No extra class.

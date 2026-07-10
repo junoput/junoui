@@ -56,3 +56,6 @@ junoui can't switch panels in CSS — wire it and keep the ARIA in sync:
   activation follows focus. `showcase/app.js` (`initTabs`) is a reference driver.
 - For a stable layout, give panels equal-ish height or let content flow; don't animate
   height unless you measure it.
+- Tabs never wrap: when the strip runs out of room (phone widths) it scrolls
+  sideways, so every tab stays reachable. Keep labels short anyway — a scrolled
+  tab is a hidden tab until swiped to.

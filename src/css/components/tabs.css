@@ -21,6 +21,12 @@
   display: flex;
   gap: var(--juno-space-2);
   border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+
+  /* tabs never wrap — when space runs out (phone widths) the strip
+     scrolls sideways instead, keeping every tab reachable */
+  overflow: auto hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
 }
 
 .juno-tabs__tab {

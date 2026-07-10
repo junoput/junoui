@@ -85,6 +85,25 @@
 
 .juno-toast__close:hover { color: var(--juno-data); }
 
+/* ── narrow viewports — snackbar style ──────────────────────────────────
+   The corner stack goes full-width at the bottom edge (thumb reach),
+   clear of the home indicator; toasts slide up instead of sideways. */
+@media (width <= 639.98px) {
+  .juno-toast-stack {
+    inset-inline: var(--juno-space-12);
+    inset-block-end: calc(var(--juno-space-12) + env(safe-area-inset-bottom, 0));
+    inline-size: auto;
+  }
+
+  .juno-toast-stack--top { inset-block: var(--juno-space-12) auto; }
+
+  @starting-style {
+    .juno-toast { transform: translateY(var(--juno-space-16)); }
+  }
+
+  .juno-toast--leaving { transform: translateY(var(--juno-space-16)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .juno-toast { transition: none; }
 }
