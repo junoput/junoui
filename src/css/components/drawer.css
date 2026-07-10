@@ -61,10 +61,20 @@
   border: none;
   border-block-start: var(--juno-border-width-1) solid var(--juno-border);
   transform: translateY(100%);
+
+  /* keep content above the home indicator */
+  padding-block-end: env(safe-area-inset-bottom, 0);
 }
 
 .juno-modal.juno-drawer--bottom[open] { transform: translateY(0); }
 
 @starting-style {
   .juno-modal.juno-drawer--bottom[open] { transform: translateY(100%); }
+}
+
+/* ── narrow viewports ────────────────────────────────────────────────────
+   Side drawers cap below the full width so a sliver of scrim survives —
+   the visual cue (and tap target) that "outside" closes the panel. */
+@media (width <= 639.98px) {
+  .juno-modal.juno-drawer:not(.juno-drawer--bottom) { inline-size: min(380px, 85vw); }
 }

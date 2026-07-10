@@ -47,3 +47,6 @@ and ESC/scrim-click dismiss (native `<dialog>` gives you most of this free).
 - Use a real `<dialog>` + `showModal()` so focus-trap, ESC, and inert background come free.
 - Destructive actions: `.juno--warning` + a deliberate confirm (`.juno-btn juno--warning`).
 - For edge-anchored panels that don't block, use the [drawer](./drawer.md).
+- **Phone widths (< `bp.sm`) are automatic:** the centered dialog becomes a
+  bottom sheet — full-width, top corners rounded, sliding up, footer buttons
+  stretched, content padded past the home indicator. No extra class.

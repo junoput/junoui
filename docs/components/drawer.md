@@ -55,3 +55,6 @@ parts; the drawer class only re-pins and re-slides the surface.
 
 - Settings panels, filters, detail editors that don't warrant leaving context.
 - Same `<dialog>` + `showModal()` contract as the modal.
+- **Phone widths (< `bp.sm`) are automatic:** side drawers cap at `85vw` so a
+  sliver of scrim stays visible (and tappable) for dismissal. The bottom
+  drawer always pads past the home indicator (`safe-area-inset-bottom`).

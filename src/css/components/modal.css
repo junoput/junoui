@@ -123,3 +123,39 @@
   justify-content: flex-end;
   margin-block-start: var(--juno-space-24);
 }
+
+/* ── narrow viewports — the centered dialog becomes a bottom sheet ──────
+   Phones get the native-feeling pattern: full-width, pinned to the bottom
+   edge, top corners rounded, sliding up. Drawers opt out (:not) — they
+   already pin themselves. Scoped to the viewport (not a container): a
+   modal always lives in the top layer, so the screen IS its container. */
+@media (width <= 639.98px) {
+  .juno-modal:not(.juno-drawer) {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    max-block-size: 85dvh;
+    margin-block: auto 0;
+    margin-inline: 0;
+    border: none;
+    border-block-start: var(--juno-border-width-1) solid var(--juno-border);
+    border-start-start-radius: var(--juno-radius-8);
+    border-start-end-radius: var(--juno-radius-8);
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    transform: translateY(100%);
+  }
+
+  .juno-modal:not(.juno-drawer)[open] { transform: translateY(0); }
+
+  @starting-style {
+    .juno-modal:not(.juno-drawer)[open] { transform: translateY(100%); }
+  }
+
+  /* keep the foot's actions above the home indicator */
+  .juno-modal:not(.juno-drawer) .juno-modal__body {
+    padding-block-end: calc(var(--juno-pad-surface-inline) + env(safe-area-inset-bottom, 0));
+  }
+
+  /* full-width actions read better on a sheet */
+  .juno-modal:not(.juno-drawer) .juno-modal__foot > .juno-btn { flex: 1; }
+}
