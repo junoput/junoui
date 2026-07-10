@@ -91,5 +91,7 @@ field, overlays (modal/drawer/tooltip/popover/menu), table/data-grid (sortable h
 cell types, row states, overflow, skeleton/empty), alert + toast (role-tinted, alert
 layer), tabs + accordion (native <details>), visual-regression snapshots + changesets,
 field-driven set (btn/switch --sm, segmented, gauge, spark, badge--micro, rail +
-app-shell recipe, content-density tiles, media icons). junoui ships the look + a11y
-spec; stateful behavior stays out.
+app-shell recipe, content-density tiles, media icons), mobile set (dock bottom nav,
+modal→bottom sheet, drawer/toast phone fit, scrollable tabs, table--stack,
+coarse-pointer tap targets). junoui ships the look + a11y spec; stateful behavior
+stays out.

@@ -64,6 +64,21 @@ logged.
 | **Slide-over recipe**  | Drawer doc: scrim + header/body/pinned-footer composition from existing parts.                                                                                                                   |
 | **Media/system icons** | 14 Phosphor glyphs: squares-four · images · hexagon · puzzle-piece · play · film-strip · cloud · cloud-arrow-down · arrows-clockwise · cpu · hard-drives · sliders · arrows-out · upload-simple. |
 
+## Mobile — ✅ shipped 2026-07
+
+Mobile-first structures for narrow viewports and touch, automatic where safe,
+opt-in where markup is needed:
+
+| Done                 | What shipped                                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Dock**             | `.juno-dock` — bottom nav, phone counterpart of the rail; sticky, safe-area padded; shell swap recipe in `layout.md`. |
+| **Bottom sheet**     | Modal auto-converts below `bp.sm`: full-width, top-rounded, slides up, stretched footer actions.                      |
+| **Drawer phone fit** | Side drawers cap at `85vw` (scrim stays tappable); bottom drawer pads for the home indicator.                         |
+| **Toast snackbar**   | Full-width bottom stack on phones; slides up instead of sideways.                                                     |
+| **Scrollable tabs**  | Tab strip scrolls sideways instead of overflowing.                                                                    |
+| **Stacked table**    | `.juno-table--stack` + `data-label` — card rows below a 480px container; real `<table>` semantics kept.               |
+| **Touch ergonomics** | `pointer: coarse` raises `--juno-size-tap-min` → 44px; `hover: none` keeps table row actions visible.                 |
+
 ## Quality / infra
 
 | Missing                                          | Why                                                                           | Priority |
