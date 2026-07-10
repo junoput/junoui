@@ -65,6 +65,14 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   border-radius: var(--juno-radius-2);
 }
 
+/* Touch ergonomics — on coarse pointers (finger, not mouse) every control
+   that sizes itself off the tap minimum grows to the comfortable target
+   (44px). A cascade override, not a token change: the token values stay
+   the contract; a phone just reads the bigger one. */
+@media (pointer: coarse) {
+  :root { --juno-size-tap-min: var(--juno-size-tap-comfortable); }
+}
+
 @keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {

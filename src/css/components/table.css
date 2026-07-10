@@ -208,6 +208,11 @@
 .juno-table tbody tr:hover .juno-table__actions,
 .juno-table tbody tr:focus-within .juno-table__actions { opacity: 1; }
 
+/* no hover to reveal them on touch — actions stay visible */
+@media (hover: none) {
+  .juno-table__actions { opacity: 1; }
+}
+
 .juno-table__action {
   display: inline-flex;
   align-items: center;

@@ -36,6 +36,12 @@ and what you must wire up.
 - `--juno-size-tap-min` = 24px — WCAG 2.2 AA minimum for interactive controls.
 - `--juno-size-tap-comfortable` = 44px — recommended for primary actions on touch.
 - `.juno-btn` already sets `min-height: var(--juno-size-tap-min)`.
+- **On coarse pointers this is automatic:** under `@media (pointer: coarse)` the
+  base layer raises `--juno-size-tap-min` to the comfortable 44px, so every
+  control sized off the tap minimum grows on touch devices. A cascade override —
+  the token values themselves don't change.
+- Hover-revealed affordances get a touch fallback: table row actions stay
+  visible under `@media (hover: none)`.
 
 ## Forced colors / high contrast
 
