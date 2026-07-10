@@ -35,6 +35,7 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 | `.juno-table--sticky`      | Header holds (`position: sticky`) while the body scrolls.               |
 | `.juno-table--zebra`       | Stripes even body rows (`s2` dark / `s1` light).                        |
 | `.juno-table--compact`     | Tighter row padding (per-table; independent of global density).         |
+| `.juno-table--stack`       | Phone mode: rows become label/value cards below 480px (see below).      |
 | `th[aria-sort]`            | Marks a sortable column; `ascending` / `descending` draw the arrow.     |
 | `tr[aria-selected="true"]` | Active rail (left) + cyan row wash.                                     |
 
@@ -62,6 +63,30 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 | `.juno-table__wrap`     | Full value; row grows. Reserve for one descriptive column.            |
 
 All three cap at `--juno-cell-max` (default 240px).
+
+### Stacked mode (phone widths)
+
+Wide tables don't shrink — they either scroll (the default: `.juno-table-scroll`
+scrolls sideways too) or **stack**. Opt in with `.juno-table--stack`, give every
+`td` a `data-label` echoing its column header, and make the wrapper a container:
+
+```html
+<div class="juno-table-scroll" style="container-type: inline-size">
+  <table class="juno-table juno-table--stack">
+    <tbody>
+      <tr>
+        <td data-label="FLIGHT" class="juno-table__id">JU-204</td>
+        <td data-label="ALT" class="juno-table__num">37,000</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+Below a 480px container the header row hides, each row becomes a bordered card,
+and each cell renders as a label/value pair (the `data-label` becomes the label).
+The selection rail moves to the card's edge, and row actions stay visible (no
+hover on touch). Semantics stay a real `<table>` — only the display flips.
 
 ### Framing rows
 

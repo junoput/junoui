@@ -209,6 +209,43 @@
       </div>
     </section>
 
+    <!-- 06 STACKED MODE -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
+        <span class="juno-eyebrow">.juno-table--stack — phone-width card rows (container &lt; 480px; labels from <code class="juno-mono">data-label</code>)</span>
+      </div>
+      <div class="demo-grid" style="grid-template-columns:minmax(0,1fr) 340px;align-items:start;">
+        <div class="juno-card">
+          <div class="juno-table__toolbar" style="text-transform:uppercase;font-size:10px;letter-spacing:.2em;color:var(--juno-label);">Wide container — normal grid</div>
+          <div class="juno-table-scroll" style="container-type:inline-size;max-block-size:none;">
+            <table class="juno-table juno-table--stack">
+              <thead><tr><th>FLIGHT</th><th>ROUTE</th><th class="juno-table__num">ALT</th><th>STATUS</th></tr></thead>
+              <tbody>
+                <tr><td data-label="FLIGHT" class="juno-table__id">JU-204</td><td data-label="ROUTE" class="juno-table__mono">VIE → OTP</td><td data-label="ALT" class="juno-table__num">37,000</td><td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--nominal">CRUISE</span></td></tr>
+                <tr aria-selected="true"><td data-label="FLIGHT" class="juno-table__id">JU-117</td><td data-label="ROUTE" class="juno-table__mono">ZRH → LIS</td><td data-label="ALT" class="juno-table__num">12,400</td><td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--active">CLIMB</span></td></tr>
+                <tr><td data-label="FLIGHT" class="juno-table__id">JU-330</td><td data-label="ROUTE" class="juno-table__mono">CDG → ARN</td><td data-label="ALT" class="juno-table__num">2,100</td><td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--caution">HOLD</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="juno-card">
+          <div class="juno-table__toolbar" style="text-transform:uppercase;font-size:10px;letter-spacing:.2em;color:var(--juno-label);">Narrow container — stacked cards</div>
+          <div class="juno-table-scroll" style="container-type:inline-size;max-block-size:none;padding:12px;">
+            <table class="juno-table juno-table--stack">
+              <thead><tr><th>FLIGHT</th><th>ROUTE</th><th class="juno-table__num">ALT</th><th>STATUS</th></tr></thead>
+              <tbody>
+                <tr><td data-label="FLIGHT" class="juno-table__id">JU-204</td><td data-label="ROUTE" class="juno-table__mono">VIE → OTP</td><td data-label="ALT" class="juno-table__num">37,000</td><td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--nominal">CRUISE</span></td></tr>
+                <tr aria-selected="true"><td data-label="FLIGHT" class="juno-table__id">JU-117</td><td data-label="ROUTE" class="juno-table__mono">ZRH → LIS</td><td data-label="ALT" class="juno-table__num">12,400</td><td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--active">CLIMB</span></td></tr>
+                <tr><td data-label="FLIGHT" class="juno-table__id">JU-330</td><td data-label="ROUTE" class="juno-table__mono">CDG → ARN</td><td data-label="ALT" class="juno-table__num">2,100</td><td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--caution">HOLD</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <p class="juno-text-muted" style="font-size:11px;margin-top:10px;">Same markup twice — only the container width differs. Semantics stay a real &lt;table&gt;; the selected row's rail moves to the card edge.</p>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>

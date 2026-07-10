@@ -372,3 +372,67 @@
 @media (prefers-reduced-motion: reduce) {
   .juno-table__skeleton { animation: none; }
 }
+
+/* ── stacked mode (opt-in) — card rows for phone-width containers ────────
+   Add `.juno-table--stack` on the table and `data-label="HEADER"` on each
+   td. In a container narrower than 480px the grid flips: the header row
+   hides, every row becomes a bordered card, every cell a label/value pair
+   (::before renders the data-label). Container-driven, so it needs an
+   ancestor with `container-type: inline-size` — usually the
+   .juno-table-scroll wrapper. Semantics stay a real <table>; only the
+   display changes.
+   Usage:
+     <div class="juno-table-scroll" style="container-type:inline-size">
+       <table class="juno-table juno-table--stack">
+         <tbody><tr>
+           <td data-label="FLIGHT" class="juno-table__id">JU-204</td>
+           <td data-label="ALT" class="juno-table__num">37,000</td>
+         </tr></tbody> */
+@container (max-width: 480px) {
+  .juno-table--stack thead { display: none; }
+
+  .juno-table--stack,
+  .juno-table--stack tbody,
+  .juno-table--stack tbody tr { display: block; }
+
+  .juno-table--stack tbody tr {
+    margin-block-end: var(--juno-space-12);
+    border: var(--juno-border-width-1) solid var(--juno-border);
+    border-radius: var(--juno-radius-5);
+    overflow: hidden;
+  }
+
+  .juno-table--stack tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--juno-space-16);
+    padding: var(--juno-space-8) var(--juno-space-16);
+    border-block-end: none;
+    white-space: normal;
+    text-align: end;
+  }
+
+  /* the column header, rebuilt per cell from data-label */
+  .juno-table--stack tbody td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-family: var(--juno-font-family-sans);
+    font-size: var(--juno-font-size-10);
+    font-weight: var(--juno-font-weight-medium);
+    letter-spacing: var(--juno-font-tracking-caps);
+    text-transform: uppercase;
+    text-align: start;
+    color: var(--juno-label);
+  }
+
+  /* the selection rail moves from the first cell to the card edge */
+  .juno-table--stack tbody td:first-child { border-inline-start: none; }
+
+  .juno-table--stack tbody tr[aria-selected='true'] {
+    border-inline-start: var(--juno-border-width-3) solid var(--juno-active);
+  }
+
+  /* no hover on most narrow devices — keep row actions visible */
+  .juno-table--stack .juno-table__actions { opacity: 1; }
+}
