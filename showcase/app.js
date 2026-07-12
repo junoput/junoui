@@ -151,6 +151,23 @@ function renderChrome() {
       <span class="juno-eyebrow">design system</span>
     </a>
     <div class="demo-spacer"></div>
+    <span class="juno-mono juno-text-data" id="clock" style="font-size:13px;"></span>
+    <button class="juno-btn juno-btn--sm juno-btn--ghost" data-mode-flip aria-label="Toggle dark / light mode">
+      ${icon('sun', 'demo-when-dark')}${icon('moon', 'demo-when-light')}
+    </button>
+    <button class="juno-btn juno-btn--sm juno-btn--ghost" popovertarget="demo-settings" aria-haspopup="dialog" aria-label="View settings">
+      ${icon('gear')} VIEW
+    </button>`;
+
+  // view settings — one popover, opened from the desktop header or the
+  // mobile navbar (the invoker is the anchor, so it opens where you tapped)
+  const settings = document.createElement('div');
+  settings.className = 'juno-popover demo-settings';
+  settings.id = 'demo-settings';
+  settings.setAttribute('popover', '');
+  settings.setAttribute('role', 'dialog');
+  settings.setAttribute('aria-label', 'View settings');
+  settings.innerHTML = `
     <div class="demo-ctl">
       <span class="juno-eyebrow">Palette</span>
       <div class="demo-seg">
@@ -180,8 +197,8 @@ function renderChrome() {
         <button class="demo-toggle" data-text="large">A+</button>
         <button class="demo-toggle" data-text="xl">A++</button>
       </div>
-    </div>
-    <span class="juno-mono juno-text-data" id="clock" style="font-size:13px;"></span>`;
+    </div>`;
+  document.body.append(settings);
 
   const navEl = document.createElement('nav');
   navEl.className = 'demo-nav juno-hide-below-md';
@@ -205,6 +222,9 @@ function renderChrome() {
     <div class="juno-navbar__actions">
       <button class="juno-btn juno-btn--sm juno-btn--ghost" data-mode-flip aria-label="Toggle dark / light mode">
         ${icon('sun', 'demo-when-dark')}${icon('moon', 'demo-when-light')}
+      </button>
+      <button class="juno-btn juno-btn--sm juno-btn--ghost" popovertarget="demo-settings" aria-haspopup="dialog" aria-label="View settings">
+        ${icon('gear')}
       </button>
     </div>`;
   document.body.prepend(mnav);

@@ -233,3 +233,22 @@
   .demo-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
   .demo-grid > * { min-width: 0; }
 }
+
+/* view-settings popover — label over buttons, groups stacked.
+   display only when open — an unconditional display would override the
+   popover UA hidden state and pin the panel on screen. */
+.demo-settings:popover-open {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demo-settings .demo-ctl {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.demo-settings .demo-seg {
+  flex-wrap: wrap;
+}
