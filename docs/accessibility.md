@@ -90,6 +90,9 @@ junoui gives structure + style; you add roles/state:
 | Pagination                | `<nav aria-label="Pagination">`; current page `aria-current="page"`; icon-only prev/next need `aria-label`; disable the ends with `disabled`.                                                                                            |
 | Stepper                   | Real `<ol>`; set `data-state` per step and `aria-current="step"` on the active one. State drives the color — don't rely on color alone.                                                                                                  |
 | Rail / dock               | `<nav aria-label="Primary">` of real links; active item `aria-current="page"`. Collapsed rail items (icons-only) need `aria-label`/`title`. When both navs render (rail + dock swap), the hidden one leaves the tree via `display:none`. |
+| Pillbar                   | `<nav aria-label>` when it navigates; links get `aria-current="page"`, toggle buttons `aria-pressed`. Icon-only items need `aria-label`. Never render both a dock and a pillbar on one screen.                                           |
+| Navbar                    | Back is a real `<a>` (parent route) or `<button>` (history); `aria-label="Back"` when the caret has no text. Title is usually the screen's `<h1>`. The bar itself needs no role — it's a `<header>`.                                     |
+| List                      | Rows that navigate are `<a>` (or `<button>`) wrapping the whole row — never a bare chevron target. Keep `<ul>`/`<li>` when rows form a set. A trailing switch/checkbox is its own labeled control; don't nest it inside a link row.      |
 
 These are interaction concerns — junoui can't enforce them in CSS, so they're your
 responsibility (or the widget package's).

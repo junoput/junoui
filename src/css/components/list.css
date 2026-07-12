@@ -1,0 +1,135 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — List (grouped rows / vertical data organization)
+ *  The settings-screen pattern: labeled groups of full-width rows, each
+ *  row a leading icon + label (+ support line) with a trailing value,
+ *  control, or drill-in chevron. Rows are plain <div>s for static data
+ *  or <a>/<button> when they navigate — the look is the same; only
+ *  interactive rows get hover/press feedback. Zero JS.
+ *  Usage:
+ *    <section class="juno-list">
+ *      <h3 class="juno-list__header">Playback</h3>
+ *      <ul class="juno-list__group">
+ *        <li><a class="juno-list__row" href="…">
+ *          <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="…#juno-i-sliders" /></svg>
+ *          <span class="juno-list__main">
+ *            <span class="juno-list__label">Quality</span>
+ *            <span class="juno-list__support">Streaming resolution</span>
+ *          </span>
+ *          <span class="juno-list__value">1080p</span>
+ *          <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="…#juno-i-caret-right" /></svg>
+ *        </a></li>
+ *      </ul>
+ *    </section>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-8);
+}
+
+.juno-list + .juno-list { margin-block-start: var(--juno-space-20); }
+
+.juno-list__header {
+  margin: 0;
+  padding-inline: var(--juno-space-16);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-11);
+  font-weight: var(--juno-font-weight-bold);
+  letter-spacing: var(--juno-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--juno-label);
+}
+
+.juno-list__group {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--juno-s1);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: var(--juno-radius-8);
+  overflow: hidden;
+}
+
+.juno-list__row {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-12);
+  inline-size: 100%;
+  min-block-size: var(--juno-size-tap-comfortable);
+  padding: var(--juno-space-8) var(--juno-space-16);
+  background: transparent;
+  border: none;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  text-align: start;
+  text-decoration: none;
+  color: var(--juno-data);
+}
+
+/* hairline between rows only — works for <li>-wrapped and bare rows */
+.juno-list__group > li + li > .juno-list__row,
+.juno-list__group > .juno-list__row + .juno-list__row {
+  border-block-start: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+/* feedback only where a row actually goes somewhere */
+a.juno-list__row,
+button.juno-list__row { cursor: pointer; }
+
+a.juno-list__row:hover,
+button.juno-list__row:hover,
+a.juno-list__row:focus-visible,
+button.juno-list__row:focus-visible { background: var(--juno-s2); }
+
+.juno-list__row:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-space-2));
+}
+
+button.juno-list__row:disabled {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.juno-list__icon {
+  flex-shrink: 0;
+  color: var(--juno-label);
+}
+
+.juno-list__main {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--juno-space-2);
+}
+
+.juno-list__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.juno-list__support {
+  font-size: var(--juno-font-size-11);
+  color: var(--juno-label);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.juno-list__value {
+  flex-shrink: 0;
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-12);
+  color: var(--juno-label);
+}
+
+.juno-list__chevron {
+  flex-shrink: 0;
+
+  --juno-icon-size: var(--juno-space-16);
+
+  color: var(--juno-muted);
+}

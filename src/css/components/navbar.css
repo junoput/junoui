@@ -1,0 +1,103 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Navbar (stack-navigation top bar)
+ *  The header of a pushed view on phones: a back control on the start
+ *  edge — always, so any screen can unwind — a centered truncating
+ *  title, and trailing actions. junoui ships the look; the app owns the
+ *  navigation stack (what "back" does).
+ *
+ *  Sticky top, safe-area padded. Pair with the dock or pillbar for the
+ *  tab + stack recipe: tabs switch sections, the navbar backs out of
+ *  drilled-in views (see docs/layout.md#app-shell).
+ *  Usage:
+ *    <header class="juno-navbar">
+ *      <a class="juno-navbar__back" href="…">
+ *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-caret-left" /></svg>
+ *        <span class="juno-navbar__back-label">Library</span>
+ *      </a>
+ *      <h1 class="juno-navbar__title">Album</h1>
+ *      <div class="juno-navbar__actions">
+ *        <button class="juno-btn juno-btn--sm juno-btn--ghost">EDIT</button>
+ *      </div>
+ *    </header>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-navbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--juno-z-raised);
+  display: grid;
+
+  /* sides never shrink below their (already-truncated) content, so a long
+     title ellipsizes instead of sliding under the back control; with a short
+     title the equal 1fr sides keep it optically centered */
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+  align-items: center;
+  gap: var(--juno-space-8);
+  padding-inline: var(--juno-space-8);
+  padding-block-start: env(safe-area-inset-top, 0);
+  min-block-size: var(--juno-size-tap-comfortable);
+  background: var(--juno-s1);
+  border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+.juno-navbar__back {
+  appearance: none;
+  margin: 0;
+  border: none;
+  background: transparent;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-4);
+  min-block-size: var(--juno-size-tap-comfortable);
+  min-inline-size: var(--juno-size-tap-comfortable);
+  padding-inline: var(--juno-space-4);
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-11);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--juno-active);
+  cursor: pointer;
+}
+
+/* RTL: the caret glyph must point "back" in either direction */
+[dir='rtl'] .juno-navbar__back .juno-icon { transform: scaleX(-1); }
+
+.juno-navbar__back:hover { color: var(--juno-data); }
+
+.juno-navbar__back-label {
+  max-inline-size: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.juno-navbar__title {
+  grid-column: 2;
+  margin: 0;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-14);
+  font-weight: var(--juno-font-weight-semibold);
+  color: var(--juno-data);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.juno-navbar__actions {
+  grid-column: 3;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-4);
+}
+
+.juno-navbar__back:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-space-2));
+}

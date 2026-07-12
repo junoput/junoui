@@ -1,0 +1,103 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Pillbar (floating pill toolbar / tab bar)
+ *  A floating rounded bar hovering above the content's bottom edge —
+ *  the iOS-style alternative to the full-width dock. Holds 2–5 icon
+ *  actions or destinations; the active one styles off aria-current
+ *  (nav links) or aria-pressed (toggle buttons), zero JS.
+ *
+ *  Sticky (not fixed): put it last inside the scrolling column and it
+ *  floats over the content while staying in flow. Clears the home
+ *  indicator via safe-area-inset.
+ *  Usage:
+ *    <nav class="juno-pillbar" aria-label="Primary">
+ *      <a class="juno-pillbar__item" href="…" aria-current="page" aria-label="Library">
+ *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+ *        <span class="juno-pillbar__label">Library</span>
+ *      </a>
+ *      <span class="juno-pillbar__sep"></span>
+ *      <button class="juno-pillbar__item" aria-label="Sync">
+ *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-arrows-clockwise" /></svg>
+ *      </button>
+ *    </nav>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-pillbar {
+  --juno-role: var(--juno-active);
+
+  position: sticky;
+  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--juno-z-raised);
+  margin-inline: auto;
+  margin-block-end: var(--juno-space-16);
+  inline-size: fit-content;
+  max-inline-size: calc(100% - 2 * var(--juno-space-16));
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-2);
+  padding: var(--juno-space-4);
+  background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: 999px;
+  box-shadow: var(--juno-shadow-2);
+}
+
+.juno-pillbar__item {
+  appearance: none;
+  margin: 0;
+  border: none;
+  min-inline-size: var(--juno-size-tap-comfortable);
+  min-block-size: var(--juno-size-tap-comfortable);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--juno-space-4);
+  padding-inline: var(--juno-space-10);
+  background: transparent;
+  border-radius: 999px;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-10);
+  font-weight: var(--juno-font-weight-semibold);
+  letter-spacing: var(--juno-font-tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--juno-label);
+  cursor: pointer;
+  transition:
+    color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-pillbar__label {
+  max-inline-size: 12ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.juno-pillbar__item:hover { color: var(--juno-data); }
+
+/* active = attribute, not class: aria-current (links) / aria-pressed (buttons) */
+.juno-pillbar__item[aria-current],
+.juno-pillbar__item[aria-pressed='true'] {
+  background: var(--juno-s3);
+  color: var(--juno-role);
+}
+
+.juno-pillbar__item:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-space-2));
+}
+
+.juno-pillbar__item:disabled {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.juno-pillbar__sep {
+  align-self: center;
+  inline-size: var(--juno-border-width-1);
+  block-size: var(--juno-space-20);
+  background: var(--juno-border);
+  flex-shrink: 0;
+}

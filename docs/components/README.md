@@ -60,5 +60,8 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Stepper                        | `.juno-stepper`                        | [stepper.md](./stepper.md)             |
 | Rail (app-shell nav)           | `.juno-rail`                           | [rail.md](./rail.md)                   |
 | Dock (bottom nav, narrow)      | `.juno-dock`                           | [dock.md](./dock.md)                   |
+| Pillbar (floating pill bar)    | `.juno-pillbar`                        | [pillbar.md](./pillbar.md)             |
+| Navbar (stack top bar)         | `.juno-navbar`                         | [navbar.md](./navbar.md)               |
+| List (grouped rows)            | `.juno-list`                           | [list.md](./list.md)                   |
 
 Always pair a status color with a text label — color is never the only signal.

@@ -153,7 +153,34 @@ helpers, no JS:
 The dock is `position: sticky` — last in the scrolling column, it pins to the
 bottom without overlapping content and pads for the home indicator
 (`safe-area-inset-bottom`). Keep 3–5 destinations; the rest go behind a "More"
-item (drawer or menu).
+item (drawer or menu). Prefer a floating bar? Swap the dock for a
+[pillbar](./components/pillbar.md) — same contract, capsule look.
+
+### Tab + stack (phone navigation recipe)
+
+The full phone pattern is three parts: the dock or pillbar switches
+_sections_; inside a section, a [list](./components/list.md) row (or any
+link) pushes a detail view; every pushed view opens with a
+[navbar](./components/navbar.md) whose back control unwinds one level.
+junoui ships all three looks — the app owns the stack (routing/history):
+
+```html
+<div class="juno-shell">
+  <div>
+    <!-- one section, drilled one level in -->
+    <header class="juno-navbar">
+      <a class="juno-navbar__back" href="/settings">
+        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-caret-left" /></svg>
+        <span class="juno-navbar__back-label">Settings</span>
+      </a>
+      <h1 class="juno-navbar__title">Playback</h1>
+      <div class="juno-navbar__actions"></div>
+    </header>
+    <main class="juno-shell__main"><!-- .juno-list groups… --></main>
+    <nav class="juno-pillbar" aria-label="Primary"><!-- section tabs --></nav>
+  </div>
+</div>
+```
 
 ## Adopting in an existing project
 
