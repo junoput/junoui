@@ -73,6 +73,7 @@
   font-size: var(--juno-font-size-13);
   color: var(--juno-role);
   text-align: start;
+  text-decoration: none; /* items may be <a> (nav menus), not only <button> */
   cursor: pointer;
 }
 
