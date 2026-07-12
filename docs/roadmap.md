@@ -78,6 +78,10 @@ opt-in where markup is needed:
 | **Scrollable tabs**  | Tab strip scrolls sideways instead of overflowing.                                                                    |
 | **Stacked table**    | `.juno-table--stack` + `data-label` — card rows below a 480px container; real `<table>` semantics kept.               |
 | **Touch ergonomics** | `pointer: coarse` raises `--juno-size-tap-min` → 44px; `hover: none` keeps table row actions visible.                 |
+| **Pillbar**          | `.juno-pillbar` — floating pill bar (iOS-style): 2–5 icon destinations/actions, translucent + blurred, safe-area.     |
+| **Navbar**           | `.juno-navbar` — stack top bar: back control always on the start edge, centered truncating title, trailing actions.   |
+| **List**             | `.juno-list` — grouped rows (settings pattern): icon + label/support + trailing value/control/chevron.                |
+| **Tab + stack**      | Shell recipe in `layout.md`: dock/pillbar switches sections, navbar backs out of pushed views.                        |
 
 ## Quality / infra
 

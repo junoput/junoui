@@ -93,5 +93,6 @@ layer), tabs + accordion (native <details>), visual-regression snapshots + chang
 field-driven set (btn/switch --sm, segmented, gauge, spark, badge--micro, rail +
 app-shell recipe, content-density tiles, media icons), mobile set (dock bottom nav,
 modal→bottom sheet, drawer/toast phone fit, scrollable tabs, table--stack,
-coarse-pointer tap targets). junoui ships the look + a11y spec; stateful behavior
-stays out.
+coarse-pointer tap targets), mobile nav kit (pillbar floating tab bar, navbar
+stack top bar w/ back, grouped list, tab+stack recipe). junoui ships the look +
+a11y spec; stateful behavior stays out.
