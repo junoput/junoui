@@ -45,6 +45,7 @@ const PAGES = [
   ['tabs.html', 'Tabs'],
   ['icons.html', 'Icons'],
   ['layout.html', 'Layout'],
+  ['mobile.html', 'Mobile'],
 ];
 
 // icon set — symbol ids in dist/icons/juno-icons.svg (without the juno-i- prefix)

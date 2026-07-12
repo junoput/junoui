@@ -16,6 +16,7 @@ const PAGES = [
   'tabs',
   'icons',
   'layout',
+  'mobile',
 ];
 
 const MODES = ['dark', 'light'];

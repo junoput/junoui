@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard" data-juno-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>junoui — Mobile navigation</title>
+<script>
+  // apply persisted theme before first paint (no FOUC on page navigation)
+  try {
+    var h = document.documentElement;
+    var p = localStorage.getItem('juno:palette'); if (p) h.dataset.junoPalette = p;
+    var m = localStorage.getItem('juno:mode'); if (m) h.dataset.junoMode = m;
+    var d = localStorage.getItem('juno:density'); if (d) h.dataset.junoDensity = d;
+    var t = localStorage.getItem('juno:text'); if (t) h.dataset.junoText = t;
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../dist/css/juno.css">
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+  <main class="demo-main">
+
+    <div class="demo-hero">
+      <span class="juno-eyebrow">Mobile navigation</span>
+      <h1>Tabs below, a way back above.</h1>
+      <p>The phone navigation kit: a floating <strong>pillbar</strong> for section tabs and quick
+        actions, a <strong>navbar</strong> that always offers a way back out of a pushed view, and
+        the grouped <strong>list</strong> that organizes settings and data vertically. All CSS —
+        the app owns the stack.</p>
+    </div>
+
+    <!-- 01 PILLBAR -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
+        <span class="juno-eyebrow">.juno-pillbar — floating pill bar (active = <code class="juno-mono">aria-current</code> / <code class="juno-mono">aria-pressed</code>)</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="height:280px;overflow:auto;display:flex;flex-direction:column;">
+          <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <span class="juno-label">Scroll me — the pillbar floats over the content.</span>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+          </div>
+          <nav class="juno-pillbar" aria-label="Demo pillbar">
+            <a class="juno-pillbar__item" href="#" aria-current="page" aria-label="Library"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-pillbar__label">Library</span></a>
+            <a class="juno-pillbar__item" href="#" aria-label="Albums"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></a>
+            <a class="juno-pillbar__item" href="#" aria-label="Nodes"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg></a>
+            <span class="juno-pillbar__sep"></span>
+            <button class="juno-pillbar__item" aria-label="Sync"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg></button>
+          </nav>
+        </div>
+      </article>
+
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Toggle buttons — <code class="juno-mono">aria-pressed</code>, mixed with a divider</p>
+      <div style="position:relative;max-width:320px;">
+        <nav class="juno-pillbar" style="position:static;margin-block-end:0;" aria-label="Playback">
+          <button class="juno-pillbar__item" aria-pressed="true" aria-label="Play"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-play" /></svg><span class="juno-pillbar__label">Play</span></button>
+          <button class="juno-pillbar__item" aria-pressed="false" aria-label="Favorite"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-heart" /></svg></button>
+          <span class="juno-pillbar__sep"></span>
+          <button class="juno-pillbar__item" aria-label="More" disabled><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-dots-three" /></svg></button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 02 NAVBAR -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">02</span>
+        <span class="juno-eyebrow">.juno-navbar — stack top bar; back is always on the start edge</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <header class="juno-navbar">
+          <a class="juno-navbar__back" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-caret-left" /></svg><span class="juno-navbar__back-label">Library</span></a>
+          <h2 class="juno-navbar__title">Album</h2>
+          <div class="juno-navbar__actions"><button class="juno-btn juno-btn--sm juno-btn--ghost">EDIT</button></div>
+        </header>
+        <div style="padding:16px;"><span class="juno-label">Pushed view — back unwinds to Library.</span></div>
+      </article>
+
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Long title + long parent — both truncate, title stays centered</p>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <header class="juno-navbar">
+          <a class="juno-navbar__back" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-caret-left" /></svg><span class="juno-navbar__back-label">Continuous integration</span></a>
+          <h2 class="juno-navbar__title">Deployment pipeline configuration</h2>
+          <div class="juno-navbar__actions"><button class="juno-btn juno-btn--sm juno-btn--ghost" aria-label="Save"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-floppy-disk" /></svg></button></div>
+        </header>
+        <div style="padding:16px;"><span class="juno-label">Grid keeps the title optically centered.</span></div>
+      </article>
+    </section>
+
+    <!-- 03 LIST -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">03</span>
+        <span class="juno-eyebrow">.juno-list — grouped rows: drill-in · control · static value</span>
+      </div>
+      <div style="max-width:360px;">
+        <section class="juno-list">
+          <h3 class="juno-list__header">Playback</h3>
+          <ul class="juno-list__group">
+            <li><a class="juno-list__row" href="#">
+              <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-sliders" /></svg>
+              <span class="juno-list__main"><span class="juno-list__label">Quality</span><span class="juno-list__support">Streaming resolution</span></span>
+              <span class="juno-list__value">1080p</span>
+              <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+            </a></li>
+            <li><a class="juno-list__row" href="#">
+              <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-cloud-arrow-down" /></svg>
+              <span class="juno-list__main"><span class="juno-list__label">Downloads</span><span class="juno-list__support">Offline media</span></span>
+              <span class="juno-list__value">12</span>
+              <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+            </a></li>
+            <li><div class="juno-list__row">
+              <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-play" /></svg>
+              <span class="juno-list__main"><span class="juno-list__label" id="m-autoplay">Autoplay</span></span>
+              <label class="juno-switch juno-switch--sm"><input class="juno-switch__input" type="checkbox" role="switch" checked aria-labelledby="m-autoplay" /><span class="juno-switch__track"></span></label>
+            </div></li>
+          </ul>
+        </section>
+        <section class="juno-list" style="margin-block-start:20px;">
+          <h3 class="juno-list__header">About</h3>
+          <div class="juno-list__group">
+            <div class="juno-list__row">
+              <span class="juno-list__main"><span class="juno-list__label">Version</span></span>
+              <span class="juno-list__value">2.4.1</span>
+            </div>
+            <div class="juno-list__row">
+              <span class="juno-list__main"><span class="juno-list__label">Node</span></span>
+              <span class="juno-list__value">nas-01.local</span>
+            </div>
+            <div class="juno-list__row">
+              <span class="juno-list__main"><span class="juno-list__label">Status</span></span>
+              <span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- 04 TAB + STACK -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
+        <span class="juno-eyebrow">Tab + stack — navbar backs out, pillbar switches sections (layout.md#tab--stack-phone-navigation-recipe)</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="height:420px;overflow:auto;display:flex;flex-direction:column;">
+          <header class="juno-navbar">
+            <a class="juno-navbar__back" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-caret-left" /></svg><span class="juno-navbar__back-label">Settings</span></a>
+            <h2 class="juno-navbar__title">Playback</h2>
+            <div class="juno-navbar__actions"></div>
+          </header>
+          <div style="flex:1;padding:16px;">
+            <section class="juno-list">
+              <h3 class="juno-list__header">Quality</h3>
+              <ul class="juno-list__group">
+                <li><a class="juno-list__row" href="#">
+                  <span class="juno-list__main"><span class="juno-list__label">Streaming</span></span>
+                  <span class="juno-list__value">1080p</span>
+                  <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+                </a></li>
+                <li><a class="juno-list__row" href="#">
+                  <span class="juno-list__main"><span class="juno-list__label">Transcode</span></span>
+                  <span class="juno-list__value">HW · vaapi</span>
+                  <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+                </a></li>
+                <li><div class="juno-list__row">
+                  <span class="juno-list__main"><span class="juno-list__label" id="m-subs">Subtitles</span></span>
+                  <label class="juno-switch juno-switch--sm"><input class="juno-switch__input" type="checkbox" role="switch" aria-labelledby="m-subs" /><span class="juno-switch__track"></span></label>
+                </div></li>
+              </ul>
+            </section>
+          </div>
+          <nav class="juno-pillbar" aria-label="Sections">
+            <a class="juno-pillbar__item" href="#" aria-label="Home"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg></a>
+            <a class="juno-pillbar__item" href="#" aria-label="Media"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-film-strip" /></svg></a>
+            <a class="juno-pillbar__item" href="#" aria-current="page" aria-label="Settings"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg><span class="juno-pillbar__label">Settings</span></a>
+          </nav>
+        </div>
+      </article>
+    </section>
+
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
