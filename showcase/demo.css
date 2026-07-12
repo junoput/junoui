@@ -212,3 +212,24 @@
   display: flex;
   justify-content: space-between;
 }
+
+/* ── mobile view ─────────────────────────────────────────────────────── */
+/* below md the chrome swaps to the junoui mobile kit (navbar + pillbar);
+   the desktop header/nav carry .juno-hide-below-md, the mobile chrome
+   .juno-hide-from-md — the swap itself is those two utilities. */
+
+/* mode-flip button — show the mode you'd switch TO */
+[data-juno-mode='dark'] .demo-when-light { display: none; }
+[data-juno-mode='light'] .demo-when-dark { display: none; }
+
+@media (width <= 767.98px) {
+  .demo-main { padding: 24px 16px 64px; }
+  .demo-hero h1 { font-size: var(--juno-font-size-28); }
+  .demo-footer { padding: 24px 16px 48px; }
+}
+
+@media (width <= 767.98px) {
+  /* inline repeat(n,1fr) demo grids reflow (the bang outranks the inline style) */
+  .demo-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+  .demo-grid > * { min-width: 0; }
+}

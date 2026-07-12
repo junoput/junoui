@@ -144,7 +144,7 @@ function renderChrome() {
   ).join('');
 
   const header = document.createElement('header');
-  header.className = 'demo-header';
+  header.className = 'demo-header juno-hide-below-md';
   header.innerHTML = `
     <a href="./index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
       <span class="juno-mono" style="font-size:16px;font-weight:700;color:var(--juno-nominal);letter-spacing:.2em;">junoui</span>
@@ -184,18 +184,61 @@ function renderChrome() {
     <span class="juno-mono juno-text-data" id="clock" style="font-size:13px;"></span>`;
 
   const navEl = document.createElement('nav');
-  navEl.className = 'demo-nav';
+  navEl.className = 'demo-nav juno-hide-below-md';
   navEl.innerHTML = nav;
 
   document.body.prepend(navEl);
   document.body.prepend(header);
+
+  // mobile view — below md the desktop chrome swaps for the junoui mobile
+  // kit: a navbar on top, a pillbar + all-pages popover menu at the bottom.
+  const hereLabel = (PAGES.find(([href]) => href === here) || [, 'Overview'])[1];
+  const mnav = document.createElement('header');
+  mnav.className = 'juno-navbar juno-hide-from-md';
+  mnav.innerHTML = `
+    ${
+      here === 'index.html'
+        ? `<span class="juno-mono" style="justify-self:start;padding-inline:8px;font-size:14px;font-weight:700;color:var(--juno-nominal);letter-spacing:.2em;">junoui</span>`
+        : `<a class="juno-navbar__back" href="./index.html">${icon('caret-left')}<span class="juno-navbar__back-label">Overview</span></a>`
+    }
+    <h2 class="juno-navbar__title">${here === 'index.html' ? 'Design system' : hereLabel}</h2>
+    <div class="juno-navbar__actions">
+      <button class="juno-btn juno-btn--sm juno-btn--ghost" data-mode-flip aria-label="Toggle dark / light mode">
+        ${icon('sun', 'demo-when-dark')}${icon('moon', 'demo-when-light')}
+      </button>
+    </div>`;
+  document.body.prepend(mnav);
+
+  const pillItem = ([href, label, ic]) =>
+    `<a class="juno-pillbar__item" href="./${href}"${href === here ? ' aria-current="page"' : ''} aria-label="${label}">
+      ${icon(ic)}${href === here ? `<span class="juno-pillbar__label">${label}</span>` : ''}
+    </a>`;
+  const pill = document.createElement('nav');
+  pill.className = 'juno-pillbar juno-hide-from-md';
+  pill.setAttribute('aria-label', 'Showcase');
+  pill.innerHTML = `
+    ${[
+      ['index.html', 'Overview', 'house'],
+      ['forms.html', 'Forms', 'sliders-horizontal'],
+      ['mobile.html', 'Mobile', 'squares-four'],
+    ]
+      .map(pillItem)
+      .join('')}
+    <span class="juno-pillbar__sep"></span>
+    <button class="juno-pillbar__item" popovertarget="demo-pages-menu" aria-haspopup="menu" aria-label="All pages">${icon('list')}</button>
+    <ul class="juno-menu" id="demo-pages-menu" popover>
+      ${PAGES.map(
+        ([href, label]) =>
+          `<li><a class="juno-menu__item" href="./${href}"${href === here ? ' aria-current="page"' : ''}>${label}</a></li>`,
+      ).join('')}
+    </ul>`;
 
   const footer = document.createElement('footer');
   footer.className = 'demo-footer';
   footer.innerHTML = `
     <span class="juno-mono juno-text-nominal" style="letter-spacing:.2em;">junoui</span>
     <span class="juno-text-muted" style="font-size:11px;">junoui · interactive demo · not shipped in the npm package</span>`;
-  document.body.append(footer);
+  document.body.append(pill, footer);
 }
 
 // ── theme toggles ────────────────────────────────────────────────────────
@@ -238,11 +281,17 @@ document.addEventListener('click', (e) => {
   const mb = e.target.closest('[data-mode]');
   const db = e.target.closest('[data-density]');
   const xb = e.target.closest('[data-text]');
+  const mf = e.target.closest('[data-mode-flip]');
   if (pb) savePref(PREFS.palette, (html.dataset.junoPalette = pb.dataset.palette));
   if (mb) savePref(PREFS.mode, (html.dataset.junoMode = mb.dataset.mode));
   if (db) savePref(PREFS.density, (html.dataset.junoDensity = db.dataset.density));
   if (xb) savePref(PREFS.text, (html.dataset.junoText = xb.dataset.text));
-  if (pb || mb || db || xb) syncToggles();
+  if (mf)
+    savePref(
+      PREFS.mode,
+      (html.dataset.junoMode = html.dataset.junoMode === 'dark' ? 'light' : 'dark'),
+    );
+  if (pb || mb || db || xb || mf) syncToggles();
 });
 
 // ── modal + pressed toggles (demo wiring — apps own this, not junoui) ─────
