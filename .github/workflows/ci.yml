@@ -50,9 +50,9 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  # Changesets-driven release. On push to main the action either opens a
-  # "Version Packages" PR (consuming pending changesets → bumps version +
-  # CHANGELOG) or, once that PR is merged, publishes to npm.
+  # Changesets-driven publish. This repo does not allow Actions to open PRs with
+  # GITHUB_TOKEN, so when pending changesets exist we skip and require a manual
+  # "Version Packages" PR; once versions are merged, CI publishes to npm.
   release:
     needs: [build, visual]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -68,7 +68,20 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
       - run: npm ci
-      - name: Create release PR or publish
+      - name: Detect pending changesets
+        id: changesets_check
+        run: |
+          count=$(find .changeset -maxdepth 1 -type f -name '*.md' ! -name 'README.md' | wc -l)
+          if [ "$count" -gt 0 ]; then
+            echo "has_changesets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Skip PR creation when pending changesets exist
+        if: steps.changesets_check.outputs.has_changesets == 'true'
+        run: echo "::notice::Pending changesets found. GitHub Actions PR creation is disabled for this repository, so versioning must be done manually (npm run version + PR)."
+      - name: Publish when no pending changesets remain
+        if: steps.changesets_check.outputs.has_changesets == 'false'
         uses: changesets/action@v1
         with:
           version: npm run version

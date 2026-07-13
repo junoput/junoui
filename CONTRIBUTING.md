@@ -77,8 +77,10 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
    _major_; additive tokens/components → _minor_; fixes → _patch_. (Pre-1.0, a "major"
    bump lands as the next `0.x`.) Commit the generated `.changeset/*.md` with your PR.
 
-2. On merge to `main`, CI opens a **"Version Packages"** PR that consumes the pending
-   changesets — bumping `package.json` + writing `CHANGELOG.md`.
+2. On merge to `main`, CI checks for pending changesets. This repo does not allow
+   GitHub Actions to create pull requests, so create the **"Version Packages"** PR
+   manually by running `npm run version` (which consumes pending changesets and updates
+   `package.json` + `CHANGELOG.md`).
 
 3. Merging that PR publishes to npm (CI runs `npm run release` → build + `changeset publish`).
 

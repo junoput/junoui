@@ -85,9 +85,10 @@ The interactive demo lives at `showcase/` and is excluded from the published pac
 ## Releasing
 
 Versioning + changelog are automated with [Changesets](https://github.com/changesets/changesets).
-Add a changeset with your change (`npm run changeset`); on merge to `main`, CI opens a
-"Version Packages" PR, and merging that publishes to npm. Bump by the token contract:
-remove/rename a token or class → major, additive → minor, fix → patch. See
+Add a changeset with your change (`npm run changeset`). This repo does not allow
+GitHub Actions to create pull requests, so prepare the "Version Packages" PR manually
+with `npm run version`; once that PR is merged, CI publishes to npm. Bump by the token
+contract: remove/rename a token or class → major, additive → minor, fix → patch. See
 [CONTRIBUTING](./CONTRIBUTING.md#releasing).
 
 ## License
