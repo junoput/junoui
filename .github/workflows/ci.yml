@@ -29,11 +29,32 @@ jobs:
       - name: Package contents
         run: npm pack --dry-run
 
+  # Visual regression: snapshots every showcase page (dark + light) against
+  # the committed Linux baselines. Regenerate baselines with the manual
+  # visual-baselines workflow after an intended visual change.
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Visual regression (Playwright)
+        run: npm run test:visual
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-diff-report
+          path: test-results/
+          retention-days: 7
+
   # Changesets-driven release. On push to main the action either opens a
   # "Version Packages" PR (consuming pending changesets → bumps version +
   # CHANGELOG) or, once that PR is merged, publishes to npm.
   release:
-    needs: build
+    needs: [build, visual]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
