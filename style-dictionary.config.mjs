@@ -84,11 +84,26 @@ StyleDictionary.registerFormat({
         .join('\n') + '\n\n';
     out += semantic(themes.standard.dark) + '\n}\n';
     for (const palette of Object.keys(themes)) {
+      // palette set but no mode → dark baseline in that palette (not standard's)
+      out += `\n:root[data-juno-palette="${palette}"]:not([data-juno-mode]) {\n`;
+      out += semantic(themes[palette].dark) + '\n}\n';
       for (const mode of Object.keys(themes[palette])) {
         out += `\n:root[data-juno-palette="${palette}"][data-juno-mode="${mode}"] {\n`;
         out += semantic(themes[palette][mode]) + '\n}\n';
       }
     }
+    // system preference — no data-juno-mode set → follow the OS color scheme.
+    // Dark is the attribute-less baseline above; light rides the media query.
+    const mediaIndent = (s) => s.replace(/^ {2}/gm, '    ');
+    out += '\n/* no data-juno-mode → follow the system color scheme */\n';
+    out += '@media (prefers-color-scheme: light) {\n';
+    out += '  :root:not([data-juno-mode]) {\n';
+    out += mediaIndent(semantic(themes.standard.light)) + '\n  }\n';
+    for (const palette of Object.keys(themes)) {
+      out += `\n  :root[data-juno-palette="${palette}"]:not([data-juno-mode]) {\n`;
+      out += mediaIndent(semantic(themes[palette].light)) + '\n  }\n';
+    }
+    out += '}\n';
     return out;
   },
 });

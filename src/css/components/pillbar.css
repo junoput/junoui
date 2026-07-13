@@ -101,3 +101,11 @@
   background: var(--juno-border);
   flex-shrink: 0;
 }
+
+/* reduced-transparency preference → solid surface, no blur */
+@media (prefers-reduced-transparency: reduce) {
+  .juno-pillbar {
+    background: var(--juno-s1);
+    backdrop-filter: none;
+  }
+}

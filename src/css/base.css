@@ -10,6 +10,12 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* System color scheme. Without data-juno-mode the theme follows the OS
+   (`prefers-color-scheme`; see juno-tokens.css) — `dark light` here lets the
+   UA pick matching scrollbars/form chrome. An explicit mode pins both. */
+:root { color-scheme: dark light; }
+:root[data-juno-mode='dark'] { color-scheme: dark; }
+
 /* Control surfaces. On dark panels the hairline border (~23% L) disappears, so
    lift the control edge to `muted` and sit controls on `s2`; light mode keeps the
    true border on `s0`. Form components read these instead of raw surface roles. */
@@ -29,6 +35,8 @@
 }
 
 :root[data-juno-mode='light'] {
+  color-scheme: light;
+
   --juno-control-surface: var(--juno-s0);
   --juno-control-edge: var(--juno-border);
 
@@ -39,6 +47,16 @@
   --juno-knob-face-hi: var(--juno-muted);
   --juno-knob-face-lo: var(--juno-label);
   --juno-knob-grip: var(--juno-s0);
+}
+
+/* no data-juno-mode + a light OS → the light control surfaces above */
+@media (prefers-color-scheme: light) {
+  :root:not([data-juno-mode]) {
+    --juno-control-surface: var(--juno-s0);
+    --juno-control-edge: var(--juno-border);
+    --juno-knob-face-hi: var(--juno-muted);
+    --juno-knob-face-lo: var(--juno-label);
+  }
 }
 
 * { margin: 0; padding: 0; }
@@ -81,6 +99,12 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Higher-contrast preference: hairline seams step up to the strong border
+   so panel edges stop disappearing on users who asked for more contrast. */
+@media (prefers-contrast: more) {
+  :root { --juno-border: var(--juno-border-strong); }
 }
 
 /* Windows High Contrast / forced-colors: opt into the system palette so

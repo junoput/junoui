@@ -12,17 +12,31 @@ import 'junoui/css'; // bundler
 @import 'junoui/css'; /* plain CSS */
 ```
 
-Set the theme with two attributes on `<html>` (defaults are `standard` / `dark`):
+Set the theme with two attributes on `<html>`:
 
 ```html
 <html data-juno-palette="standard" data-juno-mode="dark"></html>
 ```
+
+Both are optional. **Omit `data-juno-mode` and the theme follows the OS**
+(`prefers-color-scheme`, live — no JS): dark systems get dark, light systems
+light, in whichever palette is set (default `standard`). The base layer also
+sets `color-scheme` so scrollbars and native form chrome match. An explicit
+`data-juno-mode` pins the mode and ignores the OS.
+
+Other system preferences honored out of the box: `prefers-reduced-motion`
+(animations collapse), `prefers-contrast: more` (hairlines step up to the
+strong border), `prefers-reduced-transparency` (translucent surfaces go
+solid), `forced-colors` (system palette). Language is the app's job — junoui
+ships no strings and is RTL-safe via logical properties; set `lang`/`dir` and
+the layout follows.
 
 Switch at runtime:
 
 ```js
 document.documentElement.dataset.junoPalette = 'colorblind';
 document.documentElement.dataset.junoMode = 'light';
+delete document.documentElement.dataset.junoMode; // back to following the OS
 ```
 
 Use semantic variables and component classes:
