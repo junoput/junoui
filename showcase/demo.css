@@ -218,9 +218,16 @@
    the desktop header/nav carry .juno-hide-below-md, the mobile chrome
    .juno-hide-from-md — the swap itself is those two utilities. */
 
-/* mode-flip button — show the mode you'd switch TO */
+/* mode-flip button — show the mode you'd switch TO. With no data-juno-mode
+   (auto) the effective mode comes from the OS, so key off the media query. */
 [data-juno-mode='dark'] .demo-when-light { display: none; }
 [data-juno-mode='light'] .demo-when-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-juno-mode]) .demo-when-light { display: none; }
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-juno-mode]) .demo-when-dark { display: none; }
+}
 
 @media (width <= 767.98px) {
   .demo-main { padding: 24px 16px 64px; }

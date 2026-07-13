@@ -179,6 +179,7 @@ function renderChrome() {
     <div class="demo-ctl">
       <span class="juno-eyebrow">Mode</span>
       <div class="demo-seg">
+        <button class="demo-toggle" data-mode="auto">AUTO</button>
         <button class="demo-toggle" data-mode="dark">${icon('moon', 'juno-icon--sm')} DARK</button>
         <button class="demo-toggle" data-mode="light">${icon('sun', 'juno-icon--sm')} LIGHT</button>
       </div>
@@ -262,6 +263,10 @@ function renderChrome() {
 }
 
 // ── theme toggles ────────────────────────────────────────────────────────
+// no data-juno-mode = auto → the effective mode is the OS preference
+const effectiveMode = () =>
+  html.dataset.junoMode || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
 function syncToggles() {
   const { junoPalette: p, junoMode: m, junoDensity: d, junoText: tx } = html.dataset;
   document
@@ -269,7 +274,7 @@ function syncToggles() {
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.palette === p)));
   document
     .querySelectorAll('[data-mode]')
-    .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+    .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === (m || 'auto'))));
   document
     .querySelectorAll('[data-density]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.density === d)));
@@ -277,7 +282,7 @@ function syncToggles() {
     .querySelectorAll('[data-text]')
     .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.text === (tx || 'base'))));
   const cap = document.getElementById('tokens-caption');
-  if (cap) cap.textContent = `Color tokens — ${p} / ${m}`;
+  if (cap) cap.textContent = `Color tokens — ${p} / ${m ?? `auto (${effectiveMode()})`}`;
   renderTokens();
 }
 
@@ -303,14 +308,18 @@ document.addEventListener('click', (e) => {
   const xb = e.target.closest('[data-text]');
   const mf = e.target.closest('[data-mode-flip]');
   if (pb) savePref(PREFS.palette, (html.dataset.junoPalette = pb.dataset.palette));
-  if (mb) savePref(PREFS.mode, (html.dataset.junoMode = mb.dataset.mode));
+  if (mb) {
+    // 'auto' = drop the attribute; the CSS then follows prefers-color-scheme
+    if (mb.dataset.mode === 'auto') delete html.dataset.junoMode;
+    else html.dataset.junoMode = mb.dataset.mode;
+    savePref(PREFS.mode, mb.dataset.mode);
+  }
   if (db) savePref(PREFS.density, (html.dataset.junoDensity = db.dataset.density));
   if (xb) savePref(PREFS.text, (html.dataset.junoText = xb.dataset.text));
-  if (mf)
-    savePref(
-      PREFS.mode,
-      (html.dataset.junoMode = html.dataset.junoMode === 'dark' ? 'light' : 'dark'),
-    );
+  if (mf) {
+    // flip from the EFFECTIVE mode (auto resolves to the OS scheme) and pin it
+    savePref(PREFS.mode, (html.dataset.junoMode = effectiveMode() === 'dark' ? 'light' : 'dark'));
+  }
   if (pb || mb || db || xb || mf) syncToggles();
 });
 
@@ -666,7 +675,7 @@ function initTabs() {
 function renderTokens() {
   const grid = document.getElementById('token-grid');
   if (!grid) return;
-  const t = TOKENS[html.dataset.junoPalette][html.dataset.junoMode];
+  const t = TOKENS[html.dataset.junoPalette][effectiveMode()];
   grid.innerHTML = ROLES.map(
     (role) => `
     <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--juno-s1);border:1px solid var(--juno-border);border-radius:var(--juno-radius-4);">
@@ -697,9 +706,8 @@ function renderIcons() {
 function tick() {
   const el = document.getElementById('clock');
   if (!el) return;
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, '0');
-  el.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  // undefined locale = the browser's preferred language (system setting)
+  el.textContent = new Date().toLocaleTimeString(undefined);
 }
 
 // ── determinate-loader progress (demo only) ──────────────────────────────
@@ -727,7 +735,12 @@ const loadPref = (key) => {
   }
 };
 html.dataset.junoPalette = loadPref(PREFS.palette) ?? html.dataset.junoPalette ?? 'standard';
-html.dataset.junoMode = loadPref(PREFS.mode) ?? html.dataset.junoMode ?? 'dark';
+// mode default is AUTO: no attribute → the CSS follows prefers-color-scheme
+const storedMode = loadPref(PREFS.mode) ?? html.dataset.junoMode ?? 'auto';
+if (storedMode === 'auto') delete html.dataset.junoMode;
+else html.dataset.junoMode = storedMode;
+// under auto an OS scheme change re-themes via CSS; re-sync the JS-rendered bits
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncToggles);
 html.dataset.junoDensity = loadPref(PREFS.density) ?? html.dataset.junoDensity ?? 'comfortable';
 html.dataset.junoText = loadPref(PREFS.text) ?? html.dataset.junoText ?? 'base';
 initSliders();

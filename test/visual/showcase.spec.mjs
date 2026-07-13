@@ -58,4 +58,18 @@ for (const mode of MODES) {
       await shoot(pw, page, mode, `${page}-phone-${mode}.png`);
     });
   }
+
+  // auto mode — fresh visitor, nothing stored: the theme must follow the
+  // emulated OS scheme (data-juno-mode stays unset)
+  test(`index (auto) — os ${mode}`, async ({ page: pw }) => {
+    await pw.emulateMedia({ colorScheme: mode });
+    await pw.goto('/showcase/index.html', { waitUntil: 'networkidle' });
+    await pw.evaluate(() => document.fonts.ready);
+    expect(await pw.evaluate(() => document.documentElement.dataset.junoMode)).toBeUndefined();
+
+    await expect(pw).toHaveScreenshot(`index-auto-${mode}.png`, {
+      fullPage: true,
+      mask: [pw.locator('#clock'), pw.locator('[data-prog]'), pw.locator('[data-pct]')],
+    });
+  });
 }
