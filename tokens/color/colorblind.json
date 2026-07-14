@@ -28,7 +28,7 @@
           "$description": "Primary numeric readouts and live values. Brightest text."
         },
         "label": {
-          "$value": "oklch(59% 0.012 85)",
+          "$value": "oklch(63% 0.012 85)",
           "$description": "Labels, units, helper and secondary text. Never for values."
         },
         "muted": {
@@ -36,7 +36,7 @@
           "$description": "Disabled, placeholder, decorative separators. No meaning."
         },
         "border": {
-          "$value": "oklch(23% 0.012 85)",
+          "$value": "oklch(30% 0.012 85)",
           "$description": "Hairline borders and dividers."
         },
         "s0": {
@@ -60,7 +60,7 @@
           "$description": "Faint metadata — timestamps, tick labels. Decorative; sits below muted."
         },
         "border-strong": {
-          "$value": "oklch(33% 0.012 85)",
+          "$value": "oklch(40% 0.012 85)",
           "$description": "Divider / stronger rule — heavier than the hairline border."
         }
       },

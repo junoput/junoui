@@ -42,12 +42,31 @@ tokens land, and never removes a guarantee without a semver-major note.
   pairs color with a text label, icon, or shape. A badge says `WARNING`; a dot sits
   beside its word.
 - The **colorblind** palette (IBM Carbon universal set) is distinguishable across
-  deuteranopia, protanopia, and tritanopia, and passes WCAG **1.4.6** Contrast
-  (Enhanced), AAA (≥ 7:1) on dark surfaces. Use it for accessibility-critical or
-  universal audiences.
-- Contrast: `data` on `s0`–`s2` meets **1.4.6** (AAA, ≥ 7:1) for body text; `label`
-  meets **1.4.3** Contrast (Minimum), AA (≥ 4.5:1). Exact values:
-  [tokens-reference.md](./tokens-reference.md).
+  deuteranopia, protanopia, and tritanopia. On the dark base–card surfaces (`s0`–`s2`)
+  every status role passes WCAG **1.4.6** Contrast (Enhanced), AAA (≥ 7:1); on the
+  selected/overlay surface (`s3`) it holds AA (≈ 7:1, ≥ 4.5:1). Use it for
+  accessibility-critical or universal audiences.
+- Contrast (measured — regenerate with `node scripts/audit-contrast.mjs`):
+  - `data` (values) meets **1.4.6** (AAA, ≥ 7:1) on **every** surface `s0`–`s3`, both
+    themes and all three palettes (dark ≈ 13–17:1).
+  - `label` (secondary text) meets **1.4.3** Contrast (Minimum), AA (≥ 4.5:1) on **every**
+    surface `s0`–`s3` (dark ≈ 4.6–5.9:1). Never use it for values.
+  - Status roles (`nominal`/`active`/`caution`/`warning`/`target`) meet **1.4.3** AA on
+    `s0`–`s3`; most reach AAA on `s0`–`s2`.
+  - `muted` and `data-dim` are **decorative / WCAG-exempt roles** — disabled controls,
+    placeholders, faint tick labels. They intentionally sit below 4.5:1; never carry
+    meaningful text in them (a real timestamp or value uses `label`/`data`, not `data-dim`).
+    Exact values: [tokens-reference.md](./tokens-reference.md).
+- **Surfaces & borders (dark).** Adjacent surface fills differ by only ~1.05:1, so a
+  block reads against its background through its **border**, not its fill. The dark
+  `border` / `border-strong` tokens are lifted (≈ 1.5:1 / 2.2:1 vs the base surface) so
+  cards, panels and dividers stay perceptible. Container boundaries are decorative and
+  exempt from **1.4.11** Non-text Contrast. Component-_identifying_ edges use the
+  `--juno-control-edge` family instead: input / checkbox / slider / avatar edges
+  (`-strong`, = `label`) clear ≥ 3:1 (dark ≈ 5.3:1) as **1.4.11** requires; table
+  gridlines (`--juno-control-edge`, = `muted`, ≈ 2.9:1) are supplementary rules — table
+  structure is carried by `<th>`/alignment, not the line — so they fall under the
+  decorative exemption.
 
 ## Focus
 
