@@ -63,18 +63,19 @@ build-time sRGB hex (identical rendering).
 
 ## Documentation
 
-|                                                                                  |                                                              |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Getting started](./docs/getting-started.md)                                     | Install, model, what ships                                   |
-| [Integration](./docs/integration.md)                                             | Consuming in an app: import order, fonts, token bridge       |
-| [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                           |
-| [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                         |
-| [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt) |
-| [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL  |
-| [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)              |
-| [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more |
-| [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                   |
-| [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                            |
+|                                                                                  |                                                                   |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [Getting started](./docs/getting-started.md)                                     | Install, model, what ships                                        |
+| [Integration](./docs/integration.md)                                             | Consuming in an app: import order, fonts, token bridge            |
+| [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                                |
+| [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                              |
+| [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt)      |
+| [Motion & mobile](./docs/motion.md)                                              | Motion tokens, press feel, sheet grabber + drag, view transitions |
+| [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL       |
+| [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)                   |
+| [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more      |
+| [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                        |
+| [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                                 |
 
 ## Repository
 

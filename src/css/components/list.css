@@ -75,12 +75,35 @@
 
 /* feedback only where a row actually goes somewhere */
 a.juno-list__row,
-button.juno-list__row { cursor: pointer; }
+button.juno-list__row {
+  cursor: pointer;
+  transition: background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
 
 a.juno-list__row:hover,
 button.juno-list__row:hover,
 a.juno-list__row:focus-visible,
 button.juno-list__row:focus-visible { background: var(--juno-s2); }
+
+/* press feedback — interactive row deepens on tap; a drill-in chevron
+   slides toward the edge it navigates to (mirrors under RTL via the glyph) */
+a.juno-list__row:active,
+button.juno-list__row:active { background: var(--juno-s3); }
+
+a.juno-list__row .juno-list__chevron,
+button.juno-list__row .juno-list__chevron {
+  transition: transform var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+a.juno-list__row:active .juno-list__chevron,
+button.juno-list__row:active .juno-list__chevron { transform: translateX(var(--juno-space-2)); }
+
+/* RTL: drill-in points the other way, and the press nudge follows it
+   (scaleX flips the translate axis, so the glyph still slides "forward") */
+[dir='rtl'] .juno-list__chevron { transform: scaleX(-1); }
+
+[dir='rtl'] a.juno-list__row:active .juno-list__chevron,
+[dir='rtl'] button.juno-list__row:active .juno-list__chevron { transform: scaleX(-1) translateX(var(--juno-space-2)); }
 
 .juno-list__row:focus-visible {
   outline: var(--juno-border-width-2) solid var(--juno-active);

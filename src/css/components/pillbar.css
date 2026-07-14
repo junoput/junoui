@@ -65,7 +65,8 @@
   cursor: pointer;
   transition:
     color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
-    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    transform var(--juno-motion-duration-instant) var(--juno-motion-ease-standard);
 }
 
 .juno-pillbar__label {
@@ -76,6 +77,10 @@
 }
 
 .juno-pillbar__item:hover { color: var(--juno-data); }
+
+/* press feedback — the item dips under the finger, springs back on release.
+   Touch-first: :active fires on tap. Excludes disabled. */
+.juno-pillbar__item:not(:disabled):active { transform: scale(0.92); }
 
 /* active = attribute, not class: aria-current (links) / aria-pressed (buttons) */
 .juno-pillbar__item[aria-current],

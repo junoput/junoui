@@ -61,7 +61,10 @@ each record is a _destination or setting_, a table when you compare columns.
 - Row ≥ `size.tap.comfortable` tall, `space.16` inline padding, `space.12`
   gap between slots. Label `font.size.13` data-toned; support `font.size.11`
   label-toned; value mono `font.size.12`.
-- Only interactive rows respond: hover/press fills `s2`.
+- Only interactive rows respond: hover/focus fills `s2` (transitioned over
+  `motion.duration.quick`); a tap deepens to `s3` and slides the drill-in chevron
+  forward — mirrored under RTL, where the chevron also flips. See
+  [motion.md](../motion.md).
 
 ## Usage
 

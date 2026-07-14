@@ -45,7 +45,8 @@ A theme is one palette × one mode. Color always encodes status — see
 | Figma / Sketch / any tool without code | [tokens-reference.md](./tokens-reference.md) (exact values) + [design-guidelines.md](./design-guidelines.md) |
 
 Responsive behavior (how blocks adapt on resize) is its own layer:
-[layout.md](./layout.md).
+[layout.md](./layout.md). Movement — press feel, overlay enter/exit, mobile sheet
+gestures, and what your app must wire — is in [motion.md](./motion.md).
 
 ## What ships
 

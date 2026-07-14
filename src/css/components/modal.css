@@ -69,6 +69,21 @@
   background: var(--juno-role);
 }
 
+/* drag affordance — a centered grab handle for sheet-style surfaces. Purely
+   presentational: it signals "this pulls down to dismiss"; the app wires any
+   real drag gesture. Hidden by default (the centered dialog + side drawers
+   don't want it); revealed on the phone bottom sheet + the bottom drawer.
+   Put it as the FIRST child of the surface, above .juno-modal__head. */
+.juno-modal__grabber {
+  display: none;
+  inline-size: var(--juno-space-32);
+  block-size: var(--juno-space-4);
+  margin: var(--juno-space-8) auto 0;
+  background: var(--juno-muted);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
 .juno-modal__head {
   display: flex;
   align-items: center;
@@ -150,6 +165,9 @@
   @starting-style {
     .juno-modal:not(.juno-drawer)[open] { transform: translateY(100%); }
   }
+
+  /* the sheet earns its grab handle */
+  .juno-modal:not(.juno-drawer) .juno-modal__grabber { display: block; }
 
   /* keep the foot's actions above the home indicator */
   .juno-modal:not(.juno-drawer) .juno-modal__body {

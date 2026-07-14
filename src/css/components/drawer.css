@@ -68,6 +68,9 @@
 
 .juno-modal.juno-drawer--bottom[open] { transform: translateY(0); }
 
+/* the bottom drawer is a sheet too — show its grab handle at any width */
+.juno-modal.juno-drawer--bottom .juno-modal__grabber { display: block; }
+
 @starting-style {
   .juno-modal.juno-drawer--bottom[open] { transform: translateY(100%); }
 }

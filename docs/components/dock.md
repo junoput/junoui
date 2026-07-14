@@ -35,6 +35,9 @@ destinations as icon-over-label tap targets. The phone-width counterpart of the
   the rail's active language rotated 90°.
 - Bottom padding extends into the safe area (`env(safe-area-inset-bottom)`)
   so the home indicator never covers a target.
+- **Motion.** Color, fill, and the active indicator cross-fade over
+  `motion.duration.quick`; a tap tints the cell (`s3`) and dips the glyph — native
+  tactile feedback, zero JS. See [motion.md](../motion.md).
 
 ## Usage
 

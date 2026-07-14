@@ -27,14 +27,15 @@ and ESC/scrim-click dismiss (native `<dialog>` gives you most of this free).
 <dialog class="juno-modal juno--warning">…</dialog>
 ```
 
-| Class                                      | Effect                                                              |
-| ------------------------------------------ | ------------------------------------------------------------------- |
-| `.juno-modal`                              | 440px panel, `s1`, radius `8`, shadow `3` (e3), `z.overlay` (4000). |
-| `.juno-modal__stripe`                      | Top accent bar in `--juno-role`.                                    |
-| `.juno-modal__head` / `__tag` / `__close`  | Tag row + close button (`size.tap.min`).                            |
-| `.juno-modal__title` / `__text` / `__foot` | Title (20px light), body, right-aligned actions.                    |
-| `.juno--warning`                           | Destructive: stripe + tag turn `warning`.                           |
-| `::backdrop`                               | Dark scrim at `opacity.scrim` + 1.5px blur.                         |
+| Class                                      | Effect                                                                |
+| ------------------------------------------ | --------------------------------------------------------------------- |
+| `.juno-modal`                              | 440px panel, `s1`, radius `8`, shadow `3` (e3), `z.overlay` (4000).   |
+| `.juno-modal__stripe`                      | Top accent bar in `--juno-role`.                                      |
+| `.juno-modal__grabber`                     | Drag handle; hidden by default, shown on phone sheet + bottom drawer. |
+| `.juno-modal__head` / `__tag` / `__close`  | Tag row + close button (`size.tap.min`).                              |
+| `.juno-modal__title` / `__text` / `__foot` | Title (20px light), body, right-aligned actions.                      |
+| `.juno--warning`                           | Destructive: stripe + tag turn `warning`.                             |
+| `::backdrop`                               | Dark scrim at `opacity.scrim` + 1.5px blur.                           |
 
 ## Anatomy (any platform)
 
@@ -50,3 +51,6 @@ and ESC/scrim-click dismiss (native `<dialog>` gives you most of this free).
 - **Phone widths (< `bp.sm`) are automatic:** the centered dialog becomes a
   bottom sheet — full-width, top corners rounded, sliding up, footer buttons
   stretched, content padded past the home indicator. No extra class.
+- **Sheet grabber:** add `<div class="juno-modal__grabber"></div>` as the first
+  child. It stays hidden on the centered dialog and reveals only on the phone sheet;
+  for drag-to-dismiss wiring see [motion.md](../motion.md#4-mobile-sheets--the-grabber--drag-to-dismiss).

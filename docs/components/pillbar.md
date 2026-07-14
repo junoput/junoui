@@ -41,6 +41,8 @@ optional divider. Zero JS.
 - Items are capsule targets at least `size.tap.comfortable` square; the active
   one fills `s3` and takes the role color.
 - A separator is a `border`-colored vertical hairline, `space.20` tall.
+- **Motion.** A tap scales the item down (`motion.duration.instant`) and it springs
+  back on release; color/fill transitions run at `quick`. See [motion.md](../motion.md).
 
 ## Usage
 

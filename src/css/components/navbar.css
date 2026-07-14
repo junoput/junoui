@@ -60,12 +60,28 @@
   text-decoration: none;
   color: var(--juno-active);
   cursor: pointer;
+  transition:
+    color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    opacity var(--juno-motion-duration-instant) var(--juno-motion-ease-standard);
 }
 
 /* RTL: the caret glyph must point "back" in either direction */
 [dir='rtl'] .juno-navbar__back .juno-icon { transform: scaleX(-1); }
 
 .juno-navbar__back:hover { color: var(--juno-data); }
+
+/* press feedback — the whole control dims on tap; the caret slides back a
+   hair toward the edge it unwinds to, reinforcing "back" */
+.juno-navbar__back:active { opacity: var(--juno-opacity-muted); }
+
+.juno-navbar__back .juno-icon {
+  transition: transform var(--juno-motion-duration-instant) var(--juno-motion-ease-standard);
+}
+
+.juno-navbar__back:active .juno-icon { transform: translateX(calc(-1 * var(--juno-space-2))); }
+
+/* under RTL the caret is mirrored, so "back" slides the other way */
+[dir='rtl'] .juno-navbar__back:active .juno-icon { transform: scaleX(-1) translateX(calc(-1 * var(--juno-space-2))); }
 
 .juno-navbar__back-label {
   max-inline-size: 14ch;

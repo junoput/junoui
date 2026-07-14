@@ -50,6 +50,10 @@
   text-decoration: none;
   color: var(--juno-label);
   cursor: pointer;
+  transition:
+    color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    border-block-start-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
 .juno-dock__label {
@@ -60,6 +64,16 @@
 }
 
 .juno-dock__item:hover { color: var(--juno-data); }
+
+/* press feedback — flat target, so the whole cell tints under the finger
+   and the glyph dips; springs back on release */
+.juno-dock__item:active { background: var(--juno-s3); }
+
+.juno-dock__item .juno-icon {
+  transition: transform var(--juno-motion-duration-instant) var(--juno-motion-ease-standard);
+}
+
+.juno-dock__item:active .juno-icon { transform: scale(0.88); }
 
 /* active = attribute, not class: <a aria-current="page"> */
 .juno-dock__item[aria-current] {

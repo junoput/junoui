@@ -37,6 +37,9 @@ stack (what "back" does and where it goes).
   caret flips under RTL. Title `font.size.14` semibold, data-toned.
 - Bar ≥ `size.tap.comfortable` tall; top padding extends into
   `env(safe-area-inset-top)` so the notch never covers it.
+- **Motion.** Pressing the back control dims it and slides the caret a hair toward the
+  edge it unwinds to (mirrored under RTL) — reinforcing "back." See
+  [motion.md](../motion.md).
 
 ## Usage
 
