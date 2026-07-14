@@ -31,6 +31,10 @@ import { TOKENS, getTokens } from 'junoui'; // values in JS/TS
 3 palettes (`standard` · `colorblind` · `soft`) × 2 modes (`dark` · `light`),
 switched by two HTML attributes.
 
+## Live demo
+
+[Open the showcase](https://junoput.github.io/junoui/showcase/index.html)
+
 ## Platforms
 
 One source → every target. Web keeps authored `oklch()`; native/Flutter get
