@@ -85,12 +85,12 @@ opt-in where markup is needed:
 
 ## Quality / infra
 
-| Missing                                          | Why                                                                           | Priority |
-| ------------------------------------------------ | ----------------------------------------------------------------------------- | -------- |
-| ~~**Visual regression** snapshots (Playwright)~~ | ✅ shipped — `npm run test:visual` diffs every showcase page (dark + light).  | ✅       |
-| ~~**Changesets**~~                               | ✅ shipped — `npm run changeset`; CI opens a Version PR → publishes on merge. | ✅       |
-| ~~**Icon convention / set**~~                    | ✅ shipped — `.juno-icon` + SVG sprite (Phosphor bold, MIT).                  | ✅       |
-| **eslint** (flat config)                         | JS surface is small; prettier + tests cover most.                             | 🟢       |
+| Missing                                          | Why                                                                                              | Priority |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------ | -------- |
+| ~~**Visual regression** snapshots (Playwright)~~ | ✅ shipped — `npm run test:visual` diffs every showcase page (dark + light).                     | ✅       |
+| ~~**Changesets**~~                               | ✅ shipped — `npm run changeset`; manual Version PR (`npm run version`) → CI publishes on merge. | ✅       |
+| ~~**Icon convention / set**~~                    | ✅ shipped — `.juno-icon` + SVG sprite (Phosphor bold, MIT).                                     | ✅       |
+| **eslint** (flat config)                         | JS surface is small; prettier + tests cover most.                                                | 🟢       |
 
 Done already: stylelint + prettier, `node:test` integrity suite, a11y doc + ARIA
 contract, forced-colors, RTL via logical properties, CI gate.
