@@ -125,12 +125,18 @@ density for free; add a new archetype only when one is genuinely needed.
 
 ## Accessibility
 
+Accessibility is a core design goal, held to published standards — **WCAG 2.2** and
+**WAI-ARIA** — with the exact success criteria cited in
+[accessibility.md](./accessibility.md).
+
 - The `colorblind` palette is the IBM Carbon universal set — distinguishable across
-  deuteranopia, protanopia, tritanopia, and AAA-contrast (≥ 7:1) on dark surfaces.
-- **Never make color the sole signal.** Always pair it with a text label, icon, or shape.
-- Interactive targets: `size.tap.min` = 24px (WCAG 2.2 AA minimum);
-  `size.tap.comfortable` = 44px recommended for primary mobile actions.
-- Focus is always visible (the `active` role, 2px outline).
+  deuteranopia, protanopia, tritanopia, and AAA-contrast (≥ 7:1) on dark surfaces
+  (WCAG 1.4.6).
+- **Never make color the sole signal** (WCAG 1.4.1). Always pair it with a text label,
+  icon, or shape.
+- Interactive targets: `size.tap.min` = 24px (WCAG 2.5.8, AA); `size.tap.comfortable`
+  = 44px (WCAG 2.5.5, AAA) recommended for primary mobile actions.
+- Focus is always visible — the `active` role, 2px outline (WCAG 2.4.7 / 2.4.11).
 
 ## Choosing a palette
 

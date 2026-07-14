@@ -1,25 +1,62 @@
 # Accessibility
 
-junoui ships the **look and the accessibility contract**. The _interaction behavior_
-(focus trapping, ARIA state updates, keyboard handlers) lives in your app or a
-sibling `junoui-<framework>` package — but this is what the design system guarantees
-and what you must wire up.
+Accessibility is a primary goal of junoui, not an afterthought. The design system
+ships the **look and the accessibility contract**; the _interaction behavior_ (focus
+trapping, ARIA state updates, keyboard handlers) lives in your app or a sibling
+`junoui-<framework>` package — but this page states exactly what junoui guarantees, to
+which published standard, and what you must wire up.
+
+## Standards we build to
+
+junoui targets the international web accessibility standards and references the
+specific criteria it meets — so a claim can be checked, not just trusted:
+
+- **[WCAG 2.2](https://www.w3.org/TR/WCAG22/)** (W3C Recommendation) — **AA across the
+  board, AAA where it matters** (see the specific success criteria cited below).
+- **[WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/)** roles/states/properties, and
+  the **[ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/patterns/)**
+  for the keyboard/interaction patterns in [the contract table](#the-aria-contract-per-component).
+
+Criteria referenced on this page, by number:
+
+| SC         | Name                        | Level | Where                             |
+| ---------- | --------------------------- | ----- | --------------------------------- |
+| **1.4.1**  | Use of Color                | A     | [Color](#color)                   |
+| **1.4.3**  | Contrast (Minimum)          | AA    | [Color](#color)                   |
+| **1.4.6**  | Contrast (Enhanced)         | AAA   | [Color](#color)                   |
+| **1.4.11** | Non-text Contrast           | AA    | [Focus](#focus)                   |
+| **2.4.7**  | Focus Visible               | AA    | [Focus](#focus)                   |
+| **2.4.11** | Focus Appearance            | AA    | [Focus](#focus)                   |
+| **2.2.2**  | Pause, Stop, Hide           | A     | [Motion](#motion)                 |
+| **2.3.3**  | Animation from Interactions | AAA   | [Motion](#motion)                 |
+| **2.5.8**  | Target Size (Minimum)       | AA    | [Targets](#targets)               |
+| **2.5.5**  | Target Size (Enhanced)      | AAA   | [Targets](#targets)               |
+| **1.4.12** | Text Spacing                | AA    | [Density](#density--text-spacing) |
+
+This coverage is expected to grow: junoui adds standards references as components and
+tokens land, and never removes a guarantee without a semver-major note.
 
 ## Color
 
-- **Never make color the only signal.** Every status pairs color with a text label,
-  icon, or shape. A badge says `WARNING`; a dot sits beside its word.
+- **Never make color the only signal** (WCAG **1.4.1** Use of Color, A). Every status
+  pairs color with a text label, icon, or shape. A badge says `WARNING`; a dot sits
+  beside its word.
 - The **colorblind** palette (IBM Carbon universal set) is distinguishable across
-  deuteranopia, protanopia, and tritanopia, and passes WCAG **AAA (≥ 7:1)** on dark
-  surfaces. Use it for accessibility-critical or universal audiences.
-- Contrast: `data` on `s0`–`s2` meets AAA body text; `label` meets AA. Exact values:
+  deuteranopia, protanopia, and tritanopia, and passes WCAG **1.4.6** Contrast
+  (Enhanced), AAA (≥ 7:1) on dark surfaces. Use it for accessibility-critical or
+  universal audiences.
+- Contrast: `data` on `s0`–`s2` meets **1.4.6** (AAA, ≥ 7:1) for body text; `label`
+  meets **1.4.3** Contrast (Minimum), AA (≥ 4.5:1). Exact values:
   [tokens-reference.md](./tokens-reference.md).
 
 ## Focus
 
 - A visible focus ring is defined in the base layer for links, buttons, inputs, and
   anything with `[tabindex]`: 2px solid `--juno-active`, 2px offset. It tracks the
-  theme and is never removed.
+  theme and is never removed (WCAG **2.4.7** Focus Visible, AA).
+- The ring's size, offset and `active`-role contrast satisfy **2.4.11** Focus
+  Appearance (AA, WCAG 2.2) and **1.4.11** Non-text Contrast (AA) against adjacent
+  surfaces.
 - Don't suppress `:focus-visible`. If you build a custom control, give it a tabstop
   and let the ring apply.
 - Text inputs / select / textarea swap the outline for an equivalent visible signal:
@@ -28,13 +65,15 @@ and what you must wire up.
 ## Motion
 
 - All animations respect `prefers-reduced-motion: reduce` (base layer slows them to
-  near-static). Loader pulses and the `--live` dot honor it automatically.
+  near-static). Loader pulses and the `--live` dot honor it automatically — covering
+  WCAG **2.2.2** Pause, Stop, Hide (A) and **2.3.3** Animation from Interactions (AAA).
 - Use the `determinate` loaders when progress is known — less motion, more trust.
 
 ## Targets
 
-- `--juno-size-tap-min` = 24px — WCAG 2.2 AA minimum for interactive controls.
-- `--juno-size-tap-comfortable` = 44px — recommended for primary actions on touch.
+- `--juno-size-tap-min` = 24px — WCAG **2.5.8** Target Size (Minimum), AA (WCAG 2.2).
+- `--juno-size-tap-comfortable` = 44px — WCAG **2.5.5** Target Size (Enhanced), AAA;
+  recommended for primary actions on touch.
 - `.juno-btn` already sets `min-height: var(--juno-size-tap-min)`.
 - **On coarse pointers this is automatic:** under `@media (pointer: coarse)` the
   base layer raises `--juno-size-tap-min` to the comfortable 44px, so every
@@ -55,6 +94,15 @@ and what you must wire up.
 - Components use **CSS logical properties** (`margin-inline`, `padding-inline`,
   `inset`, `min-inline-size`) so they mirror correctly under `dir="rtl"` with no
   extra CSS. Avoid reintroducing physical `left`/`right` in consuming code.
+
+## Density & text spacing
+
+- Type tokens set line-height and spacing with enough headroom that user or
+  browser-imposed **text spacing** (line-height 1.5×, paragraph/letter/word spacing)
+  doesn't clip or overlap content — WCAG **1.4.12** Text Spacing (AA).
+- Compact density shrinks padding, never a control's `min-height` (the tap target
+  under [Targets](#targets)) and never the type scale — readability holds at every
+  density.
 
 ## The ARIA contract (per component)
 
@@ -95,4 +143,6 @@ junoui gives structure + style; you add roles/state:
 | List                      | Rows that navigate are `<a>` (or `<button>`) wrapping the whole row — never a bare chevron target. Keep `<ul>`/`<li>` when rows form a set. A trailing switch/checkbox is its own labeled control; don't nest it inside a link row.      |
 
 These are interaction concerns — junoui can't enforce them in CSS, so they're your
-responsibility (or the widget package's).
+responsibility (or the widget package's). Each row follows the matching
+[WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/) pattern;
+when in doubt, implement the APG keyboard model for that role.

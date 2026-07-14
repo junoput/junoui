@@ -1,8 +1,14 @@
 # Getting started
 
-junoui is the single graphics source for your UIs: colors, spacing, typography,
-radii, sizing. You build the UI skeleton; junoui defines how it looks. Tokens are
-authored once in `tokens/` and compiled to every platform.
+junoui is a design system for **modern, futuristic, highly readable and accessible**
+UIs — usable for critical systems and everyday apps alike. Mechanically it is the
+single graphics source for your UIs: colors, spacing, typography, radii, sizing. You
+build the UI skeleton; junoui defines how it looks. Tokens are authored once in
+`tokens/` and compiled to every platform.
+
+Accessibility is a first-class goal, held to the international standards (WCAG 2.2 +
+WAI-ARIA) with the exact criteria cited per component — see
+[accessibility.md](./accessibility.md).
 
 ## Install
 

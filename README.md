@@ -1,8 +1,29 @@
-# junoui — junoui design system
+# junoui — a modern, accessible UI foundation
 
-The single graphics source for all junoput UIs. You build the UI skeleton; junoui
-defines colors, spacing, typography, radii and sizing. Tokens are authored once and
-compiled to every platform.
+junoui is a design system for building interfaces that are **modern, futuristic and
+visually pleasing** while staying **highly readable and genuinely accessible** — for
+critical systems where legibility is a safety concern, and for everyday apps that
+simply deserve to feel good to use.
+
+Mechanically, it is the single graphics source for your UIs: you build the UI
+skeleton; junoui defines color, spacing, typography, radii and sizing. Tokens are
+authored once and compiled to every platform.
+
+## Goals
+
+- **Look modern.** A futuristic, cohesive aesthetic — dark-first, high-contrast OKLCH
+  color, mono numerics, deliberate density and motion — that reads as considered, not
+  decorated.
+- **Be accessible by reference, not by vibes.** Built to the international web
+  accessibility standards — **WCAG 2.2** (AA throughout, AAA where it counts) and
+  **WAI-ARIA** — and we cite the exact success criteria we meet, per component. See
+  [Accessibility](./docs/accessibility.md).
+- **Stay readable.** High text contrast, fixed-width digits that don't jitter,
+  color-blind-safe palettes, a low-fatigue `soft` palette, and visible focus at all
+  times. Readability is the default, not an option you switch on.
+- **Keep improving.** Usability and accessibility are a moving target; junoui treats
+  them as ongoing work — tightening contrast, coverage and standards references release
+  over release, never regressing them.
 
 **Semantic-first:** color encodes status, never decoration —
 every hue has one role (NOMINAL · ACTIVE · TARGET · CAUTION · WARNING).
@@ -49,7 +70,7 @@ build-time sRGB hex (identical rendering).
 | [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                           |
 | [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                         |
 | [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt) |
-| [Accessibility](./docs/accessibility.md)                                         | Color, focus, motion, targets, forced-colors, RTL, ARIA      |
+| [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL  |
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)              |
 | [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more |
 | [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                   |
