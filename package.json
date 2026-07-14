@@ -5,6 +5,10 @@
   "type": "module",
   "license": "MIT",
   "author": "junoput",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com-junoput:junoput/junoui.git"
