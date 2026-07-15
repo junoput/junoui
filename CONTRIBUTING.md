@@ -73,9 +73,12 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
    npm run changeset      # pick a bump, write a one-line summary
    ```
 
-   Choose the bump by the **token contract**: removing/renaming a token or class →
-   _major_; additive tokens/components → _minor_; fixes → _patch_. (Pre-1.0, a "major"
-   bump lands as the next `0.x`.) Commit the generated `.changeset/*.md` with your PR.
+   Choose the bump by the **token contract**. **While pre-1.0** (current), shift every
+   level down one so releases stay in `0.x`: a breaking change (removing/renaming a token
+   or class) → _minor_; additive tokens/components → _minor_ too; fixes → _patch_. Do
+   **not** pick _major_ pre-1.0 — Changesets applies it literally and would jump `0.x` to
+   `1.0.0`. (Post-1.0, use the normal major/minor/patch mapping.) Commit the generated
+   `.changeset/*.md` with your PR.
 
 2. On merge to `main`, the `release` job runs [`changesets/action`](https://github.com/changesets/action):
    while changesets are pending it opens (and keeps updating) a **"Version Packages"**
