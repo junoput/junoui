@@ -5,11 +5,11 @@
 Import the full stylesheet (tokens + base + utilities + components):
 
 ```js
-import 'junoui/css'; // bundler
+import '@junoput01/junoui/css'; // bundler
 ```
 
 ```css
-@import 'junoui/css'; /* plain CSS */
+@import '@junoput01/junoui/css'; /* plain CSS */
 ```
 
 Set the theme with two attributes on `<html>`:
@@ -47,12 +47,12 @@ Use semantic variables and component classes:
 <div style="color: var(--juno-nominal); padding: var(--juno-space-16);">…</div>
 ```
 
-Want variables only (bring your own components)? Import `junoui/css/tokens`.
+Want variables only (bring your own components)? Import `@junoput01/junoui/css/tokens`.
 
 ## SCSS
 
 ```scss
-@use 'junoui/scss' as juno; // $juno-color-standard-dark-nominal, $juno-space-16, …
+@use '@junoput01/junoui/scss' as juno; // $juno-color-standard-dark-nominal, $juno-space-16, …
 ```
 
 All variables are `!default`, so you can override before `@use` if you fork values.
@@ -60,7 +60,7 @@ All variables are `!default`, so you can override before `@use` if you fork valu
 ## JS / TS
 
 ```ts
-import { TOKENS, CORE, getTokens } from 'junoui';
+import { TOKENS, CORE, getTokens } from '@junoput01/junoui';
 
 getTokens('colorblind', 'light').warning; // "#BA4300"
 TOKENS.standard.dark.nominal; // "oklch(73% 0.22 148)"
@@ -82,7 +82,7 @@ phone home). `base.css` names B612 / B612 Mono via `--juno-font-family-*` but do
 load them. Two options:
 
 ```js
-import 'junoui/fonts.css'; // opt-in: self-hosted B612 woff2, no network (CSP-safe)
+import '@junoput01/junoui/fonts.css'; // opt-in: self-hosted B612 woff2, no network (CSP-safe)
 ```
 
 …or bring your own B612 (e.g. `@fontsource/b612`). Without either, the UI falls back to

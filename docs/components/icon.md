@@ -22,7 +22,7 @@ and a banner in the generated sprite; keep both when you ship.
 </svg>
 ```
 
-Import path: `junoui/icons` resolves to the sprite.
+Import path: `@junoput01/junoui/icons` resolves to the sprite.
 
 | Class              | Effect                                                        |
 | ------------------ | ------------------------------------------------------------- |

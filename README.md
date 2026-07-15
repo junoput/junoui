@@ -31,13 +31,13 @@ every hue has one role (NOMINAL · ACTIVE · TARGET · CAUTION · WARNING).
 ## Install
 
 ```sh
-npm install junoui
+npm install @junoput01/junoui
 ```
 
 ```js
-import 'junoui/css'; // styles + 30+ components
-import { TOKENS, getTokens } from 'junoui'; // values in JS/TS
-// icons: the SVG sprite resolves at 'junoui/icons'
+import '@junoput01/junoui/css'; // styles + 30+ components
+import { TOKENS, getTokens } from '@junoput01/junoui'; // values in JS/TS
+// icons: the SVG sprite resolves at '@junoput01/junoui/icons'
 ```
 
 ```html

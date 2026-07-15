@@ -6,12 +6,12 @@ extending it without breaking the "one design across all apps" goal.
 
 ## 1. Import order (app shell)
 
-`junoui/css` sets a small reset + document defaults on `:root`/`body`. Load it **first**,
+`@junoput01/junoui/css` sets a small reset + document defaults on `:root`/`body`. Load it **first**,
 your app styles **after**, so your shell wins where it must:
 
 ```js
-import 'junoui/css'; // tokens + base + components — FIRST
-import 'junoui/fonts.css'; // optional self-hosted B612 (see §2)
+import '@junoput01/junoui/css'; // tokens + base + components — FIRST
+import '@junoput01/junoui/fonts.css'; // optional self-hosted B612 (see §2)
 import './app.css'; // your shell + app-specific styles — AFTER
 ```
 
@@ -25,7 +25,7 @@ If a body default fights your shell, override it in your app CSS (loaded after).
 junoui never fetches fonts. Either bring your own B612, or opt into the self-hosted set:
 
 ```js
-import 'junoui/fonts.css'; // local @font-face → woff2 in the package, no network
+import '@junoput01/junoui/fonts.css'; // local @font-face → woff2 in the package, no network
 ```
 
 Safe under a strict CSP (`font-src 'self'`). Skip it and the UI falls back to system

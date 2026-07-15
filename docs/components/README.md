@@ -1,7 +1,7 @@
 # Components
 
 Framework-agnostic elements built from tokens. On the web they're CSS classes in
-`junoui/css`; on other platforms, build the same anatomy from
+`@junoput01/junoui/css`; on other platforms, build the same anatomy from
 [tokens-reference.md](../tokens-reference.md).
 
 ## The role mechanism (web)
