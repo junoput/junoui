@@ -17,18 +17,17 @@ const MUST_SHIP = [
   'dist/flutter/juno_tokens.dart',
   'dist/icons/juno-icons.svg',
   'src/css/base.css',
+  // docs ship so the paths README + the CSS comments point at (e.g.
+  // docs/layout.md#app-shell) resolve inside node_modules for consumers.
+  'docs/layout.md',
+  'docs/accessibility.md',
+  'docs/components/README.md',
+  'docs/tokens-reference.md',
   'README.md',
   'package.json',
 ];
 
-const MUST_NOT_SHIP = [
-  /^test\//,
-  /^showcase\//,
-  /^design\//,
-  /^docs\//,
-  /^scripts\//,
-  /^\.changeset\//,
-];
+const MUST_NOT_SHIP = [/^test\//, /^showcase\//, /^design\//, /^scripts\//, /^\.changeset\//];
 
 test('npm tarball ships the right files', () => {
   // --ignore-scripts: skip `prepare` (dist is already built by `npm test`,
