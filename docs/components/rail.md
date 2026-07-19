@@ -21,16 +21,17 @@ On phone widths the shell swaps the rail for a [dock](./dock.md) (bottom nav).
 </nav>
 ```
 
-| Class / prop            | Effect                                                          |
-| ----------------------- | --------------------------------------------------------------- |
-| `.juno-rail`            | `s1` column, 180px, 1px `border` seam on the inline-end edge.   |
-| `.juno-rail__brand`     | Mono uppercase brand block.                                     |
-| `.juno-rail__item`      | Icon + label row; hover `s2`.                                   |
-| `.juno-rail__label`     | The text — hidden when collapsed.                               |
-| `[aria-current]`        | Active item: `s3` fill + 2px role edge. Attribute, not a class. |
-| `.juno-rail--collapsed` | Icons-only, `space.56` wide; width transition.                  |
-| `--juno-rail-width`     | Override the expanded width.                                    |
-| `.juno--<role>`         | Active-edge color (default `active`).                           |
+| Class / prop             | Effect                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| `.juno-rail`             | `s1` column, 180px, 1px `border` seam on the inline-end edge.                                    |
+| `.juno-rail__brand`      | Mono uppercase brand block.                                                                      |
+| `.juno-rail__item`       | Icon + label row; hover `s2`.                                                                    |
+| `.juno-rail__label`      | The text — hidden when collapsed.                                                                |
+| `[aria-current]`         | Active item: `s3` fill + 2px role edge. Attribute, not a class.                                  |
+| `.juno-rail--collapsed`  | Icons-only, `space.56` wide; width transition.                                                   |
+| `.juno-rail--responsive` | Self-hides below `md`; pair with a `.juno-dock` / `.juno-pillbar` carrying `.juno-hide-from-md`. |
+| `--juno-rail-width`      | Override the expanded width.                                                                     |
+| `.juno--<role>`          | Active-edge color (default `active`).                                                            |
 
 ## Anatomy (any platform)
 
@@ -46,3 +47,8 @@ On phone widths the shell swaps the rail for a [dock](./dock.md) (bottom nav).
 - When collapsed, labels leave the accessibility tree: give each item an
   `aria-label` (or `title`) so icons-only mode stays navigable.
 - Pair with [tooltip](./tooltip.md) for collapsed-item labels.
+- Adaptive shell: add `.juno-rail--responsive` so the rail self-hides below
+  `md` and a paired [dock](./dock.md)/[pillbar](./pillbar.md) takes over — no
+  need to hang `.juno-hide-below-md` on the rail yourself.
+- Show a section is loading by wrapping an item's icon in an
+  [icon-loader](./icon-loader.md) ring.

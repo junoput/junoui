@@ -92,8 +92,70 @@
 }
 .juno-reel > * { scroll-snap-align: start; flex: 0 0 auto; }
 
-/* Hide/show by viewport breakpoint — the rare case an intrinsic primitive
-   can't express (e.g. swap a nav for a menu button). */
-@media (width <= 767.98px) { .juno-hide-below-md { display: none !important; } }
+/* App shell — the standard product frame, as classes instead of the
+   copy-pasted \3c style> block every consumer used to hand-roll. A rail beside
+   a body column; the body holds an optional topbar, a scrolling main region,
+   and a dock/pillbar pinned at its foot. The MAIN region is the scroller
+   (not the page), so the dock never needs sticky/fixed to stay put and the
+   mobile address bar can't clip it. Height is 100dvh (dynamic viewport) so
+   it fills the visible area under shrinking browser chrome. Pairs with the
+   viewport helpers below to swap rail↔dock across md; see docs/layout.md#app-shell.
+     <div class="juno-app-shell">
+       <nav class="juno-rail juno-rail--responsive" aria-label="Primary">…</nav>
+       <div class="juno-app-shell__body">
+         <header class="juno-app-shell__topbar">…</header>
+         <main class="juno-app-shell__main">…</main>
+         <nav class="juno-dock juno-hide-from-md" aria-label="Primary">…</nav>
+       </div>
+     </div> */
+.juno-app-shell {
+  display: flex;
+  block-size: 100dvh;
+  overflow: hidden; /* the main region scrolls, not the shell */
+  padding-inline: env(safe-area-inset-left, 0) env(safe-area-inset-right, 0);
+}
 
-@media (width >= 768px)    { .juno-hide-from-md  { display: none !important; } }
+.juno-app-shell__body {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0; /* let __main shrink and scroll instead of the shell */
+}
+
+.juno-app-shell__topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-12);
+  min-block-size: var(--juno-app-shell-topbar-size, 46px);
+  padding-inline: var(--juno-pad-surface-inline);
+  padding-block-start: env(safe-area-inset-top, 0);
+  background: var(--juno-s1);
+  border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+.juno-app-shell__main {
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
+}
+
+/* Hide/show by viewport breakpoint — the rare case an intrinsic primitive
+   can't express (e.g. swap a nav for a menu button). `hide-below-X` hides
+   under breakpoint X; `hide-from-X` hides at X and up. `show-*` are the
+   readable inverse aliases (show-from-X ≡ hide-below-X, show-below-X ≡
+   hide-from-X) — same media rule, name whichever reads clearer at the site. */
+@media (width <= 639.98px) { .juno-hide-below-sm, .juno-show-from-sm  { display: none !important; } }
+
+@media (width >= 640px)    { .juno-hide-from-sm,  .juno-show-below-sm { display: none !important; } }
+
+@media (width <= 767.98px) { .juno-hide-below-md, .juno-show-from-md  { display: none !important; } }
+
+@media (width >= 768px)    { .juno-hide-from-md,  .juno-show-below-md { display: none !important; } }
+
+@media (width <= 1023.98px) { .juno-hide-below-lg, .juno-show-from-lg  { display: none !important; } }
+
+@media (width >= 1024px)    { .juno-hide-from-lg,  .juno-show-below-lg { display: none !important; } }

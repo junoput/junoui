@@ -77,69 +77,26 @@ grids together.
 
 ## App shell
 
-Every product app assembles the same frame; here it is once, from existing
-parts — a collapsible [rail](./components/rail.md), a topbar, a content outlet,
-and a [slide-over](./components/drawer.md#the-slide-over-pattern) for trays.
+Every product app assembles the same frame; `.juno-app-shell` ships it as
+classes — a collapsible [rail](./components/rail.md), a topbar, a scrolling
+content outlet, and a [dock](./components/dock.md) at the foot — so you stop
+copy-pasting the same `<style>` block into every app.
 
 ```html
-<div class="juno-shell">
-  <nav class="juno-rail" aria-label="Primary">
+<div class="juno-app-shell">
+  <nav class="juno-rail juno-rail--responsive" aria-label="Primary">
     <div class="juno-rail__brand">JUNO</div>
     <a class="juno-rail__item" href="/library" aria-current="page">
       <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
       <span class="juno-rail__label">Library</span>
     </a>
   </nav>
-  <div>
-    <header class="juno-shell__topbar">
+  <div class="juno-app-shell__body">
+    <header class="juno-app-shell__topbar">
       <input class="juno-input" type="search" placeholder="SEARCH…" />
       <span class="juno-badge juno-badge--soft juno--nominal">ONLINE</span>
     </header>
-    <main class="juno-shell__main">…</main>
-  </div>
-</div>
-
-<style>
-  /* the shell is three declarations — junoui ships the pieces, not a cage */
-  .juno-shell {
-    display: flex;
-    min-block-size: 100dvh;
-  }
-  .juno-shell > div {
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .juno-shell__topbar {
-    display: flex;
-    align-items: center;
-    gap: var(--juno-space-12);
-    block-size: 46px;
-    padding-inline: var(--juno-pad-surface-inline);
-    background: var(--juno-s1);
-    border-block-end: var(--juno-border-width-1) solid var(--juno-border);
-  }
-  .juno-shell__main {
-    padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
-  }
-</style>
-```
-
-Collapse the rail by toggling `.juno-rail--collapsed` (one class; the width
-transition and label hiding are built in). Trays/detail panels: the
-slide-over pattern in the drawer doc.
-
-### Narrow viewports (phone)
-
-Below `md` the shell flips to the mobile frame: the rail hides and a
-[dock](./components/dock.md) — bottom tab bar — takes over primary nav. Two
-helpers, no JS:
-
-```html
-<div class="juno-shell">
-  <nav class="juno-rail juno-hide-below-md" aria-label="Primary">…</nav>
-  <div>
-    <header class="juno-shell__topbar">…</header>
-    <main class="juno-shell__main">…</main>
+    <main class="juno-app-shell__main">…</main>
     <nav class="juno-dock juno-hide-from-md" aria-label="Primary">
       <a class="juno-dock__item" href="/library" aria-current="page">
         <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
@@ -150,11 +107,54 @@ helpers, no JS:
 </div>
 ```
 
-The dock is `position: sticky` — last in the scrolling column, it pins to the
-bottom without overlapping content and pads for the home indicator
-(`safe-area-inset-bottom`). Keep 3–5 destinations; the rest go behind a "More"
-item (drawer or menu). Prefer a floating bar? Swap the dock for a
-[pillbar](./components/pillbar.md) — same contract, capsule look.
+What the primitive encodes so you don't have to:
+
+- **`100dvh`, not `100vh`** — the shell fills the _dynamic_ viewport, so the
+  dock isn't clipped by the phone's shrinking address bar.
+- **The `__main` region is the scroller**, not the page. The dock (or
+  [pillbar](./components/pillbar.md)) is a flex sibling at the body foot, so it
+  stays pinned with zero `sticky`/`fixed` and never overlaps content — the
+  short-page pitfall of sticky nav bars (below) can't happen here.
+- **Safe-area insets** — the shell pads for landscape notches
+  (`inset-left`/`right`), the topbar for `inset-top`, the dock for
+  `inset-bottom`.
+
+Collapse the rail by toggling `.juno-rail--collapsed` (one class; the width
+transition and label hiding are built in). Trays/detail panels: the
+[slide-over](./components/drawer.md#the-slide-over-pattern) pattern in the
+drawer doc. Knobs: `--juno-app-shell-topbar-size` (topbar height).
+
+### Narrow viewports (phone)
+
+The rail↔dock swap is two classes, no JS: `.juno-rail--responsive` self-hides
+below `md`, and the dock carries `.juno-hide-from-md` so it shows only there.
+(Equivalent to hanging `.juno-hide-below-md` on the rail yourself — the
+modifier just saves you knowing to.) Keep 3–5 dock destinations; the rest go
+behind a "More" item (drawer or menu). Prefer a floating bar? Swap the dock
+for a [pillbar](./components/pillbar.md) — same contract, capsule look.
+
+**Viewport helpers.** For the cases an intrinsic primitive can't express
+(swap a nav for a menu button), hide/show by breakpoint at `sm` (640px),
+`md` (768px), `lg` (1024px):
+
+| Class                                        | Visible        |
+| -------------------------------------------- | -------------- |
+| `.juno-hide-below-md` / `.juno-show-from-md` | at `md` and up |
+| `.juno-hide-from-md` / `.juno-show-below-md` | below `md`     |
+
+`show-*` are readable aliases for the inverse `hide-*` (`show-from-md` ≡
+`hide-below-md`); pick whichever reads clearer at the call site. Same three
+cut points for `sm` and `lg`.
+
+### Page-scroll shells (dock/pillbar `--fixed`)
+
+`.juno-app-shell` is the recommended frame because its `__main` scroller keeps
+the dock in flow. If instead the **whole page** scrolls, the dock/pillbar use
+`position: sticky` — which only pins _while the column overflows_. On a short
+page that doesn't scroll, a sticky bar lands mid-content, reading as "not
+stuck." For that layout use `.juno-dock--fixed` / `.juno-pillbar--fixed` to pin
+to the viewport foot — then reserve the bar's height at the page foot (e.g.
+`padding-block-end`) so it doesn't cover the last row.
 
 ### Tab + stack (phone navigation recipe)
 
@@ -165,8 +165,8 @@ link) pushes a detail view; every pushed view opens with a
 junoui ships all three looks — the app owns the stack (routing/history):
 
 ```html
-<div class="juno-shell">
-  <div>
+<div class="juno-app-shell">
+  <div class="juno-app-shell__body">
     <!-- one section, drilled one level in -->
     <header class="juno-navbar">
       <a class="juno-navbar__back" href="/settings">
@@ -176,7 +176,7 @@ junoui ships all three looks — the app owns the stack (routing/history):
       <h1 class="juno-navbar__title">Playback</h1>
       <div class="juno-navbar__actions"></div>
     </header>
-    <main class="juno-shell__main"><!-- .juno-list groups… --></main>
+    <main class="juno-app-shell__main"><!-- .juno-list groups… --></main>
     <nav class="juno-pillbar" aria-label="Primary"><!-- section tabs --></nav>
   </div>
 </div>
