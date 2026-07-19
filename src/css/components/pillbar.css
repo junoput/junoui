@@ -102,6 +102,21 @@
   flex-shrink: 0;
 }
 
+/* Fixed — pin to the viewport instead of flowing at the column's end.
+   Sticky only pins while the column overflows; on a short (non-scrolling)
+   page the sticky pillbar lands mid-content. Use --fixed in a page-scroll
+   shell where content height varies. Centered via inset-inline:0 + the base
+   margin-inline:auto (NOT translateX, which the app-shell model avoids
+   anyway). Leaves the viewport foot free — reserve space so it doesn't cover
+   the last row (e.g. padding-block-end on the scroll region). Prefer the
+   in-flow .juno-app-shell (main scrolls, pillbar sits at the body foot) —
+   that needs no fixed at all. */
+.juno-pillbar--fixed {
+  position: fixed;
+  inset-inline: 0;
+  z-index: var(--juno-z-anchored);
+}
+
 /* reduced-transparency preference → solid surface, no blur */
 @media (prefers-reduced-transparency: reduce) {
   .juno-pillbar {
