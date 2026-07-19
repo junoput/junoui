@@ -25,26 +25,29 @@
 .juno-icon-loader {
   --juno-role: var(--juno-active);
 
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  /* Single-cell grid: the icon and the ring occupy the SAME cell and are
+     both centred in it, so they're guaranteed concentric — no transform (the
+     arc's rotation would clobber a translate) and no fragile margin math. The
+     ring is the larger child, so the cell sizes to it (--juno-icon-loader-ring). */
+  display: inline-grid;
+  place-items: center;
+  line-height: 0; /* drop the inline strut so the box hugs the ring */
 }
 
-/* icon stays put, above the ring */
+.juno-icon-loader > .juno-icon,
+.juno-icon-loader > .juno-arc {
+  grid-area: 1 / 1;
+}
+
+/* icon sits above the ring */
 .juno-icon-loader > .juno-icon {
-  position: relative;
   z-index: 1;
 }
 
-/* the arc rings the icon: sized in em (relative to the icon), centred
-   without transform, transparent to clicks */
+/* the ring: sized in em (relative to the icon), transparent to clicks */
 .juno-icon-loader > .juno-arc {
   --juno-arc-size: var(--juno-icon-loader-ring, 1.9em);
   --juno-arc-width: 0.14em;
 
-  position: absolute;
-  inset: 0;
-  margin: auto; /* NOT translate — the arc's rotation overrides transform */
   pointer-events: none;
 }

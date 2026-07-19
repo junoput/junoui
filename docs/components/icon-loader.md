@@ -40,9 +40,11 @@ When the section finishes, remove `.juno-arc--indeterminate` (or the whole
 
 ## Usage
 
-- **Center with `inset: 0; margin: auto`, never `translate(-50%, -50%)`** — the
-  arc's rotation animation writes `transform`, which would clobber a translate.
-  The component already does this; keep it if you re-roll the markup.
+- **Concentric via a single-cell grid, never `translate(-50%, -50%)`** — the
+  icon and ring share one grid cell (`place-items: center`), so they're centered
+  on each other without any `transform`. The arc's rotation animation writes
+  `transform`, so a translate-based centering would be clobbered; keep the grid
+  approach if you re-roll the markup.
 - Gate the spin to first load, not every background refetch — a nav icon that
   blinks on every poll reads as broken. Add `--indeterminate` when a section
   has no data yet; remove it once loaded.
