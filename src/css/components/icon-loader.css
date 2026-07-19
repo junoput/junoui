@@ -1,0 +1,50 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Icon loader (nav loading ring)
+ *  A destination icon ringed by the spinning arc while that section loads —
+ *  the "this is loading" affordance for a rail / dock / pillbar item. The
+ *  icon stays static on top; the arc sizes in em around it and eats no
+ *  pointer events, so the nav item still clicks through.
+ *
+ *  The app owns the state: add .juno-arc--indeterminate to spin, drop it
+ *  when loaded (gate the blink to first-load, not every refetch). For a
+ *  determinate ring, set --juno-progress on the .juno-arc instead.
+ *  Usage:
+ *    <a class="juno-rail__item" href="…" aria-current="page">
+ *      <span class="juno-icon-loader">
+ *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+ *        <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
+ *      </span>
+ *      <span class="juno-rail__label">Library</span>
+ *    </a>
+ *
+ *  Gotcha encoded here: the arc's rotate animation overrides `transform`, so
+ *  the ring is centred with inset:0 + margin:auto — never translate(-50%,-50%),
+ *  which the spin would clobber.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-icon-loader {
+  --juno-role: var(--juno-active);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* icon stays put, above the ring */
+.juno-icon-loader > .juno-icon {
+  position: relative;
+  z-index: 1;
+}
+
+/* the arc rings the icon: sized in em (relative to the icon), centred
+   without transform, transparent to clicks */
+.juno-icon-loader > .juno-arc {
+  --juno-arc-size: var(--juno-icon-loader-ring, 1.9em);
+  --juno-arc-width: 0.14em;
+
+  position: absolute;
+  inset: 0;
+  margin: auto; /* NOT translate — the arc's rotation overrides transform */
+  pointer-events: none;
+}
