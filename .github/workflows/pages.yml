@@ -1,0 +1,76 @@
+name: pages
+
+# Publishes the interactive showcase to GitHub Pages.
+#
+# The showcase pages reference the built assets with RELATIVE paths
+# (`../dist/css/juno.css`, `../dist/icons/juno-icons.svg`, `../dist/js/tokens.js`).
+# To keep those working unchanged we replicate the repo layout in the deploy
+# artifact: `showcase/` and the freshly built `dist/` sit as siblings under the
+# site root, plus a root redirect to the showcase (mirrors scripts/serve.mjs,
+# which maps `/` -> `/showcase/index.html`). This makes the site subpath-safe
+# under https://<user>.github.io/<repo>/ with zero path rewriting.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow the deploy job to mint the Pages OIDC token and publish.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Serialize deploys; don't cancel an in-flight publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - run: npm ci
+
+      # Generates dist/ (tokens -> css/scss/js/json/native, icon sprite, fonts).
+      - run: npm run build
+
+      - name: Assemble deploy directory
+        run: |
+          mkdir -p _site
+          # Preserve the showcase <-> dist relative relationship (../dist/...).
+          cp -r showcase _site/showcase
+          cp -r dist _site/dist
+          # Root redirect -> showcase (same mapping as scripts/serve.mjs).
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>junoui</title>
+          <meta http-equiv="refresh" content="0; url=./showcase/index.html">
+          <link rel="canonical" href="./showcase/index.html">
+          <p>Redirecting to the <a href="./showcase/index.html">junoui showcase</a>…</p>
+          HTML
+          # Serve files verbatim (no Jekyll processing).
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
