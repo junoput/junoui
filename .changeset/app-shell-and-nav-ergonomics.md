@@ -23,6 +23,8 @@ App-shell composition primitive + nav ergonomics — all CSS, all additive:
   [arc](../docs/components/loader.md) while its section loads. Icon static on
   top; ring sized in `em`, pointer-transparent, kept concentric with a
   single-cell grid (never `translate`, which the arc's rotation would clobber).
+- Touch inputs hold a 16px font floor on coarse pointers, so iOS Safari no
+  longer zooms the page when a text field is focused.
 - `docs/` now ships in the npm tarball, so the paths README and the CSS
   comments point at (e.g. `docs/layout.md#app-shell`) resolve inside
   `node_modules` for consumers.

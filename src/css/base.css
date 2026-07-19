@@ -89,6 +89,13 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
    the contract; a phone just reads the bigger one. */
 @media (pointer: coarse) {
   :root { --juno-size-tap-min: var(--juno-size-tap-comfortable); }
+
+  /* iOS Safari zooms the page onto any focused text field whose font-size is
+     below 16px. Hold text-entry controls (.juno-input covers input, textarea
+     and the select's inner control) at a 16px floor on touch so focusing never
+     triggers that jump. max() keeps the floor even under a scaled-down
+     --juno-font-scale, and still grows when scaled up. */
+  .juno-input { font-size: max(16px, var(--juno-font-size-16)); }
 }
 
 @keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
