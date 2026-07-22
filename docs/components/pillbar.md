@@ -23,16 +23,16 @@ optional divider. Zero JS.
 </nav>
 ```
 
-| Class / prop           | Effect                                                                                        |
-| ---------------------- | --------------------------------------------------------------------------------------------- |
-| `.juno-pillbar`        | Sticky floating pill: blurred translucent `s1`, hairline, `shadow.2`.                         |
-| `.juno-pillbar__item`  | Round tap target ≥ `size.tap.comfortable`; icon with optional label.                          |
-| `.juno-pillbar__label` | Inline text next to the icon — truncates at 12ch.                                             |
-| `.juno-pillbar__sep`   | Vertical hairline between item groups (e.g. destinations vs. actions).                        |
-| `[aria-current]`       | Active destination: `s3` pill fill + role color. Attribute, not class.                        |
-| `[aria-pressed]`       | Same active look for toggle buttons.                                                          |
-| `.juno-pillbar--fixed` | Pin to the viewport foot (`position: fixed`) — for page-scroll shells where sticky won't pin. |
-| `.juno--<role>`        | Active color (default `active`).                                                              |
+| Class / prop           | Effect                                                                                                                                             |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.juno-pillbar`        | Sticky floating pill: blurred translucent `s1`, hairline, `shadow.2`.                                                                              |
+| `.juno-pillbar__item`  | Round tap target ≥ `size.tap.comfortable`; icon with optional label.                                                                               |
+| `.juno-pillbar__label` | Inline text next to the icon — truncates at 12ch.                                                                                                  |
+| `.juno-pillbar__sep`   | Vertical hairline between item groups (e.g. destinations vs. actions).                                                                             |
+| `[aria-current]`       | Active destination: `s3` pill fill + role color. Attribute, not class.                                                                             |
+| `[aria-pressed]`       | Same active look for toggle buttons.                                                                                                               |
+| `.juno-pillbar--fixed` | Fix to the viewport (`position: fixed`), floating its usual `space.16` + safe-area above the foot — for page-scroll shells where sticky won't pin. |
+| `.juno--<role>`        | Active color (default `active`).                                                                                                                   |
 
 ## Anatomy (any platform)
 
@@ -53,8 +53,9 @@ optional divider. Zero JS.
   scroller.
 - **Short-page caveat:** sticky only pins while the column overflows, so on a
   short page that doesn't scroll the pillbar lands mid-content. If the _whole
-  page_ scrolls, use `.juno-pillbar--fixed` to pin it to the viewport foot and
-  reserve its height at the page foot.
+  page_ scrolls, use `.juno-pillbar--fixed` to fix it to the viewport (it keeps
+  floating its usual gap above the foot) and reserve its footprint at the page
+  foot.
 - Icon-only items need `aria-label`. Show the label on the active item (or all
   items) when space allows.
 - Nav destinations are `<a>` with `aria-current="page"`; momentary or toggle

@@ -152,8 +152,9 @@ cut points for `sm` and `lg`.
 the dock in flow. If instead the **whole page** scrolls, the dock/pillbar use
 `position: sticky` — which only pins _while the column overflows_. On a short
 page that doesn't scroll, a sticky bar lands mid-content, reading as "not
-stuck." For that layout use `.juno-dock--fixed` / `.juno-pillbar--fixed` to pin
-to the viewport foot — then reserve the bar's height at the page foot (e.g.
+stuck." For that layout use `.juno-dock--fixed` (pins flush to the viewport
+foot) or `.juno-pillbar--fixed` (fixes to the viewport, still floating its gap
+above the foot) — then reserve the bar's footprint at the page foot (e.g.
 `padding-block-end`) so it doesn't cover the last row.
 
 ### Tab + stack (phone navigation recipe)

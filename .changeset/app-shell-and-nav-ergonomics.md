@@ -15,7 +15,8 @@ App-shell composition primitive + nav ergonomics — all CSS, all additive:
 - Viewport helpers extended to `sm` (640px) and `lg` (1024px), each with
   `hide-below-*` / `hide-from-*`, plus readable `show-from-*` / `show-below-*`
   inverse aliases.
-- `.juno-dock--fixed` / `.juno-pillbar--fixed` — pin to the viewport foot for
+- `.juno-dock--fixed` (pins flush to the foot) / `.juno-pillbar--fixed` (fixes
+  to the viewport, still floating its gap above the foot) — for
   page-scroll shells, where `position: sticky` won't pin on a non-overflowing
   column and the bar would land mid-content. Prefer `.juno-app-shell`, which
   avoids the problem entirely.

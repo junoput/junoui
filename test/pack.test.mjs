@@ -22,6 +22,7 @@ const MUST_SHIP = [
   'docs/layout.md',
   'docs/accessibility.md',
   'docs/components/README.md',
+  'docs/components/icon-loader.md',
   'docs/tokens-reference.md',
   'README.md',
   'package.json',
