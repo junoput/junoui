@@ -23,16 +23,55 @@ optional divider. Zero JS.
 </nav>
 ```
 
-| Class / prop           | Effect                                                                                                                                             |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.juno-pillbar`        | Sticky floating pill: blurred translucent `s1`, hairline, `shadow.2`.                                                                              |
-| `.juno-pillbar__item`  | Round tap target ≥ `size.tap.comfortable`; icon with optional label.                                                                               |
-| `.juno-pillbar__label` | Inline text next to the icon — truncates at 12ch.                                                                                                  |
-| `.juno-pillbar__sep`   | Vertical hairline between item groups (e.g. destinations vs. actions).                                                                             |
-| `[aria-current]`       | Active destination: `s3` pill fill + role color. Attribute, not class.                                                                             |
-| `[aria-pressed]`       | Same active look for toggle buttons.                                                                                                               |
-| `.juno-pillbar--fixed` | Fix to the viewport (`position: fixed`), floating its usual `space.16` + safe-area above the foot — for page-scroll shells where sticky won't pin. |
-| `.juno--<role>`        | Active color (default `active`).                                                                                                                   |
+| Class / prop                                                                   | Effect                                                                                                                                             |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.juno-pillbar`                                                                | Sticky floating pill: blurred translucent `s1`, hairline, `shadow.2`.                                                                              |
+| `.juno-pillbar__item`                                                          | Round tap target ≥ `size.tap.comfortable`; icon with optional label.                                                                               |
+| `.juno-pillbar__label`                                                         | Inline text next to the icon — truncates at 12ch.                                                                                                  |
+| `.juno-pillbar__sep`                                                           | Vertical hairline between item groups (e.g. destinations vs. actions).                                                                             |
+| `[aria-current]`                                                               | Active destination: `s3` pill fill + role color. Attribute, not class.                                                                             |
+| `[aria-pressed]`                                                               | Same active look for toggle buttons.                                                                                                               |
+| `.juno-pillbar--fixed`                                                         | Fix to the viewport (`position: fixed`), floating its usual `space.16` + safe-area above the foot — for page-scroll shells where sticky won't pin. |
+| `.juno-pillbar--top-right` / `--top-left` / `--bottom-right` / `--bottom-left` | Fix as a floating cluster in one viewport corner (safe-area-clamped), instead of the centered bottom bar.                                          |
+| `.juno-pillbar__input`                                                         | Borderless search field inside the pill (`min(52vw, 240px)`, 16px font floor).                                                                     |
+| `.juno--<role>`                                                                | Active color (default `active`).                                                                                                                   |
+
+## Corner placement
+
+The base pillbar is a centered bottom bar. The corner modifiers pin it as a
+floating cluster in one viewport corner instead — e.g. a top-right
+search/filter cluster over a full-bleed grid. Each flips to `position: fixed`
+and clamps the corner with `env(safe-area-inset-*)` so it never lands under a
+notch or the home indicator; the base blur/border/shadow carries over. For the
+bottom corners, reserve scroll clearance with
+`padding-block-end: var(--juno-pillbar-clearance)` if the pill overlaps
+content.
+
+## Input slot
+
+`.juno-pillbar__input` is an expandable search field that lives inside the
+pill, reading as part of it rather than a boxed control.
+
+```html
+<div class="juno-pillbar juno-pillbar--top-right">
+  <input
+    class="juno-pillbar__input"
+    type="search"
+    aria-label="Search library"
+    placeholder="Search…"
+  />
+  <button class="juno-pillbar__item" aria-label="Search" aria-pressed="true">
+    <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-magnifying-glass" /></svg>
+  </button>
+</div>
+```
+
+- The field is borderless/transparent; its font-size is held at
+  `max(16px, …)` because iOS Safari zooms the whole page onto any focused text
+  field under 16px (the same floor the base [input](./input.md) applies on
+  touch).
+- **A placeholder is not a label** — give the input an `aria-label` or a
+  visually-hidden `<label>`.
 
 ## Anatomy (any platform)
 

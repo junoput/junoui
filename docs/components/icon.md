@@ -24,6 +24,27 @@ and a banner in the generated sprite; keep both when you ship.
 
 Import path: `junoui/icons` resolves to the sprite.
 
+## Same-document refs (Safari fix)
+
+An **external** sprite reference (`<use href="…file.svg#id">`) intermittently
+fails to render in Safari — icons randomly vanish and reappear. The reliable
+path is a **same-document** reference (`<use href="#juno-i-gear">`), which needs
+the sprite living in the current document. Rather than hand-roll that injection
+in every app, import the shipped helper once:
+
+```js
+import 'junoui/icons/inline'; // injects the sprite into the document once
+```
+
+```html
+<svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg>
+```
+
+The module auto-installs on import in a browser (no-op server-side / before
+hydration) and is id-guarded, so importing it from many modules injects only
+once. It also exports `installJunoIcons(doc)` (default + named) for manual or
+multi-document (iframe) control. No bundler `?raw` loader needed.
+
 | Class              | Effect                                                        |
 | ------------------ | ------------------------------------------------------------- |
 | `.juno-icon`       | 1.25em square, `fill: currentColor`, baseline-aligned inline. |

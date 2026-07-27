@@ -51,6 +51,7 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Accordion / disclosure         | `.juno-accordion`                      | [accordion.md](./accordion.md)         |
 | Icon                           | `.juno-icon`                           | [icon.md](./icon.md)                   |
 | Skeleton / loading placeholder | `.juno-skeleton`                       | [skeleton.md](./skeleton.md)           |
+| Reload (refetch-in-place)      | `.juno-reload`                         | [reload.md](./reload.md)               |
 | Thumb / media placeholder      | `.juno-thumb`                          | [thumb.md](./thumb.md)                 |
 | Avatar                         | `.juno-avatar`                         | [avatar.md](./avatar.md)               |
 | Divider / separator            | `.juno-divider`                        | [divider.md](./divider.md)             |

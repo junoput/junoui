@@ -13,7 +13,21 @@
 /* System color scheme. Without data-juno-mode the theme follows the OS
    (`prefers-color-scheme`; see juno-tokens.css) — `dark light` here lets the
    UA pick matching scrollbars/form chrome. An explicit mode pins both. */
-:root { color-scheme: dark light; }
+:root {
+  color-scheme: dark light;
+
+  /* Floating-nav scroll clearance — a page/scroller that a fixed dock or
+     pillbar floats over reserves this much room at its foot so the last row
+     clears the overlay. Consumers write `padding-block-end:
+     var(--juno-dock-clearance)` and stay correct when the dock geometry
+     changes — no hand-rolled calc() per app. Web-only (they carry env()), so
+     they live in the CSS layer, not the cross-platform token set.
+     --juno-dock-clearance ≈ pill height + bottom margin + breathing room;
+     --juno-pillbar-clearance suits the shorter centered pill. */
+  --juno-dock-clearance: calc(var(--juno-space-72) + var(--juno-space-20) + env(safe-area-inset-bottom, 0px));
+  --juno-pillbar-clearance: calc(var(--juno-space-72) + env(safe-area-inset-bottom, 0px));
+}
+
 :root[data-juno-mode='dark'] { color-scheme: dark; }
 
 /* Control surfaces. On dark panels the hairline border (~23% L) disappears, so
@@ -99,6 +113,11 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
 }
 
 @keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* Softer opacity pulse — a "working / refreshing" cadence that dims rather
+   than fully blinks out (used by the reload indicator and any live dot that
+   wants a gentler beat than juno-blink). */
+@keyframes juno-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
