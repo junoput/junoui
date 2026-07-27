@@ -117,6 +117,71 @@
   z-index: var(--juno-z-anchored);
 }
 
+/* Corner placement — a floating cluster pinned to one viewport corner rather
+   than the centered bottom bar (e.g. a top-right search/filter cluster, or a
+   bottom-right action pill). Each variant is self-contained: it flips to
+   fixed, clears the base's bottom-center geometry (auto margins / bottom
+   inset), and clamps the corner with safe-area insets so it never lands under
+   a notch or the home indicator. Keep the base blur/border/shadow. Pair with a
+   scroll-clearance reservation on the scroller if the corner overlaps content
+   (var(--juno-pillbar-clearance) for the bottom corners). */
+.juno-pillbar--top-right,
+.juno-pillbar--top-left,
+.juno-pillbar--bottom-right,
+.juno-pillbar--bottom-left {
+  position: fixed;
+  inset-block: auto;
+  inset-inline: auto;
+  z-index: var(--juno-z-anchored);
+  margin: 0;
+}
+
+.juno-pillbar--top-right {
+  inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px));
+  inset-inline-end: calc(var(--juno-space-12) + env(safe-area-inset-right, 0px));
+}
+
+.juno-pillbar--top-left {
+  inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px));
+  inset-inline-start: calc(var(--juno-space-12) + env(safe-area-inset-left, 0px));
+}
+
+.juno-pillbar--bottom-right {
+  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  inset-inline-end: calc(var(--juno-space-12) + env(safe-area-inset-right, 0px));
+}
+
+.juno-pillbar--bottom-left {
+  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  inset-inline-start: calc(var(--juno-space-12) + env(safe-area-inset-left, 0px));
+}
+
+/* Input slot — an expandable search field living inside the pill. Borderless
+   and transparent so it reads as part of the pill, not a boxed control. The
+   font-size floor matters: iOS Safari zooms the whole page onto any focused
+   text field under 16px, so hold this at max(16px, …) exactly like the base
+   .juno-input touch rule. Give it an accessible label (aria-label or a
+   visually-hidden <label>) — the placeholder is not a label. */
+.juno-pillbar__input {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  inline-size: min(52vw, 240px);
+  margin: 0;
+  padding-inline: var(--juno-space-8);
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--juno-font-family-sans);
+  font-size: max(16px, var(--juno-font-size-16));
+  color: var(--juno-data);
+}
+
+.juno-pillbar__input::placeholder { color: var(--juno-muted); }
+
+.juno-pillbar__input:focus-visible {
+  outline: none;
+}
+
 /* reduced-transparency preference → solid surface, no blur */
 @media (prefers-reduced-transparency: reduce) {
   .juno-pillbar {
