@@ -54,6 +54,7 @@
     "src/css",
     "src/icons",
     "src/fonts",
+    "docs",
     "README.md",
     "CHANGELOG.md"
   ],

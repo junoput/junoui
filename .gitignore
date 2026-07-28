@@ -11,3 +11,6 @@ dist/
 
 # npm pack output
 *.tgz
+
+# local throwaway preview pages (served ad-hoc, never committed)
+/_preview.html

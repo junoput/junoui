@@ -19,13 +19,14 @@ destinations as icon-over-label tap targets. The phone-width counterpart of the
 </nav>
 ```
 
-| Class / prop        | Effect                                                               |
-| ------------------- | -------------------------------------------------------------------- |
-| `.juno-dock`        | Sticky bottom `s1` bar, 1px `border` seam on top, safe-area pad.     |
-| `.juno-dock__item`  | Equal-width icon-over-label target, ≥ `size.tap.comfortable` tall.   |
-| `.juno-dock__label` | The text — truncates with an ellipsis, never wraps.                  |
-| `[aria-current]`    | Active item: `s2` fill + 2px role edge on top. Attribute, not class. |
-| `.juno--<role>`     | Active-edge color (default `active`).                                |
+| Class / prop        | Effect                                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| `.juno-dock`        | Sticky bottom `s1` bar, 1px `border` seam on top, safe-area pad.                              |
+| `.juno-dock__item`  | Equal-width icon-over-label target, ≥ `size.tap.comfortable` tall.                            |
+| `.juno-dock__label` | The text — truncates with an ellipsis, never wraps.                                           |
+| `[aria-current]`    | Active item: `s2` fill + 2px role edge on top. Attribute, not class.                          |
+| `.juno-dock--fixed` | Pin to the viewport foot (`position: fixed`) — for page-scroll shells where sticky won't pin. |
+| `.juno--<role>`     | Active-edge color (default `active`).                                                         |
 
 ## Anatomy (any platform)
 
@@ -41,7 +42,13 @@ destinations as icon-over-label tap targets. The phone-width counterpart of the
 - Keep it to 3–5 destinations; overflow belongs in a "More" item opening a
   [drawer](./drawer.md) or [menu](./menu.md).
 - Sticky, not fixed: place it last inside the scrolling column and it pins
-  itself without overlapping content (no bottom-padding hacks).
+  itself without overlapping content (no bottom-padding hacks). Best is the
+  [`.juno-app-shell`](../layout.md#app-shell) frame, whose `__main` region is
+  the scroller — the dock then sits at the body foot in flow.
+- **Short-page caveat:** sticky only pins while the column overflows. If the
+  _whole page_ scrolls and content is shorter than the viewport, the dock
+  lands mid-content. For that layout use `.juno-dock--fixed` (viewport-pinned)
+  and reserve its height at the page foot so it doesn't cover the last row.
 - Pair with the rail via the viewport helpers: `.juno-hide-below-md` on the
   rail, `.juno-hide-from-md` on the dock. One nav is hidden from the
   accessibility tree at a time, so both may share `aria-label="Primary"`.

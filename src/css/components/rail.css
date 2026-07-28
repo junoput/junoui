@@ -94,3 +94,11 @@
   justify-content: center;
   padding-inline: 0;
 }
+
+/* Responsive — the rail self-hides below md, so you pair it with a
+   .juno-dock (or .juno-pillbar) carrying .juno-hide-from-md and get the
+   rail↔dock swap without hanging a juno-hide-below-md on the rail yourself.
+   Reciprocal of the dock's md pairing; see dock.css / docs/layout.md#app-shell. */
+@media (width <= 767.98px) {
+  .juno-rail--responsive { display: none !important; }
+}

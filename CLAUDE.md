@@ -64,7 +64,8 @@ scripts/       color.mjs · bundle-css.mjs · gen-docs.mjs
 style-dictionary.config.mjs   token build (custom per-platform formats)
 test/          node:test suite (no deps)
 docs/          guides + generated tokens-reference.md
-showcase/      interactive demo (repo-only, NOT published)
+showcase/      interactive demo (not in the npm tarball; deployed to GitHub
+               Pages from main via .github/workflows/pages.yml)
 design/        original Claude Design canvas sources (reference)
 dist/          generated outputs (gitignored)
 ```

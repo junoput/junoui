@@ -72,3 +72,16 @@
   outline: var(--juno-border-width-2) solid var(--juno-active);
   outline-offset: calc(-1 * var(--juno-space-2));
 }
+
+/* Fixed — same story as the pillbar: sticky only pins while the column
+   overflows, so on a short page the dock lands mid-content. Pin to the
+   viewport foot in a page-scroll shell where content height varies. Since
+   fixed leaves the flow, reserve its height at the page foot (e.g.
+   padding-block-end) so it doesn't cover the last row. In-flow
+   .juno-app-shell (main is the scroller, dock at the body foot) needs none
+   of this — prefer it. */
+.juno-dock--fixed {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+}
