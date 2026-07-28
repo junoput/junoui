@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 `.juno-thumb` — media thumbnail frame with a built-in unavailable placeholder.

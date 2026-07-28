@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 Mobile navigation kit — the tab + stack pattern, all CSS:

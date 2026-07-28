@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 System-preference detection, all CSS:

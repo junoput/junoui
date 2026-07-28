@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 Mobile adaptations — components restructure themselves on narrow viewports and

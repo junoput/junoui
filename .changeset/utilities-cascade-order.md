@@ -1,5 +1,5 @@
 ---
-'junoui': patch
+'@junoput01/junoui': patch
 ---
 
 Bundle `utilities.css` last in `juno.css`: role helpers (`.juno--nominal` …) set

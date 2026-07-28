@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 App-shell composition primitive + nav ergonomics — all CSS, all additive:

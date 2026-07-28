@@ -1,5 +1,5 @@
 ---
-'junoui': patch
+'@junoput01/junoui': patch
 ---
 
 Menu items may be links: `a.juno-menu__item` no longer shows the browser

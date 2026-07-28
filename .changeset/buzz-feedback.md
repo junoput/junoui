@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 Consumer-driven improvements (from the buzz chat-app integration):

@@ -1,5 +1,5 @@
 ---
-'junoui': minor
+'@junoput01/junoui': minor
 ---
 
 Field-driven components + patterns (first production consumer, a media-server web
