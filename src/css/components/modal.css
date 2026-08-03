@@ -151,9 +151,12 @@
     .juno-modal:not(.juno-drawer)[open] { transform: translateY(100%); }
   }
 
-  /* keep the foot's actions above the home indicator */
+  /* keep the foot's actions above the home indicator.
+     The env() fallback MUST carry a unit: inside calc(), a unitless `0` is a
+     <number>, the addition is invalid, and the whole declaration is dropped —
+     silently losing the padding on every device without a safe area. */
   .juno-modal:not(.juno-drawer) .juno-modal__body {
-    padding-block-end: calc(var(--juno-pad-surface-inline) + env(safe-area-inset-bottom, 0));
+    padding-block-end: calc(var(--juno-pad-surface-inline) + env(safe-area-inset-bottom, 0px));
   }
 
   /* full-width actions read better on a sheet */
