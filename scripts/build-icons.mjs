@@ -59,7 +59,7 @@ console.log(`✓ built icon sprite: ${files.length} symbols → ${OUT}`);
 const inlineModule = `// junoui — inline icon sprite injector. Generated; do not edit.
 // Fixes Safari dropping external <use href="file.svg#id"> refs: this injects
 // the sprite into the document so you reference icons same-document instead:
-//   import 'junoui/icons/inline';
+//   import '@junoput01/junoui/icons/inline';
 //   <svg class="juno-icon"><use href="#juno-i-gear" /></svg>
 const SPRITE = ${JSON.stringify(sprite)};
 

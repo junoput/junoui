@@ -33,7 +33,7 @@ the sprite living in the current document. Rather than hand-roll that injection
 in every app, import the shipped helper once:
 
 ```js
-import 'junoui/icons/inline'; // injects the sprite into the document once
+import '@junoput01/junoui/icons/inline'; // injects the sprite into the document once
 ```
 
 ```html
