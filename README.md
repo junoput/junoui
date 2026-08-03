@@ -44,7 +44,7 @@ import { TOKENS, getTokens } from '@junoput01/junoui'; // values in JS/TS
 <html data-juno-palette="standard" data-juno-mode="dark">
   <span class="juno-badge juno--warning">WARNING</span>
   <svg class="juno-icon juno--active" aria-hidden="true">
-    <use href="node_modules/junoui/dist/icons/juno-icons.svg#juno-i-bell" />
+    <use href="node_modules/@junoput01/junoui/dist/icons/juno-icons.svg#juno-i-bell" />
   </svg>
 </html>
 ```
@@ -105,12 +105,14 @@ The interactive demo lives at `showcase/` and is excluded from the published pac
 
 ## Releasing
 
-Versioning + changelog are automated with [Changesets](https://github.com/changesets/changesets).
-Add a changeset with your change (`npm run changeset`). This repo does not allow
-GitHub Actions to create pull requests, so prepare the "Version Packages" PR manually
-with `npm run version`; once that PR is merged, CI publishes to npm. Bump by the token
-contract: remove/rename a token or class → major, additive → minor, fix → patch. See
-[CONTRIBUTING](./CONTRIBUTING.md#releasing).
+Versioning, changelog and npm publish are fully automated with
+[Changesets](https://github.com/changesets/changesets). Add a changeset with your
+change (`npm run changeset`) and open your PR. On merge to `main`, the Changesets
+GitHub Action opens (or updates) a **"chore: version packages"** PR that applies the
+pending changesets and bumps the version; merging _that_ PR — once no changesets
+remain — publishes `@junoput01/junoui` to npm automatically. No manual `npm run
+version` step. Bump by the token contract: remove/rename a token or class → major,
+additive → minor, fix → patch. See [CONTRIBUTING](./CONTRIBUTING.md#releasing).
 
 ## License
 
