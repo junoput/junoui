@@ -117,6 +117,7 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-cell-max',
     'juno-app-shell-topbar-size',
     'juno-icon-loader-ring',
+    'juno-icon-loader-ring-width',
     'juno-dock-clearance',
     'juno-pillbar-clearance',
   ]);

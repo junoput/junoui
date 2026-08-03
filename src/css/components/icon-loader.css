@@ -1,9 +1,20 @@
 /* ════════════════════════════════════════════════════════════════════
- *  Component — Icon loader (nav loading ring)
- *  A destination icon ringed by the spinning arc while that section loads —
- *  the "this is loading" affordance for a rail / dock / pillbar item. The
- *  icon stays static on top; the arc sizes in em around it and eats no
- *  pointer events, so the nav item still clicks through.
+ *  Component — Icon loader (the ring-a-control primitive)
+ *  A control ringed by the spinning arc while its section loads — the
+ *  "this is loading" affordance for a rail / dock / pillbar item. What it
+ *  wraps stays static on top; the arc rings it and eats no pointer events,
+ *  so the item still clicks through.
+ *
+ *  This is the ONLY concentric-ring mechanism in junoui: anything that
+ *  wants an arc around it (a nav glyph, a dock bubble) composes this class
+ *  instead of re-rolling absolute positioning. Both ring dimensions are
+ *  custom props, so one wrapper serves a 14px glyph and a 44px bubble:
+ *    --juno-icon-loader-ring        diameter (default 1.9em — em, so it
+ *                                   tracks the glyph it wraps)
+ *    --juno-icon-loader-ring-width  stroke  (default 0.14em)
+ *  A host with a definite box (a dock bubble) sets the diameter to that
+ *  box's size, so the ring hugs the edge and the box does not resize when
+ *  the arc appears or leaves.
  *
  *  The app owns the state: add .juno-arc--indeterminate to spin, drop it
  *  when loaded (gate the blink to first-load, not every refetch). For a
@@ -18,36 +29,35 @@
  *    </a>
  *
  *  Gotcha encoded here: the arc's rotate animation overrides `transform`, so
- *  the ring is centred with inset:0 + margin:auto — never translate(-50%,-50%),
+ *  the ring is centred with a single-cell grid — never translate(-50%,-50%),
  *  which the spin would clobber.
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-icon-loader {
   --juno-role: var(--juno-active);
 
-  /* Single-cell grid: the icon and the ring occupy the SAME cell and are
-     both centred in it, so they're guaranteed concentric — no transform (the
-     arc's rotation would clobber a translate) and no fragile margin math. The
-     ring is the larger child, so the cell sizes to it (--juno-icon-loader-ring). */
+  /* Single-cell grid: every child occupies the SAME cell and is centred in
+     it, so the ring and what it rings are guaranteed concentric — no
+     transform (the arc's rotation would clobber a translate) and no fragile
+     margin math. With no explicit size the cell sizes to its largest child
+     (normally the ring, --juno-icon-loader-ring); give the host a definite
+     inline/block size to pin the cell and keep the box jitter-free. */
   display: inline-grid;
   place-items: center;
   line-height: 0; /* drop the inline strut so the box hugs the ring */
 }
 
-.juno-icon-loader > .juno-icon,
-.juno-icon-loader > .juno-arc {
+/* every child shares the one cell; the ringed content paints above the ring */
+.juno-icon-loader > * {
   grid-area: 1 / 1;
-}
-
-/* icon sits above the ring */
-.juno-icon-loader > .juno-icon {
   z-index: 1;
 }
 
-/* the ring: sized in em (relative to the icon), transparent to clicks */
+/* the ring: sized from the two custom props, transparent to clicks */
 .juno-icon-loader > .juno-arc {
   --juno-arc-size: var(--juno-icon-loader-ring, 1.9em);
-  --juno-arc-width: 0.14em;
+  --juno-arc-width: var(--juno-icon-loader-ring-width, 0.14em);
 
+  z-index: 0;
   pointer-events: none;
 }
