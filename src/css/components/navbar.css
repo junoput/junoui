@@ -16,7 +16,7 @@
  *      </a>
  *      <h1 class="juno-navbar__title">Album</h1>
  *      <div class="juno-navbar__actions">
- *        <button class="juno-btn juno-btn--sm juno-btn--ghost">EDIT</button>
+ *        <button class="juno-btn juno-btn--ghost">EDIT</button>
  *      </div>
  *    </header>
  * ════════════════════════════════════════════════════════════════════ */
@@ -96,6 +96,10 @@
   align-items: center;
   gap: var(--juno-space-4);
 }
+
+/* Top-bar action controls are a touch surface: hold the tap minimum
+   (auto-promotes to 44px on coarse pointers). See 20260802-020. */
+.juno-navbar__actions > * { min-block-size: var(--juno-size-tap-min); }
 
 .juno-navbar__back:focus-visible {
   outline: var(--juno-border-width-2) solid var(--juno-active);

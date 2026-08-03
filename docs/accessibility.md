@@ -93,7 +93,11 @@ tokens land, and never removes a guarantee without a semver-major note.
 - `--juno-size-tap-min` = 24px — WCAG **2.5.8** Target Size (Minimum), AA (WCAG 2.2).
 - `--juno-size-tap-comfortable` = 44px — WCAG **2.5.5** Target Size (Enhanced), AAA;
   recommended for primary actions on touch.
-- `.juno-btn` already sets `min-height: var(--juno-size-tap-min)`.
+- `.juno-btn` already sets `min-height: var(--juno-size-tap-min)`. The other
+  touch surfaces — `.juno-menu__item` (dock overflow lands here on phones) and
+  `.juno-navbar__actions > *` — do too, so nothing routed onto a phone falls
+  under the minimum. Don't use `.juno-btn--sm` on a touch surface: it is
+  deliberately below the tap minimum (see `button.css`).
 - **On coarse pointers this is automatic:** under `@media (pointer: coarse)` the
   base layer raises `--juno-size-tap-min` to the comfortable 44px, so every
   control sized off the tap minimum grows on touch devices. A cascade override —

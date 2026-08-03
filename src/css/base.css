@@ -110,6 +110,20 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
      triggers that jump. max() keeps the floor even under a scaled-down
      --juno-font-scale, and still grows when scaled up. */
   .juno-input { font-size: max(16px, var(--juno-font-size-16)); }
+
+  /* Kill the UA tap-highlight square on the interactive surfaces so it never
+     flashes past a rounded control on tap. Consumers were adding this by hand
+     per component; make it a first-class touch default. See 20260802-020. */
+  :where(
+    .juno-btn,
+    .juno-dock__item,
+    .juno-pillbar__item,
+    .juno-tabs__tab,
+    .juno-list__item,
+    .juno-menu__item
+  ) {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
