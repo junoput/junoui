@@ -185,6 +185,84 @@
       </article>
     </section>
 
+    <!-- 05 DOCK PILL VARIANT -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">05</span>
+        <span class="juno-eyebrow">.juno-dock--pill — floating pill dock; big glyphs in circular bubbles, active = bubble fill</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="position:relative;height:280px;">
+          <div style="height:100%;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <span class="juno-label">Content scrolls under the pill.</span>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:120px;"></div>
+          </div>
+          <!-- fixed in production; contained to the frame here for the demo -->
+          <nav class="juno-dock juno-dock--pill" aria-label="Demo pill dock" style="position:absolute;">
+            <a class="juno-dock__item" href="#" aria-current="page" aria-label="Library">
+              <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span>
+            </a>
+            <a class="juno-dock__item" href="#" aria-label="Albums">
+              <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span>
+            </a>
+            <!-- section loading: the indeterminate arc rings the bubble edge -->
+            <a class="juno-dock__item" href="#" aria-label="Nodes">
+              <span class="juno-dock__bubble juno-icon-loader">
+                <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg>
+                <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
+              </span>
+            </a>
+            <button class="juno-dock__item" aria-label="Settings">
+              <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg></span>
+            </button>
+          </nav>
+        </div>
+      </article>
+    </section>
+
+    <!-- 06 PILLBAR CORNER + INPUT SLOT -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">06</span>
+        <span class="juno-eyebrow">.juno-pillbar--top-right + .juno-pillbar__input — floating corner cluster with expandable search</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="position:relative;height:200px;background:var(--juno-s0);">
+          <div style="padding:16px;"><span class="juno-label">Full-bleed grid; the search/filter cluster floats top-right.</span></div>
+          <!-- fixed in production; contained to the frame here for the demo -->
+          <div class="juno-pillbar juno-pillbar--top-right" style="position:absolute;inset-block-start:10px;inset-inline-end:12px;">
+            <input class="juno-pillbar__input" type="search" aria-label="Search library" placeholder="Search…" />
+            <button class="juno-pillbar__item" aria-label="Search" aria-pressed="true"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-magnifying-glass" /></svg></button>
+            <button class="juno-pillbar__item" aria-label="Filters"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-sliders-horizontal" /></svg></button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 07 RELOAD INDICATOR -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">07</span>
+        <span class="juno-eyebrow">.juno-reload — non-blocking refetch-over-content dot (vs. skeleton for first paint)</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="position:relative;height:180px;">
+          <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+            <span class="juno-label">Stale content stays readable while it refetches.</span>
+            <p class="juno-mono" style="font-size:12px;">ORD-519 · 38 000 · NOMINAL</p>
+            <p class="juno-mono" style="font-size:12px;">ORD-520 · 12 400 · CAUTION</p>
+          </div>
+          <!-- fixed in production; contained to the frame here for the demo -->
+          <div class="juno-reload" role="status" aria-label="Reloading" style="position:absolute;">
+            <span class="juno-reload__dot"></span>
+          </div>
+        </div>
+      </article>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>

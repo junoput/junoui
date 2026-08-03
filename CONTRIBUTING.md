@@ -42,7 +42,8 @@ showcase/      demo (repo-only, not published)
 4. `npm test`.
 
 Colors: web keeps `oklch()`; native/Flutter get build-time sRGB hex automatically.
-Changing a token value or removing a token is a **breaking change** (semver major).
+Removing or renaming a token is a **breaking change**; a token _value_ change depends
+on whether it visibly shifts consumer UI — see the [versioning policy](#versioning-policy).
 
 ## Adding a component
 
@@ -73,11 +74,7 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
    npm run changeset      # pick a bump, write a one-line summary
    ```
 
-   Choose the bump by the **token contract**. **While pre-1.0** (current), shift every
-   level down one so releases stay in `0.x`: a breaking change (removing/renaming a token
-   or class) → _minor_; additive tokens/components → _minor_ too; fixes → _patch_. Do
-   **not** pick _major_ pre-1.0 — Changesets applies it literally and would jump `0.x` to
-   `1.0.0`. (Post-1.0, use the normal major/minor/patch mapping.) Commit the generated
+   Choose the bump with the [policy below](#versioning-policy). Commit the generated
    `.changeset/*.md` with your PR.
 
 2. On merge to `main`, the `release` job runs [`changesets/action`](https://github.com/changesets/action):
@@ -90,3 +87,27 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
    (`npm run release` → build + `changeset publish`, with npm provenance via OIDC).
 
 Manual fallback (no CI): `npm run version` then `npm run release`.
+
+## Versioning policy
+
+junoui follows [semver](https://semver.org). The **public API is the contract**:
+the tokens (`--juno-*`), the CSS classes (`.juno-*`), the JS/TS exports, and the
+package export paths. The test: **would a consumer who upgrades _without touching
+their own code_ break?** Break → major. Safe addition → minor. Invisible fix → patch.
+
+| Bump      | Use when the change…                                                                                                                                                                                                                                                                                                                    |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **major** | Breaks an existing consumer: **remove/rename** a token, class, JS export, or export path · change what an existing class/token _does_ (move a state, require new markup/child, change a default) · tighten required markup/ARIA structure · drop a platform output · a semantic **token value change that visibly shifts** consumer UI. |
+| **minor** | Adds surface, safe to upgrade into: new component, token, modifier/variant class, icon, or export path · a new _optional_ custom prop with a fallback (old markup unaffected) · a new platform output.                                                                                                                                  |
+| **patch** | No contract change: bug fix that keeps the same surface (a broken `calc()`, an a11y fix with no markup change) · docs · build tooling · internal refactor.                                                                                                                                                                              |
+
+**Token value edits — the grey zone.** Rename/remove is unambiguously major. A pure
+value tweak is a judgment call: a bug-fix nudge (a contrast miss, 1px off) is a
+_patch_; a deliberate restyle that moves consumer pixels is _breaking_. When unsure,
+**up-rank** — a surprise visual shift is worse than a higher version number.
+
+**Pre-1.0 (we are `0.x`).** Under semver, a `0.x` minor is _allowed_ to break, so
+while pre-1.0 we log breaking changes as **minor** (`0.1.0` → `0.2.0`) and additive
+ones as **patch**, and reserve a real **major** for the intentional `1.0.0` "the API
+is stable now" release. ⚠️ Changesets bumps a `major` changeset **straight to
+`1.0.0`** — do not file one until you actually mean to stabilize.

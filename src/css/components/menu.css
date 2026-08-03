@@ -65,6 +65,10 @@
   align-items: center;
   gap: var(--juno-gap-control);
   inline-size: 100%;
+
+  /* Dock overflow routes here on phones, making this a touch surface; hold the
+     tap minimum (auto-promotes to 44px on coarse pointers). See 20260802-020. */
+  min-block-size: var(--juno-size-tap-min);
   padding: var(--juno-space-8) var(--juno-space-10);
   background: transparent;
   border: none;

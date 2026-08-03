@@ -85,3 +85,103 @@
   inset-inline: 0;
   inset-block-end: 0;
 }
+
+/* ── Pill variant — the full-width bar becomes a rounded floating pill with
+   big glyphs in circular bubbles. Labels drop; each icon sits in a circular
+   .juno-dock__bubble that fills only on the active tab (not the whole item).
+   Out of flow (fixed) so the page scrolls UNDER it — reserve room on the
+   scroller with padding-block-end: var(--juno-dock-clearance).
+   Usage — pair the bubble with .juno-icon-loader, junoui's concentric-stack
+   primitive, so a loading arc can be dropped in without re-rolling geometry:
+     <nav class="juno-dock juno-dock--pill juno-hide-from-md" aria-label="Primary">
+       <a class="juno-dock__item" href="…" aria-current="page" aria-label="Library">
+         <span class="juno-dock__bubble juno-icon-loader">
+           <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+         </span>
+       </a>
+     </nav>
+   Labels are hidden, so every item MUST carry an aria-label (on the <a>/<button>)
+   — the glyph alone is not an accessible name. */
+.juno-dock--pill {
+  --juno-role: var(--juno-active);
+
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--juno-z-raised);
+  margin: 0 var(--juno-space-12) calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  padding: var(--juno-space-4);
+  background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: 999px;
+  box-shadow: var(--juno-shadow-2);
+}
+
+.juno-dock--pill .juno-dock__item {
+  min-block-size: 0;
+  gap: 0;
+  padding-block: var(--juno-space-4);
+
+  /* full reset: the base only zeroes the block-start border, but the pill has
+     no top edge to accent — the active state moves to the bubble. Also kill the
+     UA tap-highlight so no square flashes past the round bubble on tap. */
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.juno-dock--pill .juno-dock__label { display: none; }
+
+/* Focus lands on the bubble so the ring hugs the round target, not the wide
+   item box. */
+.juno-dock--pill .juno-dock__item:focus-visible { outline: none; }
+
+.juno-dock--pill .juno-dock__item:focus-visible .juno-dock__bubble {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+}
+
+/* The bubble is a definite-size circular surface that centres its glyph. It
+   declares the same single-cell grid as .juno-icon-loader so composing the
+   two (see the usage block above) can't fight over `display`, and so the
+   ring — when one is present — is concentric with the glyph. */
+.juno-dock__bubble {
+  /* Section-loading ring — with .juno-icon-loader on the same element, an
+     indeterminate .juno-arc dropped inside rings the bubble's EDGE (diameter
+     = the bubble, thin stroke) instead of the glyph. Because the bubble's box
+     is definite, adding or removing the arc never resizes it. */
+  --juno-icon-loader-ring: var(--juno-size-tap-comfortable);
+  --juno-icon-loader-ring-width: 2px;
+
+  display: grid;
+  place-items: center;
+  inline-size: var(--juno-size-tap-comfortable);
+  block-size: var(--juno-size-tap-comfortable);
+  border-radius: 50%;
+  transition: background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+/* Explicit big glyph so the pill reads at a glance. Set on the glyph itself so
+   it wins regardless of context (the base .juno-icon no longer pins a size —
+   see 20260727-011). */
+.juno-dock--pill .juno-icon { --juno-icon-size: var(--juno-space-32); }
+
+/* Active reads on the bubble alone — suppress the base full-item fill so only
+   the circular highlight shows. */
+.juno-dock--pill .juno-dock__item[aria-current] {
+  background: none;
+  color: var(--juno-role);
+}
+
+.juno-dock--pill .juno-dock__item[aria-current] .juno-dock__bubble {
+  background: var(--juno-s3);
+}
+
+/* reduced-transparency → solid surface, no blur (matches the pillbar) */
+@media (prefers-reduced-transparency: reduce) {
+  .juno-dock--pill {
+    background: var(--juno-s1);
+    backdrop-filter: none;
+  }
+}

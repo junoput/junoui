@@ -9,7 +9,9 @@ on: workflow_dispatch
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    # Pinned to match the ci.yml `visual` job exactly — record env must equal
+    # check env or baselines drift on a runner-image bump. See 20260803-001.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

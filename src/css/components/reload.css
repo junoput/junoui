@@ -1,0 +1,48 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Reload indicator (refetch-in-place)
+ *  The non-blocking counterpart to the skeleton. Skeletons stand in for
+ *  content that isn't there yet (first paint); the reload dot signals a
+ *  refresh happening OVER content that's already on screen — the stale data
+ *  stays readable and interactive while fresh data lands.
+ *
+ *  A small pulsing dot with a soft halo, centered as a fixed overlay that
+ *  eats no pointer events (the page underneath stays fully usable). Color
+ *  comes from --juno-role (default = active). The app owns the state: render
+ *  it while a background refetch is in flight, drop it when it settles.
+ *
+ *  a11y: role="status" + aria-label so assistive tech announces the refresh
+ *  politely without stealing focus. Keep it a live status, not an alert.
+ *  Usage:
+ *    <div class="juno-reload" role="status" aria-label="Reloading">
+ *      <span class="juno-reload__dot"></span>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-reload {
+  --juno-role: var(--juno-active);
+
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--juno-z-anchored);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* refresh is non-blocking — never trap clicks */
+}
+
+.juno-reload__dot {
+  inline-size: var(--juno-space-16);
+  block-size: var(--juno-space-16);
+  border-radius: 50%;
+  background: var(--juno-role);
+
+  /* soft halo so the dot reads over any surface without a hard edge */
+  box-shadow: 0 0 0 var(--juno-space-8) color-mix(in srgb, var(--juno-role) 20%, transparent);
+  animation: juno-pulse 1.4s ease-in-out infinite;
+}
+
+/* prefers-reduced-motion: the base layer already slows every animation to a
+   stop; the dot + halo stay visible (steady), so the "refreshing" state is
+   still conveyed without the pulse. */

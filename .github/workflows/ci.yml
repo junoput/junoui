@@ -32,8 +32,12 @@ jobs:
   # Visual regression: snapshots every showcase page (dark + light) against
   # the committed Linux baselines. Regenerate baselines with the manual
   # visual-baselines workflow after an intended visual change.
+  # Pinned to a fixed image (NOT ubuntu-latest): the checking env must match the
+  # env baselines were recorded on, or a runner-image bump silently shifts font
+  # rendering and drifts every snapshot. Keep this in lockstep with
+  # visual-baselines.yml. See 20260803-001.
   visual:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
