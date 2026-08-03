@@ -16,11 +16,13 @@
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-icon {
-  --juno-icon-size: 1.25em;
-
+  /* Default lives in the var() fallback, NOT as an element-level declaration:
+     declaring --juno-icon-size on the element would shadow an ancestor that
+     sets it for contextual sizing (e.g. .juno-list__chevron). Explicit
+     modifiers below still set it on the element and win. See 20260727-011. */
   display: inline-block;
-  inline-size: var(--juno-icon-size);
-  block-size: var(--juno-icon-size);
+  inline-size: var(--juno-icon-size, 1.25em);
+  block-size: var(--juno-icon-size, 1.25em);
   flex-shrink: 0;
   vertical-align: -0.2em; /* optical baseline alignment next to text */
   fill: currentcolor;
