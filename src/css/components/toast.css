@@ -91,7 +91,11 @@
 @media (width <= 639.98px) {
   .juno-toast-stack {
     inset-inline: var(--juno-space-12);
-    inset-block-end: calc(var(--juno-space-12) + env(safe-area-inset-bottom, 0));
+
+    /* unit-bearing env() fallback: inside calc() a unitless `0` is a <number>,
+       which invalidates the sum and drops the whole declaration (the stack
+       would then sit flush at 0 on any device without a safe area). */
+    inset-block-end: calc(var(--juno-space-12) + env(safe-area-inset-bottom, 0px));
     inline-size: auto;
   }
 
