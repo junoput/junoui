@@ -26,6 +26,22 @@
      --juno-pillbar-clearance suits the shorter centered pill. */
   --juno-dock-clearance: calc(var(--juno-space-72) + var(--juno-space-20) + env(safe-area-inset-bottom, 0px));
   --juno-pillbar-clearance: calc(var(--juno-space-72) + env(safe-area-inset-bottom, 0px));
+
+  /* JS-readable motion contract. CSS-only `prefers-reduced-motion` never reaches
+     imperative JS (scrollTo/scrollIntoView smooth behavior, rAF-driven transforms,
+     an "animate or not" branch) — so the preference is also exposed as a custom
+     property script can read with one getComputedStyle call, no matchMedia
+     listener required for a one-shot check:
+       getComputedStyle(document.documentElement)
+         .getPropertyValue('--juno-motion').trim() !== 'none'
+     A component MAY author its durations through the scale rather than a raw
+     duration token — `calc(var(--juno-motion-duration-base) * var(--juno-motion-scale))`
+     — so the reduced-motion override below collapses them to 0 without its own
+     per-component media query. Web-only DOM contract, so it lives
+     here rather than in the cross-platform token set (see --juno-dock-clearance
+     above for the same reasoning). */
+  --juno-motion: auto;
+  --juno-motion-scale: 1;
 }
 
 :root[data-juno-mode='dark'] { color-scheme: dark; }
@@ -134,6 +150,14 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
 @keyframes juno-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Flip the JS-readable contract declared at the top of this file. Without
+     this the property would always report `auto` and script could never see
+     the preference — the whole point of exposing it. */
+  :root {
+    --juno-motion: none;
+    --juno-motion-scale: 0;
+  }
+
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

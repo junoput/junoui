@@ -87,6 +87,19 @@ tokens land, and never removes a guarantee without a semver-major note.
   near-static). Loader pulses and the `--live` dot honor it automatically — covering
   WCAG **2.2.2** Pause, Stop, Hide (A) and **2.3.3** Animation from Interactions (AAA).
 - Use the `determinate` loaders when progress is known — less motion, more trust.
+- **Script can read the preference too.** A CSS media query never reaches imperative
+  JS (a `scrollIntoView({behavior})` choice, a rAF-driven transform). The base layer
+  exposes the same preference as a custom property, so one read decides:
+
+  ```js
+  const motion = getComputedStyle(document.documentElement)
+    .getPropertyValue('--juno-motion')
+    .trim(); // 'auto' | 'none'
+  el.scrollIntoView({ behavior: motion === 'none' ? 'auto' : 'smooth' });
+  ```
+
+  `--juno-motion-scale` (`1` | `0`) is the multiplier form, for CSS that authors a
+  duration as `calc(var(--juno-motion-duration-base) * var(--juno-motion-scale))`.
 
 ## Targets
 
