@@ -91,10 +91,11 @@
    .juno-dock__bubble that fills only on the active tab (not the whole item).
    Out of flow (fixed) so the page scrolls UNDER it — reserve room on the
    scroller with padding-block-end: var(--juno-dock-clearance).
-   Usage:
+   Usage — pair the bubble with .juno-icon-loader, junoui's concentric-stack
+   primitive, so a loading arc can be dropped in without re-rolling geometry:
      <nav class="juno-dock juno-dock--pill juno-hide-from-md" aria-label="Primary">
        <a class="juno-dock__item" href="…" aria-current="page" aria-label="Library">
-         <span class="juno-dock__bubble">
+         <span class="juno-dock__bubble juno-icon-loader">
            <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
          </span>
        </a>
@@ -141,11 +142,20 @@
   outline-offset: var(--juno-space-2);
 }
 
+/* The bubble is a definite-size circular surface that centres its glyph. It
+   declares the same single-cell grid as .juno-icon-loader so composing the
+   two (see the usage block above) can't fight over `display`, and so the
+   ring — when one is present — is concentric with the glyph. */
 .juno-dock__bubble {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Section-loading ring — with .juno-icon-loader on the same element, an
+     indeterminate .juno-arc dropped inside rings the bubble's EDGE (diameter
+     = the bubble, thin stroke) instead of the glyph. Because the bubble's box
+     is definite, adding or removing the arc never resizes it. */
+  --juno-icon-loader-ring: var(--juno-size-tap-comfortable);
+  --juno-icon-loader-ring-width: 2px;
+
+  display: grid;
+  place-items: center;
   inline-size: var(--juno-size-tap-comfortable);
   block-size: var(--juno-size-tap-comfortable);
   border-radius: 50%;
@@ -166,26 +176,6 @@
 
 .juno-dock--pill .juno-dock__item[aria-current] .juno-dock__bubble {
   background: var(--juno-s3);
-}
-
-/* Section-loading ring — the indeterminate arc rings the bubble's edge (sized
-   to the bubble, thin stroke), not a small ring behind the glyph. Drop the arc
-   in as the last child of the bubble; it's absolutely centered and eats no
-   clicks so the item still activates. The app owns the state (add/remove
-   .juno-arc--indeterminate). Give the arc role="status" aria-label="Loading".
-     <span class="juno-dock__bubble">
-       <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-gear" /></svg>
-       <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
-     </span> */
-.juno-dock__bubble > .juno-arc {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-
-  --juno-arc-size: var(--juno-size-tap-comfortable);
-  --juno-arc-width: 2px;
-
-  pointer-events: none;
 }
 
 /* reduced-transparency → solid surface, no blur (matches the pillbar) */

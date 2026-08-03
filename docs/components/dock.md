@@ -27,7 +27,7 @@ destinations as icon-over-label tap targets. The phone-width counterpart of the
 | `[aria-current]`     | Active item: `s2` fill + 2px role edge on top. Attribute, not class.                          |
 | `.juno-dock--fixed`  | Pin to the viewport foot (`position: fixed`) — for page-scroll shells where sticky won't pin. |
 | `.juno-dock--pill`   | Floating rounded pill: big glyphs in circular bubbles, labels hidden, active = bubble fill.   |
-| `.juno-dock__bubble` | Circular icon holder (pill variant); host for the section-loading ring.                       |
+| `.juno-dock__bubble` | Circular icon holder (pill variant); pair with `.juno-icon-loader` to host the loading ring.  |
 | `.juno--<role>`      | Active-edge color (default `active`).                                                         |
 
 ## Pill variant
@@ -42,12 +42,12 @@ in the pill height + safe area, so it stays correct if the geometry changes).
 ```html
 <nav class="juno-dock juno-dock--pill juno-hide-from-md" aria-label="Primary">
   <a class="juno-dock__item" href="/library" aria-current="page" aria-label="Library">
-    <span class="juno-dock__bubble">
+    <span class="juno-dock__bubble juno-icon-loader">
       <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
     </span>
   </a>
   <button class="juno-dock__item" aria-label="Nodes">
-    <span class="juno-dock__bubble">
+    <span class="juno-dock__bubble juno-icon-loader">
       <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-hexagon" /></svg>
     </span>
   </button>
@@ -57,18 +57,23 @@ in the pill height + safe area, so it stays correct if the geometry changes).
 - **Labels are hidden — every item MUST carry an `aria-label`** (on the
   `<a>`/`<button>`). The glyph alone is not an accessible name.
 - Focus lands on the bubble, so the ring hugs the round target.
+- Pair every bubble with [`.juno-icon-loader`](./icon-loader.md) — it's the
+  concentric-stack contract, and having it on from the start means a loading
+  arc can appear later without touching the class list.
 
 ### Section-loading ring
 
-Drop an indeterminate [arc](./loader.md) in as the bubble's last child and it
-rings the bubble edge (sized to the bubble, thin stroke) while that section
-loads. It eats no clicks, so the item still activates. This is the
-bubble-scale flavor of [icon-loader](./icon-loader.md) (which rings the glyph
-itself for rail/label items). The app owns the state — add/remove
+The bubble doesn't invent its own ring: it is an
+[icon-loader](./icon-loader.md) host that overrides the ring's two dimensions
+(`--juno-icon-loader-ring` = the bubble diameter, `--juno-icon-loader-ring-width`
+= 2px), so the arc rings the bubble's **edge** rather than the glyph. Drop an
+indeterminate [arc](./loader.md) inside while the section loads; it eats no
+clicks, so the item still activates, and because the bubble's box is definite
+the arc appearing never resizes it. The app owns the state — add/remove
 `.juno-arc--indeterminate`; give the arc `role="status"` + `aria-label`.
 
 ```html
-<span class="juno-dock__bubble">
+<span class="juno-dock__bubble juno-icon-loader">
   <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-gear" /></svg>
   <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
 </span>
