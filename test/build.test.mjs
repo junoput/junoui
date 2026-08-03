@@ -161,6 +161,21 @@ test('env() safe-area fallbacks inside calc() carry a length unit', () => {
   assert.deepEqual(bad, [], `unitless env() fallback inside calc():\n${bad.join('\n')}`);
 });
 
+test('every showcase page opts into the safe area with viewport-fit=cover', () => {
+  // On iOS, `viewport-fit` defaults to `auto` and WebKit gates the safe-area
+  // insets on `cover` — so without this meta EVERY env(safe-area-inset-*) in the
+  // library resolves to 0 and the showcase silently stops demonstrating the
+  // thing it exists to demonstrate. `contain` does NOT opt out; only `cover`.
+  // See ticket 20260803-028 and docs/ios-conformance.md.
+  const pages = readdirSync('showcase').filter((f) => f.endsWith('.html'));
+  assert.ok(pages.length > 0, 'no showcase pages found');
+  const missing = pages.filter((p) => {
+    const meta = readFileSync(`showcase/${p}`, 'utf8').match(/<meta\s+name="viewport"[^>]*>/i);
+    return !meta || !/viewport-fit\s*=\s*cover/i.test(meta[0]);
+  });
+  assert.deepEqual(missing, [], `showcase pages missing viewport-fit=cover: ${missing.join(', ')}`);
+});
+
 test('committed token reference is up to date', () => {
   const current = readFileSync(REFERENCE_PATH, 'utf8');
   assert.equal(current, buildReference(), 'run `npm run gen-docs` and commit');

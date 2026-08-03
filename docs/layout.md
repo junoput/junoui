@@ -117,7 +117,9 @@ What the primitive encodes so you don't have to:
   short-page pitfall of sticky nav bars (below) can't happen here.
 - **Safe-area insets** — the shell pads for landscape notches
   (`inset-left`/`right`), the topbar for `inset-top`, the dock for
-  `inset-bottom`.
+  `inset-bottom`. **This requires `viewport-fit=cover` in your page's viewport
+  meta** (see below) — without it iOS reports every inset as `0` and none of
+  this padding happens.
 
 Collapse the rail by toggling `.juno-rail--collapsed` (one class; the width
 transition and label hiding are built in). Trays/detail panels: the

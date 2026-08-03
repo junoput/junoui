@@ -25,6 +25,29 @@ cd vendor/junoui && npm install   # `prepare` builds dist/
 
 `npm install` runs the `prepare` script, so `dist/` is always built for you.
 
+## Required: the viewport meta
+
+Ship this on every page. It is not optional if you use anything that touches a
+phone edge — the dock, pillbar, navbar, drawer, bottom sheet, toast, or the
+app-shell:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+```
+
+Two things depend on it, and both fail **silently**:
+
+- **`viewport-fit=cover` turns the safe area on.** iOS defaults `viewport-fit`
+  to `auto`, and WebKit reports every `env(safe-area-inset-*)` as `0` unless you
+  opt in with `cover` (`contain` does _not_ opt out). junoui is a stylesheet — it
+  cannot set this meta for you. Without it, every safe-area guarantee in the
+  library quietly becomes a no-op and content sits under the home indicator.
+- **`width=device-width, initial-scale=1` makes 1 CSS px equal 1 Apple point**,
+  which is what makes junoui's `44px` tap targets actually 44pt on the device.
+  Without it iOS Safari lays out at ~980px wide and every metric is off.
+
+Details and sources: [ios-conformance.md](./ios-conformance.md).
+
 ## The model
 
 - **Palette** — `standard` · `colorblind` · `soft`
