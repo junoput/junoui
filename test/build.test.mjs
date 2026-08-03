@@ -138,10 +138,11 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
 });
 
 test('env() safe-area fallbacks inside calc() carry a length unit', () => {
-  // Regression guard: a unitless `0` fallback is a <number>, not a <length>,
-  // so `calc(... + env(safe-area-inset-*, 0))` is invalid and silently zeroes
-  // the whole expression. Fallbacks must be unit-bearing (0px). See ticket
-  // 20260802-016. Bare (non-calc) property values may keep a unitless 0.
+  // Regression guard: a unitless `0` fallback is a <number>, not a <length>, so
+  // `calc(... + env(safe-area-inset-*, 0))` is an invalid sum and the whole
+  // DECLARATION is dropped (it does not evaluate to zero — the property simply
+  // never applies). Fallbacks must be unit-bearing (0px). See 20260802-016.
+  // Bare (non-calc) property values may keep a unitless 0.
   const files = [
     'src/css/base.css',
     'src/css/utilities.css',
