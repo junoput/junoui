@@ -36,6 +36,7 @@ default — override per instance inline.
 | `.juno-grid-auto--tiles` | Media wall wired to the density layer    | `--juno-tile-min` / `--juno-gap-content` |
 | `.juno-sidebar`          | Aside + fluid content, stacks when tight | `--juno-sidebar-width` (`280px`)         |
 | `.juno-switcher`         | N-up or all-stacked at a threshold       | `--juno-switcher-threshold` (`bp-sm`)    |
+| `.juno-scroller`         | Bare scroll container (axis/snap/bar)    | `--juno-scroller-snap` (`none`)          |
 | `.juno-reel`             | Horizontal scroll-snap row               | `--juno-reel-space` (`space-12`)         |
 
 ### Examples
@@ -74,6 +75,45 @@ default — override per instance inline.
 (`150px` / `space-10` comfortable, `108px` / `space-4` compact), so one
 `data-juno-density` attribute re-densifies controls, surfaces **and** content
 grids together.
+
+## Scroller
+
+Every scrolling region in the library — `.juno-reel`, `.juno-app-shell__main`,
+tab strips — is the same three knobs: overflow axis, overscroll containment,
+snap type. `.juno-scroller` ships them as overridable custom props instead of
+each consumer re-deriving (and usually forgetting `overscroll-behavior`, which
+lets iOS pull-to-refresh/scroll-chain through an inner scroller into the
+page). Defaults: `overflow: auto` (both axes), `overscroll-behavior: contain`,
+no snap.
+
+```html
+<!-- vertical list scroller with containment, no snap -->
+<div class="juno-scroller juno-scroller--y">…</div>
+
+<!-- horizontal, scrollbar hidden, softer "proximity" snap, opt-in stops -->
+<div
+  class="juno-scroller juno-scroller--x juno-scroller--bare"
+  style="--juno-scroller-snap: x proximity;"
+>
+  <div class="juno-snap">…</div>
+  <div class="juno-snap">…</div>
+</div>
+```
+
+- `.juno-scroller--x` — horizontal axis only (`overflow: auto hidden`)
+- `.juno-scroller--y` — vertical axis only (`overflow: hidden auto`)
+- `.juno-scroller--bare` — hides the scrollbar (Firefox + WebKit)
+- `.juno-snap` — on a child: opts into `scroll-snap-align`
+
+`.juno-reel` is `.juno-scroller`'s horizontal-snap preset baked into one
+class: it now reads its `scroll-snap-type` from the same `--juno-scroller-snap`
+prop (default unchanged: `inline mandatory`), so the mode is overridable
+per instance instead of hardcoded — e.g. a "magnet" strip that wants
+`proximity` instead of a stepped `mandatory` feel:
+
+```html
+<div class="juno-reel" style="--juno-scroller-snap: inline proximity;">…</div>
+```
 
 ## App shell
 
@@ -118,8 +158,8 @@ What the primitive encodes so you don't have to:
 - **Safe-area insets** — the shell pads for landscape notches
   (`inset-left`/`right`), the topbar for `inset-top`, the dock for
   `inset-bottom`. **This requires `viewport-fit=cover` in your page's viewport
-  meta** (see below) — without it iOS reports every inset as `0` and none of
-  this padding happens.
+  meta** ([getting-started](./getting-started.md#required-the-viewport-meta)) —
+  without it iOS reports every inset as `0` and none of this padding happens.
 
 Collapse the rail by toggling `.juno-rail--collapsed` (one class; the width
 transition and label hiding are built in). Trays/detail panels: the

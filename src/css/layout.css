@@ -82,13 +82,41 @@
   flex-basis: calc((var(--juno-switcher-threshold, var(--juno-bp-sm)) - 100%) * 999);
 }
 
-/* Reel — horizontal scroll row (overflowing chips, timelines). */
+/* Scroller — bare scroll-container primitive underneath every scrolling
+   region in the library (.juno-reel, .juno-app-shell__main, tab strips…).
+   Three knobs, each a custom prop with the sane-default fallback: overflow
+   axis, overscroll containment, and snap type — so a consumer opts into
+   containment/snap without re-deriving them, and opts OUT (snap: none is
+   the default here) without fighting a hardcoded value. `--x`/`--y` pick a
+   single scroll axis; `--bare` hides the scrollbar cross-browser; a
+   `.juno-snap` child opts into the snap stop once the container snaps.
+     <div class="juno-scroller juno-scroller--y">…</div>
+     <div class="juno-scroller juno-scroller--x juno-scroller--bare"
+          style="--juno-scroller-snap:x proximity">
+       <div class="juno-snap">…</div>
+     </div> */
+.juno-scroller {
+  overflow: var(--juno-scroller-overflow, auto);
+  overscroll-behavior: var(--juno-scroller-overscroll, contain);
+  scroll-snap-type: var(--juno-scroller-snap, none);
+}
+.juno-scroller--x { overflow: auto hidden; }
+.juno-scroller--y { overflow: hidden auto; }
+.juno-scroller--bare { scrollbar-width: none; }
+.juno-scroller--bare::-webkit-scrollbar { display: none; }
+.juno-scroller > .juno-snap { scroll-snap-align: var(--juno-snap-align, start); }
+
+/* Reel — horizontal scroll row (overflowing chips, timelines). A
+   .juno-scroller preset: single inline axis, mandatory snap by default —
+   override the mode per instance with --juno-scroller-snap (e.g. `inline
+   proximity` for a softer magnet, or `none` to opt out and keep only the
+   containment + layout). Default output is unchanged from before. */
 .juno-reel {
   display: flex;
   gap: var(--juno-reel-space, var(--juno-space-12));
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  scroll-snap-type: inline mandatory;
+  scroll-snap-type: var(--juno-scroller-snap, inline mandatory);
 }
 .juno-reel > * { scroll-snap-align: start; flex: 0 0 auto; }
 
