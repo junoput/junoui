@@ -122,6 +122,7 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-pillbar-clearance',
     'juno-motion',
     'juno-motion-scale',
+    'juno-thumb-ratio',
   ]);
   const files = [
     'src/css/base.css',
