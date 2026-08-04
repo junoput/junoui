@@ -19,16 +19,19 @@ destinations as icon-over-label tap targets. The phone-width counterpart of the
 </nav>
 ```
 
-| Class / prop         | Effect                                                                                        |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| `.juno-dock`         | Sticky bottom `s1` bar, 1px `border` seam on top, safe-area pad.                              |
-| `.juno-dock__item`   | Equal-width icon-over-label target, ≥ `size.tap.comfortable` tall.                            |
-| `.juno-dock__label`  | The text — truncates with an ellipsis, never wraps.                                           |
-| `[aria-current]`     | Active item: `s2` fill + 2px role edge on top. Attribute, not class.                          |
-| `.juno-dock--fixed`  | Pin to the viewport foot (`position: fixed`) — for page-scroll shells where sticky won't pin. |
-| `.juno-dock--pill`   | Floating rounded pill: big glyphs in circular bubbles, labels hidden, active = bubble fill.   |
-| `.juno-dock__bubble` | Circular icon holder (pill variant); pair with `.juno-icon-loader` to host the loading ring.  |
-| `.juno--<role>`      | Active-edge color (default `active`).                                                         |
+| Class / prop         | Effect                                                                                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.juno-dock`         | Sticky bottom `s1` bar, 1px `border` seam on top, safe-area pad.                                                                                                                           |
+| `.juno-dock__item`   | Equal-width icon-over-label target, ≥ `size.tap.comfortable` tall.                                                                                                                         |
+| `.juno-dock__label`  | The text — truncates with an ellipsis, never wraps.                                                                                                                                        |
+| `[aria-current]`     | Active item: `s2` fill + 2px role edge on top. Attribute, not class.                                                                                                                       |
+| `.juno-dock--fixed`  | Pin to the viewport foot (`position: fixed`) — for page-scroll shells where sticky won't pin.                                                                                              |
+| `.juno-dock--pill`   | Floating rounded pill: big glyphs in circular bubbles, labels hidden, active = bubble fill.                                                                                                |
+| `.juno-dock--float`  | Pillbar-style floating capsule chrome (fixed, rounded, blurred, shadowed) — keeps icon+label items and the full-item active fill. Combine with `--icon` for the `--pill` look, decomposed. |
+| `.juno-dock--icon`   | Labels hidden, glyphs grow, active = bubble fill — standalone (no floating chrome required).                                                                                               |
+| `.juno-dock__bubble` | Circular icon holder (`--pill`/`--icon`); pair with `.juno-icon-loader` to host the loading ring.                                                                                          |
+| `.juno--<role>`      | Active-edge color (default `active`).                                                                                                                                                      |
+| `--juno-dock-scale`  | Consumer-set scale factor (default `1`) applied to the whole bar — e.g. shrink on scroll.                                                                                                  |
 
 ## Pill variant
 
@@ -78,6 +81,72 @@ the arc appearing never resizes it. The app owns the state — add/remove
   <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
 </span>
 ```
+
+## Float variant
+
+`.juno-dock--float` lifts the pillbar's floating capsule chrome (fixed
+position, rounded shell, blur, shadow, off-edge margin) onto the dock's own
+item model — icon+label items stay, and the active item still fills (`s2` +
+role edge), just clipped to the capsule's rounded corners. It's `--pill`'s
+exterior without `--pill`'s interior; combine with `--icon` below to
+reproduce the original `--pill` look from two composable pieces. Out of flow
+(fixed), so reserve room on the scroller with
+`padding-block-end: var(--juno-dock-clearance)`.
+
+```html
+<nav class="juno-dock juno-dock--float juno-hide-from-md" aria-label="Primary">
+  <a class="juno-dock__item" href="/library" aria-current="page">
+    <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+    <span class="juno-dock__label">Library</span>
+  </a>
+  <a class="juno-dock__item" href="/nodes">
+    <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-hexagon" /></svg>
+    <span class="juno-dock__label">Nodes</span>
+  </a>
+</nav>
+```
+
+## Icon variant
+
+`.juno-dock--icon` hides labels, grows the glyph, and moves the active state
+onto a circular `.juno-dock__bubble` — usable standalone on a plain
+sticky/`--fixed` bar for a compact, icon-only dock that stays in flow. Follows
+the same bubble contract as `--pill` (pair with
+[`.juno-icon-loader`](./icon-loader.md); see the pill section above for the
+section-loading ring).
+
+```html
+<nav class="juno-dock juno-dock--icon" aria-label="Primary">
+  <a class="juno-dock__item" href="/library" aria-current="page" aria-label="Library">
+    <span class="juno-dock__bubble juno-icon-loader">
+      <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+    </span>
+  </a>
+  <button class="juno-dock__item" aria-label="Nodes">
+    <span class="juno-dock__bubble juno-icon-loader">
+      <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-hexagon" /></svg>
+    </span>
+  </button>
+</nav>
+```
+
+- **Labels are hidden — every item MUST carry an `aria-label`.**
+- Combine with `.juno-dock--float` for a floating icon-only capsule (the
+  original `--pill` treatment, built from the two composable variants).
+
+## Shrink on scroll
+
+`--juno-dock-scale` (default `1`) drives a `transform: scale()` on the whole
+bar, anchored `bottom center`, so a consumer can compact the dock as the page
+scrolls without junoui shipping any scroll-listener JS:
+
+```js
+dockEl.style.setProperty('--juno-dock-scale', shrink ? '0.92' : '1');
+```
+
+The transition duration is authored through the motion scale, so
+`prefers-reduced-motion` collapses it to an instant snap with no
+component-specific media query.
 
 ## Anatomy (any platform)
 
