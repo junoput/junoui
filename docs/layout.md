@@ -115,6 +115,34 @@ per instance instead of hardcoded — e.g. a "magnet" strip that wants
 <div class="juno-reel" style="--juno-scroller-snap: inline proximity;">…</div>
 ```
 
+## Gesture surfaces
+
+For an element whose pointer events an app JS layer owns outright — drag-pan,
+pinch-zoom, swipe classification, anything that is a state machine rather than
+native scrolling — junoui ships the CSS side of that contract as one class.
+The gesture handler itself is the app's job (or a sibling `junoui-<framework>`
+package): junoui declares the surface, never the logic.
+
+```html
+<div class="juno-gesture-surface" id="viewport"><!-- JS drag/pinch handlers attach here --></div>
+
+<!-- only needs the touch-action axis lock, not the full reset -->
+<li class="juno-list__item juno-pan-x"><!-- swipe-to-reveal row --></li>
+```
+
+`.juno-gesture-surface` sets `touch-action: var(--juno-touch-action, none)`,
+`-webkit-touch-callout: none`, `user-select: none` and
+`-webkit-tap-highlight-color: transparent` — so the UA never fights the
+handler with its own scroll/zoom recognition, long-press callout, text
+selection or tap flash. Override `--juno-touch-action` per instance to hand
+back one axis (`pan-x` / `pan-y`) instead of all of them. `.juno-pan-x` /
+`.juno-pan-y` are standalone single-axis classes for elements that want the
+axis lock alone.
+
+These four properties are **community convention, not Apple-documented
+behavior** — see [ios-conformance.md](./ios-conformance.md) before citing them
+as a platform requirement.
+
 ## App shell
 
 Every product app assembles the same frame; `.juno-app-shell` ships it as

@@ -145,6 +145,34 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   }
 }
 
+/* Gesture-owned surfaces — for an element whose pointer events are fully
+   driven by app JS (drag-pan, pinch-zoom, swipe classification: a state
+   machine, not a native scroller). The UA must get out of the way: no
+   scroll/zoom gesture recognition, no callout menu on long-press, no text
+   selection, no tap-highlight flash. Community convention — no primary
+   Apple/WebKit source names any of these four properties for iOS, see
+   docs/ios-conformance.md; do not attribute them to Apple. Opt-in utility
+   class (unlike the pointer:coarse reset above, which targets junoui's own
+   named components), so it isn't gated behind a pointer-type query — apply
+   it only to elements a gesture handler actually owns.
+   --juno-touch-action narrows the axis without overriding the rest of the
+   block; default `none` hands every axis to JS. */
+.juno-gesture-surface {
+  touch-action: var(--juno-touch-action, none);
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Single-axis escape hatches: the UA keeps native scrolling on one axis
+   while JS reads gestures on the other (e.g. a vertical list row that also
+   supports horizontal swipe-to-reveal). Equivalent to
+   `--juno-touch-action: pan-x|pan-y` on .juno-gesture-surface, offered as
+   standalone classes for elements that only need the axis lock and none of
+   the callout/selection/tap-highlight resets. */
+.juno-pan-x { touch-action: pan-x; }
+.juno-pan-y { touch-action: pan-y; }
+
 @keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 /* Softer opacity pulse — a "working / refreshing" cadence that dims rather
