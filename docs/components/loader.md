@@ -26,14 +26,22 @@ Color comes from `--juno-role` (default `active`); add a `.juno--<role>` class t
 </div>
 ```
 
-| Class / var                                         | Effect                                                           |
-| --------------------------------------------------- | ---------------------------------------------------------------- |
-| `.juno-arc`                                         | Ring; determinate sweep = progress (conic gradient + ring mask). |
-| `.juno-arc--indeterminate`                          | 12-step mechanical rotation.                                     |
-| `--juno-arc-size` (76px) · `--juno-arc-width` (4px) | Diameter / stroke.                                               |
+| Class / var                                         | Effect                                                                                                                               |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `.juno-arc`                                         | Ring; determinate sweep = progress (conic gradient + ring mask).                                                                     |
+| `.juno-arc--indeterminate`                          | 12-step mechanical rotation.                                                                                                         |
+| `.juno-arc--smooth`                                 | With `--indeterminate`: continuous (linear) rotation instead of the 12-step sweep — use under ~24px, where the steps read as jitter. |
+| `--juno-arc-size` (76px) · `--juno-arc-width` (4px) | Diameter / stroke.                                                                                                                   |
 
 > The ring uses a CSS mask, which clips children. Put `.juno-arc__label` as a
 > **sibling** over a positioned wrapper, not inside `.juno-arc`.
+
+> To ring an _arbitrary control_ (a button, a badge, an avatar) without
+> changing its own box, don't reposition `.juno-arc` by hand — compose
+> [`.juno-icon-loader`](./icon-loader.md), junoui's one ring-a-thing
+> primitive. It stacks the arc and the control on a single grid cell sized
+> off two custom props, so nothing you wrap ever resizes when the ring
+> appears.
 
 ## Beacon — radiating pulse
 

@@ -1,20 +1,24 @@
 /* ════════════════════════════════════════════════════════════════════
  *  Component — Icon loader (the ring-a-control primitive)
  *  A control ringed by the spinning arc while its section loads — the
- *  "this is loading" affordance for a rail / dock / pillbar item. What it
- *  wraps stays static on top; the arc rings it and eats no pointer events,
- *  so the item still clicks through.
+ *  "this is loading" affordance for a rail / dock / pillbar item, but also
+ *  any other control an app needs to ring: an icon button, a badge, an
+ *  avatar. What it wraps stays static on top; the arc rings it and eats no
+ *  pointer events, so the wrapped control still clicks through.
  *
  *  This is the ONLY concentric-ring mechanism in junoui: anything that
- *  wants an arc around it (a nav glyph, a dock bubble) composes this class
- *  instead of re-rolling absolute positioning. Both ring dimensions are
- *  custom props, so one wrapper serves a 14px glyph and a 44px bubble:
+ *  wants an arc around it — a nav glyph, a dock bubble, an arbitrary
+ *  button or badge — composes this class instead of re-rolling absolute
+ *  positioning. Both ring dimensions are custom props, so one wrapper
+ *  serves a 14px glyph and a 44px bubble:
  *    --juno-icon-loader-ring        diameter (default 1.9em — em, so it
  *                                   tracks the glyph it wraps)
  *    --juno-icon-loader-ring-width  stroke  (default 0.14em)
- *  A host with a definite box (a dock bubble) sets the diameter to that
- *  box's size, so the ring hugs the edge and the box does not resize when
- *  the arc appears or leaves.
+ *  A host with a definite box (a dock bubble, an icon button) sets the
+ *  diameter to that box's size, so the ring hugs the edge and the box does
+ *  not resize when the arc appears or leaves — ring it without changing
+ *  its box. Below ~24px, add .juno-arc--smooth (loader.css) alongside
+ *  --indeterminate: the default 12-step sweep reads as jitter that small.
  *
  *  The app owns the state: add .juno-arc--indeterminate to spin, drop it
  *  when loaded (gate the blink to first-load, not every refetch). For a
