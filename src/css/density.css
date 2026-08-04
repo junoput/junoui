@@ -38,3 +38,25 @@
   --juno-tile-min: 108px;
   --juno-gap-content: var(--juno-space-4);
 }
+
+/* auto — OPT-IN. `comfortable`/`compact` never change meaning; a consumer
+ * must explicitly write `data-juno-density="auto"` to get this behavior.
+ * Baseline (any pointer, any viewport ≥ 640px) is comfortable — no rule
+ * needed here, it inherits the :root defaults above by not matching
+ * `[data-juno-density='compact']`. Only a small-viewport COARSE pointer
+ * (phone, not a touch laptop) re-densifies, mirroring the precedent already
+ * set by base.css's own `@media (pointer: coarse)` tap-target rule — this is
+ * a viewport-level document concern (set on <html>/<body>), not a component
+ * in an unknown layout, so a viewport query is the right tool here (container
+ * queries can't see pointer type anyway).
+ *
+ * NEVER shrinks a control's min-height — --juno-size-tap-min stays governed
+ * solely by base.css's coarse-pointer rule (20260802-020 / WCAG 2.5.5).
+ * This block only shrinks padding/gap/tile sizing, same contract as compact. */
+@media (pointer: coarse) and (width <= 639.98px) {
+  [data-juno-density='auto'] {
+    --juno-tile-min: 104px;
+    --juno-gap-content: var(--juno-space-2);
+    --juno-pad-surface-inline: var(--juno-space-12);
+  }
+}

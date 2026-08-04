@@ -40,6 +40,15 @@ Neutral / structural roles carry no status meaning:
   stop value-change jitter. Use `tabular-nums`.
 - **B612** — all non-numeric UI: headings, labels, navigation, buttons.
 - Headings are uppercase with wide tracking; values are mono and bright (`data`).
+- `.juno-label` reads an optional `--juno-label-size` knob (falls back to
+  `--juno-font-size-13`) so a context can resize labels — e.g. a compact list —
+  without forking the class: set the custom property on an ancestor, never on
+  `.juno-label` itself.
+  ```html
+  <div style="--juno-label-size: var(--juno-font-size-11)">
+    <span class="juno-label">Signal strength</span>
+  </div>
+  ```
 
 ## Date & time
 
@@ -122,6 +131,23 @@ compact removes more block (vertical) than inline padding, so text never crowds 
 edges. Interactive controls keep their `min-height` (WCAG tap target); only padding
 shrinks. New components should use the aliases for internal padding to inherit
 density for free; add a new archetype only when one is genuinely needed.
+
+A third value, `auto`, re-densifies for small **coarse-pointer** viewports (phone,
+`pointer: coarse` and width ≤ 640px) — a data-heavy layout gets its compact-ish
+padding back on a phone without the consumer hand-tracking breakpoints:
+
+```html
+<body data-juno-density="auto">
+  <!-- comfortable everywhere else; re-densifies only on a narrow touch phone -->
+</body>
+```
+
+`auto` is **opt-in only** — existing `comfortable`/compact-pinned consumers render
+byte-identical, nothing changes silently. It never touches a control's
+`min-height`; `--juno-size-tap-min` still only grows (never shrinks) under
+`base.css`'s own `@media (pointer: coarse)` rule, so `auto` can't undo the WCAG
+tap-target work. Only `--juno-tile-min` / `--juno-gap-content` /
+`--juno-pad-surface-inline` shrink, same as `compact`.
 
 ## Accessibility
 
