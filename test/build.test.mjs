@@ -137,6 +137,7 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-pillbar-edge',
     'juno-touch-action',
     'juno-label-size',
+    'juno-shimmer-dur',
   ]);
   const files = [
     'src/css/base.css',
@@ -190,6 +191,55 @@ test('every showcase page opts into the safe area with viewport-fit=cover', () =
     return !meta || !/viewport-fit\s*=\s*cover/i.test(meta[0]);
   });
   assert.deepEqual(missing, [], `showcase pages missing viewport-fit=cover: ${missing.join(', ')}`);
+});
+
+test('every breakpoint literal in src/css comes from a breakpoint token', () => {
+  // The point of emitting @custom-media (20260802-024): the breakpoint tokens
+  // are only the source of truth if the literals actually agree with them.
+  // Media queries can't read custom properties, so src/css must hardcode — this
+  // asserts every hardcoded width matches a generated boundary, catching the
+  // case where someone edits a token and leaves a stale literal behind (or
+  // invents an off-scale breakpoint).
+  const emitted = readFileSync('dist/css/juno-custom-media.css', 'utf8');
+  const allowed = new Set([...emitted.matchAll(/width\s*[<>]=\s*([\d.]+px)/g)].map((m) => m[1]));
+  assert.ok(allowed.size > 0, 'no breakpoints emitted');
+
+  const files = [
+    'src/css/base.css',
+    'src/css/utilities.css',
+    'src/css/layout.css',
+    'src/css/density.css',
+    ...readdirSync('src/css/components').map((f) => `src/css/components/${f}`),
+  ];
+  const stray = [];
+  for (const f of files) {
+    readFileSync(f, 'utf8')
+      .split('\n')
+      .forEach((line, i) => {
+        if (!line.includes('@media')) return;
+        for (const m of line.matchAll(/\(\s*width\s*[<>]=\s*([\d.]+px)\s*\)/g)) {
+          if (!allowed.has(m[1])) stray.push(`${f}:${i + 1}  ${m[1]}`);
+        }
+      });
+  }
+  assert.deepEqual(stray, [], `breakpoint literals not backed by a token:\n${stray.join('\n')}`);
+});
+
+test('every animation name used in src/css has a matching @keyframes', () => {
+  // Keyframe references cross file boundaries (.juno-shimmer in load-state.css
+  // reuses @keyframes juno-skeleton-shimmer from skeleton.css, deliberately, so
+  // there is one shimmer definition). CSS resolves those silently: rename or
+  // delete the keyframe and the animation just stops, with no error anywhere.
+  // The bundle is the only place that sees every file at once, so check there.
+  const bundle = readFileSync('dist/css/juno.css', 'utf8');
+  const defined = new Set([...bundle.matchAll(/@keyframes\s+([\w-]+)/g)].map((m) => m[1]));
+  const used = new Set(
+    [...bundle.matchAll(/animation(?:-name)?:\s*([^;]+);/g)]
+      .flatMap((m) => m[1].split(/[,\s]+/))
+      .filter((w) => /^juno-/.test(w)),
+  );
+  const missing = [...used].filter((n) => !defined.has(n));
+  assert.deepEqual(missing, [], `animation without @keyframes: ${missing.join(', ')}`);
 });
 
 test('committed token reference is up to date', () => {

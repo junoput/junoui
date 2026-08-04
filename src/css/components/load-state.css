@@ -1,0 +1,136 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Load state  ·  a vocabulary so nothing spins forever
+ *  Names the treatment for every way a load can go, so no consumer reaches
+ *  for a spinner on a state that will never resolve:
+ *    resolving, ETA known    → .juno-arc / .juno-beacon / .juno-bar (loader.css)
+ *    layout known, no data   → .juno-skeleton (skeleton.css)
+ *    working, NO ETA         → .juno-shimmer  — motion without a completion promise
+ *    failed (terminal)       → .juno-fault    — static, never animates
+ *    legitimately none       → .juno-empty    — static, never animates
+ *  Full decision table + a11y contract: docs/components/load-state.md.
+ *
+ *  Also ships an optional CSS-only switch: mark each treatment's wrapper
+ *  with data-juno-when, set data-juno-state on the .juno-state parent, and
+ *  the matching wrapper alone gets display:flex. Zero JS in junoui — the
+ *  app still decides WHEN a fetch becomes an error or an empty result.
+ *  Usage:
+ *    <div class="juno-state" data-juno-state="processing">
+ *      <div data-juno-when="loading">
+ *        <div class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></div>
+ *      </div>
+ *      <div data-juno-when="processing" aria-busy="true" aria-live="polite">
+ *        <div class="juno-shimmer" style="block-size: 120px;"></div>
+ *      </div>
+ *      <div data-juno-when="error">
+ *        <div class="juno-fault" role="status">
+ *          <span class="juno-fault__icon" aria-hidden="true">!</span>
+ *          <p>Couldn't load this.</p>
+ *        </div>
+ *      </div>
+ *      <div data-juno-when="empty">
+ *        <div class="juno-empty">
+ *          <span class="juno-empty__icon" aria-hidden="true">∅</span>
+ *          <p>Nothing here yet.</p>
+ *        </div>
+ *      </div>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* ── STATE SWITCH — mechanical only ─────────────────────────────────────
+   Hide every marked child; show only the one(s) whose data-juno-when token
+   list contains the parent's current data-juno-state. */
+.juno-state > [data-juno-when] { display: none; }
+
+.juno-state[data-juno-state='loading']    > [data-juno-when~='loading'],
+.juno-state[data-juno-state='processing'] > [data-juno-when~='processing'],
+.juno-state[data-juno-state='error']      > [data-juno-when~='error'],
+.juno-state[data-juno-state='empty']      > [data-juno-when~='empty'] { display: flex; }
+
+/* ── SHIMMER — work in progress, no completion promise ──────────────────
+   For server-side work with no ETA (transcoding, indexing…): a spinner
+   would spin forever, and a .juno-skeleton implies a known layout that
+   doesn't exist here either — just "something is happening". Shares
+   .juno-skeleton's compositor-only band verbatim (same @keyframes,
+   defined once in skeleton.css — not redefined here) so there is one
+   shimmer implementation, not two. Mark the region aria-busy="true". */
+.juno-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--juno-s2);
+  border-radius: var(--juno-radius-3);
+}
+
+.juno-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--juno-s3) 70%, transparent) 50%,
+    transparent 80%
+  );
+  animation: juno-skeleton-shimmer var(--juno-shimmer-dur, 1.4s) ease-in-out infinite;
+}
+
+/* ── FAULT — terminal, never animates ────────────────────────────────────
+   The load will not resolve on its own (404, decode failure, permanent
+   backend error). Static by design — motion here would lie about the
+   state. Role defaults to caution; recolor with a .juno--<role> class for
+   a different severity, never hardcode a color. This is a per-region
+   fault, not a page-level alert — .juno-alert (role="alert") is for that;
+   here the app wires role="status" so AT announces the failure once,
+   politely, without interrupting. */
+.juno-fault {
+  --juno-role: var(--juno-caution);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--juno-space-8);
+  padding: var(--juno-space-24);
+  text-align: center;
+  color: var(--juno-role);
+}
+
+.juno-fault__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--juno-space-40);
+  block-size: var(--juno-space-40);
+  border-radius: var(--juno-radius-8);
+  border: var(--juno-border-width-1) solid currentcolor;
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-18);
+}
+
+/* ── EMPTY — legitimately nothing, terminal ──────────────────────────────
+   The load resolved; there is no data, and none will appear without new
+   input from the user. Generalized, table-agnostic form of the existing
+   .juno-table__empty (table.css) — same anatomy, any region. Neutral
+   (muted) — an empty result isn't a failure, don't tint it like one. */
+.juno-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--juno-space-12);
+  padding: var(--juno-space-56) var(--juno-space-24);
+  text-align: center;
+  color: var(--juno-label);
+}
+
+.juno-empty__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--juno-space-40);
+  block-size: var(--juno-space-40);
+  border-radius: var(--juno-radius-8);
+  border: var(--juno-border-width-1) solid var(--juno-control-edge);
+  color: var(--juno-muted);
+  font-family: var(--juno-font-family-mono);
+  font-size: var(--juno-font-size-18);
+}
