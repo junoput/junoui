@@ -41,6 +41,13 @@
   justify-content: center;
   gap: var(--juno-space-2);
   padding-block: var(--juno-space-4);
+
+  /* Full reset, not just the top edge: a plain `border-block-start` override
+     leaves the UA default border on the other three sides of a <button>
+     item (links have none, so this went unnoticed until <button> showed up
+     in the pill variant's usage). Re-add only the edge that carries the
+     active accent. */
+  border: none;
   border-block-start: var(--juno-border-width-2) solid transparent;
   font-family: var(--juno-font-family-sans);
   font-size: var(--juno-font-size-10);
