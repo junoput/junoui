@@ -19,22 +19,36 @@
  *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-arrows-clockwise" /></svg>
  *      </button>
  *    </nav>
+ *  Overflow: for variable-membership pills (an app-owned capacity planner
+ *  decides how many __item fit, reading --juno-pillbar-item/-gap/-pad below),
+ *  swap the last __item for .juno-pillbar__overflow anchoring a .juno-menu —
+ *  see docs/components/pillbar.md#overflow-slot and menu.css.
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-pillbar {
   --juno-role: var(--juno-active);
 
+  /* Geometry contract — published so a consumer's overflow/capacity planner
+     (deciding how many __item fit before routing the rest to __overflow)
+     reads real values instead of re-declaring junoui's px constants in JS.
+     Base-rule values only; the corner variants below keep their own literal
+     offsets (distinct block vs. inline edges) and are not wired to -edge. */
+  --juno-pillbar-item: var(--juno-size-tap-comfortable);
+  --juno-pillbar-gap: var(--juno-space-2);
+  --juno-pillbar-pad: var(--juno-space-4);
+  --juno-pillbar-edge: var(--juno-space-16);
+
   position: sticky;
-  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  inset-block-end: calc(var(--juno-pillbar-edge) + env(safe-area-inset-bottom, 0px));
   z-index: var(--juno-z-raised);
   margin-inline: auto;
-  margin-block-end: var(--juno-space-16);
+  margin-block-end: var(--juno-pillbar-edge);
   inline-size: fit-content;
-  max-inline-size: calc(100% - 2 * var(--juno-space-16));
+  max-inline-size: calc(100% - 2 * var(--juno-pillbar-edge));
   display: flex;
   align-items: center;
-  gap: var(--juno-space-2);
-  padding: var(--juno-space-4);
+  gap: var(--juno-pillbar-gap);
+  padding: var(--juno-pillbar-pad);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
   backdrop-filter: blur(12px);
   border: var(--juno-border-width-1) solid var(--juno-border);
@@ -46,8 +60,8 @@
   appearance: none;
   margin: 0;
   border: none;
-  min-inline-size: var(--juno-size-tap-comfortable);
-  min-block-size: var(--juno-size-tap-comfortable);
+  min-inline-size: var(--juno-pillbar-item);
+  min-block-size: var(--juno-pillbar-item);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -92,6 +106,48 @@
 .juno-pillbar__item:disabled {
   opacity: var(--juno-opacity-disabled);
   cursor: not-allowed;
+}
+
+/* Overflow slot — the "more" trigger for items that don't fit the pill.
+   Styled like __item (same tap target, radius, hover/focus) but a dedicated
+   element because it opens a menu instead of acting as a nav/toggle item.
+   Pair with .juno-menu (menu.css) via popovertarget — the invoker is the
+   menu's implicit anchor, so no extra anchor-positioning is needed here.
+   junoui ships the docking point only: DECIDING which items overflow (and
+   when) is app policy — mount/unmount this button and move the spilled
+   __item markup into the menu, sizing the decision off the
+   --juno-pillbar-item/-gap/-pad custom props above instead of hardcoded px.
+   Zero JS in this file; aria-expanded is toggled by the app or a stateless
+   enhancer, same convention as __item's [aria-pressed]. */
+.juno-pillbar__overflow {
+  appearance: none;
+  margin: 0;
+  border: none;
+  flex-shrink: 0;
+  min-inline-size: var(--juno-pillbar-item);
+  min-block-size: var(--juno-pillbar-item);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 999px;
+  color: var(--juno-label);
+  cursor: pointer;
+  transition:
+    color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-pillbar__overflow:hover { color: var(--juno-data); }
+
+.juno-pillbar__overflow[aria-expanded='true'] {
+  background: var(--juno-s3);
+  color: var(--juno-role);
+}
+
+.juno-pillbar__overflow:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-space-2));
 }
 
 .juno-pillbar__sep {
