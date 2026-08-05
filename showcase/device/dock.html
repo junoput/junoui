@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Dock</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+<style>
+  /* hide every candidate until the switcher picks one — otherwise three
+     fixed docks stack for a frame */
+  nav[data-v] { display: none; }
+</style>
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Dock — <span id="dh-vname">base</span></span>
+  </header>
+
+  <main class="dh-main dh-main--dock" id="dh-main">
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Variant</h2>
+      <p class="dh-note">One at a time — three of these are <code class="juno-mono">position: fixed</code>
+        and would stack. Each reload renders exactly one real dock at the foot of the viewport.</p>
+      <div class="dh-switch">
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="?v=base" data-v="base">BASE · STICKY</a>
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="?v=fixed" data-v="fixed">--FIXED</a>
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="?v=icon" data-v="icon">--ICON</a>
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="?v=float" data-v="float">--FLOAT</a>
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="?v=float-icon" data-v="float-icon">--FLOAT + --ICON</a>
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="?v=pill" data-v="pill">--PILL</a>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">What to check</h2>
+      <ul class="dh-note" style="padding-inline-start:18px;">
+        <li><strong>Home indicator.</strong> Base and <code class="juno-mono">--fixed</code> pad themselves with
+          <code class="juno-mono">env(safe-area-inset-bottom)</code>; the floating variants add it to their bottom
+          margin instead (offset off the edge, not <code class="juno-mono">max()</code>). Either way, no label may
+          sit under the bar.</li>
+        <li><strong>Tap targets.</strong> Every item is at least 44px tall on a coarse pointer. Try hitting the
+          outermost item with a thumb.</li>
+        <li><strong>Blur.</strong> <code class="juno-mono">--float</code> and <code class="juno-mono">--pill</code> use
+          <code class="juno-mono">backdrop-filter</code> with the <code class="juno-mono">-webkit-</code> prefix first.
+          Scroll content beneath them: it should blur. Turn on Reduce Transparency — the surface must go solid.</li>
+        <li><strong>Tap highlight.</strong> No grey square should flash outside the round bubble on
+          <code class="juno-mono">--pill</code> / <code class="juno-mono">--icon</code>.</li>
+        <li><strong>Landscape.</strong> Rotate: the bar must not run under the notch on either side.</li>
+      </ul>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Content to scroll under the bar</h2>
+      <div class="dh-filler">
+        <div class="juno-card"><div class="juno-card__body">
+          <div class="juno-card__row"><span class="juno-label">Service</span><span class="juno-value juno-mono">api-gateway</span></div>
+          <div class="juno-card__row"><span class="juno-label">Status</span><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></div>
+        </div></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:96px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:96px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:96px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:96px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:96px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:96px;"></div>
+        <div class="juno-card"><div class="juno-card__body">
+          <span class="juno-label">↓ This is the last row on the page. With a fixed / floating dock it must
+            still be fully readable — that is what <code class="juno-mono">--juno-dock-clearance</code> reserves.</span>
+        </div></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ every variant; the script keeps exactly one ══ -->
+
+  <nav class="juno-dock" data-v="base" aria-label="Primary">
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Library</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-dock__label">Albums</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-dock__label">Nodes</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg><span class="juno-dock__label">Settings</span></a>
+  </nav>
+
+  <nav class="juno-dock juno-dock--fixed" data-v="fixed" aria-label="Primary">
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Library</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-dock__label">Albums</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-dock__label">Nodes</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg><span class="juno-dock__label">Settings</span></a>
+  </nav>
+
+  <nav class="juno-dock juno-dock--icon" data-v="icon" aria-label="Primary">
+    <a class="juno-dock__item" href="#" aria-current="page" aria-label="Library"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-label="Albums"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-label="Nodes"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span></span></a>
+    <button class="juno-dock__item" aria-label="Settings"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg></span></button>
+  </nav>
+
+  <nav class="juno-dock juno-dock--float" data-v="float" aria-label="Primary">
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Library</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-dock__label">Albums</span></a>
+    <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-dock__label">Nodes</span></a>
+  </nav>
+
+  <nav class="juno-dock juno-dock--float juno-dock--icon" data-v="float-icon" aria-label="Primary">
+    <a class="juno-dock__item" href="#" aria-current="page" aria-label="Library"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-label="Albums"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-label="Nodes"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg></span></a>
+  </nav>
+
+  <nav class="juno-dock juno-dock--pill" data-v="pill" aria-label="Primary">
+    <a class="juno-dock__item" href="#" aria-current="page" aria-label="Library"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-label="Albums"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-label="Nodes"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span></span></a>
+    <button class="juno-dock__item" aria-label="Settings"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg></span></button>
+  </nav>
+
+  <script>
+  // harness plumbing: keep one dock, mark the active switcher, and pick the
+  // right bottom reservation (in-flow bars need none; fixed ones need the
+  // clearance token).
+  (function () {
+    var v = new URLSearchParams(location.search).get('v') || 'base';
+    var keep = document.querySelector('nav[data-v="' + v + '"]') || document.querySelector('nav[data-v="base"]');
+    document.querySelectorAll('nav[data-v]').forEach(function (n) { if (n !== keep) n.remove(); });
+    keep.style.display = 'flex';
+    document.getElementById('dh-vname').textContent = keep.dataset.v;
+    document.querySelectorAll('.dh-switch [data-v]').forEach(function (a) {
+      if (a.dataset.v === keep.dataset.v) { a.classList.remove('juno-btn--ghost'); a.classList.add('juno--active'); }
+    });
+    var inFlow = keep.dataset.v === 'base' || keep.dataset.v === 'icon';
+    var main = document.getElementById('dh-main');
+    main.classList.toggle('dh-main--dock', !inFlow);
+    main.classList.toggle('dh-main--flush', inFlow);
+  })();
+  </script>
+  <script src="./harness.js"></script>
+</body>
+</html>

@@ -184,10 +184,20 @@ test('every showcase page opts into the safe area with viewport-fit=cover', () =
   // library resolves to 0 and the showcase silently stops demonstrating the
   // thing it exists to demonstrate. `contain` does NOT opt out; only `cover`.
   // See ticket 20260803-028 and docs/ios-conformance.md.
-  const pages = readdirSync('showcase').filter((f) => f.endsWith('.html'));
+  // Recursive: showcase/device/ is the on-device harness, where a missing
+  // viewport-fit would silently zero every inset it exists to measure.
+  const walk = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? walk(`${dir}/${e.name}`)
+        : e.name.endsWith('.html')
+          ? [`${dir}/${e.name}`]
+          : [],
+    );
+  const pages = walk('showcase');
   assert.ok(pages.length > 0, 'no showcase pages found');
   const missing = pages.filter((p) => {
-    const meta = readFileSync(`showcase/${p}`, 'utf8').match(/<meta\s+name="viewport"[^>]*>/i);
+    const meta = readFileSync(p, 'utf8').match(/<meta\s+name="viewport"[^>]*>/i);
     return !meta || !/viewport-fit\s*=\s*cover/i.test(meta[0]);
   });
   assert.deepEqual(missing, [], `showcase pages missing viewport-fit=cover: ${missing.join(', ')}`);

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Table</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Table</span>
+  </header>
+
+  <main class="dh-main dh-main--flush">
+
+    <section class="dh-sec">
+      <h2 class="dh-h">01 · Wide table — sideways scroll (the default)</h2>
+      <p class="dh-note">Nine columns on a phone. The wrapper scrolls horizontally; the page must not.
+        Flick sideways inside it and confirm the vertical page scroll is not stolen, then flick past the
+        right edge and confirm the whole document does not rubber-band sideways.
+        The header is <code class="juno-mono">--sticky</code>: scroll the table vertically inside its own box.</p>
+      <div class="juno-table-scroll" style="max-block-size:50dvh;">
+        <table class="juno-table juno-table--zebra juno-table--sticky">
+          <thead><tr>
+            <th>SERVICE</th><th>REGION</th><th>STATUS</th>
+            <th class="juno-table__num" aria-sort="descending">CPU</th>
+            <th class="juno-table__num">RPS</th><th>SUCCESS</th>
+            <th class="juno-table__num">P95</th><th class="juno-table__time">DEPLOYED</th><th>ACTIONS</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="juno-table__id">api-gateway</td><td class="juno-table__mono">us-east-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">62</td><td class="juno-table__num">4,780</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:99;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">99%</span></span></td><td class="juno-table__num">128</td><td class="juno-table__time">14:32</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr aria-selected="true"><td class="juno-table__id">worker-pool</td><td class="juno-table__mono">us-east-1</td><td><span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span></td><td class="juno-table__num">88</td><td class="juno-table__num">3,920</td><td><span class="juno-table__meter juno--caution" style="--juno-table-fill:94;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">94%</span></span></td><td class="juno-table__num">402</td><td class="juno-table__time">16:05</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr><td class="juno-table__id">auth-service</td><td class="juno-table__mono">eu-west-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">41</td><td class="juno-table__num">5,120</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:100;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">100%</span></span></td><td class="juno-table__num">96</td><td class="juno-table__time">22:40</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr><td class="juno-table__id">cache-redis</td><td class="juno-table__mono">eu-west-1</td><td><span class="juno-badge juno-badge--soft juno--warning">DOWN</span></td><td class="juno-table__num">—</td><td class="juno-table__num">—</td><td><span class="juno-table__meter juno--warning" style="--juno-table-fill:0;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">0%</span></span></td><td class="juno-table__num">—</td><td class="juno-table__time">15:18</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr><td class="juno-table__id">billing-api</td><td class="juno-table__mono">us-west-2</td><td><span class="juno-badge juno-badge--soft juno--active">DEPLOYING</span></td><td class="juno-table__num">28</td><td class="juno-table__num">1,980</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:98;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">98%</span></span></td><td class="juno-table__num">210</td><td class="juno-table__time">14:50</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr><td class="juno-table__id">search-index</td><td class="juno-table__mono">ap-south-1</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">55</td><td class="juno-table__num">2,640</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:97;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">97%</span></span></td><td class="juno-table__num">174</td><td class="juno-table__time">17:22</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr><td class="juno-table__id">queue-consumer</td><td class="juno-table__mono">ap-south-1</td><td><span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span></td><td class="juno-table__num">73</td><td class="juno-table__num">880</td><td><span class="juno-table__meter juno--caution" style="--juno-table-fill:91;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">91%</span></span></td><td class="juno-table__num">560</td><td class="juno-table__time">15:40</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+            <tr><td class="juno-table__id">cdn-edge</td><td class="juno-table__mono">global</td><td><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td><td class="juno-table__num">33</td><td class="juno-table__num">9,310</td><td><span class="juno-table__meter juno--nominal" style="--juno-table-fill:100;"><span class="juno-table__meter-track"><span class="juno-table__meter-fill"></span></span><span class="juno-table__meter-val">100%</span></span></td><td class="juno-table__num">42</td><td class="juno-table__time">19:10</td><td><span class="juno-table__actions" style="opacity:1;"><button class="juno-table__action" aria-label="Retry"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-arrow-clockwise" /></svg></button></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">02 · --stack — the phone mode</h2>
+      <p class="dh-note">Same semantics, different display. Below a 480px <em>container</em> (not viewport —
+        this is a container query, so the wrapper below declares
+        <code class="juno-mono">container-type: inline-size</code>) the header row disappears and every row
+        becomes a card of label/value pairs fed by <code class="juno-mono">data-label</code>. Row actions stay
+        visible because there is no hover on touch. The selection rail moves to the card's edge — row 2 is
+        <code class="juno-mono">aria-selected</code>.</p>
+      <div class="juno-table-scroll" style="container-type: inline-size;">
+        <table class="juno-table juno-table--stack">
+          <thead><tr><th>SERVICE</th><th>REGION</th><th>STATUS</th><th class="juno-table__num">CPU</th><th class="juno-table__num">P95</th><th class="juno-table__time">DEPLOYED</th></tr></thead>
+          <tbody>
+            <tr>
+              <td data-label="SERVICE" class="juno-table__id">api-gateway</td>
+              <td data-label="REGION" class="juno-table__mono">us-east-1</td>
+              <td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td>
+              <td data-label="CPU" class="juno-table__num">62</td>
+              <td data-label="P95" class="juno-table__num">128</td>
+              <td data-label="DEPLOYED" class="juno-table__time">14:32</td>
+            </tr>
+            <tr aria-selected="true">
+              <td data-label="SERVICE" class="juno-table__id">worker-pool</td>
+              <td data-label="REGION" class="juno-table__mono">us-east-1</td>
+              <td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span></td>
+              <td data-label="CPU" class="juno-table__num">88</td>
+              <td data-label="P95" class="juno-table__num">402</td>
+              <td data-label="DEPLOYED" class="juno-table__time">16:05</td>
+            </tr>
+            <tr>
+              <td data-label="SERVICE" class="juno-table__id">cache-redis</td>
+              <td data-label="REGION" class="juno-table__mono">eu-west-1</td>
+              <td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--warning">DOWN</span></td>
+              <td data-label="CPU" class="juno-table__num">—</td>
+              <td data-label="P95" class="juno-table__num">—</td>
+              <td data-label="DEPLOYED" class="juno-table__time">15:18</td>
+            </tr>
+            <tr>
+              <td data-label="SERVICE" class="juno-table__id">cdn-edge</td>
+              <td data-label="REGION" class="juno-table__mono">global</td>
+              <td data-label="STATUS"><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></td>
+              <td data-label="CPU" class="juno-table__num">33</td>
+              <td data-label="P95" class="juno-table__num">42</td>
+              <td data-label="DEPLOYED" class="juno-table__time">19:10</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="dh-note">If these render as a squeezed grid instead of cards, container queries did not apply —
+        cross-check the container-query row on the Diagnostics page.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">03 · Empty + skeleton states</h2>
+      <div class="juno-table-scroll">
+        <table class="juno-table">
+          <thead><tr><th>SERVICE</th><th>REGION</th><th class="juno-table__num">P95</th></tr></thead>
+          <tbody>
+            <tr><td class="juno-table__skeleton" colspan="3"></td></tr>
+            <tr><td class="juno-table__skeleton" colspan="3"></td></tr>
+            <tr><td class="juno-table__empty" colspan="3"><span class="juno-table__empty-icon" aria-hidden="true">∅</span>No services match this filter.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="juno-dock" aria-label="Primary">
+    <a class="juno-dock__item" href="./index.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg><span class="juno-dock__label">Hub</span></a>
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hard-drives" /></svg><span class="juno-dock__label">Table</span></a>
+    <a class="juno-dock__item" href="./diagnostics.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-cpu" /></svg><span class="juno-dock__label">Diag</span></a>
+  </nav>
+
+  <script src="./harness.js"></script>
+</body>
+</html>
