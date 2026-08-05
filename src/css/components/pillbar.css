@@ -50,6 +50,7 @@
   gap: var(--juno-pillbar-gap);
   padding: var(--juno-pillbar-pad);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: 999px;
@@ -242,6 +243,7 @@
 @media (prefers-reduced-transparency: reduce) {
   .juno-pillbar {
     background: var(--juno-s1);
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 }

@@ -130,6 +130,7 @@
   margin: 0 var(--juno-space-12) calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
   padding: var(--juno-space-4);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: 999px;
@@ -200,6 +201,7 @@
 @media (prefers-reduced-transparency: reduce) {
   .juno-dock--pill {
     background: var(--juno-s1);
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 }
@@ -232,6 +234,7 @@
   padding: var(--juno-space-4);
   overflow: hidden;
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: 999px;
@@ -242,6 +245,7 @@
 @media (prefers-reduced-transparency: reduce) {
   .juno-dock--float {
     background: var(--juno-s1);
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 }

@@ -65,6 +65,7 @@
 .juno-modal::backdrop {
   background: rgb(0 0 0);
   opacity: var(--juno-opacity-scrim);
+  -webkit-backdrop-filter: blur(1.5px);
   backdrop-filter: blur(1.5px);
 }
 

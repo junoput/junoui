@@ -29,6 +29,11 @@
   scrollbar-width: none;
 }
 
+/* scrollbar-width only reached Safari 18.2, so the scrollable strip still shows
+   a bar on older iOS — keep the WebKit pseudo-element alongside it (same pair
+   .juno-scroller--bare uses). */
+.juno-tabs__list::-webkit-scrollbar { display: none; }
+
 .juno-tabs__tab {
   appearance: none;
   margin: 0;
