@@ -1,0 +1,98 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Device harness chrome — NOT part of junoui, NOT shipped.
+ *  Everything here is prefixed .dh-* so it can never restyle a .juno-*
+ *  component: the whole point of this harness is to see junoui exactly
+ *  as it ships. Only page furniture (top bar, spacing, notes) lives here.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Top bar — sticky, clears the notch / Dynamic Island itself. Stays under
+   the components' own z-layers (raised = 100) so a fixed dock or corner
+   pillbar overlaps it exactly as it would in a real app. */
+.dh-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px));
+  padding-block: calc(8px + env(safe-area-inset-top, 0px)) 8px;
+  background: var(--juno-s1);
+  border-block-end: 1px solid var(--juno-border);
+}
+
+.dh-bar__title {
+  font-family: var(--juno-font-family-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--juno-label);
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Content column — edge padding respects landscape insets on both sides. */
+.dh-main {
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Pages carrying a FIXED dock / pillbar reserve its footprint with junoui's
+   own clearance tokens (additive: control height + safe-area inset). */
+.dh-main--dock { padding-block-end: var(--juno-dock-clearance); }
+.dh-main--pillbar { padding-block-end: var(--juno-pillbar-clearance); }
+
+/* Pages whose bar is IN FLOW (sticky dock/pillbar as the last body child)
+   must not add their own bottom padding — the control carries the inset. */
+.dh-main--flush { padding-block-end: 8px; }
+
+.dh-sec { margin-block-end: 36px; }
+.dh-sec > * + * { margin-block-start: 12px; }
+
+.dh-h {
+  font-family: var(--juno-font-family-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--juno-active);
+  margin: 0 0 4px;
+}
+
+.dh-note {
+  font-family: var(--juno-font-family-sans);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--juno-label);
+  margin: 0;
+}
+
+.dh-note code { font-size: 11px; color: var(--juno-data); }
+
+/* Filler so a page is tall enough to scroll — proves sticky/fixed behavior
+   and lets the operator collapse the browser's address bar. */
+.dh-filler { display: flex; flex-direction: column; gap: 12px; }
+
+/* Frame for demos that must be shown contained (e.g. an in-flow dock that
+   would otherwise duplicate the page-level one). Border only; nothing
+   inside is restyled. */
+.dh-frame {
+  border: 1px solid var(--juno-border);
+  border-radius: var(--juno-radius-3);
+  overflow: hidden;
+  background: var(--juno-s0);
+}
+
+/* Variant switcher row on the dock / pillbar pages. */
+.dh-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Diagnostics readout — value cells stay mono + wrap on long UA strings. */
+.dh-val {
+  font-family: var(--juno-font-family-mono);
+  font-size: 12px;
+  color: var(--juno-data);
+  overflow-wrap: anywhere;
+}

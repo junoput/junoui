@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Layout</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+<style>
+  /* harness-only tint so the primitives' boxes are visible at all */
+  .dh-box { background: var(--juno-s2); border: 1px solid var(--juno-border); border-radius: var(--juno-radius-2); padding: 12px; font-family: var(--juno-font-family-mono); font-size: 12px; color: var(--juno-label); }
+  /* the two whole-page modes must never both paint */
+  #dh-shell { display: none; }
+</style>
+</head>
+<body>
+
+  <!-- ══ MODE A: the page-scroll tour of the layout primitives ══ -->
+  <div id="dh-tour">
+    <header class="dh-bar">
+      <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+      <span class="dh-bar__title">Layout, scroller, reel</span>
+      <a class="juno-btn juno-btn--sm" href="?shell=1" style="margin-inline-start:auto;">APP SHELL</a>
+    </header>
+
+    <main class="dh-main dh-main--flush">
+
+      <section class="dh-sec">
+        <h2 class="dh-h">App shell — 100dvh, the one that needs a real phone</h2>
+        <p class="dh-note">Tap <strong>APP SHELL</strong> above. The frame is
+          <code class="juno-mono">block-size: 100dvh</code> with <code class="juno-mono">overflow: hidden</code>:
+          the <em>main region</em> scrolls, not the page. On a phone that means the address bar never collapses
+          and the dock can never be clipped by it. Confirm exactly that — the bar stays, the list moves,
+          the dock is pinned above the home indicator.</p>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Reel — horizontal scroll-snap</h2>
+        <div class="juno-reel" style="--juno-reel-space:12px;">
+          <div class="juno-readout juno--nominal" style="min-inline-size:130px;"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+          <div class="juno-readout juno--caution" style="min-inline-size:130px;"><span class="juno-readout__label">Latency</span><span class="juno-readout__value">402</span><span class="juno-readout__unit">ms</span></div>
+          <div class="juno-readout" style="min-inline-size:130px;"><span class="juno-readout__label">Req/s</span><span class="juno-readout__value">1340</span><span class="juno-readout__unit">rps</span></div>
+          <div class="juno-readout juno--target" style="min-inline-size:130px;"><span class="juno-readout__label">Queue</span><span class="juno-readout__value">274</span><span class="juno-readout__unit">jobs</span></div>
+          <div class="juno-readout juno--warning" style="min-inline-size:130px;"><span class="juno-readout__label">Disk</span><span class="juno-readout__value">12</span><span class="juno-readout__unit">%</span></div>
+        </div>
+        <p class="dh-note">Mandatory inline snap. Two things to feel: momentum (should be indistinguishable
+          from a native list) and that a diagonal flick does not lock the page's vertical scroll.</p>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Scroller — overscroll containment</h2>
+        <div class="juno-scroller juno-scroller--y" style="block-size:150px;border:1px solid var(--juno-border);border-radius:var(--juno-radius-3);padding:12px;">
+          <div class="juno-stack" style="--juno-stack-space:10px;">
+            <div class="dh-box">row 01</div><div class="dh-box">row 02</div><div class="dh-box">row 03</div>
+            <div class="dh-box">row 04</div><div class="dh-box">row 05</div><div class="dh-box">row 06</div>
+            <div class="dh-box">row 07 — last</div>
+          </div>
+        </div>
+        <p class="dh-note">Scroll to this box's end and keep pulling: the page behind it must
+          <strong>not</strong> start moving (<code class="juno-mono">overscroll-behavior: contain</code>).
+          Community convention, not an Apple guarantee — which is exactly why it needs eyes on a device.</p>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Scroller --x + --bare — no visible scrollbar</h2>
+        <div class="juno-scroller juno-scroller--x juno-scroller--bare" style="--juno-scroller-snap: inline mandatory;">
+          <div style="display:flex;gap:10px;">
+            <div class="juno-snap dh-box" style="min-inline-size:180px;">panel A</div>
+            <div class="juno-snap dh-box" style="min-inline-size:180px;">panel B</div>
+            <div class="juno-snap dh-box" style="min-inline-size:180px;">panel C</div>
+            <div class="juno-snap dh-box" style="min-inline-size:180px;">panel D</div>
+          </div>
+        </div>
+        <p class="dh-note">WebKit needs both <code class="juno-mono">scrollbar-width: none</code> and the
+          <code class="juno-mono">::-webkit-scrollbar</code> reset. If a bar appears here, one of them is missing.</p>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Stack · cluster · switcher · sidebar</h2>
+        <div class="juno-stack" style="--juno-stack-space:10px;">
+          <div class="dh-box">.juno-stack — one-dimensional rhythm</div>
+          <div class="dh-box">second child, spaced by --juno-stack-space</div>
+        </div>
+        <div class="juno-cluster" style="--juno-cluster-space:8px;margin-block-start:14px;">
+          <span class="juno-chip">cluster</span><span class="juno-chip">wraps</span><span class="juno-chip">at</span>
+          <span class="juno-chip">any</span><span class="juno-chip">width</span><span class="juno-chip">without</span>
+          <span class="juno-chip">a</span><span class="juno-chip">media</span><span class="juno-chip">query</span>
+        </div>
+        <div class="juno-switcher" style="margin-block-start:14px;">
+          <div class="dh-box">switcher A</div><div class="dh-box">switcher B</div><div class="dh-box">switcher C</div>
+        </div>
+        <p class="dh-note">The switcher flips from a row to a column below its threshold — on this phone it
+          should already be stacked. Rotate to landscape and see whether it goes back to a row.</p>
+        <div class="juno-sidebar" style="margin-block-start:14px;">
+          <div class="juno-sidebar__aside dh-box">aside</div>
+          <div class="juno-sidebar__main dh-box">main — reflows below the aside when there is no room</div>
+        </div>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Auto grid + tiles</h2>
+        <div class="juno-grid-auto" style="--juno-grid-min:120px;">
+          <div class="dh-box">1</div><div class="dh-box">2</div><div class="dh-box">3</div>
+          <div class="dh-box">4</div><div class="dh-box">5</div><div class="dh-box">6</div>
+        </div>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Responsive visibility helpers</h2>
+        <div class="juno-cluster" style="--juno-cluster-space:10px;">
+          <span class="juno-badge juno--active juno-hide-below-md">VISIBLE ≥ MD</span>
+          <span class="juno-badge juno--caution juno-hide-from-md">VISIBLE &lt; MD</span>
+          <span class="juno-badge juno--nominal juno-hide-below-lg">VISIBLE ≥ LG</span>
+        </div>
+        <p class="dh-note">In portrait a phone is below md, so only the caution badge should show. Rotate to
+          landscape: on a larger handset the active badge may appear. Note these are viewport helpers —
+          components themselves prefer container queries.</p>
+      </section>
+
+      <section class="dh-sec">
+        <h2 class="dh-h">Centered measure</h2>
+        <div class="juno-center juno-card"><div class="juno-card__body">
+          <span class="juno-label">.juno-center caps line length and centers inside fluid gutters. On a phone
+            the gutter clamps to its minimum — check the text is not touching the screen edge, and that in
+            landscape it clears the notch.</span>
+        </div></div>
+      </section>
+
+      <section class="dh-sec">
+        <div class="dh-filler">
+          <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+          <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="juno-dock" aria-label="Primary">
+      <a class="juno-dock__item" href="./index.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg><span class="juno-dock__label">Hub</span></a>
+      <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Layout</span></a>
+      <a class="juno-dock__item" href="./diagnostics.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-cpu" /></svg><span class="juno-dock__label">Diag</span></a>
+    </nav>
+  </div>
+
+  <!-- ══ MODE B: the real app shell, 100dvh, main region scrolls ══ -->
+  <div class="juno-app-shell" id="dh-shell">
+    <div class="juno-app-shell__body">
+      <header class="juno-app-shell__topbar">
+        <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./layout.html">‹ BACK</a>
+        <span class="dh-bar__title">App shell · 100dvh</span>
+      </header>
+      <main class="juno-app-shell__main">
+        <div style="padding:16px;">
+          <p class="dh-note" style="margin-block-end:12px;">The page itself cannot scroll. This region can.
+            Scroll it hard: Safari's address bar must <em>not</em> collapse, the top bar must not move, and the
+            dock below must stay exactly where it is, clear of the home indicator.</p>
+          <section class="juno-list">
+            <h2 class="juno-list__header">Library</h2>
+            <ul class="juno-list__group">
+              <li><a class="juno-list__row" href="#"><span class="juno-list__main"><span class="juno-list__label">Recently added</span></span><span class="juno-list__value">128</span><svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></a></li>
+              <li><a class="juno-list__row" href="#"><span class="juno-list__main"><span class="juno-list__label">Albums</span></span><span class="juno-list__value">42</span><svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></a></li>
+              <li><a class="juno-list__row" href="#"><span class="juno-list__main"><span class="juno-list__label">People</span></span><span class="juno-list__value">17</span><svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></a></li>
+              <li><a class="juno-list__row" href="#"><span class="juno-list__main"><span class="juno-list__label">Places</span></span><span class="juno-list__value">9</span><svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></a></li>
+              <li><a class="juno-list__row" href="#"><span class="juno-list__main"><span class="juno-list__label">Shared</span></span><span class="juno-list__value">3</span><svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg></a></li>
+            </ul>
+          </section>
+          <div class="dh-filler" style="margin-block-start:16px;">
+            <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+            <div class="juno-card"><div class="juno-card__body"><span class="juno-label">Last row inside the
+              scrolling main region — it must be fully readable above the dock.</span></div></div>
+          </div>
+        </div>
+      </main>
+      <nav class="juno-dock" aria-label="Primary">
+        <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Library</span></a>
+        <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-dock__label">Albums</span></a>
+        <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg><span class="juno-dock__label">Settings</span></a>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+  // harness plumbing: two whole-page modes cannot coexist, so drop the unused one.
+  (function () {
+    var shell = new URLSearchParams(location.search).get('shell') === '1';
+    document.getElementById(shell ? 'dh-tour' : 'dh-shell').remove();
+    if (shell) document.getElementById('dh-shell').style.display = 'flex';
+  })();
+  </script>
+  <script src="./harness.js"></script>
+</body>
+</html>

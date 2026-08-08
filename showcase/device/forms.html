@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Forms</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Forms &amp; inputs</span>
+  </header>
+
+  <main class="dh-main">
+
+    <section class="dh-sec">
+      <div class="juno-alert juno--caution" role="status">
+        <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning" /></svg></span>
+        <div class="juno-alert__body">
+          <span class="juno-alert__title">The focus-zoom experiment</span>
+          <span class="juno-alert__text">iOS Safari is widely observed to zoom the page onto a focused text
+            field whose font-size is under 16px. junoui holds text entry at a 16px floor on coarse pointers to
+            stop that. No primary Apple source exists for the behaviour — so measure it here, on the device,
+            instead of citing folklore.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">A · junoui input — expected: no zoom</h2>
+      <div class="juno-field">
+        <label class="juno-field__label" for="f-a">Tap me first</label>
+        <input id="f-a" class="juno-input juno-mono" type="text" value="ORD-1234" />
+        <span class="juno-field__help">Focus this, then check Diagnostics → visualViewport.scale. It must stay 1.</span>
+      </div>
+
+      <h2 class="dh-h" style="margin-block-start:20px;">B · bare 12px input — the control specimen</h2>
+      <label class="juno-field__label" for="f-b">Not a junoui control</label>
+      <input id="f-b" type="text" value="12px, unstyled" style="font-size:12px;padding:8px;inline-size:100%;box-sizing:border-box;" />
+      <p class="dh-note">Deliberately outside junoui so the harness can show the failure mode. If A stays put
+        and B zooms, the 16px floor is doing its job. If <em>neither</em> zooms, iOS changed — re-verify the
+        claim in <code class="juno-mono">docs/ios-conformance.md</code> before anyone removes the mitigation.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Keyboards — each type must summon the right one</h2>
+      <div class="juno-stack" style="--juno-stack-space:14px;">
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-email">Email <span class="juno-field__req" aria-hidden="true">*</span></label>
+          <input id="f-email" class="juno-input juno-input--sans" type="email" inputmode="email" autocomplete="email" placeholder="ops@example.com" aria-required="true" />
+          <span class="juno-field__help">Expect the @ key.</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-tel">Phone</label>
+          <input id="f-tel" class="juno-input juno-mono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+41 …" />
+          <span class="juno-field__help">Expect the keypad.</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-num">Numeric</label>
+          <input id="f-num" class="juno-input juno-mono" type="text" inputmode="decimal" value="37000" />
+          <span class="juno-field__help">Expect a decimal pad — and no spinner arrows.</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-search">Search</label>
+          <input id="f-search" class="juno-input juno-input--sans" type="search" placeholder="Search library…" />
+          <span class="juno-field__help">Expect a "Search" return key and a native clear affordance.</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-date">Date — a native iOS wheel</label>
+          <input id="f-date" class="juno-input juno-mono" type="date" />
+          <span class="juno-field__help">The picker is Apple's. Check it does not blow the field's height out.</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-sel">Select — native sheet on iOS</label>
+          <div class="juno-select">
+            <select id="f-sel" class="juno-input">
+              <option>us-east-1</option><option>eu-west-1</option><option>ap-south-1</option>
+            </select>
+          </div>
+          <span class="juno-field__help">iOS renders its own wheel; junoui only owns the closed state + chevron.</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-ta">Textarea</label>
+          <textarea id="f-ta" class="juno-input juno-input--sans" rows="3" placeholder="Free text remarks…"></textarea>
+          <span class="juno-field__help">Type several lines — the software keyboard must not cover the caret.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Validation states</h2>
+      <div class="juno-stack" style="--juno-stack-space:14px;">
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-inv">Invalid</label>
+          <input id="f-inv" class="juno-input juno-mono" type="text" value="E-503" aria-invalid="true" aria-describedby="f-inv-e" />
+          <span class="juno-field__error" id="f-inv-e">Unknown error code</span>
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-dis">Disabled</label>
+          <input id="f-dis" class="juno-input juno-mono" type="text" value="LOCKED" disabled />
+        </div>
+        <div class="juno-field">
+          <label class="juno-field__label" for="f-tgt">Role-tinted</label>
+          <input id="f-tgt" class="juno-input juno-mono juno--target" type="text" value="5000" />
+          <span class="juno-field__help juno-text-target">req/s — managed</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Choice controls — 44px targets on touch</h2>
+      <div class="juno-stack" style="--juno-stack-space:10px;">
+        <label class="juno-choice"><input class="juno-checkbox" type="checkbox" checked /> Notify on failure</label>
+        <label class="juno-choice"><input class="juno-checkbox" type="checkbox" /> Include debug payload</label>
+        <label class="juno-choice"><input class="juno-checkbox juno--warning" type="checkbox" checked /> Allow destructive actions</label>
+        <label class="juno-choice"><input class="juno-radio" type="radio" name="f-r" checked /> Rolling deploy</label>
+        <label class="juno-choice"><input class="juno-radio" type="radio" name="f-r" /> Blue / green</label>
+        <label class="juno-choice"><input class="juno-radio" type="radio" name="f-r" disabled /> Canary (unavailable)</label>
+      </div>
+      <p class="dh-note">The box itself is small by design — the whole label row is the target. Tap the words,
+        not the box, and confirm it still toggles.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Switch — default and --sm</h2>
+      <div class="juno-stack" style="--juno-stack-space:14px;">
+        <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>Live updates</span></label>
+        <label class="juno-switch juno-switch--sm"><input class="juno-switch__input" type="checkbox" role="switch" /><span class="juno-switch__track"></span><span>Compact rows</span></label>
+      </div>
+      <p class="dh-note">Watch the knob transition under Reduce Motion: it must jump, not slide.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Segmented control</h2>
+      <fieldset class="juno-seg juno--active">
+        <legend class="juno-sr-only">Kind</legend>
+        <label class="juno-seg__opt"><input type="radio" name="f-kind" checked /><span>ALL</span></label>
+        <label class="juno-seg__opt"><input type="radio" name="f-kind" /><span>PHOTOS</span></label>
+        <label class="juno-seg__opt"><input type="radio" name="f-kind" /><span>VIDEO</span></label>
+      </fieldset>
+      <fieldset class="juno-seg juno-seg--sm juno--target" style="margin-block-start:12px;">
+        <legend class="juno-sr-only">Sort</legend>
+        <label class="juno-seg__opt"><input type="radio" name="f-sort" checked /><span>NEWEST</span></label>
+        <label class="juno-seg__opt"><input type="radio" name="f-sort" /><span>NAME</span></label>
+        <label class="juno-seg__opt"><input type="radio" name="f-sort" /><span>SIZE</span></label>
+      </fieldset>
+      <p class="dh-note">Three or four segments is the phone limit — check none of the labels truncate at this width.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Slider — a drag target, not a tap target</h2>
+      <div class="juno-field">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span class="juno-field__label">Window (min)</span><span class="juno-value juno-text-active" style="font-size:16px;">40</span>
+        </div>
+        <div class="juno-slider" role="slider" tabindex="0" aria-label="Window minutes" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+      </div>
+      <p class="dh-note">junoui ships the look only — dragging is the app's job, so this lever will not move.
+        What matters here is that the lever is big enough to grab and that touching it does not scroll the page.</p>
+    </section>
+
+  </main>
+
+  <script src="./harness.js"></script>
+</body>
+</html>

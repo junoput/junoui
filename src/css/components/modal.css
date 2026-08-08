@@ -45,6 +45,11 @@
 }
 
 .juno-modal[open] {
+  /* Column so __body can be the bounded scroll port: the surface caps its own
+     height (85dvh as a sheet) and clips, so without this a tall body is simply
+     cut off and unreachable. See 20260803-029. */
+  display: flex;
+  flex-direction: column;
   opacity: 1;
   transform: translateY(0) scale(1);
 }
@@ -60,6 +65,7 @@
 .juno-modal::backdrop {
   background: rgb(0 0 0);
   opacity: var(--juno-opacity-scrim);
+  -webkit-backdrop-filter: blur(1.5px);
   backdrop-filter: blur(1.5px);
 }
 
@@ -100,7 +106,19 @@
 
 .juno-modal__close:hover { background: var(--juno-s2); color: var(--juno-data); }
 
-.juno-modal__body { padding: var(--juno-space-12) var(--juno-pad-surface-inline) var(--juno-pad-surface-inline); }
+.juno-modal__body {
+  padding: var(--juno-space-12) var(--juno-pad-surface-inline) var(--juno-pad-surface-inline);
+
+  /* The scroll port (the docs already promised it "scrolls on its own").
+     min-block-size:0 lets a flex item shrink below its content so overflow-y
+     actually engages. overscroll-behavior stops the scroll chaining to the page
+     behind once the body hits its end — the rubber-band-under-the-sheet effect
+     on iOS. NOTE: overscroll-behavior is community convention here, not Apple
+     guidance; no primary Apple source covers it. See 20260803-029. */
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 
 .juno-modal__title {
   font-family: var(--juno-font-family-sans);

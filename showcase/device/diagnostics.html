@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Diagnostics</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+<style>
+  /* measurement probes — laid out, never seen. Fixed + zero inline size so
+     they cannot influence the document's own height. */
+  #dh-probes { position: fixed; inset-block-start: 0; inset-inline-start: 0; inline-size: 0; visibility: hidden; pointer-events: none; }
+  #dh-safe { padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+  #dh-vh  { height: 100vh; }
+  #dh-svh { height: 100svh; }
+  #dh-lvh { height: 100lvh; }
+  #dh-dvh { height: 100dvh; }
+  #dh-tap { inline-size: var(--juno-size-tap-min); }
+  #dh-tapc { inline-size: var(--juno-size-tap-comfortable); }
+  /* table cells: two columns, value + verdict, no sideways scroll needed */
+  .dh-diag td:first-child { white-space: normal; }
+</style>
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Diagnostics</span>
+    <button class="juno-btn juno-btn--sm" id="dh-remeasure" style="margin-inline-start:auto;">RE-MEASURE</button>
+  </header>
+
+  <main class="dh-main">
+
+    <section class="dh-sec">
+      <div class="juno-alert juno--caution" role="status">
+        <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning" /></svg></span>
+        <div class="juno-alert__body">
+          <span class="juno-alert__title">How to read this</span>
+          <span class="juno-alert__text">Values re-measure on rotate, resize and scroll. Do all three:
+            <strong>rotate to landscape</strong> (left/right insets should become non-zero on a notched phone),
+            <strong>scroll down</strong> so Safari's address bar collapses (watch <code class="juno-mono">100dvh</code> chase
+            <code class="juno-mono">innerHeight</code> while <code class="juno-mono">100lvh</code> and <code class="juno-mono">100vh</code> stay put),
+            and <strong>launch from the Home Screen icon</strong> (standalone should flip to PASS).</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Runtime context</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-ctx">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Safe-area insets — env(safe-area-inset-*)</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-safe">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+      <p class="dh-note">Resolved by measuring a probe element whose four paddings are the four
+        <code class="juno-mono">env()</code> values. All-zero on a phone in portrait means
+        <code class="juno-mono">viewport-fit=cover</code> did not take — nothing else on this page is trustworthy.
+        Portrait and landscape differ: portrait puts the inset on top/bottom, landscape moves it to left/right.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Viewport units, side by side</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-vu">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+      <p class="dh-note">The spec makes unprefixed <code class="juno-mono">vh</code> equal to
+        <code class="juno-mono">lvh</code> — chrome assumed retracted — which is the classic
+        <code class="juno-mono">100vh</code> overflow. junoui uses zero raw <code class="juno-mono">vh</code>:
+        full-height surfaces are <code class="juno-mono">dvh</code>, the bottom sheet caps at
+        <code class="juno-mono">92dvh</code>. Scroll this page down until the address bar collapses, then compare again.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Media queries &amp; user preferences</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-mq">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+      <p class="dh-note">Flip these in iOS Settings → Accessibility (Motion → Reduce Motion,
+        Display &amp; Text Size → Increase Contrast / Reduce Transparency) and re-open. They must change
+        <em>live</em>, without a reload, for junoui's preference queries to be doing their job.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">junoui tokens as this device resolves them</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-tok">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Feature support</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-sup">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Device</h2>
+      <div class="juno-table-scroll"><table class="juno-table juno-table--zebra dh-diag" id="t-dev">
+        <thead><tr><th>WHAT</th><th>VALUE</th><th>VERDICT</th></tr></thead><tbody></tbody>
+      </table></div>
+    </section>
+
+    <section class="dh-sec">
+      <p class="dh-note">Long tail so the page always scrolls — collapse the address bar and hit RE-MEASURE.</p>
+      <div class="dh-filler">
+        <div class="juno-skeleton" style="--juno-skeleton-h:64px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:64px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:64px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:64px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:64px;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- probes -->
+  <div id="dh-probes" aria-hidden="true">
+    <div id="dh-safe"></div>
+    <div id="dh-vh"></div><div id="dh-svh"></div><div id="dh-lvh"></div><div id="dh-dvh"></div>
+    <div id="dh-tap"></div><div id="dh-tapc"></div>
+  </div>
+
+  <script>
+  /* ══════════════════════════════════════════════════════════════════
+   *  This page is a test instrument, not a shipped component: junoui's
+   *  zero-JS rule governs the library, not the probe that measures it.
+   *  Everything below only READS the platform — nothing is restyled.
+   * ══════════════════════════════════════════════════════════════════ */
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var px = function (el) { return el.getBoundingClientRect().height; };
+    var n1 = function (v) { return (Math.round(v * 10) / 10).toString(); };
+
+    var ROLE = { pass: 'nominal', fail: 'warning', warn: 'caution', info: 'muted' };
+
+    function rows(tableId, list) {
+      var tb = $(tableId).tBodies[0];
+      tb.textContent = '';
+      list.forEach(function (r) {
+        var tr = document.createElement('tr');
+        var a = document.createElement('td');
+        a.className = 'juno-table__id';
+        a.textContent = r[0];
+        var b = document.createElement('td');
+        b.className = 'dh-val';
+        b.textContent = r[1];
+        var c = document.createElement('td');
+        var s = document.createElement('span');
+        s.className = 'juno-badge juno-badge--soft juno--' + (ROLE[r[2]] || 'muted');
+        s.textContent = (r[2] || 'info').toUpperCase();
+        c.appendChild(s);
+        if (r[3]) {
+          var note = document.createElement('div');
+          note.className = 'dh-val';
+          note.style.color = 'var(--juno-label)';
+          note.style.marginBlockStart = '4px';
+          note.textContent = r[3];
+          b.appendChild(note);
+        }
+        tr.appendChild(a); tr.appendChild(b); tr.appendChild(c);
+        tb.appendChild(tr);
+      });
+    }
+
+    // ── @starting-style: parse it for real, plus WebKit's usual proxy ──
+    function startingStyleParses() {
+      try {
+        var st = document.createElement('style');
+        st.textContent = '@starting-style { .dh-probe-x { opacity: 0; } }';
+        document.head.appendChild(st);
+        var ok = false;
+        try { ok = st.sheet.cssRules.length > 0 && /starting-style/i.test(st.sheet.cssRules[0].cssText); }
+        catch (e) { ok = false; }
+        st.remove();
+        return ok;
+      } catch (e) { return false; }
+    }
+
+    var SUPPORT = [
+      ['@starting-style (parsed)', startingStyleParses],
+      ['transition-behavior: allow-discrete', function () { return CSS.supports('transition-behavior', 'allow-discrete'); }],
+      ['Popover API (element.popover)', function () { return Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover'); }],
+      ['color-mix(in srgb, red, blue)', function () { return CSS.supports('color', 'color-mix(in srgb, red, blue)'); }],
+      ['oklch() color', function () { return CSS.supports('color', 'oklch(50% 0.1 90)'); }],
+      ['backdrop-filter: blur(1px)', function () { return CSS.supports('backdrop-filter', 'blur(1px)'); }],
+      ['-webkit-backdrop-filter: blur(1px)', function () { return CSS.supports('-webkit-backdrop-filter', 'blur(1px)'); }],
+      ['scrollbar-width: none', function () { return CSS.supports('scrollbar-width', 'none'); }],
+      ['aspect-ratio: 1', function () { return CSS.supports('aspect-ratio', '1'); }],
+      [':has(*) selector', function () { return CSS.supports('selector(:has(*))'); }],
+      ['container-type: inline-size', function () { return CSS.supports('container-type', 'inline-size'); }],
+      ['@container query unit (cqi)', function () { return CSS.supports('width', '10cqi'); }],
+      ['height: 100dvh', function () { return CSS.supports('height', '100dvh'); }],
+      ['env(safe-area-inset-top)', function () { return CSS.supports('padding', 'env(safe-area-inset-top)'); }],
+      ['dialog::backdrop + showModal', function () { return typeof HTMLDialogElement !== 'undefined' && !!HTMLDialogElement.prototype.showModal; }],
+      ['overscroll-behavior: contain', function () { return CSS.supports('overscroll-behavior', 'contain'); }],
+      ['scroll-snap-type: inline mandatory', function () { return CSS.supports('scroll-snap-type', 'inline mandatory'); }]
+    ];
+
+    var MQ = [
+      ['(pointer: coarse)', 'coarse pointer → junoui promotes tap-min to 44px', true],
+      ['(hover: none)', 'no hover → hover-only affordances must not be the only path', true],
+      ['(prefers-reduced-motion: reduce)', 'Settings → Accessibility → Motion', false],
+      ['(prefers-contrast: more)', 'Settings → Accessibility → Increase Contrast', false],
+      ['(prefers-reduced-transparency: reduce)', 'Settings → Accessibility → Reduce Transparency', false],
+      ['(prefers-color-scheme: dark)', 'drives junoui’s auto mode', false],
+      ['(display-mode: standalone)', 'installed web app, no browser chrome', false],
+      ['(orientation: landscape)', 'rotate to flip', false],
+      ['(width <= 639.98px)', 'junoui’s phone breakpoint: modal becomes a bottom sheet', false],
+      ['(dynamic-range: high)', 'HDR-capable display', false]
+    ];
+
+    function measure() {
+      var root = document.documentElement;
+      var cs = getComputedStyle(root);
+      var raw = function (p) { return (cs.getPropertyValue(p) || '').trim() || '(unset)'; };
+
+      // ── runtime context ──
+      var vpMeta = document.querySelector('meta[name="viewport"]');
+      var vpOK = /viewport-fit\s*=\s*cover/.test(vpMeta ? vpMeta.content : '');
+      var standaloneNav = ('standalone' in navigator) ? String(navigator.standalone) : 'undefined (not Safari)';
+      var standaloneMQ = matchMedia('(display-mode: standalone)').matches;
+      rows('t-ctx', [
+        ['viewport meta', vpMeta ? vpMeta.content : '(missing)', vpOK ? 'pass' : 'fail',
+          vpOK ? '' : 'Without viewport-fit=cover every inset below reads 0.'],
+        ['navigator.standalone', standaloneNav, standaloneNav === 'true' ? 'pass' : 'info',
+          'Safari-only. true = launched from the Home Screen icon.'],
+        ['matchMedia(display-mode: standalone)', String(standaloneMQ), standaloneMQ ? 'pass' : 'info',
+          standaloneMQ ? '' : 'Running in browser chrome — install to Home Screen for the real test.'],
+        ['apple-mobile-web-app-capable', document.querySelector('meta[name="apple-mobile-web-app-capable"]') ? 'yes' : 'missing',
+          document.querySelector('meta[name="apple-mobile-web-app-capable"]') ? 'pass' : 'fail'],
+        ['status bar style', (document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]') || {}).content || '(missing)', 'info',
+          'black-translucent = page paints under the status bar; the top inset is load-bearing.'],
+        ['document.dir / lang', (root.dir || 'ltr') + ' / ' + (root.lang || '(unset)'), 'info']
+      ]);
+
+      // ── safe areas ──
+      var sp = getComputedStyle($('dh-safe'));
+      var t = parseFloat(sp.paddingTop) || 0, r = parseFloat(sp.paddingRight) || 0;
+      var b = parseFloat(sp.paddingBottom) || 0, l = parseFloat(sp.paddingLeft) || 0;
+      var any = (t + r + b + l) > 0;
+      var land = matchMedia('(orientation: landscape)').matches;
+      rows('t-safe', [
+        ['safe-area-inset-top', n1(t) + 'px', t > 0 ? 'pass' : 'info',
+          t > 0 ? 'Non-zero — notch / Dynamic Island / status bar cleared.' : 'Zero. Expected in landscape and on non-notched hardware.'],
+        ['safe-area-inset-right', n1(r) + 'px', r > 0 ? 'pass' : 'info',
+          land ? 'Landscape: one side should be non-zero on a notched phone.' : 'Portrait: zero is correct here.'],
+        ['safe-area-inset-bottom', n1(b) + 'px', b > 0 ? 'pass' : 'info',
+          b > 0 ? 'Home-indicator clearance — every junoui dock/pillbar/sheet adds this.' : 'Zero: no home indicator, or viewport-fit did not take.'],
+        ['safe-area-inset-left', n1(l) + 'px', l > 0 ? 'pass' : 'info',
+          land ? 'Landscape: one side should be non-zero on a notched phone.' : 'Portrait: zero is correct here.'],
+        ['any inset non-zero', String(any), any ? 'pass' : (vpOK ? 'warn' : 'fail'),
+          any ? 'viewport-fit=cover is live.' : 'All four are 0 — rotate, and confirm the meta above.'],
+        ['orientation', land ? 'landscape' : 'portrait', 'info', 'Rotate the device and re-read the four rows above.']
+      ]);
+
+      // ── viewport units ──
+      var vh = px($('dh-vh')), svh = px($('dh-svh')), lvh = px($('dh-lvh')), dvh = px($('dh-dvh'));
+      var vv = window.visualViewport;
+      rows('t-vu', [
+        ['100vh', n1(vh) + 'px', 'info', 'Spec-equal to lvh: sized as if browser chrome were retracted.'],
+        ['100svh', n1(svh) + 'px', 'info', 'Small viewport — chrome assumed expanded. Never overflows.'],
+        ['100lvh', n1(lvh) + 'px', 'info', 'Large viewport — chrome assumed retracted.'],
+        ['100dvh', n1(dvh) + 'px', 'info', 'Dynamic — tracks live. What junoui uses for full-height surfaces.'],
+        ['vh === lvh', String(Math.abs(vh - lvh) < 0.5), Math.abs(vh - lvh) < 0.5 ? 'pass' : 'warn',
+          'Spec says they are equal. A mismatch here is a WebKit bug worth filing.'],
+        ['window.innerHeight', n1(window.innerHeight) + 'px', 'info',
+          'Compare against 100dvh: they should agree once the page has settled.'],
+        ['dvh vs innerHeight delta', n1(dvh - window.innerHeight) + 'px', Math.abs(dvh - window.innerHeight) < 2 ? 'pass' : 'warn'],
+        ['visualViewport.height', vv ? n1(vv.height) + 'px' : 'n/a', 'info', 'Shrinks when the software keyboard opens.'],
+        ['visualViewport.offsetTop', vv ? n1(vv.offsetTop) + 'px' : 'n/a', 'info'],
+        ['visualViewport.scale', vv ? n1(vv.scale) : 'n/a', vv && Math.abs(vv.scale - 1) < 0.01 ? 'pass' : 'warn',
+          'Anything but 1 means the page got pinch- or focus-zoomed.'],
+        ['document scroll height', n1(document.documentElement.scrollHeight) + 'px', 'info']
+      ]);
+
+      // ── media queries ──
+      rows('t-mq', MQ.map(function (m) {
+        var hit = matchMedia(m[0]).matches;
+        var verdict = m[2] ? (hit ? 'pass' : 'warn') : 'info';
+        return [m[0], String(hit), verdict, m[1]];
+      }));
+
+      // ── tokens ──
+      var tapW = $('dh-tap').getBoundingClientRect().width;
+      var tapC = $('dh-tapc').getBoundingClientRect().width;
+      var coarse = matchMedia('(pointer: coarse)').matches;
+      var motion = raw('--juno-motion'), mscale = raw('--juno-motion-scale');
+      var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      rows('t-tok', [
+        ['--juno-size-tap-min (resolved)', n1(tapW) + 'px',
+          coarse ? (Math.abs(tapW - 44) < 0.5 ? 'pass' : 'fail') : (Math.abs(tapW - 24) < 0.5 ? 'pass' : 'fail'),
+          coarse ? 'Coarse pointer: must be 44px (promoted from the 24px WCAG AA floor).'
+                 : 'Fine pointer: must be 24px (WCAG 2.2 SC 2.5.8).'],
+        ['--juno-size-tap-comfortable', n1(tapC) + 'px', Math.abs(tapC - 44) < 0.5 ? 'pass' : 'fail',
+          'Apple HIG 44pt = 44 CSS px. If you ever see 58.67 here, that is the pt-conversion bug.'],
+        ['--juno-size-tap-min (declared)', raw('--juno-size-tap-min'), 'info'],
+        ['--juno-motion', motion, (reduced ? motion === 'none' : motion === 'auto') ? 'pass' : 'fail',
+          'JS-readable motion contract: must be "none" under Reduce Motion, "auto" otherwise.'],
+        ['--juno-motion-scale', mscale, (reduced ? parseFloat(mscale) === 0 : parseFloat(mscale) === 1) ? 'pass' : 'fail',
+          'Multiplies every duration token. 0 under Reduce Motion.'],
+        ['--juno-dock-clearance', raw('--juno-dock-clearance'), 'info', 'Additive: control height + safe-area inset.'],
+        ['--juno-pillbar-clearance', raw('--juno-pillbar-clearance'), 'info'],
+        ['--juno-s0 (page surface)', raw('--juno-s0'), 'info', 'oklch on the web; native platforms get hex.'],
+        ['data-juno-palette / mode', (root.dataset.junoPalette || 'standard') + ' / ' + (root.dataset.junoMode || 'auto'), 'info']
+      ]);
+
+      // ── support ──
+      rows('t-sup', SUPPORT.map(function (s) {
+        var ok = false;
+        try { ok = !!s[1](); } catch (e) { ok = false; }
+        return [s[0], ok ? 'supported' : 'NOT supported', ok ? 'pass' : 'fail'];
+      }));
+
+      // ── device ──
+      rows('t-dev', [
+        ['User agent', navigator.userAgent, 'info'],
+        ['Platform / vendor', (navigator.platform || '?') + ' · ' + (navigator.vendor || '?'), 'info'],
+        ['screen', screen.width + ' × ' + screen.height + ' css px', 'info'],
+        ['screen.avail', screen.availWidth + ' × ' + screen.availHeight, 'info'],
+        ['devicePixelRatio', String(window.devicePixelRatio), 'info', 'Absorbs @2x/@3x — 1 Apple pt is still 1 CSS px.'],
+        ['window.inner', window.innerWidth + ' × ' + window.innerHeight, 'info'],
+        ['screen.orientation', (screen.orientation && screen.orientation.type) || 'n/a', 'info'],
+        ['maxTouchPoints', String(navigator.maxTouchPoints), navigator.maxTouchPoints > 0 ? 'pass' : 'info'],
+        ['language', navigator.language, 'info'],
+        ['measured at', new Date().toLocaleTimeString(), 'info']
+      ]);
+    }
+
+    measure();
+    $('dh-remeasure').addEventListener('click', measure);
+    addEventListener('resize', measure);
+    addEventListener('orientationchange', function () { setTimeout(measure, 350); });
+    addEventListener('pageshow', measure);
+    addEventListener('scroll', function () {
+      clearTimeout(window.__dhT);
+      window.__dhT = setTimeout(measure, 200);
+    }, { passive: true });
+    if (window.visualViewport) {
+      visualViewport.addEventListener('resize', measure);
+      visualViewport.addEventListener('scroll', measure);
+    }
+    ['(prefers-reduced-motion: reduce)', '(prefers-contrast: more)', '(prefers-reduced-transparency: reduce)',
+     '(prefers-color-scheme: dark)', '(pointer: coarse)'].forEach(function (q) {
+      var m = matchMedia(q);
+      if (m.addEventListener) m.addEventListener('change', measure);
+    });
+  })();
+  </script>
+  <script src="./harness.js"></script>
+</body>
+</html>

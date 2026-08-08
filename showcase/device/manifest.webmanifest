@@ -1,0 +1,11 @@
+{
+  "name": "junoui device harness",
+  "short_name": "junoui dev",
+  "description": "On-device conformance harness for the junoui design system.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#16140f",
+  "theme_color": "#16140f"
+}
