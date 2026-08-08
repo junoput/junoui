@@ -162,9 +162,9 @@
   transition: background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
-/* Footgun fix (scoped): the base .juno-icon rule re-declares --juno-icon-size
-   ON the element, so an ancestor value is shadowed — set it on the glyph
-   itself, here, or it never grows. Big glyph so the pill reads at a glance. */
+/* Explicit big glyph so the pill reads at a glance. Set on the glyph itself so
+   it wins regardless of context (the base .juno-icon no longer pins a size —
+   see 20260727-011). */
 .juno-dock--pill .juno-icon { --juno-icon-size: var(--juno-space-32); }
 
 /* Active reads on the bubble alone — suppress the base full-item fill so only

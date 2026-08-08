@@ -135,6 +135,30 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
   assert.deepEqual(missing, [], `undefined vars: ${missing.join(', ')}`);
 });
 
+test('env() safe-area fallbacks inside calc() carry a length unit', () => {
+  // Regression guard: a unitless `0` fallback is a <number>, not a <length>,
+  // so `calc(... + env(safe-area-inset-*, 0))` is invalid and silently zeroes
+  // the whole expression. Fallbacks must be unit-bearing (0px). See ticket
+  // 20260802-016. Bare (non-calc) property values may keep a unitless 0.
+  const files = [
+    'src/css/base.css',
+    'src/css/utilities.css',
+    'src/css/layout.css',
+    ...readdirSync('src/css/components').map((f) => `src/css/components/${f}`),
+  ];
+  const unitlessEnv = /env\(\s*safe-area-inset-[a-z]+\s*,\s*-?\d*\.?\d+\s*\)/g;
+  const bad = [];
+  for (const f of files) {
+    readFileSync(f, 'utf8')
+      .split('\n')
+      .forEach((line, i) => {
+        if (!line.includes('calc(')) return;
+        for (const m of line.matchAll(unitlessEnv)) bad.push(`${f}:${i + 1}  ${m[0].trim()}`);
+      });
+  }
+  assert.deepEqual(bad, [], `unitless env() fallback inside calc():\n${bad.join('\n')}`);
+});
+
 test('committed token reference is up to date', () => {
   const current = readFileSync(REFERENCE_PATH, 'utf8');
   assert.equal(current, buildReference(), 'run `npm run gen-docs` and commit');

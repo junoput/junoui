@@ -19,6 +19,11 @@ export default defineConfig({
   testDir: './test/visual',
   // platform-scoped: font rendering differs across OSes, so darwin and linux
   // baselines coexist. Regenerate per-OS with `npm run test:visual:update`.
+  // The `-linux` baselines are authored on the CI runner (ubuntu-24.04, pinned
+  // in ci.yml / visual-baselines.yml — that pin is what keeps them stable). A
+  // dev box with a different freetype can differ by a sub-pixel on the tallest
+  // page (a ±1px full-page height tips a size mismatch); CI is authoritative,
+  // so treat a local-only 1px on one page as environment, not a real diff.
   snapshotPathTemplate: '{testDir}/__screenshots__/{arg}-{platform}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
