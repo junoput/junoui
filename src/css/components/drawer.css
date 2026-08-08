@@ -10,6 +10,12 @@
  *  Reuses .juno-modal for the surface + scrim; this file re-pins + re-slides.
  *  Selectors are compound (.juno-modal.juno-drawer) so they override the
  *  modal's centered transform regardless of bundle order.
+ *
+ *  --bottom is a real bottom sheet: a grab handle (.juno-sheet__handle,
+ *  decorative) plus a CSS height knob (--juno-sheet-h, default 60dvh —
+ *  apps swap it for peek/half/full snap points, capped by --juno-sheet-max).
+ *  No drag gesture ships here: resizing/dismissing by drag is stateful and
+ *  stays in the app. See docs/components/drawer.md and 20260802-019.
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-modal.juno-drawer {
@@ -55,21 +61,52 @@
 .juno-modal.juno-drawer--bottom {
   inline-size: 100%;
   max-inline-size: 100%;
-  block-size: 60dvh;
+
+  /* height knob: swap --juno-sheet-h for snap points (peek/half/full).
+     --juno-sheet-max is the hard ceiling so a swapped value can't run past
+     it. CSS-only — the drag gesture a real snap-point picker needs is
+     stateful and stays in the app. */
+  block-size: var(--juno-sheet-h, 60dvh);
+  max-block-size: var(--juno-sheet-max, 92dvh);
   margin-block: auto 0;
   margin-inline: 0;
   border: none;
   border-block-start: var(--juno-border-width-1) solid var(--juno-border);
+  border-start-start-radius: var(--juno-radius-8);
+  border-start-end-radius: var(--juno-radius-8);
   transform: translateY(100%);
 
-  /* keep content above the home indicator */
-  padding-block-end: env(safe-area-inset-bottom, 0);
+  /* safe area moves to .juno-modal__body below (the scroll port) — padding
+     here would just be dead space under the grab handle. See 20260802-019. */
+  padding-block-end: 0;
 }
 
 .juno-modal.juno-drawer--bottom[open] { transform: translateY(0); }
 
 @starting-style {
   .juno-modal.juno-drawer--bottom[open] { transform: translateY(100%); }
+}
+
+/* grab handle — visual affordance only. aria-hidden in markup: the dialog's
+   own aria-labelledby (→ the title) stays the accessible name. Dragging it
+   to resize/dismiss is stateful, so junoui draws it but never wires a
+   gesture to it — see docs/accessibility.md. */
+.juno-sheet__handle {
+  inline-size: var(--juno-space-40);
+  block-size: var(--juno-space-4);
+  margin: var(--juno-space-8) auto;
+  border-radius: 999px;
+  background: var(--juno-border-strong);
+}
+
+/* the scrolling body owns the safe area now, mirroring modal.css's mobile
+   sheet. Compound selector for specificity: drawer.css sorts before
+   modal.css in the bundle (scripts/bundle-css.mjs), so a bare
+   .juno-modal__body override here would lose to modal.css's own rule at
+   equal specificity. env() fallback keeps its unit inside calc() — see
+   docs/ios-conformance.md. */
+.juno-modal.juno-drawer--bottom .juno-modal__body {
+  padding-block-end: calc(var(--juno-pad-surface-inline) + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── narrow viewports ────────────────────────────────────────────────────

@@ -2,14 +2,20 @@
  *  Component — Skeleton  ·  loading placeholder
  *  A shimmering block that stands in for content not yet loaded. Same
  *  shimmer language as the table's row skeleton, generalized: text lines,
- *  blocks, and circles (avatars). Zero JS — size it with width / height or
- *  --juno-skeleton-h. Honors prefers-reduced-motion (shimmer → static).
- *  Mark the loading region aria-busy="true" so AT announces it.
+ *  blocks, circles (avatars), and aspect-ratio tiles (media grids). Zero
+ *  JS — size it with width / height, --juno-skeleton-h, or (for --tile)
+ *  --juno-skeleton-ratio. The shimmer is a `::before` overlay animated on
+ *  transform/opacity only — never background-position — so it stays on
+ *  the compositor instead of repainting the gradient every frame; the
+ *  base fill is a plain solid color. Reduced motion is handled globally
+ *  (base.css collapses all animation-duration to ~0), no local override
+ *  needed here. Mark the loading region aria-busy="true" so AT announces it.
  *  Usage:
  *    <div aria-busy="true" aria-live="polite">
  *      <span class="juno-skeleton juno-skeleton--circle" style="--juno-skeleton-h: 48px;"></span>
  *      <span class="juno-skeleton juno-skeleton--text" style="inline-size: 60%;"></span>
  *      <span class="juno-skeleton juno-skeleton--text"></span>
+ *      <span class="juno-skeleton juno-skeleton--tile"></span>
  *    </div>
  * ════════════════════════════════════════════════════════════════════ */
 
@@ -17,11 +23,27 @@
   --juno-skeleton-h: var(--juno-space-16);
 
   display: block;
+  position: relative;
+  overflow: hidden;
   inline-size: 100%;
   block-size: var(--juno-skeleton-h);
   border-radius: var(--juno-radius-3);
-  background: linear-gradient(90deg, var(--juno-s2) 0%, var(--juno-s3) 50%, var(--juno-s2) 100%);
-  background-size: 200% 100%;
+  background: var(--juno-s2);
+}
+
+/* the shimmer itself: a diagonal highlight band that slides across via
+   transform only (compositor-only — no layout/paint per frame). Clipped to
+   the parent's border-radius by the overflow: hidden above. */
+.juno-skeleton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--juno-s3) 70%, transparent) 50%,
+    transparent 80%
+  );
   animation: juno-skeleton-shimmer 1.2s ease-in-out infinite;
 }
 
@@ -45,18 +67,24 @@
   border-radius: var(--juno-radius-4);
 }
 
+/* content-box mode: size from an aspect ratio instead of a fixed height —
+   the dominant case for media-grid tiles standing in for a real image/card
+   of known proportions. Default 1 (square); override per instance with
+   --juno-skeleton-ratio (e.g. "16 / 9"). */
+.juno-skeleton--tile {
+  --juno-skeleton-ratio: 1;
+
+  aspect-ratio: var(--juno-skeleton-ratio);
+  block-size: auto;
+  border-radius: var(--juno-radius-4);
+}
+
 @keyframes juno-skeleton-shimmer {
   from {
-    background-position: 200% 0;
+    transform: translateX(-100%);
   }
 
   to {
-    background-position: -200% 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .juno-skeleton {
-    animation: none;
+    transform: translateX(100%);
   }
 }

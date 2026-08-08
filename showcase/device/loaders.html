@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Loaders</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+<style>
+  .dh-lrow { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+  .dh-lcell { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  /* the arc's % label must be a SIBLING over a positioned wrapper — a CSS
+     mask clips children (see CLAUDE.md). This wrapper is harness geometry. */
+  .dh-arcwrap { position: relative; inline-size: 76px; block-size: 76px; }
+</style>
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Loaders &amp; load states</span>
+  </header>
+
+  <main class="dh-main dh-main--flush">
+
+    <section class="dh-sec">
+      <div class="juno-alert juno--active" role="status">
+        <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-info" /></svg></span>
+        <div class="juno-alert__body">
+          <span class="juno-alert__title">Do this twice</span>
+          <span class="juno-alert__text">Once normally, once with iOS Settings → Accessibility → Motion →
+            <strong>Reduce Motion</strong> on. Under Reduce Motion every animation on this page must stop dead
+            — <code class="juno-mono">--juno-motion-scale</code> goes to 0. Anything still spinning is a bug.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Arc · beacon · bar — indeterminate</h2>
+      <div class="dh-lrow">
+        <div class="dh-lcell"><div class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></div><span class="juno-eyebrow">ARC</span></div>
+        <div class="dh-lcell"><div class="juno-beacon" role="status" aria-label="Loading"><span class="juno-beacon__core"></span></div><span class="juno-eyebrow">BEACON</span></div>
+        <div class="dh-lcell" style="flex:1;min-inline-size:160px;"><div class="juno-bar juno-bar--indeterminate" style="inline-size:100%;"><span class="juno-bar__fill"></span></div><span class="juno-eyebrow">BAR</span></div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Determinate — --juno-progress</h2>
+      <div class="dh-lrow">
+        <div class="dh-lcell">
+          <div class="dh-arcwrap">
+            <div class="juno-arc" style="--juno-progress:64;" role="meter" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" aria-label="Sync"></div>
+            <span class="juno-arc__label">64%</span>
+          </div>
+          <span class="juno-eyebrow">ARC 64%</span>
+        </div>
+        <div class="dh-lcell">
+          <div class="juno-beacon juno-beacon--determinate" style="--juno-progress:38;" role="meter" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" aria-label="Index">
+            <span class="juno-beacon__track"></span><span class="juno-beacon__fill"></span><span class="juno-beacon__hub"></span><span class="juno-beacon__label">38%</span>
+          </div>
+          <span class="juno-eyebrow">BEACON 38%</span>
+        </div>
+        <div class="dh-lcell" style="flex:1;min-inline-size:160px;">
+          <div class="juno-bar juno--nominal" style="inline-size:100%;"><span class="juno-bar__fill" style="--juno-progress:82;"></span></div>
+          <span class="juno-eyebrow">BAR 82%</span>
+        </div>
+      </div>
+      <p class="dh-note">The arc's percentage is a <em>sibling</em> over a positioned wrapper, never a child —
+        a CSS <code class="juno-mono">mask</code> clips children, and WebKit is where that bites first.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Role tints</h2>
+      <div class="dh-lrow">
+        <div class="dh-lcell"><div class="juno-arc juno-arc--indeterminate juno--active"></div><span class="juno-eyebrow">active</span></div>
+        <div class="dh-lcell"><div class="juno-arc juno-arc--indeterminate juno--caution"></div><span class="juno-eyebrow">caution</span></div>
+        <div class="dh-lcell"><div class="juno-beacon juno--warning"><span class="juno-beacon__core"></span></div><span class="juno-eyebrow">warning</span></div>
+        <div class="dh-lcell"><div class="juno-arc juno-arc--indeterminate juno--target"></div><span class="juno-eyebrow">target</span></div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Icon loader — a ring around any control</h2>
+      <div class="dh-lrow">
+        <span class="juno-icon-loader">
+          <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-cloud-arrow-down" /></svg>
+          <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Downloading"></span>
+        </span>
+        <span class="juno-icon-loader">
+          <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg>
+        </span>
+      </div>
+      <p class="dh-note">Adding or removing the ring must not resize the glyph — the loader's box is definite.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Skeleton — mirror the shape, don't jump</h2>
+      <div class="juno-card"><div class="juno-card__body" aria-busy="true" aria-live="polite">
+        <span class="juno-skeleton juno-skeleton--block"></span>
+        <span class="juno-skeleton juno-skeleton--text" style="inline-size:70%;margin-top:14px;"></span>
+        <span class="juno-skeleton juno-skeleton--text" style="margin-top:8px;"></span>
+        <span class="juno-skeleton juno-skeleton--text" style="inline-size:40%;margin-top:8px;"></span>
+      </div></div>
+      <div class="juno-card" style="margin-block-start:12px;"><div class="juno-card__body" aria-busy="true" aria-live="polite">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span class="juno-skeleton juno-skeleton--circle" style="--juno-skeleton-h:48px;"></span>
+          <div style="flex:1;">
+            <span class="juno-skeleton juno-skeleton--text" style="inline-size:50%;"></span>
+            <span class="juno-skeleton juno-skeleton--text" style="inline-size:80%;margin-top:8px;"></span>
+          </div>
+        </div>
+      </div></div>
+      <p class="dh-note">The shimmer band is compositor-only (transform/opacity). On a real phone watch for
+        jank while it runs alongside the page scroll.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Load state — the CSS-only switch</h2>
+      <p class="dh-note">Same region, four outcomes. junoui ships the mechanism
+        (<code class="juno-mono">data-juno-state</code> on the parent selects the matching
+        <code class="juno-mono">data-juno-when</code> child); deciding <em>which</em> state is live stays with
+        the app — here, these buttons.</p>
+      <div class="dh-switch" style="margin-block-end:12px;">
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-state="loading">LOADING</button>
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-state="processing">PROCESSING</button>
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-state="error">ERROR</button>
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-state="empty">EMPTY</button>
+      </div>
+      <div class="juno-card"><div class="juno-card__body">
+        <div class="juno-state" id="dh-state" data-juno-state="loading" style="min-block-size:140px;align-items:center;justify-content:center;">
+          <div data-juno-when="loading" style="justify-content:center;">
+            <div class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></div>
+          </div>
+          <div data-juno-when="processing" aria-busy="true" aria-live="polite" style="inline-size:100%;">
+            <div class="juno-shimmer" style="block-size:120px;inline-size:100%;"></div>
+          </div>
+          <div data-juno-when="error" style="justify-content:center;">
+            <div class="juno-fault" role="status">
+              <span class="juno-fault__icon" aria-hidden="true">!</span>
+              <p>Couldn't load this.</p>
+            </div>
+          </div>
+          <div data-juno-when="empty" style="justify-content:center;">
+            <div class="juno-empty">
+              <span class="juno-empty__icon" aria-hidden="true">∅</span>
+              <p>Nothing here yet.</p>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <p class="dh-note"><code class="juno-mono">.juno-fault</code> and <code class="juno-mono">.juno-empty</code>
+        are terminal states and must <strong>never</strong> animate — if either shimmers, that is the bug this
+        vocabulary exists to prevent.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Reload — refetch over live content</h2>
+      <p class="dh-note">The dot below is <code class="juno-mono">position: fixed</code> in production; it is
+        pinned to this viewport right now. Stale rows stay readable while it spins.</p>
+      <div class="juno-card"><div class="juno-card__body">
+        <p class="juno-mono" style="font-size:12px;">ORD-519 · 38 000 · NOMINAL</p>
+        <p class="juno-mono" style="font-size:12px;">ORD-520 · 12 400 · CAUTION</p>
+      </div></div>
+    </section>
+
+    <section class="dh-sec">
+      <div class="dh-filler">
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="juno-reload" role="status" aria-label="Reloading"><span class="juno-reload__dot"></span></div>
+
+  <nav class="juno-dock" aria-label="Primary">
+    <a class="juno-dock__item" href="./index.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg><span class="juno-dock__label">Hub</span></a>
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg><span class="juno-dock__label">Loaders</span></a>
+    <a class="juno-dock__item" href="./diagnostics.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-cpu" /></svg><span class="juno-dock__label">Diag</span></a>
+  </nav>
+
+  <script>
+  // harness plumbing: junoui ships the state switch, not the decision.
+  document.querySelectorAll('[data-state]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.getElementById('dh-state').dataset.junoState = b.dataset.state;
+    });
+  });
+  </script>
+  <script src="./harness.js"></script>
+</body>
+</html>

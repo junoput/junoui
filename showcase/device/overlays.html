@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Overlays</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+<style>
+  /* slide-over pattern (drawer.md): scrolling body + pinned foot. Only when
+     open — an inline display would override the closed dialog's display:none. */
+  #d-slideover[open] { display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Modal · drawer · bottom sheet</span>
+  </header>
+
+  <main class="dh-main dh-main--dock">
+
+    <section class="dh-sec">
+      <div class="juno-alert juno--caution" role="status">
+        <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning" /></svg></span>
+        <div class="juno-alert__body">
+          <span class="juno-alert__title">The page CI cannot run</span>
+          <span class="juno-alert__text">Our visual suite never opens a dialog. Open every one of these,
+            and on each check three things: the slide-in animation, that the scrim covers the whole screen
+            including under the status bar, and that content clears the home indicator.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 BOTTOM SHEET — the headline -->
+    <section class="dh-sec">
+      <h2 class="dh-h">01 · Bottom sheet — the single most important thing on this device</h2>
+      <p class="dh-note">Grab handle, rounded top corners, slide up from the block-end edge. The scrolling
+        body carries <code class="juno-mono">padding-block-end: calc(pad + env(safe-area-inset-bottom))</code>
+        — scroll to the bottom of the sheet and confirm the last row is clear of the home indicator.
+        Then flick past the end: the page behind must NOT scroll (<code class="juno-mono">overscroll-behavior: contain</code>).</p>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn juno--active" data-open="d-sheet">OPEN SHEET</button>
+        <button class="juno-btn juno-btn--ghost" data-open="d-sheet" data-sheet-h="30dvh">PEEK · 30dvh</button>
+        <button class="juno-btn juno-btn--ghost" data-open="d-sheet" data-sheet-h="60dvh">HALF · 60dvh</button>
+        <button class="juno-btn juno-btn--ghost" data-open="d-sheet" data-sheet-h="92dvh">FULL · 92dvh</button>
+      </div>
+    </section>
+
+    <!-- 02 MODAL -->
+    <section class="dh-sec">
+      <h2 class="dh-h">02 · Modal — becomes a bottom sheet below 640px</h2>
+      <p class="dh-note">On this phone the centered dialog is expected to arrive from the bottom edge,
+        full width, top corners rounded, footer buttons stretched. If it lands centered and boxed,
+        the <code class="juno-mono">width &lt;= 639.98px</code> branch did not apply.</p>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn" data-open="d-modal">DIALOG</button>
+        <button class="juno-btn juno--warning" data-open="d-modal-danger">DESTRUCTIVE</button>
+        <button class="juno-btn juno-btn--ghost" data-open="d-modal-long">LONG BODY (scrolls)</button>
+      </div>
+    </section>
+
+    <!-- 03 DRAWERS -->
+    <section class="dh-sec">
+      <h2 class="dh-h">03 · Drawers — one per edge</h2>
+      <p class="dh-note">Side drawers cap at <code class="juno-mono">min(380px, 85vw)</code> on narrow
+        viewports so a sliver of scrim survives as the "tap outside to close" target — check that sliver
+        exists. In landscape the drawer must not slide under the notch.</p>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn juno-btn--ghost" data-open="d-end">DRAWER · END</button>
+        <button class="juno-btn juno-btn--ghost" data-open="d-start">DRAWER · START</button>
+        <button class="juno-btn juno-btn--ghost" data-open="d-slideover">SLIDE-OVER · PINNED FOOT</button>
+      </div>
+    </section>
+
+    <!-- 04 TOP LAYER -->
+    <section class="dh-sec">
+      <h2 class="dh-h">04 · Popover API — top layer, never clipped</h2>
+      <p class="dh-note">Popover, menu and tooltip render in the browser top layer. These sit inside a
+        card with <code class="juno-mono">overflow: hidden</code> on purpose: if WebKit clips them at
+        the card edge, the top layer is not working.</p>
+      <article class="juno-card" style="overflow:hidden;"><div class="juno-card__body">
+        <div class="juno-cluster" style="--juno-cluster-space:10px;align-items:center;">
+          <span class="juno-popover-anchor">
+            <button class="juno-btn juno-btn--ghost" popovertarget="d-pop" aria-haspopup="dialog">FILTER <svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-down" /></svg></button>
+            <div class="juno-popover" id="d-pop" popover role="dialog" aria-label="Range filter">
+              <span class="juno-eyebrow" style="display:block;margin-bottom:12px;">Window</span>
+              <div class="juno-slider" role="slider" tabindex="0" aria-label="Window minutes" aria-valuenow="40" aria-valuemin="5" aria-valuemax="80"><span class="juno-slider__channel"></span><span class="juno-slider__lever"></span></div>
+              <span class="juno-popover__arrow"></span>
+            </div>
+          </span>
+          <span class="juno-popover-anchor">
+            <button class="juno-btn juno-btn--ghost" popovertarget="d-menu" aria-haspopup="menu">ACTIONS <svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-caret-down" /></svg></button>
+            <ul class="juno-menu" id="d-menu" popover role="menu">
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="d-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-download" /></svg></span>Import data</button></li>
+              <li><button class="juno-menu__item" role="menuitem" popovertarget="d-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-pencil-simple" /></svg></span>Edit settings</button></li>
+              <li class="juno-menu__sep" role="separator"></li>
+              <li><button class="juno-menu__item juno--warning" role="menuitem" popovertarget="d-menu" popovertargetaction="hide"><span class="juno-menu__icon"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-trash" /></svg></span>Delete project</button></li>
+            </ul>
+          </span>
+          <span class="juno-tooltip">
+            <button class="juno-btn juno-btn--ghost" tabindex="0">TOOLTIP</button>
+            <span class="juno-tooltip__bubble" role="tooltip">Hover has no meaning here — tap to focus and see whether it appears at all.<span class="juno-tooltip__arrow"></span></span>
+          </span>
+        </div>
+      </div></article>
+      <p class="dh-note">On a touch device the tooltip is a known gap: it is CSS hover/focus driven, so it
+        may never show. That is the expected finding, not a bug in this page.</p>
+    </section>
+
+    <section class="dh-sec">
+      <p class="dh-note">Filler so the page scrolls under the fixed dock.</p>
+      <div class="dh-filler">
+        <div class="juno-skeleton" style="--juno-skeleton-h:72px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:72px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:72px;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ dialogs ══ -->
+
+  <!-- bottom sheet -->
+  <dialog class="juno-modal juno-drawer juno-drawer--bottom" id="d-sheet" aria-labelledby="d-sheet-t">
+    <div class="juno-sheet__handle" aria-hidden="true"></div>
+    <div class="juno-modal__head"><span class="juno-modal__tag" id="d-sheet-t">SHARE TO</span>
+      <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body">
+      <section class="juno-list">
+        <ul class="juno-list__group">
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-link" /></svg><span class="juno-list__main"><span class="juno-list__label">Copy link</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-envelope" /></svg><span class="juno-list__main"><span class="juno-list__label">Mail</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-chat-circle" /></svg><span class="juno-list__main"><span class="juno-list__label">Message</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-cloud" /></svg><span class="juno-list__main"><span class="juno-list__label">Cloud drive</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-folder" /></svg><span class="juno-list__main"><span class="juno-list__label">Save to files</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-file" /></svg><span class="juno-list__main"><span class="juno-list__label">Add to reading list</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-star" /></svg><span class="juno-list__main"><span class="juno-list__label">Favorite</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-users" /></svg><span class="juno-list__main"><span class="juno-list__label">Share with team</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-download" /></svg><span class="juno-list__main"><span class="juno-list__label">Download original</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-lock" /></svg><span class="juno-list__main"><span class="juno-list__label">Permissions</span></span></a></li>
+          <li><a class="juno-list__row" href="#"><svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-trash" /></svg><span class="juno-list__main"><span class="juno-list__label">Remove</span></span></a></li>
+        </ul>
+      </section>
+      <p class="dh-note" style="margin-block-start:16px;">↑ This is the LAST row. It must sit fully above the
+        home indicator. If it is half-swallowed, the sheet's safe-area padding failed.</p>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn">SHARE</button></form>
+    </div>
+  </dialog>
+
+  <dialog class="juno-modal" id="d-modal" aria-labelledby="d-modal-t">
+    <div class="juno-modal__stripe"></div>
+    <div class="juno-modal__head"><span class="juno-modal__tag">DEPLOYMENT</span>
+      <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body">
+      <h2 class="juno-modal__title" id="d-modal-t">Promote build to production?</h2>
+      <p class="juno-modal__text">Build #482 passed all checks. Promoting routes production traffic to the new version.</p>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn">PROMOTE</button></form>
+    </div>
+  </dialog>
+
+  <dialog class="juno-modal juno--warning" id="d-modal-danger" aria-labelledby="d-dd-t">
+    <div class="juno-modal__stripe"></div>
+    <div class="juno-modal__head"><span class="juno-modal__tag">CONFIRMATION REQUIRED</span>
+      <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body">
+      <h2 class="juno-modal__title" id="d-dd-t">Delete this project?</h2>
+      <p class="juno-modal__text">This removes the project and all of its data. Cannot be undone.</p>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn juno--warning">DELETE</button></form>
+    </div>
+  </dialog>
+
+  <dialog class="juno-modal" id="d-modal-long" aria-labelledby="d-ml-t">
+    <div class="juno-modal__head"><span class="juno-modal__tag">TERMS</span>
+      <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body">
+      <h2 class="juno-modal__title" id="d-ml-t">Long body — capped at 85dvh</h2>
+      <p class="juno-modal__text">The sheet must never exceed 85% of the dynamic viewport, and its body must
+        scroll internally rather than growing off-screen. Flick this text to the end.</p>
+      <p class="juno-modal__text">Paragraph 2 — dvh is explicitly not stable and may churn while the address bar collapses.</p>
+      <p class="juno-modal__text">Paragraph 3 — sv* is the calm choice when a surface must never overflow.</p>
+      <p class="juno-modal__text">Paragraph 4 — unprefixed vh is normatively equal to lvh.</p>
+      <p class="juno-modal__text">Paragraph 5 — a 100vh box is sized as if the toolbar were retracted.</p>
+      <p class="juno-modal__text">Paragraph 6 — junoui uses zero raw vh anywhere in the bundle.</p>
+      <p class="juno-modal__text">Paragraph 7 — the modal body owns the bottom safe-area padding on phones.</p>
+      <p class="juno-modal__text">Paragraph 8 — this is the last paragraph; the footer below must stay reachable.</p>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">DECLINE</button><button class="juno-btn">ACCEPT</button></form>
+    </div>
+  </dialog>
+
+  <dialog class="juno-modal juno-drawer" id="d-end" aria-labelledby="d-de-t">
+    <div class="juno-modal__head"><span class="juno-modal__tag" id="d-de-t">DISPLAY · END EDGE</span>
+      <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body">
+      <p class="juno-modal__text" style="margin-bottom:16px;">Anchored to the inline-end edge, full dynamic height.</p>
+      <label class="juno-switch"><input class="juno-switch__input" type="checkbox" role="switch" checked /><span class="juno-switch__track"></span><span>Live updates</span></label>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button><button class="juno-btn">APPLY</button></form>
+    </div>
+  </dialog>
+
+  <dialog class="juno-modal juno-drawer juno-drawer--start" id="d-start" aria-labelledby="d-ds-t">
+    <div class="juno-modal__head"><span class="juno-modal__tag" id="d-ds-t">NAV · START EDGE</span>
+      <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body">
+      <p class="juno-modal__text">Mirrors under RTL. In landscape it must clear the notch on this side.</p>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CLOSE</button></form>
+    </div>
+  </dialog>
+
+  <dialog class="juno-modal juno-drawer" id="d-slideover" aria-labelledby="d-so-t">
+    <div class="juno-modal__stripe juno--active" style="flex-shrink:0;"></div>
+    <div class="juno-modal__head" style="flex-shrink:0;"><span class="juno-modal__tag" id="d-so-t">ACTIVE JOBS</span>
+      <form method="dialog"><button class="juno-modal__close" autofocus aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+    <div class="juno-modal__body" style="flex:1;overflow:auto;">
+      <div class="juno-stack" style="--juno-stack-space:12px;">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span class="juno-label">transcode · clip-0031</span><span class="juno-badge juno-badge--micro juno--active">RUNNING</span></div>
+          <div class="juno-bar juno--active"><span class="juno-bar__fill" style="--juno-progress:72;"></span></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span class="juno-label">index · album-daily</span><span class="juno-badge juno-badge--micro juno--nominal">DONE</span></div>
+          <div class="juno-bar juno--nominal"><span class="juno-bar__fill" style="--juno-progress:100;"></span></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span class="juno-label">replicate · node-04</span><span class="juno-badge juno-badge--micro juno--caution">STALLED</span></div>
+          <div class="juno-bar juno--caution"><span class="juno-bar__fill" style="--juno-progress:38;"></span></div></div>
+      </div>
+    </div>
+    <form method="dialog" class="juno-modal__foot" style="flex-shrink:0;padding:12px 16px;border-top:1px solid var(--juno-border);">
+      <button class="juno-btn juno-btn--ghost juno-btn--sm">CLEAR DONE</button>
+      <button class="juno-btn juno-btn--sm juno--warning">PAUSE ALL</button>
+    </form>
+  </dialog>
+
+  <!-- fixed dock so every overlay can be judged against a real bottom bar -->
+  <nav class="juno-dock juno-dock--fixed" aria-label="Primary">
+    <a class="juno-dock__item" href="./index.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg><span class="juno-dock__label">Hub</span></a>
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Overlays</span></a>
+    <a class="juno-dock__item" href="./diagnostics.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-cpu" /></svg><span class="juno-dock__label">Diag</span></a>
+  </nav>
+
+  <script src="./harness.js"></script>
+</body>
+</html>

@@ -26,6 +26,22 @@
      --juno-pillbar-clearance suits the shorter centered pill. */
   --juno-dock-clearance: calc(var(--juno-space-72) + var(--juno-space-20) + env(safe-area-inset-bottom, 0px));
   --juno-pillbar-clearance: calc(var(--juno-space-72) + env(safe-area-inset-bottom, 0px));
+
+  /* JS-readable motion contract. CSS-only `prefers-reduced-motion` never reaches
+     imperative JS (scrollTo/scrollIntoView smooth behavior, rAF-driven transforms,
+     an "animate or not" branch) — so the preference is also exposed as a custom
+     property script can read with one getComputedStyle call, no matchMedia
+     listener required for a one-shot check:
+       getComputedStyle(document.documentElement)
+         .getPropertyValue('--juno-motion').trim() !== 'none'
+     A component MAY author its durations through the scale rather than a raw
+     duration token — `calc(var(--juno-motion-duration-base) * var(--juno-motion-scale))`
+     — so the reduced-motion override below collapses them to 0 without its own
+     per-component media query. Web-only DOM contract, so it lives
+     here rather than in the cross-platform token set (see --juno-dock-clearance
+     above for the same reasoning). */
+  --juno-motion: auto;
+  --juno-motion-scale: 1;
 }
 
 :root[data-juno-mode='dark'] { color-scheme: dark; }
@@ -104,11 +120,14 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
 @media (pointer: coarse) {
   :root { --juno-size-tap-min: var(--juno-size-tap-comfortable); }
 
-  /* iOS Safari zooms the page onto any focused text field whose font-size is
-     below 16px. Hold text-entry controls (.juno-input covers input, textarea
-     and the select's inner control) at a 16px floor on touch so focusing never
-     triggers that jump. max() keeps the floor even under a scaled-down
-     --juno-font-scale, and still grows when scaled up. */
+  /* iOS Safari is widely observed to zoom the page onto a focused text field
+     whose font-size is under 16px. NOTE: no primary WebKit/Apple source states
+     this — it is empirical behavior, not published spec, so don't cite it as
+     one (see docs/ios-conformance.md and ticket 20260803-032). The mitigation
+     is harmless either way: hold text-entry controls (.juno-input covers input,
+     textarea and the select's inner control) at a 16px floor on touch. max()
+     keeps the floor even under a scaled-down --juno-font-scale, and still grows
+     when scaled up. */
   .juno-input { font-size: max(16px, var(--juno-font-size-16)); }
 
   /* Kill the UA tap-highlight square on the interactive surfaces so it never
@@ -126,6 +145,61 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   }
 }
 
+/* Tappable primitives opt out of double-tap-to-zoom. A browser that still
+   recognises that gesture has to WAIT after the first tap to see whether a
+   second one is coming, which reads as a late, mushy tap on exactly the
+   surfaces a phone UI is built from. `manipulation` keeps panning and
+   pinch-zoom (so the page stays zoomable — never `none` here, that would be an
+   a11y regression) and drops only the double-tap.
+   NOT inside the pointer:coarse block above: a hybrid device (touch laptop,
+   iPad with a trackpad) reports a fine primary pointer while still taking
+   touch input, and the property is inert on a mouse anyway.
+   Community convention — no primary Apple/WebKit source names it; see
+   docs/ios-conformance.md. Named components only, so a consumer's own elements
+   are untouched. See 20260803-038. */
+:where(
+  .juno-btn,
+  .juno-dock__item,
+  .juno-pillbar__item,
+  .juno-pillbar__overflow,
+  .juno-tabs__tab,
+  .juno-list__item,
+  .juno-menu__item,
+  .juno-seg__option,
+  .juno-chip,
+  .juno-toggle-btn
+) {
+  touch-action: manipulation;
+}
+
+/* Gesture-owned surfaces — for an element whose pointer events are fully
+   driven by app JS (drag-pan, pinch-zoom, swipe classification: a state
+   machine, not a native scroller). The UA must get out of the way: no
+   scroll/zoom gesture recognition, no callout menu on long-press, no text
+   selection, no tap-highlight flash. Community convention — no primary
+   Apple/WebKit source names any of these four properties for iOS, see
+   docs/ios-conformance.md; do not attribute them to Apple. Opt-in utility
+   class (unlike the pointer:coarse reset above, which targets junoui's own
+   named components), so it isn't gated behind a pointer-type query — apply
+   it only to elements a gesture handler actually owns.
+   --juno-touch-action narrows the axis without overriding the rest of the
+   block; default `none` hands every axis to JS. */
+.juno-gesture-surface {
+  touch-action: var(--juno-touch-action, none);
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Single-axis escape hatches: the UA keeps native scrolling on one axis
+   while JS reads gestures on the other (e.g. a vertical list row that also
+   supports horizontal swipe-to-reveal). Equivalent to
+   `--juno-touch-action: pan-x|pan-y` on .juno-gesture-surface, offered as
+   standalone classes for elements that only need the axis lock and none of
+   the callout/selection/tap-highlight resets. */
+.juno-pan-x { touch-action: pan-x; }
+.juno-pan-y { touch-action: pan-y; }
+
 @keyframes juno-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 /* Softer opacity pulse — a "working / refreshing" cadence that dims rather
@@ -134,6 +208,14 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
 @keyframes juno-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Flip the JS-readable contract declared at the top of this file. Without
+     this the property would always report `auto` and script could never see
+     the preference — the whole point of exposing it. */
+  :root {
+    --juno-motion: none;
+    --juno-motion-scale: 0;
+  }
+
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

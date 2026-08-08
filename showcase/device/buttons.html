@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Buttons &amp; chips</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+<style>
+  /* harness-only ruler: a 44px and a 24px reference band to eyeball control
+     heights against. Not a junoui component. */
+  .dh-ruler { position: relative; }
+  .dh-ruler::before {
+    content: ''; position: absolute; inset-inline: 0; inset-block-start: 0;
+    block-size: 44px; border: 1px dashed var(--juno-active); opacity: .45; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Buttons &amp; chips</span>
+  </header>
+
+  <main class="dh-main dh-main--flush">
+
+    <section class="dh-sec">
+      <h2 class="dh-h">What to check</h2>
+      <ul class="dh-note" style="padding-inline-start:18px;">
+        <li><strong>Height.</strong> On a coarse pointer <code class="juno-mono">--juno-size-tap-min</code>
+          is promoted from 24px to 44px, so even <code class="juno-mono">--sm</code> buttons must be
+          thumb-sized here. The dashed band below is exactly 44px for comparison.</li>
+        <li><strong>Tap highlight.</strong> Press and hold: no grey iOS rectangle should escape the
+          control's own rounded shape.</li>
+        <li><strong>Text selection.</strong> A long press on a button must not start a text selection or
+          pop the callout menu.</li>
+        <li><strong>Double-tap.</strong> Tapping twice quickly must not zoom the page.</li>
+      </ul>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">44px reference band</h2>
+      <div class="dh-ruler" style="padding-block-start:2px;">
+        <div class="juno-cluster" style="--juno-cluster-space:10px;">
+          <button class="juno-btn">DEFAULT</button>
+          <button class="juno-btn juno-btn--sm">SMALL</button>
+          <button class="juno-btn juno-btn--ghost">GHOST</button>
+        </div>
+      </div>
+      <p class="dh-note">The dashed rectangle is 44px tall. Every control in it should meet or exceed it.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Solid — every role</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn">DEFAULT</button>
+        <button class="juno-btn juno--nominal">NOMINAL</button>
+        <button class="juno-btn juno--active">ACTIVE</button>
+        <button class="juno-btn juno--target">TARGET</button>
+        <button class="juno-btn juno--caution">CAUTION</button>
+        <button class="juno-btn juno--warning">WARNING</button>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Ghost + states</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn juno-btn--ghost">DEFAULT</button>
+        <button class="juno-btn juno-btn--ghost juno--nominal">NOMINAL</button>
+        <button class="juno-btn juno-btn--ghost juno--warning">WARNING</button>
+        <button class="juno-btn" disabled>DISABLED</button>
+        <button class="juno-btn juno-btn--ghost" disabled>DISABLED</button>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Icon-only — the smallest targets we ship</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn juno-btn--ghost" aria-label="Refresh"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg></button>
+        <button class="juno-btn juno-btn--ghost" aria-label="Download"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-download" /></svg></button>
+        <button class="juno-btn juno-btn--ghost" aria-label="Edit"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-pencil-simple" /></svg></button>
+        <button class="juno-btn juno-btn--ghost juno--warning" aria-label="Delete"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-trash" /></svg></button>
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" aria-label="More"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-dots-three" /></svg></button>
+      </div>
+      <p class="dh-note">These are the ones to be suspicious of: a glyph reads small even when its hit
+        region is legal. Try each with the pad of your thumb, not the tip.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Full-width action stack (the phone pattern)</h2>
+      <div class="juno-stack" style="--juno-stack-space:10px;">
+        <button class="juno-btn juno--active" style="inline-size:100%;">CONTINUE</button>
+        <button class="juno-btn juno-btn--ghost" style="inline-size:100%;">NOT NOW</button>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Toggle button — aria-pressed, illuminated legend</h2>
+      <button class="juno-toggle-btn" aria-pressed="true">
+        <span class="juno-toggle-btn__strip"></span>
+        <span class="juno-toggle-btn__row">
+          <span class="juno-toggle-btn__text">
+            <span class="juno-toggle-btn__legend">AUTO-SCALING</span>
+            <span class="juno-toggle-btn__desc">Scale workers with load</span>
+          </span>
+          <span class="juno-toggle-btn__status">ON</span>
+        </span>
+      </button>
+      <p class="dh-note">Tap it — the harness flips <code class="juno-mono">aria-pressed</code>. Watch that the
+        glow transition honours Reduce Motion.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Chips — static, toggle, removable</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:8px;">
+        <span class="juno-chip">us-east-1</span>
+        <span class="juno-chip juno--nominal">healthy</span>
+        <span class="juno-chip juno--caution">degraded</span>
+        <span class="juno-chip juno--warning">down</span>
+      </div>
+      <div class="juno-cluster" style="--juno-cluster-space:8px;margin-block-start:12px;">
+        <button class="juno-chip juno-chip--toggle juno--active" aria-pressed="true">Errors</button>
+        <button class="juno-chip juno-chip--toggle juno--active" aria-pressed="false">Warnings</button>
+        <button class="juno-chip juno-chip--toggle juno--active" aria-pressed="false">Info</button>
+      </div>
+      <div class="juno-cluster" style="--juno-cluster-space:8px;margin-block-start:12px;">
+        <span class="juno-chip">region:eu-west-1<button class="juno-chip__remove" aria-label="Remove region filter"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></span>
+        <span class="juno-chip juno--target">env:prod<button class="juno-chip__remove" aria-label="Remove env filter"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></span>
+      </div>
+      <p class="dh-note">The ✕ inside a removable chip is the tightest target junoui ships. If you cannot hit
+        it reliably one-handed, that is a finding worth a ticket.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Chip reel — horizontal scroll + snap</h2>
+      <div class="juno-reel" style="--juno-reel-space:8px;">
+        <span class="juno-chip">all</span><span class="juno-chip">photos</span><span class="juno-chip">video</span>
+        <span class="juno-chip">audio</span><span class="juno-chip">documents</span><span class="juno-chip">archives</span>
+        <span class="juno-chip">shared</span><span class="juno-chip">recent</span><span class="juno-chip">favorites</span>
+        <span class="juno-chip">offline</span><span class="juno-chip">trash</span>
+      </div>
+      <p class="dh-note">Flick sideways: momentum should feel native, each chip should snap to the start edge,
+        and the vertical page scroll must not hijack the gesture.</p>
+    </section>
+
+  </main>
+
+  <nav class="juno-pillbar" aria-label="Primary">
+    <a class="juno-pillbar__item" href="./index.html" aria-label="Hub"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg></a>
+    <a class="juno-pillbar__item" href="#" aria-current="page" aria-label="Buttons"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-check-circle" /></svg><span class="juno-pillbar__label">Buttons</span></a>
+    <a class="juno-pillbar__item" href="./forms.html" aria-label="Forms"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-pencil-simple" /></svg></a>
+  </nav>
+
+  <script src="./harness.js"></script>
+</body>
+</html>
