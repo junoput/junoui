@@ -1,0 +1,31 @@
+<section data-cell="Arc — circular ring">
+<!-- indeterminate -->
+<div class="juno-arc juno-arc--indeterminate"></div>
+
+<!-- determinate (label as a sibling so the ring mask doesn't clip it) -->
+<div style="position:relative;width:76px;height:76px;">
+  <div class="juno-arc" style="--juno-progress:63;"></div>
+  <span class="juno-arc__label">63%</span>
+</div>
+</section>
+
+<section data-cell="Beacon — radiating pulse">
+<!-- indeterminate -->
+<div class="juno-beacon"><span class="juno-beacon__core"></span></div>
+
+<!-- determinate: fill grows centre → rim -->
+<div class="juno-beacon juno-beacon--determinate" style="--juno-progress:63;">
+  <span class="juno-beacon__track"></span>
+  <span class="juno-beacon__fill"></span>
+  <span class="juno-beacon__hub"></span>
+  <span class="juno-beacon__label">63%</span>
+</div>
+</section>
+
+<section data-cell="Linear — bar">
+<!-- indeterminate -->
+<div class="juno-bar juno-bar--indeterminate"><span class="juno-bar__fill"></span></div>
+
+<!-- determinate -->
+<div class="juno-bar" style="--juno-progress:63;"><span class="juno-bar__fill"></span></div>
+</section>

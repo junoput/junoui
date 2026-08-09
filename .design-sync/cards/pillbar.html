@@ -1,0 +1,47 @@
+<section data-cell="Default">
+<nav class="juno-pillbar" aria-label="Primary">
+  <a class="juno-pillbar__item" href="/library" aria-current="page" aria-label="Library">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg>
+    <span class="juno-pillbar__label">Library</span>
+  </a>
+  <a class="juno-pillbar__item" href="/albums" aria-label="Albums">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg>
+  </a>
+  <span class="juno-pillbar__sep"></span>
+  <button class="juno-pillbar__item" aria-label="Sync">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg>
+  </button>
+</nav>
+</section>
+
+<section data-cell="Input slot">
+<div style="position:relative;min-height:110px;transform:translateZ(0)">
+<div class="juno-pillbar" style="position:absolute;inset-block-start:24px;inset-inline-start:24px">
+  <input
+    class="juno-pillbar__input"
+    type="search"
+    aria-label="Search library"
+    placeholder="Search…"
+  />
+  <button class="juno-pillbar__item" aria-label="Search" aria-pressed="true">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-magnifying-glass" /></svg>
+  </button>
+</div>
+</div>
+</section>
+
+<section data-cell="Overflow slot">
+<div style="position:relative;min-height:110px;transform:translateZ(0)">
+<div class="juno-pillbar" style="position:absolute;inset-block-start:24px;inset-inline-start:24px">
+  <button class="juno-pillbar__item" aria-label="Search" aria-pressed="true">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-magnifying-glass" /></svg>
+  </button>
+  <button class="juno-pillbar__item" aria-label="Filter">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-funnel" /></svg>
+  </button>
+  <button class="juno-pillbar__overflow" aria-haspopup="menu" aria-expanded="false" aria-label="More">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-dots-three" /></svg>
+  </button>
+</div>
+</div>
+</section>

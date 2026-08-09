@@ -1,0 +1,22 @@
+<!-- meta: col -->
+<section data-cell="Open popover">
+<div style="min-height:260px">
+<button popovertarget="pf" aria-haspopup="dialog">RANGE FILTER ▾</button>
+<div class="juno-popover" id="pf" popover role="dialog" aria-label="Range filter">
+  <label class="juno-field">
+    <span class="juno-field__label">From</span>
+    <input class="juno-input" value="2026-08-01" />
+  </label>
+  <label class="juno-field">
+    <span class="juno-field__label">To</span>
+    <input class="juno-input" value="2026-08-09" />
+  </label>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-block-start:12px">
+    <button class="juno-btn juno-btn--ghost juno-btn--sm">CLEAR</button>
+    <button class="juno-btn juno-btn--sm">APPLY</button>
+  </div>
+  <span class="juno-popover__arrow"></span>
+</div>
+<script>document.getElementById('pf').showPopover();</script>
+</div>
+</section>

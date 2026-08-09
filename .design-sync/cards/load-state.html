@@ -1,0 +1,40 @@
+<section data-cell="Shimmer — work in progress, no completion promise">
+<div class="juno-shimmer" style="block-size: 120px;" aria-busy="true" aria-live="polite"></div>
+</section>
+
+<section data-cell="Fault — terminal, never animates">
+<div class="juno-fault" role="status">
+  <span class="juno-fault__icon" aria-hidden="true">!</span>
+  <p>Couldn't load this image.</p>
+</div>
+</section>
+
+<section data-cell="Empty — legitimately nothing, terminal">
+<div class="juno-empty">
+  <span class="juno-empty__icon" aria-hidden="true">∅</span>
+  <p>Nothing here yet.</p>
+</div>
+</section>
+
+<section data-cell="The switch (optional)">
+<div class="juno-state" data-juno-state="processing">
+  <div data-juno-when="loading">
+    <div class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></div>
+  </div>
+  <div data-juno-when="processing" aria-busy="true" aria-live="polite">
+    <div class="juno-shimmer" style="block-size: 120px;"></div>
+  </div>
+  <div data-juno-when="error">
+    <div class="juno-fault" role="status">
+      <span class="juno-fault__icon" aria-hidden="true">!</span>
+      <p>Couldn't load this.</p>
+    </div>
+  </div>
+  <div data-juno-when="empty">
+    <div class="juno-empty">
+      <span class="juno-empty__icon" aria-hidden="true">∅</span>
+      <p>Nothing here yet.</p>
+    </div>
+  </div>
+</div>
+</section>

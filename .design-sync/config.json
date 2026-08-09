@@ -1,0 +1,24 @@
+{
+  "projectId": "68698edc-8c82-4f28-aa54-f34ceee3b659",
+  "shape": "package",
+  "pkg": "@junoput01/junoui",
+  "globalName": "Juno",
+  "buildCmd": "npm run build",
+  "cssEntry": "dist/css/juno.css",
+  "extraEntries": ["./dist/icons/inline.js"],
+  "extraFonts": ["dist/css/juno-fonts.css"],
+  "docsDir": "docs/components",
+  "readmeHeader": ".design-sync/conventions.md",
+  "guidelinesGlob": [
+    "docs/accessibility.md",
+    "docs/design-guidelines.md",
+    "docs/getting-started.md",
+    "docs/integration.md",
+    "docs/layout.md",
+    "docs/web.md",
+    "docs/tokens-reference.md",
+    "docs/native.md",
+    "docs/flutter.md",
+    "docs/ios-conformance.md"
+  ]
+}

@@ -1,0 +1,27 @@
+<!-- meta: col -->
+<section data-cell="Open menu">
+<div style="min-height:240px">
+<button popovertarget="acts" aria-haspopup="menu">ACTIONS ▾</button>
+<ul class="juno-menu" id="acts" popover role="menu">
+  <li>
+    <button class="juno-menu__item" role="menuitem" popovertarget="acts" popovertargetaction="hide">
+      <span class="juno-menu__icon">⤓</span>Import data
+      <span class="juno-menu__kbd">⌘O</span>
+    </button>
+  </li>
+  <li>
+    <button class="juno-menu__item" role="menuitem" popovertarget="acts" popovertargetaction="hide">
+      <span class="juno-menu__icon">⧉</span>Duplicate
+      <span class="juno-menu__kbd">⌘D</span>
+    </button>
+  </li>
+  <li class="juno-menu__sep" role="separator"></li>
+  <li>
+    <button class="juno-menu__item juno--warning" role="menuitem" popovertarget="acts" popovertargetaction="hide">
+      <span class="juno-menu__icon">⨯</span>Delete project
+    </button>
+  </li>
+</ul>
+<script>document.getElementById('acts').showPopover();</script>
+</div>
+</section>

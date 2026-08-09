@@ -1,0 +1,33 @@
+<section data-cell="Default">
+<a class="juno-rail__item" href="/library" aria-current="page">
+  <span class="juno-icon-loader">
+    <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg>
+    <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
+  </span>
+  <span class="juno-rail__label">Library</span>
+</a>
+</section>
+
+<section data-cell="Ringing an arbitrary control (button, badge, avatar)">
+<!-- 40px circular icon button -->
+<span
+  class="juno-icon-loader"
+  style="--juno-icon-loader-ring:40px;--juno-icon-loader-ring-width:2px"
+>
+  <button class="juno-btn juno-btn--icon" aria-label="More">&#8943;</button>
+  <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
+</span>
+
+<!-- 14px inline badge — small ring, use --smooth to avoid stepped jitter -->
+<span
+  class="juno-icon-loader"
+  style="--juno-icon-loader-ring:14px;--juno-icon-loader-ring-width:2px"
+>
+  <span class="juno-badge juno-badge--micro">3</span>
+  <span
+    class="juno-arc juno-arc--indeterminate juno-arc--smooth"
+    role="status"
+    aria-label="Loading"
+  ></span>
+</span>
+</section>

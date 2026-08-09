@@ -1,0 +1,40 @@
+<!-- meta: col -->
+<section data-cell="Default">
+<div style="position:relative;min-height:340px">
+<dialog class="juno-modal" open style="position:absolute">
+  <div class="juno-modal__stripe"></div>
+  <div class="juno-modal__head">
+    <span class="juno-modal__tag">DEPLOYMENT</span>
+    <button class="juno-modal__close" aria-label="Close">✕</button>
+  </div>
+  <div class="juno-modal__body">
+    <h2 class="juno-modal__title">Promote build to production?</h2>
+    <p class="juno-modal__text">This routes production traffic to the new version. Rollback stays one click away for 24 hours.</p>
+    <div class="juno-modal__foot">
+      <button class="juno-btn juno-btn--ghost">CANCEL</button>
+      <button class="juno-btn">PROMOTE BUILD</button>
+    </div>
+  </div>
+</dialog>
+</div>
+</section>
+
+<section data-cell="Destructive (.juno--warning)">
+<div style="position:relative;min-height:340px">
+<dialog class="juno-modal juno--warning" open style="position:absolute">
+  <div class="juno-modal__stripe"></div>
+  <div class="juno-modal__head">
+    <span class="juno-modal__tag">DANGER ZONE</span>
+    <button class="juno-modal__close" aria-label="Close">✕</button>
+  </div>
+  <div class="juno-modal__body">
+    <h2 class="juno-modal__title">Delete environment?</h2>
+    <p class="juno-modal__text">All replicas, volumes and DNS records for staging-eu are removed. This cannot be undone.</p>
+    <div class="juno-modal__foot">
+      <button class="juno-btn juno-btn--ghost">KEEP IT</button>
+      <button class="juno-btn juno--warning">DELETE</button>
+    </div>
+  </div>
+</dialog>
+</div>
+</section>
