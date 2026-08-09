@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui — device harness</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+  <header class="dh-bar">
+    <span class="dh-bar__title">junoui · device harness</span>
+    <span class="juno-badge juno-badge--soft juno--active" style="margin-inline-start:auto;">WEBKIT</span>
+  </header>
+
+  <main class="dh-main">
+
+    <section class="dh-sec">
+      <div class="juno-alert juno--active" role="status">
+        <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-info" /></svg></span>
+        <div class="juno-alert__body">
+          <span class="juno-alert__title">Read this once</span>
+          <span class="juno-alert__text">Share → <strong>Add to Home Screen</strong>, then launch from the icon. That is the
+            only way to see standalone chrome, the home-indicator inset, and the black-translucent status bar.
+            Start at <strong>Diagnostics</strong>, rotate the phone, and re-check.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <section class="juno-list">
+        <h2 class="juno-list__header">Instrument</h2>
+        <ul class="juno-list__group">
+          <li><a class="juno-list__row" href="./diagnostics.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-cpu" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Diagnostics</span><span class="juno-list__support">Safe areas · viewport units · media queries · feature support</span></span>
+            <span class="juno-badge juno-badge--micro juno--active">LIVE</span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+        </ul>
+      </section>
+    </section>
+
+    <section class="dh-sec">
+      <section class="juno-list">
+        <h2 class="juno-list__header">Navigation surfaces</h2>
+        <ul class="juno-list__group">
+          <li><a class="juno-list__row" href="./overlays.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Modal · drawer · bottom sheet</span><span class="juno-list__support">Opens for real — the sheet is the headline test</span></span>
+            <span class="juno-badge juno-badge--micro juno--caution">CRITICAL</span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./dock.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-list" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Dock</span><span class="juno-list__support">base · --fixed · --icon · --float · --pill</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./pillbar.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Pillbar</span><span class="juno-list__support">Floating bar · four corners · overflow menu · search slot</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./navbar.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-caret-left" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Navbar &amp; list</span><span class="juno-list__support">Stack top bar, back affordance, grouped rows</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./tabs.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-folder" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Tabs &amp; accordion</span><span class="juno-list__support">Scrollable strip, hidden scrollbar, native &lt;details&gt;</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+        </ul>
+      </section>
+    </section>
+
+    <section class="dh-sec">
+      <section class="juno-list">
+        <h2 class="juno-list__header">Controls &amp; content</h2>
+        <ul class="juno-list__group">
+          <li><a class="juno-list__row" href="./buttons.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-check-circle" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Buttons &amp; chips</span><span class="juno-list__support">Tap targets, tap-highlight, roles, toggles</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./forms.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-pencil-simple" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Forms &amp; inputs</span><span class="juno-list__support">The 16px focus-zoom rule, keyboards, switch, slider</span></span>
+            <span class="juno-badge juno-badge--micro juno--caution">FOCUS ZOOM</span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./toasts.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-bell" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Toasts &amp; alerts</span><span class="juno-list__support">Alert layer above a fixed dock, safe-area fit</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./table.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-hard-drives" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Table</span><span class="juno-list__support">Sideways scroll vs. --stack card mode</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./loaders.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Loaders, skeleton, load state</span><span class="juno-list__support">Animation under Reduce Motion — toggle it in Settings</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./media.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-images" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Thumb, avatar, badge</span><span class="juno-list__support">aspect-ratio, broken media, gauge, spark</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+          <li><a class="juno-list__row" href="./layout.html">
+            <svg class="juno-icon juno-list__icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg>
+            <span class="juno-list__main"><span class="juno-list__label">Layout, scroller, reel</span><span class="juno-list__support">Scroll snap, overscroll containment, app shell at 100dvh</span></span>
+            <svg class="juno-icon juno-list__chevron" aria-hidden="true"><use href="#juno-i-caret-right" /></svg>
+          </a></li>
+        </ul>
+      </section>
+    </section>
+
+    <section class="dh-sec">
+      <p class="dh-note">Every page here carries
+        <code class="juno-mono">viewport-fit=cover</code>. Without it WebKit reports every
+        <code class="juno-mono">env(safe-area-inset-*)</code> as 0 and nothing below is meaningful —
+        see <code class="juno-mono">docs/ios-conformance.md</code>.</p>
+    </section>
+
+  </main>
+
+  <script src="./harness.js"></script>
+</body>
+</html>

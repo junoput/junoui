@@ -55,6 +55,41 @@ the ring hugs the edge and the box does not resize when the arc appears:
 
 That is exactly how `.juno-dock__bubble` gets its section-loading ring.
 
+### Ringing an arbitrary control (button, badge, avatar)
+
+The wrapper doesn't care what it wraps — swap the icon for any interactive
+control and the ring still hugs it without resizing its box. Set the ring
+diameter to the control's own size (its `--juno-size-*` or `em` value) and
+the control keeps its own footprint; the wrapper is the only thing that
+grows to fit the ring:
+
+```html
+<!-- 40px circular icon button -->
+<span
+  class="juno-icon-loader"
+  style="--juno-icon-loader-ring:40px;--juno-icon-loader-ring-width:2px"
+>
+  <button class="juno-btn juno-btn--icon" aria-label="More">&#8943;</button>
+  <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
+</span>
+
+<!-- 14px inline badge — small ring, use --smooth to avoid stepped jitter -->
+<span
+  class="juno-icon-loader"
+  style="--juno-icon-loader-ring:14px;--juno-icon-loader-ring-width:2px"
+>
+  <span class="juno-badge juno-badge--micro">3</span>
+  <span
+    class="juno-arc juno-arc--indeterminate juno-arc--smooth"
+    role="status"
+    aria-label="Loading"
+  ></span>
+</span>
+```
+
+The ring is `pointer-events: none` and sits under the content (`z-index: 0`
+vs. `1`), so a wrapped `<button>` stays fully clickable.
+
 ## Anatomy (any platform)
 
 - A wrapper that stacks the ring and what it rings on one centred cell; with no
@@ -72,6 +107,11 @@ That is exactly how `.juno-dock__bubble` gets its section-loading ring.
 - **Don't hand-roll a second ring.** If a component needs an arc around it,
   compose this class and override the two ring props — one primitive keeps the
   centring gotcha, the pointer-events rule, and the paint order in one place.
+  That includes bespoke overlay CSS elsewhere for a "this control is loading"
+  ring — delete it and wrap the control in `.juno-icon-loader` instead.
+- Below ~24px, add `.juno-arc--smooth` next to `--indeterminate` — the
+  default 12-step sweep (see [loader](./loader.md)) reads as jitter at that
+  size; `--smooth` makes it a continuous rotation.
 - Gate the spin to first load, not every background refetch — a nav icon that
   blinks on every poll reads as broken. Add `--indeterminate` when a section
   has no data yet; remove it once loaded.

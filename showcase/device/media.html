@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Thumb, avatar, badge</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Thumb · avatar · badge</span>
+  </header>
+
+  <main class="dh-main dh-main--flush">
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Media tiles — aspect-ratio + broken-source fallback</h2>
+      <p class="dh-note">Tile size and gap follow <code class="juno-mono">data-juno-density</code>. Tile 3 points
+        at a file that does not exist and tile 5 has no image at all — both must fall back to the placeholder
+        treatment rather than collapsing. Every tile must stay square: this is
+        <code class="juno-mono">aspect-ratio</code>, which WebKit has had for years but which is worth seeing
+        alongside real decoded images.</p>
+      <div class="juno-grid-auto juno-grid-auto--tiles">
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%231a3a4a'/%3E%3Ccircle cx='140' cy='60' r='30' fill='%23387a8a'/%3E%3Cpath d='M0 200 80 90l50 60 30-34 40 84z' fill='%23244f5f'/%3E%3C/svg%3E" alt="Ridge at dusk" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23402a1c'/%3E%3Ccircle cx='60' cy='70' r='24' fill='%23885a34'/%3E%3Cpath d='M0 200 60 120l60 50 40-60 40 90z' fill='%23623f26'/%3E%3C/svg%3E" alt="Dune field" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="./missing-thumbnail.jpg" alt="Broken source — onerror removes it" onerror="this.remove()" /></figure>
+        <figure class="juno-thumb juno-thumb--video" style="aspect-ratio:1;" role="img" aria-label="Video preview unavailable"><figcaption class="juno-thumb__label">No preview</figcaption></figure>
+        <figure class="juno-thumb juno-thumb--selected" style="aspect-ratio:1;" role="img" aria-label="Selected tile"><figcaption class="juno-thumb__label">Selected</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23203a24'/%3E%3Cpath d='M30 200V80l40 30V70l40 40V60l40 50V80l20 20v100z' fill='%233c6a44'/%3E%3C/svg%3E" alt="Forest line" onerror="this.remove()" /><figcaption class="juno-thumb__corner juno-thumb__corner--top-end"><span class="juno-badge juno-badge--micro juno--nominal">4K</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Media reel — scroll-snap row of tiles</h2>
+      <div class="juno-reel" style="--juno-reel-space:12px;">
+        <figure class="juno-thumb" style="aspect-ratio:1;inline-size:132px;flex:0 0 auto;" role="img" aria-label="Tile 1"><figcaption class="juno-thumb__label">01</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;inline-size:132px;flex:0 0 auto;" role="img" aria-label="Tile 2"><figcaption class="juno-thumb__label">02</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;inline-size:132px;flex:0 0 auto;" role="img" aria-label="Tile 3"><figcaption class="juno-thumb__label">03</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;inline-size:132px;flex:0 0 auto;" role="img" aria-label="Tile 4"><figcaption class="juno-thumb__label">04</figcaption></figure>
+        <figure class="juno-thumb" style="aspect-ratio:1;inline-size:132px;flex:0 0 auto;" role="img" aria-label="Tile 5"><figcaption class="juno-thumb__label">05</figcaption></figure>
+      </div>
+      <p class="dh-note">Flick and let go: each tile should settle flush to the start edge.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Avatars</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:12px;">
+        <span class="juno-avatar juno-avatar--sm">AL</span>
+        <span class="juno-avatar">GH</span>
+        <span class="juno-avatar juno-avatar--lg">KJ</span>
+        <span class="juno-avatar juno-avatar--xl"><svg class="juno-icon juno-icon--lg"><use href="#juno-i-user" /></svg></span>
+        <span class="juno-avatar juno-avatar--lg juno-avatar--square">SQ</span>
+      </div>
+      <div class="juno-cluster" style="--juno-cluster-space:12px;margin-block-start:12px;">
+        <span class="juno-avatar juno-avatar--lg juno-avatar--ring juno--nominal" title="Online">ON</span>
+        <span class="juno-avatar juno-avatar--lg juno-avatar--ring juno--caution" title="Away">AW</span>
+        <span class="juno-avatar juno-avatar--lg juno-avatar--ring juno--warning" title="Busy"><svg class="juno-icon"><use href="#juno-i-user" /></svg></span>
+        <span class="juno-avatar-group">
+          <span class="juno-avatar juno-avatar--lg">AL</span>
+          <span class="juno-avatar juno-avatar--lg">GH</span>
+          <span class="juno-avatar juno-avatar--lg">KJ</span>
+          <span class="juno-avatar juno-avatar--lg juno-text-label">+5</span>
+        </span>
+      </div>
+      <p class="dh-note">The overlap in a group is a negative inline margin — under RTL it must mirror.
+        Initials must stay optically centred at every size on this device's font stack.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Badges — solid · soft · outline · micro</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:8px;">
+        <span class="juno-badge juno--nominal">NOMINAL</span>
+        <span class="juno-badge juno--active">ACTIVE</span>
+        <span class="juno-badge juno--caution">CAUTION</span>
+        <span class="juno-badge juno--warning">WARNING</span>
+      </div>
+      <div class="juno-cluster" style="--juno-cluster-space:8px;margin-block-start:10px;">
+        <span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span>
+        <span class="juno-badge juno-badge--soft juno--caution">DEGRADED</span>
+        <span class="juno-badge juno-badge--soft juno--warning">DOWN</span>
+        <span class="juno-badge juno-badge--outline juno--active">QUEUED</span>
+        <span class="juno-badge juno-badge--micro juno--nominal">4K</span>
+        <span class="juno-badge juno-badge--micro juno--active">HDR</span>
+      </div>
+      <p class="dh-note"><code class="juno-mono">--micro</code> is the smallest type junoui ships. Read it at
+        arm's length: if it is illegible on this display, that is a finding.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Status dots — including the blinking "live" variant</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:14px;">
+        <span class="juno-status juno--nominal"><span class="juno-status__dot"></span>NOMINAL</span>
+        <span class="juno-status juno--active juno-status--live"><span class="juno-status__dot"></span>ACTIVE · LIVE</span>
+        <span class="juno-status juno--caution"><span class="juno-status__dot"></span>CAUTION</span>
+        <span class="juno-status juno--warning juno-status--live"><span class="juno-status__dot"></span>WARNING · LIVE</span>
+        <span class="juno-status juno--muted"><span class="juno-status__dot"></span>OFFLINE</span>
+      </div>
+      <p class="dh-note">The two "live" dots blink. Under Reduce Motion they must go steady, not vanish —
+        the state still has to be readable.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Gauge · spark · readout — the dense metric set</h2>
+      <div class="juno-cluster" style="--juno-cluster-space:20px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="juno-gauge juno-gauge--sm juno--nominal" style="--juno-gauge-value: 42" role="meter" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" aria-label="CPU"><span class="juno-gauge__value">42</span></div>
+          <span class="juno-gauge__label">CPU</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="juno-gauge juno-gauge--sm juno--caution" style="--juno-gauge-value: 81" role="meter" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100" aria-label="RAM"><span class="juno-gauge__value">81</span></div>
+          <span class="juno-gauge__label">RAM</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="juno-gauge juno--warning" style="--juno-gauge-value: 93" role="meter" aria-valuenow="93" aria-valuemin="0" aria-valuemax="100" aria-label="Disk"><span class="juno-gauge__value">93</span></div>
+          <span class="juno-gauge__label">DISK</span>
+        </div>
+      </div>
+      <div class="juno-grid-auto" style="--juno-grid-min:150px;margin-block-start:16px;">
+        <div class="juno-card"><div class="juno-card__body">
+          <span class="juno-label">Requests</span>
+          <svg class="juno-spark juno--nominal" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,18 8,15 16,17 24,12 32,14 40,9 48,11 56,7 64,10 72,5 80,8 88,4 96,7 104,3 112,5 120,2" /></svg>
+        </div></div>
+        <div class="juno-card"><div class="juno-card__body">
+          <span class="juno-label">Errors</span>
+          <svg class="juno-spark juno--warning" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,22 8,21 16,22 24,20 32,21 40,19 48,20 56,14 64,16 72,8 80,11 88,5 96,9 104,4 112,6 120,3" /></svg>
+        </div></div>
+      </div>
+      <p class="dh-note">Sparklines are stretched SVG (<code class="juno-mono">preserveAspectRatio: none</code>);
+        check the stroke does not go hairline-invisible at this device pixel ratio.</p>
+      <div class="juno-grid-auto" style="--juno-grid-min:110px;margin-block-start:16px;">
+        <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">62</span><span class="juno-readout__unit">%</span></div>
+        <div class="juno-readout juno--active"><span class="juno-readout__label">Req/s</span><span class="juno-readout__value">4,780</span><span class="juno-readout__unit">rps</span></div>
+        <div class="juno-readout juno--caution"><span class="juno-readout__label">P95</span><span class="juno-readout__value">128</span><span class="juno-readout__unit">ms</span></div>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Divider</h2>
+      <div class="juno-divider"></div>
+      <div class="juno-divider juno-divider--label" style="margin-block-start:16px;">SECTION</div>
+    </section>
+
+  </main>
+
+  <nav class="juno-dock juno-dock--icon" aria-label="Primary">
+    <a class="juno-dock__item" href="./index.html" aria-label="Hub"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg></span></a>
+    <a class="juno-dock__item" href="#" aria-current="page" aria-label="Media"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span></a>
+    <a class="juno-dock__item" href="./layout.html" aria-label="Layout"><span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span></a>
+  </nav>
+
+  <script src="./harness.js"></script>
+</body>
+</html>

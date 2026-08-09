@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Tabs</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Tabs &amp; accordion</span>
+  </header>
+
+  <main class="dh-main dh-main--flush">
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Scrollable tab strip</h2>
+      <p class="dh-note">Twelve tabs on a phone-width screen. Three things to verify: the strip flicks
+        sideways with native momentum, <strong>no scrollbar is drawn</strong>
+        (<code class="juno-mono">scrollbar-width: none</code> plus the
+        <code class="juno-mono">::-webkit-scrollbar</code> reset — WebKit needs the second one), and the
+        selected tab scrolls itself into view when you pick one near the far end.</p>
+      <div class="juno-tabs">
+        <div class="juno-tabs__list" role="tablist" aria-label="Service detail">
+          <button class="juno-tabs__tab" role="tab" id="d-t1" aria-controls="d-p1" aria-selected="true">OVERVIEW</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t2" aria-controls="d-p2" aria-selected="false" tabindex="-1">METRICS</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t3" aria-controls="d-p3" aria-selected="false" tabindex="-1">LOGS</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t4" aria-controls="d-p4" aria-selected="false" tabindex="-1">TRACES</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t5" aria-controls="d-p5" aria-selected="false" tabindex="-1">DEPENDENCIES</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t6" aria-controls="d-p6" aria-selected="false" tabindex="-1">ALERTS</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t7" aria-controls="d-p7" aria-selected="false" tabindex="-1">DEPLOYS</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t8" aria-controls="d-p8" aria-selected="false" tabindex="-1">SECRETS</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t9" aria-controls="d-p9" aria-selected="false" tabindex="-1">NETWORK</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t10" aria-controls="d-p10" aria-selected="false" tabindex="-1">STORAGE</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t11" aria-controls="d-p11" aria-selected="false" tabindex="-1">AUDIT</button>
+          <button class="juno-tabs__tab" role="tab" id="d-t12" aria-controls="d-p12" aria-selected="false" disabled>CONFIG</button>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p1" aria-labelledby="d-t1">
+          <article class="juno-card"><div class="juno-card__body">
+            <div class="juno-card__row"><span class="juno-label">Service</span><span class="juno-value juno-mono">api-gateway</span></div>
+            <div class="juno-card__row"><span class="juno-label">Status</span><span class="juno-badge juno-badge--soft juno--nominal">HEALTHY</span></div>
+            <div class="juno-card__row"><span class="juno-label">Region</span><span class="juno-value juno-mono">us-east-1</span></div>
+          </div></article>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p2" aria-labelledby="d-t2" hidden>
+          <div class="juno-grid-auto" style="--juno-grid-min:120px;">
+            <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">62</span><span class="juno-readout__unit">%</span></div>
+            <div class="juno-readout juno--active"><span class="juno-readout__label">Req/s</span><span class="juno-readout__value">4,780</span><span class="juno-readout__unit">rps</span></div>
+            <div class="juno-readout juno--caution"><span class="juno-readout__label">P95</span><span class="juno-readout__value">128</span><span class="juno-readout__unit">ms</span></div>
+          </div>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p3" aria-labelledby="d-t3" hidden>
+          <article class="juno-card"><div class="juno-card__body">
+            <pre class="juno-mono" style="font-size:12px;color:var(--juno-label);line-height:1.7;margin:0;white-space:pre-wrap;">14:32:01  INF  request /v1/orders 200 18ms
+14:32:02  WRN  upstream worker-pool slow 402ms
+14:32:03  INF  request /v1/orders 200 21ms</pre>
+          </div></article>
+        </div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p4" aria-labelledby="d-t4" hidden><p class="juno-label">Traces panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p5" aria-labelledby="d-t5" hidden><p class="juno-label">Dependencies panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p6" aria-labelledby="d-t6" hidden><p class="juno-label">Alerts panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p7" aria-labelledby="d-t7" hidden><p class="juno-label">Deploys panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p8" aria-labelledby="d-t8" hidden><p class="juno-label">Secrets panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p9" aria-labelledby="d-t9" hidden><p class="juno-label">Network panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p10" aria-labelledby="d-t10" hidden><p class="juno-label">Storage panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p11" aria-labelledby="d-t11" hidden><p class="juno-label">Audit panel.</p></div>
+        <div class="juno-tabs__panel" role="tabpanel" id="d-p12" aria-labelledby="d-t12" hidden><p class="juno-label">Config is disabled for this role.</p></div>
+      </div>
+      <p class="dh-note">Panel switching is the harness's JS. junoui ships the look and the ARIA contract only —
+        that split is deliberate, so what you are judging here is the strip, not the switching.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Accordion — native &lt;details&gt;, zero JS</h2>
+      <p class="dh-note">This one genuinely needs no script. Tap a summary: the disclosure must open on the
+        first tap, the whole row must be the target, and the marker animation must respect Reduce Motion.</p>
+      <div class="juno-accordion">
+        <details class="juno-accordion__item" open>
+          <summary class="juno-accordion__summary">Region · us-east-1<span class="juno-badge juno-badge--soft juno--nominal" style="margin-inline-start:auto;">HEALTHY</span></summary>
+          <div class="juno-accordion__body">Primary region. 3 replicas, auto-scaling on. CPU 62%, P95 128ms.</div>
+        </details>
+        <details class="juno-accordion__item">
+          <summary class="juno-accordion__summary">Region · eu-west-1<span class="juno-badge juno-badge--soft juno--warning" style="margin-inline-start:auto;">DEGRADED</span></summary>
+          <div class="juno-accordion__body">cache-redis unreachable. Failover to us-east-1 armed.</div>
+        </details>
+        <details class="juno-accordion__item">
+          <summary class="juno-accordion__summary">Region · ap-south-1<span class="juno-badge juno-badge--soft juno--caution" style="margin-inline-start:auto;">CAUTION</span></summary>
+          <div class="juno-accordion__body">queue-consumer backlog rising. 560 jobs pending.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="dh-sec">
+      <div class="dh-filler">
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="juno-pillbar" aria-label="Primary">
+    <a class="juno-pillbar__item" href="./index.html" aria-label="Hub"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg></a>
+    <a class="juno-pillbar__item" href="#" aria-current="page" aria-label="Tabs"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-folder" /></svg><span class="juno-pillbar__label">Tabs</span></a>
+    <a class="juno-pillbar__item" href="./table.html" aria-label="Table"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hard-drives" /></svg></a>
+  </nav>
+
+  <script src="./harness.js"></script>
+</body>
+</html>

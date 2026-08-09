@@ -21,6 +21,14 @@
 .juno-dock {
   --juno-role: var(--juno-active);
 
+  /* Consumer-driven shrink (e.g. dim/compact the bar on scroll) — default 1,
+     a no-op. Applies to the whole bar regardless of variant (plain/--fixed/
+     --pill/--float/--icon). Transition duration is authored through the
+     motion scale (see base.css's JS-readable --juno-motion contract) so
+     prefers-reduced-motion collapses it to 0 without a component-local
+     media query. */
+  --juno-dock-scale: 1;
+
   position: sticky;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
@@ -29,6 +37,9 @@
   background: var(--juno-s1);
   border-block-start: var(--juno-border-width-1) solid var(--juno-border);
   padding-block-end: env(safe-area-inset-bottom, 0);
+  transform: scale(var(--juno-dock-scale));
+  transform-origin: bottom center;
+  transition: transform calc(var(--juno-motion-duration-quick) * var(--juno-motion-scale)) var(--juno-motion-ease-standard);
 }
 
 .juno-dock__item {
@@ -41,6 +52,13 @@
   justify-content: center;
   gap: var(--juno-space-2);
   padding-block: var(--juno-space-4);
+
+  /* Full reset, not just the top edge: a plain `border-block-start` override
+     leaves the UA default border on the other three sides of a <button>
+     item (links have none, so this went unnoticed until <button> showed up
+     in the pill variant's usage). Re-add only the edge that carries the
+     active accent. */
+  border: none;
   border-block-start: var(--juno-border-width-2) solid transparent;
   font-family: var(--juno-font-family-sans);
   font-size: var(--juno-font-size-10);
@@ -112,6 +130,7 @@
   margin: 0 var(--juno-space-12) calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
   padding: var(--juno-space-4);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: var(--juno-border-width-1) solid var(--juno-border);
   border-radius: 999px;
@@ -182,6 +201,101 @@
 @media (prefers-reduced-transparency: reduce) {
   .juno-dock--pill {
     background: var(--juno-s1);
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
+}
+
+/* ── Float variant — the pillbar's floating capsule chrome (fixed, rounded
+   shell, blur, shadow, off-edge margin) applied to the dock's OWN item model:
+   unlike --pill it keeps icon+label items and the full-item active fill —
+   only the exterior changes. Combine with --icon below for the bubble
+   treatment inside a capsule (the old --pill look, decomposed). `border`
+   fully replaces the base's `border-block-start` (no top seam on a capsule),
+   and `padding` fully replaces the base's safe-area padding (the margin
+   below carries the safe area instead — additive offset off the edge, not
+   `max()`: see docs/ios-conformance.md). `overflow: hidden` clips the
+   items' square corners to the capsule's rounded shape.
+   Usage:
+     <nav class="juno-dock juno-dock--float juno-hide-from-md" aria-label="Primary">
+       <a class="juno-dock__item" href="…" aria-current="page">
+         <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+         <span class="juno-dock__label">Library</span>
+       </a>
+     </nav>
+   Out of flow (fixed) so the page scrolls UNDER it — reserve room on the
+   scroller with padding-block-end: var(--juno-dock-clearance). */
+.juno-dock--float {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--juno-z-raised);
+  margin: 0 var(--juno-space-12) calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  padding: var(--juno-space-4);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: 999px;
+  box-shadow: var(--juno-shadow-2);
+}
+
+/* reduced-transparency → solid surface, no blur (matches the pillbar / --pill) */
+@media (prefers-reduced-transparency: reduce) {
+  .juno-dock--float {
+    background: var(--juno-s1);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* ── Icon variant — labels drop, glyphs grow, and the active state moves to
+   a circular .juno-dock__bubble instead of filling the whole item, WITHOUT
+   forcing the floating capsule chrome (that's --float, above — combine both
+   for the old --pill look). Usable standalone on a plain sticky/--fixed bar
+   for a compact, icon-only full-width dock.
+   Usage — same .juno-dock__bubble contract as --pill (pair with
+   .juno-icon-loader; see docs/components/dock.md#pill-variant):
+     <nav class="juno-dock juno-dock--icon juno-hide-from-md" aria-label="Primary">
+       <a class="juno-dock__item" href="…" aria-current="page" aria-label="Library">
+         <span class="juno-dock__bubble juno-icon-loader">
+           <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-squares-four" /></svg>
+         </span>
+       </a>
+     </nav>
+   Labels are hidden, so every item MUST carry an aria-label — the glyph
+   alone is not an accessible name. */
+.juno-dock--icon .juno-dock__item {
+  gap: 0;
+
+  /* accent moves to the bubble; kill the item-edge border in both states */
+  border-color: transparent;
+}
+
+.juno-dock--icon .juno-dock__label { display: none; }
+
+/* Explicit big glyph so the icon-only bar reads at a glance — set on the
+   glyph itself so it wins regardless of context (the base .juno-icon no
+   longer pins a size — see 20260727-011). */
+.juno-dock--icon .juno-icon { --juno-icon-size: var(--juno-space-32); }
+
+/* Focus lands on the bubble so the ring hugs the round target, not the wide
+   item box. */
+.juno-dock--icon .juno-dock__item:focus-visible { outline: none; }
+
+.juno-dock--icon .juno-dock__item:focus-visible .juno-dock__bubble {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+}
+
+/* Active reads on the bubble alone — suppress the base full-item fill so
+   only the circular highlight shows. */
+.juno-dock--icon .juno-dock__item[aria-current] {
+  background: none;
+  color: var(--juno-role);
+}
+
+.juno-dock--icon .juno-dock__item[aria-current] .juno-dock__bubble {
+  background: var(--juno-s3);
 }

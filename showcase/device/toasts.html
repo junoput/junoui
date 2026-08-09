@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-juno-palette="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="junoui dev">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>junoui device — Toasts &amp; alerts</title>
+<link rel="stylesheet" href="../../dist/css/juno-fonts.css">
+<link rel="stylesheet" href="../../dist/css/juno.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+  <header class="dh-bar">
+    <a class="juno-btn juno-btn--ghost juno-btn--sm" href="./index.html">‹ HUB</a>
+    <span class="dh-bar__title">Toasts &amp; alerts</span>
+  </header>
+
+  <main class="dh-main dh-main--dock">
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Toasts — fire them at the fixed dock</h2>
+      <p class="dh-note">This page carries a fixed dock at the foot on purpose. A bottom toast must land
+        <em>above</em> the dock and above the home indicator, never behind either. Fire several: they stack,
+        each auto-dismisses after 4.5s, ✕ dismisses early.</p>
+      <div class="juno-cluster" style="--juno-cluster-space:10px;">
+        <button class="juno-btn juno--nominal" data-toast="nominal" data-msg="Build promoted to production.">SUCCESS</button>
+        <button class="juno-btn juno--active" data-toast="active" data-msg="Rollout is now at 50%.">INFO</button>
+        <button class="juno-btn juno--caution" data-toast="caution" data-msg="Latency climbing on worker-pool.">CAUTION</button>
+        <button class="juno-btn juno--warning" data-toast="warning" data-msg="cache-redis is unreachable in eu-west-1 and failover is armed.">WARNING · LONG</button>
+      </div>
+      <h3 class="dh-h" style="margin-block-start:18px;">Stack anchor</h3>
+      <div class="dh-switch">
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-stack="">BOTTOM · END</button>
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-stack="juno-toast-stack--start">BOTTOM · START</button>
+        <button class="juno-btn juno-btn--sm juno-btn--ghost" data-stack="juno-toast-stack--top">TOP</button>
+      </div>
+      <p class="dh-note">Switch to TOP and fire one: it must clear the notch / Dynamic Island, not slide under it.</p>
+    </section>
+
+    <section class="dh-sec">
+      <h2 class="dh-h">Inline alerts — every role</h2>
+      <div class="juno-stack" style="--juno-stack-space:12px;">
+        <div class="juno-alert juno--active" role="status">
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-info" /></svg></span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Heads up</span><span class="juno-alert__text">A new build is rolling out to 10% of traffic.</span></div>
+        </div>
+        <div class="juno-alert juno--nominal" role="status">
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-check-circle" /></svg></span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Deploy succeeded</span><span class="juno-alert__text">api-gateway is healthy on all regions.</span></div>
+        </div>
+        <div class="juno-alert juno--caution" role="status">
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning" /></svg></span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Elevated latency</span><span class="juno-alert__text">P95 on worker-pool is 402 ms — above the 300 ms target.</span></div>
+        </div>
+        <div class="juno-alert juno--warning" role="alert">
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning-circle" /></svg></span>
+          <div class="juno-alert__body">
+            <span class="juno-alert__title">Deploy blocked</span>
+            <span class="juno-alert__text">Two required checks are still failing on this branch.</span>
+            <div class="juno-alert__actions">
+              <button class="juno-btn juno--warning">RE-RUN CHECKS</button>
+              <button class="juno-btn juno-btn--ghost">VIEW LOG</button>
+            </div>
+          </div>
+          <button class="juno-alert__close" aria-label="Dismiss"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button>
+        </div>
+        <div class="juno-alert juno-alert--solid juno--warning" role="alert">
+          <span class="juno-alert__icon"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-warning-circle" /></svg></span>
+          <div class="juno-alert__body"><span class="juno-alert__title">Quota exceeded</span><span class="juno-alert__text">Write traffic is being throttled.</span></div>
+        </div>
+      </div>
+      <p class="dh-note">At this width the action row inside an alert wraps. Confirm the two buttons stay 44px
+        tall and do not overlap the ✕ dismiss target in the corner.</p>
+    </section>
+
+    <section class="dh-sec">
+      <div class="dh-filler">
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+        <div class="juno-skeleton" style="--juno-skeleton-h:80px;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- alert layer -->
+  <div class="juno-toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
+  <nav class="juno-dock juno-dock--fixed" aria-label="Primary">
+    <a class="juno-dock__item" href="./index.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-house" /></svg><span class="juno-dock__label">Hub</span></a>
+    <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-bell" /></svg><span class="juno-dock__label">Alerts</span></a>
+    <a class="juno-dock__item" href="./diagnostics.html"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-cpu" /></svg><span class="juno-dock__label">Diag</span></a>
+  </nav>
+
+  <script>
+  // harness plumbing: re-anchor the toast stack so all three positions can be
+  // exercised without three separate pages.
+  document.querySelectorAll('[data-stack]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var s = document.getElementById('toast-stack');
+      s.className = 'juno-toast-stack' + (b.dataset.stack ? ' ' + b.dataset.stack : '');
+    });
+  });
+  </script>
+  <script src="./harness.js"></script>
+</body>
+</html>

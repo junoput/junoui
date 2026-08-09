@@ -40,8 +40,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* --juno-label-size: optional size override, set by an ancestor (e.g. a
+ * density wrapper or a "compact" section) — never declared here, so it
+ * isn't shadowed for descendants that also want to read it. */
 .juno-label {
-  font-size: var(--juno-font-size-13);
+  font-size: var(--juno-label-size, var(--juno-font-size-13));
   color: var(--juno-label);
 }
 

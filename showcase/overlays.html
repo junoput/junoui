@@ -2,7 +2,7 @@
 <html lang="en" data-juno-palette="standard">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>junoui — Overlays</title>
 <script>
   // apply persisted theme before first paint (no FOUC on page navigation)
@@ -152,6 +152,7 @@
     </dialog>
 
     <dialog class="juno-modal juno-drawer juno-drawer--bottom" id="ov-drawer-bottom" aria-labelledby="ov-db-t">
+      <div class="juno-sheet__handle" aria-hidden="true"></div>
       <div class="juno-modal__head"><span class="juno-modal__tag" id="ov-db-t">QUICK ACTIONS · BOTTOM</span>
         <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
       <div class="juno-modal__body">

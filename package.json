@@ -40,6 +40,7 @@
     },
     "./css": "./dist/css/juno.css",
     "./css/tokens": "./dist/css/juno-tokens.css",
+    "./css/custom-media": "./dist/css/juno-custom-media.css",
     "./fonts.css": "./dist/css/juno-fonts.css",
     "./scss": "./dist/scss/_juno-tokens.scss",
     "./tokens.json": "./dist/json/tokens.json",

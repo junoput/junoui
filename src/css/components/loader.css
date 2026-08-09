@@ -41,6 +41,12 @@
   animation: juno-arc-rot 1.1s steps(12) infinite; /* mechanical, 12-step sweep */
 }
 
+/* the 12-step sweep reads as jitter under ~24px (e.g. rung around a small
+   badge via .juno-icon-loader) — swap to a continuous rotation there */
+.juno-arc--smooth.juno-arc--indeterminate {
+  animation-timing-function: linear;
+}
+
 /* centred readout for determinate arcs — place a span inside */
 .juno-arc__label {
   position: absolute;
