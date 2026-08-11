@@ -48,6 +48,54 @@ Two things depend on it, and both fail **silently**:
 
 Details and sources: [ios-conformance.md](./ios-conformance.md).
 
+## The top edge — spacing an app skeleton for iOS
+
+With `viewport-fit=cover` the page owns the whole screen, including the strip
+behind the Dynamic Island / notch and the home-indicator region. Set an app up
+like this from the start and every edge is already correct:
+
+- **One scroller owns the vertical axis** — not `<body>`. Give it the top
+  inset as _padding inside the scroller_: content starts below the island at
+  rest, but scrolls full-bleed behind it (padding belongs to the scroll
+  container, and content passes through it while scrolling):
+
+  ```html
+  <main
+    class="juno-scroller juno-scroller--y"
+    style="
+      height: 100dvh;
+      padding-block-start: calc(env(safe-area-inset-top, 0px) + var(--juno-space-12));
+      padding-block-end: calc(env(safe-area-inset-bottom, 0px) + var(--juno-space-16));
+    "
+  >
+    …
+  </main>
+  ```
+
+- **Pinned bars stick at the inset line, not at 0** — a toolbar that must stay
+  visible rides just below the island while content scrolls behind the island
+  above it:
+
+  ```css
+  .toolbar {
+    position: sticky;
+    inset-block-start: env(safe-area-inset-top, 0px);
+  }
+  ```
+
+- **Floating controls add the inset**
+  (`inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px))`).
+  The `.juno-pillbar--top-*` / `--bottom-*` corner variants ship with this
+  already applied.
+
+- **Opaque top bars pad, don't offset** — `.juno-navbar` and
+  `.juno-app-shell__topbar` take `padding-block-start: env(safe-area-inset-top, 0)`
+  (built in), so their background extends up behind the island instead of
+  leaving a gap above.
+
+When the inset is added vs. `max()`-ed is a real distinction — see
+[ios-conformance.md — the rule](./ios-conformance.md#max-vs-addition--the-rule).
+
 ## The model
 
 - **Palette** — `standard` · `colorblind` · `soft`

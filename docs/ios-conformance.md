@@ -127,6 +127,27 @@ junoui's call sites were audited against this rule (2026-08-03) and the additive
 ones are correct as written. Do not "fix" them to `max()` without re-reading
 this section.
 
+### The top edge in a scrolling app
+
+The top inset belongs to the **scroll container**, as padding — not to the page
+as a margin. Padding on a scroller adds space at the start of its content
+without clipping it out: at rest the first element sits below the Dynamic
+Island, and once scrolled, content passes through the padding zone and is
+visible behind the island — which is the native-app behavior. A margin (or
+padding on a non-scrolling ancestor) instead walls the island strip off and
+content never reaches it.
+
+Two consequences for anything pinned:
+
+- `position: sticky` elements inside that scroller stick at
+  `inset-block-start: env(safe-area-inset-top, 0px)` — the inset line — not at
+  `0`, or they ride up behind the island.
+- Floating overlays (`position: fixed`) add the inset to their offset; the
+  pillbar corner variants already do.
+
+The full skeleton recipe lives in
+[getting-started.md](./getting-started.md#the-top-edge--spacing-an-app-skeleton-for-ios).
+
 ### The unit trap
 
 Inside `calc()`, an env() fallback **must carry a unit**:
