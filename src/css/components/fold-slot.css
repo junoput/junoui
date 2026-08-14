@@ -1,0 +1,44 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Fold slot (animated presence for a row member)
+ *  A slot inside any flex/grid row that animates between PRESENT and
+ *  FOLDED-AWAY instead of popping in and out of the DOM: its inline-size
+ *  folds to zero, it fades, and at the end of the fold it leaves the
+ *  tab order via visibility (discrete transition: instant coming in,
+ *  end-of-fade going out). Keep the element mounted; drive the state
+ *  with the data-juno-in attribute — zero JS here, the app owns when.
+ *
+ *  The size must be DEFINITE (--juno-fold-size) because a transition
+ *  cannot run to or from an intrinsic width. If the row uses a flex/grid
+ *  gap, the folded slot still occupies one gap — name it in
+ *  --juno-fold-gap and the fold swallows it with a negative margin.
+ *
+ *  Canonical use: a transient action in a toolbar/pill row (a
+ *  scroll-to-top arrow, a contextual button) whose arrival should slide
+ *  the row open rather than jump it.
+ *  Usage:
+ *    <div style="display:flex; gap:4px">                  (any row)
+ *      <button class="juno-fold" data-juno-in aria-label="Scroll to top">…</button>
+ *      …other members…
+ *    </div>
+ *  prefers-reduced-motion needs nothing component-local — the base
+ *  layer zeroes every transition duration. */
+.juno-fold {
+  --juno-fold-size: var(--juno-size-tap-comfortable);
+  --juno-fold-gap: 0px;
+
+  flex-shrink: 0;
+  inline-size: var(--juno-fold-size);
+  overflow: hidden;
+  transition:
+    inline-size var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    margin var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    opacity var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    visibility var(--juno-motion-duration-base) var(--juno-motion-ease-standard);
+}
+
+.juno-fold:not([data-juno-in]) {
+  inline-size: 0;
+  margin-inline-end: calc(-1 * var(--juno-fold-gap));
+  opacity: 0;
+  visibility: hidden;
+}

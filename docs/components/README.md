@@ -63,6 +63,7 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Rail (app-shell nav)             | `.juno-rail`                                | [rail.md](./rail.md)                   |
 | Dock (bottom nav, narrow)        | `.juno-dock`                                | [dock.md](./dock.md)                   |
 | Pillbar (floating pill bar)      | `.juno-pillbar`                             | [pillbar.md](./pillbar.md)             |
+| Fold slot (animated presence)    | `.juno-fold`                                | [fold-slot.md](./fold-slot.md)         |
 | Icon loader (rings any control)  | `.juno-icon-loader`                         | [icon-loader.md](./icon-loader.md)     |
 | Navbar (stack top bar)           | `.juno-navbar`                              | [navbar.md](./navbar.md)               |
 | List (grouped rows)              | `.juno-list`                                | [list.md](./list.md)                   |
