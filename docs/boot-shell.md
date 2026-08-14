@@ -263,3 +263,33 @@ does not keep them in sync; tests do:
   inferred from bundle sizes. A dev server is the wrong instrument: it serves
   the unbundled module graph (Nexora: 80 requests where the build makes 10) and
   its numbers say nothing about what users get.
+
+## Serving the ladder
+
+None of the rungs exist on a dev server: it ships the unbundled module graph,
+React's dev build, no minification, and it cannot register a service worker.
+The dev server is the workshop; every demo anyone judges the app's speed by
+serves the **production build**. A standing demo that still picks up every
+change is three processes under one supervisor:
+
+```sh
+vite build --watch    # rebuilds dist/ a few seconds after any source change
+vite preview --host   # serves dist/ (with the app's API proxy)
+```
+
+plus whatever restart loop keeps them alive. Properties that fall out:
+
+- **Rebuild is content-addressed.** Hashed asset names mean an unchanged
+  module keeps its URL — reloads after a rebuild refetch only what changed.
+- **The watch build skips type-checking.** Fine for a demo (CI still gates);
+  know that a type error will not stop the demo from rebuilding.
+- **Each rebuild empties the output directory.** Anything placed in `dist/`
+  by hand (a connect page, a fixture) needs a guard that puts it back.
+- **Secure context or no service worker.** On real devices the SW half of the
+  ladder needs HTTPS; plain-http demos still get the pre-bundle shell, warm
+  boot and the content caches — relaunches paint instantly and refetch only
+  code.
+
+Measured on the reference implementation the day this section landed, same
+port that previously ran the dev server: cold = 13 requests; relaunch = 12 of
+13 served by the service worker, first-paint 32 ms.
