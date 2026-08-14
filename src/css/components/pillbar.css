@@ -119,8 +119,11 @@
    __item markup into the menu, sizing the decision off the
    --juno-pillbar-item/-gap/-pad custom props above instead of hardcoded px.
    Zero JS in this file; aria-expanded is toggled by the app or a stateless
-   enhancer, same convention as __item's [aria-pressed]. */
-.juno-pillbar__overflow {
+   enhancer, same convention as __item's [aria-pressed].
+   .juno-pillbar__toggle (the --collapsible variant's expand/collapse control,
+   below) shares this exact chrome: same circle, same states. */
+.juno-pillbar__overflow,
+.juno-pillbar__toggle {
   appearance: none;
   margin: 0;
   border: none;
@@ -139,14 +142,17 @@
     background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
-.juno-pillbar__overflow:hover { color: var(--juno-data); }
+.juno-pillbar__overflow:hover,
+.juno-pillbar__toggle:hover { color: var(--juno-data); }
 
-.juno-pillbar__overflow[aria-expanded='true'] {
+.juno-pillbar__overflow[aria-expanded='true'],
+.juno-pillbar__toggle[aria-expanded='true'] {
   background: var(--juno-s3);
   color: var(--juno-role);
 }
 
-.juno-pillbar__overflow:focus-visible {
+.juno-pillbar__overflow:focus-visible,
+.juno-pillbar__toggle:focus-visible {
   outline: var(--juno-border-width-2) solid var(--juno-active);
   outline-offset: calc(-1 * var(--juno-space-2));
 }
@@ -237,6 +243,77 @@
 
 .juno-pillbar__input:focus-visible {
   outline: none;
+}
+
+/* Collapsible — the whole pill folds into a single circular toggle, and a
+   tap expands it back to full width. State lives on the toggle's
+   aria-expanded (app-owned, like __item's aria-pressed — zero JS here);
+   the bar reads it via :has(), so DOM order of toggle vs. tray is free
+   (toggle-first for a left-anchored pill, toggle-last for right-anchored).
+
+   Usage:
+     <nav class="juno-pillbar juno-pillbar--collapsible" aria-label="Tools">
+       <button class="juno-pillbar__toggle" aria-expanded="false" aria-label="Show toolbar">
+         <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-dots-three" /></svg>
+       </button>
+       <div class="juno-pillbar__tray">
+         <div><!-- single wrapper, any element -->
+           …the usual __item / __sep / __input children…
+         </div>
+       </div>
+     </nav>
+
+   Mechanism: the tray is a one-column grid whose track animates 0fr ↔ 1fr —
+   the only widely-supported way to TRANSITION to an intrinsic width (Safari 16+;
+   width: fit-content and interpolate-size aren't animatable there). The track
+   needs one shrinkable child, hence the mandatory single wrapper (any element:
+   it's selected as > *, so there is no class to forget). visibility rides the
+   same transition — discrete animation keeps the tray visible while it slides
+   shut, then hides it, which also drops the hidden items from the tab order
+   (collapsing while focus is inside the tray is the app's edge to handle:
+   move focus to the toggle first). prefers-reduced-motion needs nothing
+   component-local — the base layer zeroes every transition duration. */
+.juno-pillbar--collapsible {
+  transition: gap var(--juno-motion-duration-deliberate) var(--juno-motion-ease-standard);
+}
+
+.juno-pillbar__tray {
+  display: grid;
+  grid-template-columns: 1fr;
+  transition:
+    grid-template-columns var(--juno-motion-duration-deliberate) var(--juno-motion-ease-standard),
+    opacity var(--juno-motion-duration-deliberate) var(--juno-motion-ease-standard),
+    visibility var(--juno-motion-duration-deliberate) var(--juno-motion-ease-standard);
+}
+
+.juno-pillbar__tray > * {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-pillbar-gap);
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.juno-pillbar--collapsible:has(> .juno-pillbar__toggle[aria-expanded='false']) {
+  /* gap → 0 so the collapsed pill is exactly the toggle's circle, whichever
+     side the tray sits on (a negative margin would have to know the side) */
+  gap: 0;
+}
+
+.juno-pillbar--collapsible:has(> .juno-pillbar__toggle[aria-expanded='false']) .juno-pillbar__tray {
+  grid-template-columns: 0fr;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* the toggle's glyph turns a quarter as the tray opens — motion reads as
+   "this button did it" even when the expansion pushes the pill off-center */
+.juno-pillbar__toggle .juno-icon {
+  transition: transform var(--juno-motion-duration-deliberate) var(--juno-motion-ease-standard);
+}
+
+.juno-pillbar__toggle[aria-expanded='true'] .juno-icon {
+  transform: rotate(90deg);
 }
 
 /* reduced-transparency preference → solid surface, no blur */

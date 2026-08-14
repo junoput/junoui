@@ -35,6 +35,9 @@ optional divider. Zero JS.
 | `.juno-pillbar--top-right` / `--top-left` / `--bottom-right` / `--bottom-left` | Fix as a floating cluster in one viewport corner (safe-area-clamped), instead of the centered bottom bar.                                          |
 | `.juno-pillbar__input`                                                         | Borderless search field inside the pill (`min(52vw, 240px)`, 16px font floor).                                                                     |
 | `.juno-pillbar__overflow`                                                      | "More" trigger for items that don't fit — anchors a [menu](./menu.md) via `popovertarget`.                                                         |
+| `.juno-pillbar--collapsible`                                                   | The pill folds into a single circle (`__toggle`) and animates back to full width — see [Collapsible](#collapsible).                                |
+| `.juno-pillbar__toggle`                                                        | The collapsible pill's circular expand/collapse control; state on `aria-expanded`, same chrome as `__overflow`.                                    |
+| `.juno-pillbar__tray`                                                          | Wrapper whose width animates shut — holds one child wrapping the usual `__item` markup.                                                            |
 | `.juno--<role>`                                                                | Active color (default `active`).                                                                                                                   |
 
 ### Geometry custom props
@@ -138,6 +141,43 @@ whatever didn't fit — zero JS, via the native Popover API:
 - `aria-expanded` mirrors the menu's open state like `[aria-pressed]` does for
   toggle items; toggle it from the app or a stateless enhancer (junoui itself
   ships no JS).
+
+## Collapsible
+
+`.juno-pillbar--collapsible` lets the whole pill fold into a single circular
+button and expand back to full width on demand — for toolbars that should get
+out of the content's way (e.g. a media viewer's action bar). State lives on
+the toggle's `aria-expanded`; junoui ships no JS, the app flips the attribute.
+
+```html
+<nav class="juno-pillbar juno-pillbar--collapsible" aria-label="Tools">
+  <button class="juno-pillbar__toggle" aria-expanded="false" aria-label="Show toolbar">
+    <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-dots-three" /></svg>
+  </button>
+  <div class="juno-pillbar__tray">
+    <div>
+      <button class="juno-pillbar__item" aria-label="Share">…</button>
+      <span class="juno-pillbar__sep"></span>
+      <button class="juno-pillbar__item" aria-label="Delete">…</button>
+    </div>
+  </div>
+</nav>
+```
+
+- **The tray needs exactly one child wrapper** (any element). The expansion is
+  a `grid-template-columns: 0fr ↔ 1fr` transition — the only widely-supported
+  way to animate to an intrinsic width (Safari 16+) — and the track needs a
+  single shrinkable child to collapse.
+- DOM order is free: toggle-first reads naturally for a left-anchored pill,
+  toggle-last for a right-anchored corner (`--bottom-right`), so the circle
+  stays put and the tray grows out of it.
+- Collapsed, the tray goes `visibility: hidden` at the end of the slide, which
+  also removes its items from the tab order. **Collapsing while focus is
+  inside the tray is the app's edge:** move focus to the toggle first.
+- The toggle's glyph rotates a quarter-turn while expanded; swap the icon from
+  the app instead if you want e.g. dots → ×.
+- `prefers-reduced-motion` is handled by the base layer (every transition
+  collapses to ~0ms) — the states still apply, just without the slide.
 
 ## Anatomy (any platform)
 

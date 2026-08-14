@@ -341,6 +341,10 @@ document.addEventListener('click', (e) => {
   }
   const ct = e.target.closest('.juno-chip--toggle:not(:disabled)');
   if (ct) ct.setAttribute('aria-pressed', String(ct.getAttribute('aria-pressed') !== 'true'));
+
+  // collapsible pillbar: flip the toggle's aria-expanded (app-owned state)
+  const pt = e.target.closest('[data-pillbar-toggle]');
+  if (pt) pt.setAttribute('aria-expanded', String(pt.getAttribute('aria-expanded') !== 'true'));
 });
 
 // ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─
