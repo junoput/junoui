@@ -1,5 +1,224 @@
 # Changelog
 
+## 0.4.0
+
+### Minor Changes
+
+- ff7a437: `.juno-drawer--bottom` is a real bottom sheet: rounded top corners, a decorative
+  grab handle (`.juno-sheet__handle`), a height knob `--juno-sheet-h` (default
+  `60dvh`) capped by `--juno-sheet-max` (`92dvh`), and safe-area padding moved to
+  `.juno-modal__body` so a scrolling sheet's last row clears the home indicator.
+  Docs state the contract the app still owns — `showModal()`, focus trap, `inert`
+  background, dismiss — and that `<dialog>` is the only supported sheet root.
+  Fixes 20260802-019.
+- 8fba3e8: Emit the breakpoints as named media queries — `@junoput01/junoui/css/custom-media`
+  ships `--juno-below-*` / `--juno-from-*` generated from the same
+  `tokens/core/breakpoint.json`, so consumers stop copying `767.98px` by hand.
+  Shipped as its own opt-in file because `@custom-media` needs a build step
+  (postcss-custom-media); each entry documents the plain literal to use without
+  one. A new build test asserts every breakpoint literal hardcoded in `src/css`
+  matches a generated boundary, so the tokens are mechanically the source of
+  truth rather than by convention. Fixes 20260802-024.
+- b04aa26: `data-juno-density="auto"` — an opt-in density that renders as `comfortable`
+  everywhere except a narrow coarse-pointer viewport, where content spacing
+  re-densifies to the `compact` values. It never touches `min-height` or
+  `--juno-size-tap-min`, so it cannot regress the WCAG tap-target guarantees.
+  Nothing changes for existing `comfortable` / `compact` consumers. Fixes 20260802-023.
+- 3b18db8: Dock gains `.juno-dock--collapsible`: the whole bar folds into a single
+  circular `.juno-dock__knob` at the inline-end edge, driven by one inherited
+  custom prop the app writes per scroll frame — `--juno-dock-fold` (0 open … 1
+  circle) — so the fold can track the gesture. Two phases split at
+  `--juno-dock-fold-split`: shrink in place to `--juno-dock-fold-scale`, then
+  slide shut to `--juno-dock-collapsed-size`; `data-juno-collapsed` is the
+  app-set end state that drops the `.juno-dock__tray` items from the tab order
+  and reveals the knob. Composes with `--pill`/`--float`/`--fixed`; zero JS.
+  Extracted from nexora's shipped scroll-fold so the mechanism lives in the
+  design system and apps keep only the scroll wiring.
+- 2682b04: Dock gains composable variants: `--float` (floating capsule chrome, labels kept)
+  and `--icon` (labels hidden, active state moves to a circular bubble) — together
+  they reproduce the existing `--pill` look from two independent pieces — plus
+  `--juno-dock-scale`, a shrink-on-scroll knob whose transition duration is
+  authored through `--juno-motion-scale` so reduced motion collapses it. Also
+  fixes the partial border reset on `.juno-dock__item`, which left the UA default
+  border on three sides of a `<button>` item. Fixes 20260802-015.
+- 4616add: New `.juno-fold` — animated presence for a member of any row: the slot stays
+  mounted and folds its definite width (`--juno-fold-size`) to zero with a fade,
+  leaving the tab order at the end of the fold, driven by the app-set
+  `data-juno-in` attribute. `--juno-fold-gap` swallows the row's gap so the row
+  closes completely. Extracted from nexora's scroll-to-top slot so the generic
+  animation lives in the design system.
+- e450769: Publish a gesture-surface convention: `.juno-gesture-surface` marks an element
+  whose pointer events app JS fully owns (`touch-action` via `--juno-touch-action`,
+  plus the callout / selection / tap-highlight resets the UA otherwise applies),
+  with `.juno-pan-x` / `.juno-pan-y` as single-axis escape hatches. Opt-in classes
+  only — nothing changes unless applied. This is community convention, not Apple
+  guidance; no primary source names these properties for iOS. Fixes 20260802-021.
+- 3675ad7: Ship a JS-readable motion contract. `prefers-reduced-motion` is a CSS media
+  query, so imperative JS (smooth-scroll choices, rAF-driven transforms) could
+  never see it without its own `matchMedia` listener. The base layer now exposes
+  `--juno-motion` (`auto` | `none`) and `--juno-motion-scale` (`1` | `0`) on
+  `:root`, flipped inside the existing reduced-motion query — one
+  `getComputedStyle` read decides. `--juno-motion-scale` also lets CSS author a
+  duration as `calc(var(--juno-motion-duration-base) * var(--juno-motion-scale))`
+  instead of repeating a per-component media query. Additive. Closes 20260802-011.
+- 8fba3e8: Encode a load-state vocabulary so nothing spins forever: `.juno-shimmer` (work
+  in progress, no ETA), `.juno-fault` (terminal failure), and `.juno-empty`
+  (loaded, nothing to show), plus an optional CSS-only `.juno-state` /
+  `data-juno-when` switch that shows one treatment at a time. Zero JS — deciding
+  when a load becomes a fault stays the app's call; junoui ships the look and the
+  ARIA contract (documented in `accessibility.md`). `.juno-shimmer` reuses
+  skeleton's keyframe rather than forking a second shimmer. Fixes 20260802-014.
+- 721d2e7: Mobile pill / loading primitives — absorbed from an app that hand-rolled them
+  (nexora `feat/mobile-ui`), so the next consumer gets them plug-and-play.
+  Almost all additive; a11y contract in `accessibility.md`. Filed as a pre-1.0
+  _minor_ (the breaking-capable channel) because two existing surfaces move:
+  `.juno-icon-loader` now stacks **every** child on its centre cell, and the
+  bottom-sheet / snackbar safe-area fix restores padding that Chromium was
+  silently dropping — see the last two bullets.
+
+  - **Pillbar placement + input slot** — `.juno-pillbar--top-right` /
+    `--top-left` / `--bottom-right` / `--bottom-left` pin the pill as a floating
+    corner cluster (safe-area-clamped, keeps the blur/border/shadow) instead of
+    the centered bottom bar. `.juno-pillbar__input` is a borderless in-pill
+    search field held at a `max(16px, …)` font floor so iOS Safari never
+    zoom-jumps on focus.
+  - **Dock pill variant** — `.juno-dock--pill` + `.juno-dock__bubble`: the
+    full-width bar becomes a floating rounded pill with big glyphs in circular
+    bubbles, labels hidden (each item then **requires** an `aria-label`), active
+    reads as a bubble fill. Folds in the `--juno-icon-size` footgun fix (scoped).
+  - **Reload indicator** — `.juno-reload` + `.juno-reload__dot`: the
+    non-blocking counterpart to the skeleton for refetch-over-content. Fixed
+    centered `role="status"` dot with a soft halo, `pointer-events: none`, gentle
+    `juno-pulse` (new shared keyframe).
+  - **Inline icon sprite helper** — `@junoput01/junoui/icons/inline`: a tiny
+    generated module that injects the sprite into the document once so icons use
+    reliable same-document `<use href="#juno-i-…">` refs (external refs
+    intermittently drop in Safari). Auto-installs on import; exports
+    `installJunoIcons(doc)`.
+  - **Safe-area clearance tokens** — `--juno-dock-clearance` /
+    `--juno-pillbar-clearance` (web-only CSS custom props, geometry + safe area
+    folded in): a floating-nav consumer writes `padding-block-end:
+var(--juno-dock-clearance)` on its scroller and stays correct if the dock
+    geometry changes.
+  - **`.juno-icon-loader` generalised to _the_ ring-a-control primitive** — the
+    ring stroke is now a custom prop (`--juno-icon-loader-ring-width`, default
+    `0.14em`) alongside the existing `--juno-icon-loader-ring`, and every child
+    — not just `.juno-icon` — shares the centre cell. A host with a definite box
+    sets the diameter to that box and the ring hugs its edge without the box
+    resizing when the arc appears. `.juno-dock__bubble` is exactly that: pair it
+    with `.juno-icon-loader` and an indeterminate `.juno-arc` rings the bubble
+    edge while a section loads. There is one ring mechanism, not two.
+    _Upgrade note:_ a `.juno-icon-loader` with children beyond the icon + arc
+    used to lay them out in extra grid cells; they now stack on the centre cell.
+  - **Safe-area `calc()` fix** — the bottom-sheet body and the narrow-viewport
+    toast stack passed a **unitless** `0` as the `env(safe-area-inset-bottom)`
+    fallback inside `calc()`. A unitless `0` is a `<number>`, so the sum is
+    invalid and Chromium dropped the whole declaration — losing the constant
+    padding term on every device without a safe area. Fallback is now `0px`, so
+    the padding lands as designed (a small, intended, visible shift).
+
+- 643d85e: Pillbar gains `.juno-pillbar--collapsible`: the whole pill folds into a single
+  circular `.juno-pillbar__toggle` and animates back to full width when tapped.
+  State is the toggle's `aria-expanded` (app-owned, zero JS, same convention as
+  `__item`'s `aria-pressed`), read via `:has()` so toggle/tray DOM order is free.
+  The `.juno-pillbar__tray` animates `grid-template-columns: 0fr ↔ 1fr` — the
+  only widely-supported transition to an intrinsic width (Safari 16+) — and goes
+  `visibility: hidden` at the end of the slide so collapsed items leave the tab
+  order. `__toggle` shares `__overflow`'s circle chrome; existing markup renders
+  unchanged.
+- cae069b: Pillbar publishes its geometry as custom props (`--juno-pillbar-item`, `-gap`,
+  `-pad`, `-edge`) so an app-side capacity planner reads real values instead of
+  hardcoding pixel constants in JS, and adds `.juno-pillbar__overflow` — a "more"
+  trigger styled like an item that anchors a `.juno-menu` through the native
+  Popover API, zero JS. junoui ships the dock point; which items overflow stays
+  app policy. Computed output for existing markup is unchanged. Fixes 20260802-012.
+- 7a653cf: Ship `.juno-scroller` — the scroll-container primitive every scrolling region in
+  the library was re-deriving by hand: overflow axis, `overscroll-behavior`, and
+  snap type as overridable custom props, plus `--x`/`--y`/`--bare` modifiers and a
+  `.juno-snap` child helper. `.juno-reel` becomes its horizontal-mandatory-snap
+  preset and reads `scroll-snap-type` from `--juno-scroller-snap`, so the mode is
+  overridable per instance instead of hardcoded (default unchanged). The props are
+  only read as `var()` fallbacks and never declared on the element, so a reel
+  nested inside a scroller keeps its own snap. Fixes 20260802-017.
+- e564c0c: Skeleton gains a content-box mode — `.juno-skeleton--tile` sized by
+  `--juno-skeleton-ratio` (default square) for media grids, so the layout doesn't
+  jump on load — and the shimmer moves to the compositor: a `::before` band
+  animated on `transform` only, never `background-position`, so it stops
+  repainting the gradient every frame. The local reduced-motion override is
+  dropped in favour of the global one in the base layer.
+- 56b2b3c: `.juno-thumb` gains an aspect-locked frame (`--juno-thumb-ratio`, default
+  square) so a media wall's scroll height is stable before anything loads, a
+  `--selected` state drawn as an inset outline (never a border — a border would
+  reflow the frame), a `--flush` variant for full-bleed tiles, and four
+  `__corner` slots for badges/duration chips. Corner modifiers are named
+  `--top-start` / `--top-end` / `--bottom-start` / `--bottom-end`, matching the
+  logical insets they use, so they flip correctly under `dir="rtl"`. Additive:
+  existing markup sets `aspect-ratio` inline, which still wins. Fixes 20260802-018.
+
+### Patch Changes
+
+- 5a85ae8: `.juno-icon-loader` is documented as what it always was — a primitive that rings
+  **any** control (button, badge, avatar), not just a nav icon; the single-cell
+  grid never cared what it wrapped. Adds `.juno-arc--smooth`, a continuous-rotation
+  modifier for indeterminate arcs, because the default 12-step sweep reads as
+  jitter under ~24px. No second ringing mechanism was introduced. Fixes 20260802-013.
+- 2a95eab: docs: boot-shell guide — the five-rung boot ladder (pre-bundle shell with token
+  literals, cache-aware chrome, default-screen-only bundle, background warming,
+  offline shell), with the sync-guard rules for the literal copies it requires.
+- def7651: `.juno-icon` no longer pins `--juno-icon-size` on the element itself; the
+  `1.25em` default now lives in the `var()` fallback. An ancestor that sets
+  `--juno-icon-size` for contextual sizing (e.g. `.juno-list__chevron`) is no
+  longer shadowed, so it actually reaches the glyph. Explicit `--sm/--lg/--xl`
+  modifiers are unaffected. Fixes the footgun in 20260727-011.
+- eb639cc: Add `docs/ios-conformance.md` — the sourced iOS metric contract. Records what
+  junoui encodes and why (Apple pt = 1 CSS px, the WCAG 24/44 split, safe-area
+  opt-in, the `max()`-vs-addition rule, viewport-unit families), names the
+  folklore it deliberately does not encode (the deleted "44pt minimum" HIG
+  sentence, the non-existent "Apple 8pt grid"), and flags what is unverified (the
+  16px focus-zoom rule, iOS 26 behavior). Fixes 20260803-031.
+- b04aa26: `.juno-label` reads an optional `--juno-label-size`, falling back to the existing
+  token, so a consumer can resize labels from an ancestor instead of cloning the
+  class. The knob is never declared on the element itself — only read as a `var()`
+  fallback — so it cannot shadow an ancestor's value. Fixes 20260802-025.
+- e0f3765: `.juno-modal__body` is now the real scroll port the docs already promised. The
+  surface caps its own height (85dvh as a bottom sheet) and sets `overflow:
+hidden`, so a tall body was clipped and unreachable; `[open]` is now a flex
+  column and the body carries `min-block-size: 0; overflow-y: auto`. It also gets
+  `overscroll-behavior: contain`, so hitting the end of a sheet no longer chains
+  the scroll to the page behind it (the rubber-band-under-the-sheet effect on
+  iOS). Fixes 20260803-029.
+- 4dd3ef4: Tappable primitives (`.juno-btn`, dock/pillbar/tabs/list/menu items, segmented
+  options, chips, toggle buttons) now carry `touch-action: manipulation`, opting
+  out of double-tap-to-zoom so a browser no longer waits after the first tap to
+  see whether a second is coming — the late, mushy tap a phone UI is built on.
+  Panning and pinch-zoom are preserved (never `none`, which would be an a11y
+  regression), and it is applied outside the coarse-pointer query so hybrid
+  touch devices that report a fine pointer still get it. Fixes 20260803-038.
+- 352b9ca: Close a WCAG 2.5.8 gap on the phone-only surfaces. `.juno-menu__item` (dock
+  overflow routes here on phones) and `.juno-navbar__actions > *` now hold
+  `min-block-size: var(--juno-size-tap-min)`, which auto-promotes to 44px on
+  coarse pointers — so nothing routed onto touch falls under the tap minimum.
+  The UA tap-highlight square is now suppressed on the interactive surfaces
+  (`.juno-btn`, dock/pillbar/tabs/list/menu items) under `pointer: coarse`, and
+  the navbar usage example no longer recommends `.juno-btn--sm` (which is
+  deliberately below the tap minimum) on a touch top bar. Fixes 20260802-020.
+- d00697b: Document the `viewport-fit=cover` requirement and make the showcase honour it.
+  iOS defaults `viewport-fit` to `auto` and WebKit reports every
+  `env(safe-area-inset-*)` as `0` unless the page opts in with `cover` — so every
+  safe-area guarantee in the library (dock, pillbar, navbar, drawer, toast,
+  app-shell, and the `--juno-*-clearance` tokens) was silently a no-op for any
+  consumer who did not already know the trick, including junoui's own showcase.
+  Adds the meta to all 13 showcase pages, states it as a hard requirement in
+  getting-started + layout docs, and adds a build test so a page cannot lose it
+  again. Fixes 20260803-028.
+- 53bc4cd: Fix two silent WebKit failures. `backdrop-filter` was shipped unprefixed only,
+  but Safari needed `-webkit-backdrop-filter` until 18 — so the frosted glass on
+  the pillbar, pill dock and modal scrim simply did not render on iOS 17 and
+  earlier, on exactly the floating chrome the mobile set is built around. And
+  `scrollbar-width: none` only reached Safari 18.2, so the scrollable tab strip
+  still showed a bar on older iOS; it now carries the `::-webkit-scrollbar`
+  fallback the other scrollers already had.
+
 ## 0.3.0
 
 ### Minor Changes
