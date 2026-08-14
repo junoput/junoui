@@ -116,6 +116,17 @@ commit replaces it without anything jumping):
 
 Rules that make this work rather than merely exist:
 
+- **The frame is real chrome, not a wireframe.** Grey bands where the rail,
+  top bar and dock will be read as a loading page. The same boxes styled
+  exactly like their live counterparts — the dock as its floating pill with
+  the active item's bubble already filled, the rail as brand + one row per
+  destination with the accent edge on the active one, the top bar as its
+  chips and search field — read as the app, already open. The shimmer is
+  confined to the slots whose content genuinely is not there yet: icons,
+  labels, thumbnails. Placeholders are for content, never for chrome.
+- **No real text in the shell.** The fonts arrive with the bundle, and a
+  system-font word swapping to the real face at handover is exactly the kind
+  of jump the shell exists to prevent. Label and wordmark slots are bars.
 - **Every literal mirrors one real element.** Safe-area padding, tile column
   minimums (`--juno-tile-min`), tap-target sizes (`--juno-size-tap-comfortable`
   = 44px), dock geometry — if the skeleton reserves a different amount than the
