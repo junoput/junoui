@@ -65,6 +65,21 @@
           <button class="juno-pillbar__item" aria-label="More" disabled><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-dots-three" /></svg></button>
         </nav>
       </div>
+
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Collapsible — <code class="juno-mono">--collapsible</code>: the pill folds into the <code class="juno-mono">__toggle</code> circle; tap it to expand</p>
+      <div style="position:relative;max-width:320px;">
+        <nav class="juno-pillbar juno-pillbar--collapsible" style="position:static;margin-block-end:0;margin-inline:0;" aria-label="Demo tools">
+          <button class="juno-pillbar__toggle" data-pillbar-toggle aria-expanded="false" aria-label="Show toolbar"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-dots-three" /></svg></button>
+          <div class="juno-pillbar__tray">
+            <div>
+              <button class="juno-pillbar__item" aria-label="Play"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-play" /></svg></button>
+              <button class="juno-pillbar__item" aria-label="Favorite"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-heart" /></svg></button>
+              <span class="juno-pillbar__sep"></span>
+              <button class="juno-pillbar__item" aria-label="Sync"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrows-clockwise" /></svg></button>
+            </div>
+          </div>
+        </nav>
+      </div>
     </section>
 
     <!-- 02 NAVBAR -->
@@ -217,6 +232,34 @@
             </a>
             <button class="juno-dock__item" aria-label="Settings">
               <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg></span>
+            </button>
+          </nav>
+        </div>
+      </article>
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Collapsible — <code class="juno-mono">--collapsible</code>: <code class="juno-mono">--juno-dock-fold</code> folds the bar into the <code class="juno-mono">__knob</code> circle (drive it per scroll frame in an app; button toggles it here)</p>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="position:relative;height:160px;">
+          <div style="height:100%;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <button class="juno-btn juno-btn--sm" data-dock-fold style="align-self:flex-start;">FOLD / UNFOLD</button>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+          </div>
+          <!-- demo: slower smoothing so the two phases read; an app driving the
+               fold per scroll frame keeps the 90ms default -->
+          <nav class="juno-dock juno-dock--pill juno-dock--collapsible" aria-label="Demo collapsible dock" style="position:absolute;--juno-dock-fold-smoothing:400ms;">
+            <div class="juno-dock__tray">
+              <a class="juno-dock__item" href="#" aria-current="page" aria-label="Library">
+                <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span>
+              </a>
+              <a class="juno-dock__item" href="#" aria-label="Albums">
+                <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span>
+              </a>
+              <button class="juno-dock__item" aria-label="Settings">
+                <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg></span>
+              </button>
+            </div>
+            <button class="juno-dock__knob" aria-label="Show navigation">
+              <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-dots-three" /></svg>
             </button>
           </nav>
         </div>

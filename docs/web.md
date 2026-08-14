@@ -87,3 +87,9 @@ import '@junoput01/junoui/fonts.css'; // opt-in: self-hosted B612 woff2, no netw
 
 …or bring your own B612 (e.g. `@fontsource/b612`). Without either, the UI falls back to
 system sans/mono. See [integration.md](./integration.md#2-fonts-opt-in-csp-safe).
+
+## Boot performance
+
+An app that wants chrome on screen at the first HTML parse — before `juno.css`
+or any bundle arrives — and everything else loaded in the background follows
+the boot-shell ladder: [boot-shell.md](./boot-shell.md).

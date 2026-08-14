@@ -341,6 +341,29 @@ document.addEventListener('click', (e) => {
   }
   const ct = e.target.closest('.juno-chip--toggle:not(:disabled)');
   if (ct) ct.setAttribute('aria-pressed', String(ct.getAttribute('aria-pressed') !== 'true'));
+
+  // collapsible pillbar: flip the toggle's aria-expanded (app-owned state)
+  const pt = e.target.closest('[data-pillbar-toggle]');
+  if (pt) pt.setAttribute('aria-expanded', String(pt.getAttribute('aria-expanded') !== 'true'));
+
+  // collapsible dock: drive --juno-dock-fold 0<->1 and the end-state attr.
+  // An app writes the fold per scroll frame instead; the knob itself unfolds.
+  const df = e.target.closest('[data-dock-fold], .juno-dock__knob');
+  if (df) {
+    const dock =
+      df.closest('.juno-dock--collapsible') ??
+      df.closest('.demo-section, main, body').querySelector('.juno-dock--collapsible');
+    if (dock) {
+      const folding = !dock.hasAttribute('data-juno-collapsed');
+      dock.style.setProperty('--juno-dock-fold', folding ? '1' : '0');
+      // end state lands at the END of the fold (an app sets it at fold = 1);
+      // unfolding drops it immediately so the tray is live for the slide-open
+      clearTimeout(dock._foldTimer);
+      if (folding)
+        dock._foldTimer = setTimeout(() => dock.setAttribute('data-juno-collapsed', ''), 400);
+      else dock.removeAttribute('data-juno-collapsed');
+    }
+  }
 });
 
 // ── sliders (demo: app drives value%, drag + keys; junoui ships the look) ─

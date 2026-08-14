@@ -299,3 +299,111 @@
 .juno-dock--icon .juno-dock__item[aria-current] .juno-dock__bubble {
   background: var(--juno-s3);
 }
+
+/* ── Collapsible variant — the whole bar folds into a single circular
+   .juno-dock__knob at the inline-end edge, and unfolds back to full width.
+   Driven by ONE inherited custom prop the app writes (junoui ships no JS):
+   --juno-dock-fold, 0 = fully open … 1 = the circle. Write it per scroll
+   frame for a gesture-tracked fold (set it on the dock, an ancestor, or
+   :root — it is only CONSUMED here, never declared, so an inherited value
+   always lands), or flip it 0/1 for a plain toggle.
+
+   The fold has two phases, split at --juno-dock-fold-split: first the bar
+   SHRINKS in place to --juno-dock-fold-scale (transform, no relayout),
+   then it SLIDES shut to --juno-dock-collapsed-size. Width interpolates
+   between two definite lengths because a transition cannot run to or from
+   an intrinsic size; --juno-dock-fold-smoothing is smoothing over
+   scroll-event discretization, not the fold itself — anything longer lags
+   the finger driving it.
+
+   Compose with a fixed placement (--pill, --float, or --fixed): the fold
+   re-anchors the bar to the inline-end edge, which only means something
+   out of flow. Transform-origin is the physical bottom right — the fold's
+   own scale REPLACES the base --juno-dock-scale hook (one transform slot);
+   RTL consumers flip the origin and inset overrides together.
+
+   Structure — items live in a tray; the knob is the circle's face:
+     <nav class="juno-dock juno-dock--pill juno-dock--collapsible …"
+          data-juno-collapsed>
+       <div class="juno-dock__tray"> …the usual __item children… </div>
+       <button class="juno-dock__knob" aria-label="Show navigation">
+         <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-dots-three" /></svg>
+       </button>
+     </nav>
+
+   data-juno-collapsed is the END state, set by the app only at fold = 1
+   (and removed the moment the fold reopens): it flips the tray to
+   visibility:hidden — which removes its items from the tab order — and
+   reveals the knob. Mid-fold both stay live; the tray's opacity empties
+   ahead of the slide (×1.6) so the glyphs are gone before the circle
+   closes. The knob MUST carry an aria-label; collapsing while focus is
+   inside the tray is the app's edge — move focus to the knob first.
+   prefers-reduced-motion needs nothing component-local: the base layer
+   zeroes every transition, and the fold value itself is app-driven. */
+.juno-dock--collapsible {
+  --juno-dock-fold-split: 0.35;
+  --juno-dock-fold-scale: 0.78;
+  --juno-dock-collapsed-size: calc(
+    var(--juno-size-tap-comfortable) + 2 * var(--juno-space-4) + 2 * var(--juno-border-width-1)
+  );
+  --juno-dock-edge-gap: calc(2 * var(--juno-space-12));
+  --juno-dock-fold-smoothing: 90ms;
+
+  /* per-phase normalized progress, derived — never set these directly */
+  --juno-dock-fold-shrink: min(1, var(--juno-dock-fold, 0) / var(--juno-dock-fold-split));
+  --juno-dock-fold-slide: clamp(
+    0,
+    (var(--juno-dock-fold, 0) - var(--juno-dock-fold-split)) / (1 - var(--juno-dock-fold-split)),
+    1
+  );
+
+  inset-inline-start: auto;
+  inline-size: calc(
+    var(--juno-dock-collapsed-size) +
+      (100% - var(--juno-dock-edge-gap) - var(--juno-dock-collapsed-size)) *
+      (1 - var(--juno-dock-fold-slide))
+  );
+  overflow: hidden;
+  transform: scale(calc(1 - (1 - var(--juno-dock-fold-scale)) * var(--juno-dock-fold-shrink)));
+  transform-origin: bottom right;
+  transition:
+    transform var(--juno-dock-fold-smoothing) linear,
+    inline-size var(--juno-dock-fold-smoothing) linear;
+}
+
+.juno-dock__tray {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  align-items: stretch;
+  opacity: calc(1 - var(--juno-dock-fold-slide, 0) * 1.6);
+  transition: opacity var(--juno-dock-fold-smoothing, 90ms) linear;
+}
+
+.juno-dock__knob {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--juno-space-4);
+  margin-block: auto;
+  inline-size: var(--juno-size-tap-comfortable);
+  block-size: var(--juno-size-tap-comfortable);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--juno-label);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-dock--collapsible[data-juno-collapsed] .juno-dock__tray { visibility: hidden; }
+
+.juno-dock--collapsible[data-juno-collapsed] .juno-dock__knob {
+  opacity: 1;
+  visibility: visible;
+}

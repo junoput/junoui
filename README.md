@@ -70,6 +70,7 @@ build-time sRGB hex (identical rendering).
 | [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                            |
 | [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                          |
 | [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt)  |
+| [Boot shell](./docs/boot-shell.md)                                               | Fast first paint: pre-bundle shell, lazy screens, warming     |
 | [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL   |
 | [iOS conformance](./docs/ios-conformance.md)                                     | Sourced iOS metrics — safe areas, tap targets, viewport units |
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)               |

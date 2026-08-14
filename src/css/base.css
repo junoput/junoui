@@ -240,3 +240,51 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   .juno-readout { border: 1px solid CanvasText; }
   .juno-badge { forced-color-adjust: none; } /* keep status fill meaningful */
 }
+
+/* ── iOS standalone letterbox unlock ─────────────────────────────────────────
+   iOS WebKit (observed through 26.6, iPhone 16 Pro, iOS 18.7) sizes a
+   Home-Screen standalone window whose DOCUMENT cannot scroll as if a
+   retractable browser toolbar existed: `screen.height − status bar`, pinned to
+   the top. The reserved strip — exactly env(safe-area-inset-top) — surfaces at
+   the BOTTOM of the glass, outside the window, painting black on every screen.
+   The same install with a scrollable document gets the whole screen.
+
+   Established by measurement, not inference (nexora 20260812-006): 201 device
+   readings; a four-structure A/B on one install where doc-scroll = full screen
+   and fixed-shell = letterboxed on every cold launch; and this exact mechanism
+   — the shell kept, the document left scrollable behind it by an invisible
+   in-flow spacer — verified full-screen on the device before landing here.
+   Transient scrollability is NOT enough (seven timed interventions, five
+   controlled runs, all negative): iOS samples the resting structure.
+
+   So: keep the document scrollable behind the app. The spacer is body::after
+   (a consumer that needs body::after for itself overrides this at the same
+   gate — none of ours do), invisible, 1px wide, and taller than the LARGE
+   viewport so the document always overflows whatever window iOS grants.
+   `overscroll-behavior: none` keeps the ghost scroller from rubber-banding;
+   apps put `overscroll-behavior: contain` on their real scrollers so an
+   inner fling never chains into it.
+
+   Gate, all three required:
+     display-mode: standalone       only installed apps are letterboxed
+     pointer: coarse                touch devices — keeps macOS Dock apps out
+     -webkit-touch-callout support  iOS/iPadOS WebKit only
+   Selectors carry `html:root` (0,1,2) on purpose: app resets commonly declare
+   `body { overflow: hidden }` at (0,0,1) AFTER this sheet, and the unlock must
+   win the cascade without !important. */
+@media (display-mode: standalone) and (pointer: coarse) {
+  @supports (-webkit-touch-callout: none) {
+    html:root,
+    html:root body { overflow: visible; }
+    html:root body { overscroll-behavior: none; }
+
+    html:root body::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: calc(100lvh + 80px);
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+}
