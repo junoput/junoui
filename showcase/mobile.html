@@ -236,6 +236,34 @@
           </nav>
         </div>
       </article>
+      <p class="juno-eyebrow demo-lead" style="margin-top:32px;">Collapsible — <code class="juno-mono">--collapsible</code>: <code class="juno-mono">--juno-dock-fold</code> folds the bar into the <code class="juno-mono">__knob</code> circle (drive it per scroll frame in an app; button toggles it here)</p>
+      <article class="juno-card" style="overflow:hidden;max-width:320px;">
+        <div style="position:relative;height:160px;">
+          <div style="height:100%;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <button class="juno-btn juno-btn--sm" data-dock-fold style="align-self:flex-start;">FOLD / UNFOLD</button>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:48px;"></div>
+          </div>
+          <!-- demo: slower smoothing so the two phases read; an app driving the
+               fold per scroll frame keeps the 90ms default -->
+          <nav class="juno-dock juno-dock--pill juno-dock--collapsible" aria-label="Demo collapsible dock" style="position:absolute;--juno-dock-fold-smoothing:400ms;">
+            <div class="juno-dock__tray">
+              <a class="juno-dock__item" href="#" aria-current="page" aria-label="Library">
+                <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg></span>
+              </a>
+              <a class="juno-dock__item" href="#" aria-label="Albums">
+                <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg></span>
+              </a>
+              <button class="juno-dock__item" aria-label="Settings">
+                <span class="juno-dock__bubble juno-icon-loader"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-gear" /></svg></span>
+              </button>
+            </div>
+            <button class="juno-dock__knob" aria-label="Show navigation">
+              <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-dots-three" /></svg>
+            </button>
+          </nav>
+        </div>
+      </article>
     </section>
 
     <!-- 06 PILLBAR CORNER + INPUT SLOT -->
