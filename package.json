@@ -49,11 +49,13 @@
     "./ios": "./dist/ios/JunoTokens.swift",
     "./flutter": "./dist/flutter/juno_tokens.dart",
     "./icons": "./dist/icons/juno-icons.svg",
+    "./subset": "./tools/subset-sprite.mjs",
     "./icons/inline": "./dist/icons/inline.js",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
+    "tools",
     "src/css",
     "src/icons",
     "src/fonts",
