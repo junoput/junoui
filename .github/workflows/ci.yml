@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Manually runnable on any branch. Long-lived integration branches
+  # (`develop`, `ios/develop`) and their lanes otherwise get no CI at all until
+  # they reach a PR to main, which is how the visual baselines drifted for
+  # months without anyone seeing a red job. See 20260815-011.
+  workflow_dispatch:
 
 jobs:
   build:

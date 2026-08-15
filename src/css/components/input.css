@@ -28,6 +28,18 @@
   color: var(--juno-data);
 }
 
+/* The iOS focus-zoom floor, and it has to live HERE, not in base.css's
+   `@media (pointer: coarse)` block where it was written. A media query adds no
+   specificity, so `.juno-input { font-size: var(--juno-font-size-14) }` above —
+   same 0,1,0 selector, later in the bundle (base.css sorts before components/)
+   — simply won it, and the floor never applied on any touch device. Nothing
+   caught it because the suite had no coarse-pointer project until 20260815-006
+   added one; the numeric assertion in test/visual/tap-targets.spec.mjs is what
+   surfaced it. See base.css for the sourcing caveat on the behavior itself. */
+@media (pointer: coarse) {
+  .juno-input { font-size: max(16px, var(--juno-font-size-16)); }
+}
+
 .juno-input--sans { font-family: var(--juno-font-family-sans); }
 
 .juno-input::placeholder { color: var(--juno-muted); }

@@ -162,8 +162,11 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
      is harmless either way: hold text-entry controls (.juno-input covers input,
      textarea and the select's inner control) at a 16px floor on touch. max()
      keeps the floor even under a scaled-down --juno-font-scale, and still grows
-     when scaled up. */
-  .juno-input { font-size: max(16px, var(--juno-font-size-16)); }
+     when scaled up.
+     THE RULE ITSELF LIVES IN components/input.css, not here: a media query adds
+     no specificity, so this file's `.juno-input` would lose to input.css's own
+     `.juno-input` font-size later in the bundle. It did, silently, until
+     20260815-006's coarse-pointer project measured it. */
 
   /* Kill the UA tap-highlight square on the interactive surfaces so it never
      flashes past a rounded control on tap. Consumers were adding this by hand
