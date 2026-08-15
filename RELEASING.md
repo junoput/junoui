@@ -172,3 +172,31 @@ integration environment behind the operator's bookmarked `:20100` UI; an `npm in
 a swapped `node_modules/junoui` in it is immediately visible as "my changes stopped
 showing". If the clone in step 5 is ever unavailable, stop and say so — do not reach for
 the live worktree.
+
+## After the publish: take the release back
+
+The changesets action runs on `main`. It bumps `package.json`, writes the
+CHANGELOG, and **deletes the changesets it consumed** — on `main` only. Every
+other branch keeps the old version and the consumed changeset files.
+
+So a branch that has not merged `main` back is one `changeset version` away from
+computing the next version off a stale base and republishing entries that
+already shipped. That is not a hypothetical: minutes after `0.6.0` published,
+`develop` and `ios/develop` both still read `0.5.0` and still carried all five
+consumed changesets (ticket 20260815-053).
+
+```sh
+git checkout develop && git merge origin/main   # then push, and onward to any lane branch
+```
+
+**The gate asserts this so nobody has to remember it.** `npm run gate:consumer`
+fails when `origin/main` is not an ancestor of `HEAD`, and when the version in
+`package.json` is already on the registry — the second being the sign that
+`changeset version` has not run yet for the release you are about to pack. Pass
+`--dev` when you are checking a consumer build mid-development rather than
+cutting a release: the already-published condition then reports instead of
+blocking, and the ancestor check still fails, because a branch missing the last
+release is wrong for any purpose.
+
+Prose in a runbook is a rule someone has to remember at the exact moment they
+are least likely to be reading the runbook. The check is the version that holds.
