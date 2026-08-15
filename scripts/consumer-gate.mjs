@@ -36,6 +36,9 @@
 // Usage:
 //   node scripts/consumer-gate.mjs                 # full gate
 //   node scripts/consumer-gate.mjs --keep          # keep the clone/tarball
+//   node scripts/consumer-gate.mjs --dev           # consumer check mid-development:
+//                                                  # an already-published version
+//                                                  # reports instead of blocking
 //   node scripts/consumer-gate.mjs --drop-files tools
 //                                                  # ACCEPTANCE ONLY: pack a
 //                                                  # candidate reproducing the
@@ -76,12 +79,13 @@ const DEFAULTS = {
 // ---------------------------------------------------------------- arguments
 
 const argv = process.argv.slice(2);
-const opts = { ...DEFAULTS, keep: false, dropFiles: [], build: true };
+const opts = { ...DEFAULTS, keep: false, dropFiles: [], build: true, dev: false };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   const next = () => argv[++i];
   if (a === '--keep') opts.keep = true;
   else if (a === '--no-build') opts.build = false;
+  else if (a === '--dev') opts.dev = true;
   else if (a === '--repo') opts.repo = next();
   else if (a === '--ref') opts.ref = next();
   else if (a === '--subdir') opts.subdir = next();
@@ -177,6 +181,73 @@ mkdirSync(WORK, { recursive: true });
 // then packs with --ignore-scripts from a COPY. The copy is what makes
 // --drop-files safe: the real package.json is never edited, so an interrupted
 // run cannot leave a mutilated manifest behind.
+// ---------------------------------------------------- release-state preflight
+// After a changesets release, `main` is the only branch that knows the version
+// moved: the action versions package.json and DELETES the consumed changesets
+// there. Every other branch keeps both — so a branch that has not taken main
+// back is one `changeset version` away from computing a version off a stale
+// base and republishing a CHANGELOG that already shipped.
+//
+// Found on 2026-08-15, minutes after 0.6.0 published: develop and ios/develop
+// both still read 0.5.0 and still carried all five consumed changesets
+// (20260815-053). Nothing was broken yet; the next release would have been.
+//
+// This asserts rather than advises, because the alternative is prose in
+// RELEASING.md that has to be remembered at the exact moment nobody is reading
+// documentation. Two checks, both offline except the optional registry one:
+//   1. origin/main is an ancestor of HEAD — i.e. this branch carries whatever
+//      the last release did to main.
+//   2. the version here is not already on the registry. Skipped without
+//      network rather than failing, since a gate that cannot run offline stops
+//      being run at all.
+head('preflight — this branch has taken back the last release');
+{
+  const fetched = run('git', ['fetch', '--quiet', 'origin', 'main'], REPO, { allowFail: true });
+  if (fetched.code !== 0) {
+    record('origin/main is an ancestor of HEAD', true, 'skipped — could not fetch origin/main');
+  } else {
+    const contains = run('git', ['merge-base', '--is-ancestor', 'origin/main', 'HEAD'], REPO, {
+      allowFail: true,
+    });
+    record(
+      'origin/main is an ancestor of HEAD',
+      contains.code === 0,
+      contains.code === 0
+        ? ''
+        : "merge origin/main first — it carries the last release's version bump and the changesets that release consumed",
+    );
+  }
+
+  const published = run(
+    'npm',
+    ['view', `${junouiPkg.name}@${junouiPkg.version}`, 'version'],
+    REPO,
+    {
+      capture: true,
+      allowFail: true,
+    },
+  );
+  if (published.code !== 0) {
+    record('this version is not already published', true, 'skipped — registry unreachable');
+  } else {
+    const stale = published.out.trim() === junouiPkg.version;
+    // --dev: you are checking a consumer build mid-development, not cutting a
+    // release. The unversioned-candidate condition is then expected and says
+    // nothing, so it reports without blocking. Without the flag it is fatal,
+    // because packing a version that is already on the registry means the
+    // candidate under test is not the artifact you would publish.
+    record(
+      'this version is not already published',
+      stale ? Boolean(opts.dev) : true,
+      stale
+        ? opts.dev
+          ? `${junouiPkg.version} is already published — fine under --dev, fatal for a release`
+          : `${junouiPkg.version} is already on the registry — run \`changeset version\` before packing (or pass --dev if you are not releasing)`
+        : '',
+    );
+  }
+}
+
 head(opts.build ? 'build the candidate' : 'build the candidate (skipped)');
 if (opts.build) run('npm', ['run', 'build'], REPO);
 if (!existsSync(join(REPO, 'dist'))) die('no dist/ — run without --no-build');
