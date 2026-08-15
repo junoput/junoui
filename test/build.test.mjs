@@ -262,6 +262,54 @@ test('every animation name used in src/css has a matching @keyframes', () => {
   assert.deepEqual(missing, [], `animation without @keyframes: ${missing.join(', ')}`);
 });
 
+test('nothing after the popover fallback re-declares display on the surfaces it hides', () => {
+  // base.css hides .juno-menu / .juno-popover / .juno-tooltip__bubble where the
+  // Popover API is absent (Safari/iOS < 17.0). That is not cosmetic: without the
+  // API there is also no UA rule hiding a closed popover, so those surfaces are
+  // position:fixed, opacity:0, pointer-events unset — invisible 256-280px panels
+  // parked over the page swallowing taps.
+  //
+  // The guard wins the cascade today only because nothing later in the bundle
+  // declares `display` on those selectors. It is NOT protected by specificity:
+  // `.juno-menu[popover]` and `.juno-menu:popover-open` are both (0,2,0), so a
+  // later `display` declaration would beat it on order alone — and it would lose
+  // exactly where it matters, on an engine none of us can test, with an
+  // invisible tap-swallowing panel as the symptom rather than a visible bug.
+  //
+  // So: assert the property the guard actually depends on. Reviewed as
+  // 20260815-009; filed as 20260815-013.
+  const bundle = readFileSync('dist/css/juno.css', 'utf8');
+  const guarded = ['juno-menu', 'juno-popover', 'juno-tooltip__bubble'];
+  const at = bundle.indexOf('@supports not selector(:popover-open)');
+  assert.ok(at > 0, 'popover fallback block missing from the bundle');
+
+  // Everything after the guard block, rule by rule. A rule counts as a
+  // violation when its selector list targets one of the guarded surfaces
+  // (not a descendant like .juno-menu__item) and its body declares `display`.
+  const after = bundle.slice(bundle.indexOf('}', bundle.indexOf('}', at) + 1) + 1);
+  const offenders = [];
+  for (const m of after.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const [, selectors, body] = m;
+    if (!/(^|[\s,>+~])display\s*:/.test(body)) continue;
+    for (const sel of selectors.split(',')) {
+      const t = sel.trim();
+      for (const g of guarded) {
+        // the surface itself, optionally qualified — but never a descendant
+        // (`.juno-menu .x`) or a BEM child (`.juno-menu__item`)
+        const re = new RegExp(`\\.${g}(?![\\w-])[^\\s,>+~]*$`);
+        if (re.test(t)) offenders.push(`${t} { ${body.trim().slice(0, 60)} }`);
+      }
+    }
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    'a rule after the popover fallback re-declares display on a guarded surface; ' +
+      'the fallback loses on order there (both are (0,2,0)) — merge the declaration ' +
+      `into the fallback or raise its specificity deliberately: ${offenders.join(' | ')}`,
+  );
+});
+
 test('committed token reference is up to date', () => {
   const current = readFileSync(REFERENCE_PATH, 'utf8');
   assert.equal(current, buildReference(), 'run `npm run gen-docs` and commit');
