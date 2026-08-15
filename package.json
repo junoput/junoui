@@ -94,5 +94,12 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "browserslist": [
+    "iOS >= 17.0",
+    "Safari >= 17.0",
+    "Chrome >= 114",
+    "Edge >= 114",
+    "Firefox >= 125"
+  ]
 }
