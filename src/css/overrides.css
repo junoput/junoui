@@ -1,0 +1,51 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Overrides — cross-cutting gates, bundled LAST
+ * ════════════════════════════════════════════════════════════════════
+ *  A @media or @supports block adds NO specificity. So a gate written in
+ *  base.css — which the bundler emits before components/ — loses to any
+ *  component rule declaring the same property on the same selector, purely
+ *  on source order, and loses SILENTLY: the gate looks right in the file it
+ *  was written in, and there is no error anywhere.
+ *
+ *  Four instances of that shipped before this file existed (2026-08-15):
+ *    - .juno-input's 16px iOS focus-zoom floor, beaten by input.css. The floor
+ *      never applied on any touch device, in any release (20260815-011).
+ *    - the forced-colors border below, beaten by button.css / badge.css /
+ *      card.css (20260815-029).
+ *    - the Popover fallback, which happens to win today only because nothing
+ *      later declares `display` on those selectors — pinned by a test rather
+ *      than by structure (20260815-013).
+ *
+ *  So: gates whose whole job is to BEAT a component default live here, after
+ *  everything they guard. Same reasoning the bundler already applies to
+ *  utilities.css (role helpers must outrank component defaults) — see
+ *  scripts/bundle-css.mjs.
+ *
+ *  What does NOT belong here: a gate that only has to beat the UA or another
+ *  rule in its own file. Keep those next to what they modify; this file is for
+ *  the cross-file case, or it becomes a dumping ground and the cascade gets
+ *  harder to read rather than easier.
+ *
+ *  A build test (test/build.test.mjs) asserts the bundle contains no gated
+ *  declaration that a later ungated rule overrides at equal-or-lower
+ *  specificity. It asserts an EMPTY SET — no allowlist, because an allowlist
+ *  is where violations go to be forgotten.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Windows High Contrast / forced-colors: opt into the system palette so
+   borders and focus stay visible when the user's palette replaces ours.
+
+   .juno-badge additionally sets `forced-color-adjust: none` to keep its status
+   fill meaningful — and that opt-out is why the badge was the one element where
+   the lost cascade actually reached the screen: it also disables the UA's own
+   repaint, which was silently rescuing .juno-btn and .juno-card. Measured, not
+   inferred (20260815-029). */
+@media (forced-colors: active) {
+  *:focus-visible { outline-color: Highlight; }
+
+  .juno-badge,
+  .juno-btn,
+  .juno-card,
+  .juno-readout { border: 1px solid CanvasText; }
+  .juno-badge { forced-color-adjust: none; } /* keep status fill meaningful */
+}

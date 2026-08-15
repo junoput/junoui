@@ -2,6 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import postcss from 'postcss';
 import { TOKENS, CORE, getTokens } from '../dist/js/tokens.js';
 import { buildReference, REFERENCE_PATH } from '../scripts/gen-docs.mjs';
 
@@ -390,6 +391,73 @@ test('the floating-nav clearances are derived from the controls they clear', () 
       base,
     ),
     'clearance must not go back to a sum of bare spacing constants',
+  );
+});
+
+test('no gated rule is silently beaten by a later rule at equal-or-lower specificity', () => {
+  // A @media / @supports block adds NO specificity, so a gate written before
+  // the component it guards loses on source order alone — silently, since the
+  // gate reads correctly in the file it lives in and nothing errors. Four
+  // instances shipped before this test existed (2026-08-15): the 16px input
+  // font floor that never applied on any touch device, the forced-colors
+  // borders, and the Popover fallback that won only by luck. src/css/
+  // overrides.css is the structural fix; this asserts it stayed true.
+  //
+  // EMPTY SET, no allowlist: an allowlist is where violations go to be
+  // forgotten, and in two months nobody can tell a deliberate exception from
+  // an unfixed bug.
+  //
+  // Parsed with postcss rather than matched with a regex. That is not a style
+  // preference: the first version of this check was hand-rolled regex and
+  // reported ZERO on a bundle that provably contained the .juno-input pair.
+  const spec = (sel) => {
+    const s = sel.replace(/::[\w-]+/g, '');
+    const ids = (s.match(/#[\w-]+/g) || []).length;
+    const cls =
+      (s.match(/\.[\w-]+/g) || []).length +
+      (s.match(/\[[^\]]+\]/g) || []).length +
+      (s.match(/:(?!:)[\w-]+(\([^)]*\))?/g) || []).length;
+    const el = (s.match(/(^|[\s>+~])[a-z][\w-]*/gi) || []).length;
+    return [ids, cls, el];
+  };
+  const cmp = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+
+  const decls = [];
+  let order = 0;
+  postcss.parse(readFileSync('dist/css/juno.css', 'utf8')).walkRules((rule) => {
+    if (rule.parent?.type === 'atrule' && /keyframes/.test(rule.parent.name)) return;
+    let gate = '';
+    for (let p = rule.parent; p; p = p.parent) {
+      if (p.type === 'atrule' && /^(media|supports)$/.test(p.name)) gate = `@${p.name} ${p.params}`;
+    }
+    for (const sel of rule.selectors) {
+      rule.walkDecls((d) => {
+        if (d.prop.startsWith('--')) return;
+        decls.push({
+          sel: sel.trim(),
+          prop: d.prop,
+          spec: spec(sel),
+          gate,
+          order: order++,
+          line: d.source?.start?.line,
+        });
+      });
+    }
+  });
+
+  const beaten = [];
+  for (const g of decls.filter((d) => d.gate)) {
+    for (const l of decls) {
+      if (l.order <= g.order || l.gate || l.prop !== g.prop || l.sel !== g.sel) continue;
+      if (cmp(l.spec, g.spec) <= 0) {
+        beaten.push(`${g.gate} { ${g.sel} { ${g.prop} } } (line ${g.line}) lost to line ${l.line}`);
+      }
+    }
+  }
+  assert.deepEqual(
+    [...new Set(beaten)],
+    [],
+    'a gate is inert: move the rule to src/css/overrides.css (bundled last) or raise its specificity deliberately',
   );
 });
 
