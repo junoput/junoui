@@ -122,6 +122,8 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-dock-clearance',
     'juno-dock-h',
     'juno-dock-clearance-scale',
+    'juno-dock-edge-offset',
+    'juno-dock-clearance-breathing',
     'juno-pillbar-h',
     'juno-pillbar-clearance',
     'juno-motion',

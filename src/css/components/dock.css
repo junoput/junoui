@@ -127,7 +127,7 @@
   inset-inline: 0;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
-  margin: 0 var(--juno-space-12) calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  margin: 0 var(--juno-space-12) var(--juno-dock-edge-offset);
   padding: var(--juno-space-4);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
   -webkit-backdrop-filter: blur(12px);
@@ -230,7 +230,7 @@
   inset-inline: 0;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
-  margin: 0 var(--juno-space-12) calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  margin: 0 var(--juno-space-12) var(--juno-dock-edge-offset);
   padding: var(--juno-space-4);
   overflow: hidden;
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);

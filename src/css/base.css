@@ -47,21 +47,38 @@
     var(--juno-size-tap-comfortable) + 4 * var(--juno-space-4) + 2 * var(--juno-border-width-1)
   );
   --juno-dock-clearance-scale: 1;
-  --juno-dock-clearance: calc(
-    var(--juno-dock-h) * var(--juno-dock-clearance-scale) + var(--juno-space-16) +
-      var(--juno-space-8) + env(safe-area-inset-bottom, 0px)
-  );
+  /* The bar's own offset from the bottom edge — declared ONCE and consumed by
+     both the bar's margin (dock.css) and the clearance below, so the two cannot
+     disagree about where the bar sits.
 
+     That is the whole reason this is a token rather than a literal in each
+     place. junoui's default is additive, per docs/ios-conformance.md: a
+     FLOATING element sits off the edge, so its gap and the inset stack. A
+     consumer whose design wants the bar flush above the home indicator instead
+     writes `max(8px, env(safe-area-inset-bottom, 0px))` here and BOTH the
+     margin and the reservation follow it. Before this token the form was baked
+     into each site separately, so a consumer that changed one silently
+     disagreed with the other — measured at 16px of dead band at inset 0 and
+     24px at inset 34 (20260815-055), and no single --juno-dock-h could
+     reconcile them because one side added the inset and the other maxed it. */
+  --juno-dock-edge-offset: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+  /* Gap between the bar's top edge and the last row of content. Zero is a
+     legitimate setting: a translucent bar that content is MEANT to scroll under
+     wants overlap, not breathing room. */
+  --juno-dock-clearance-breathing: var(--juno-space-8);
+  --juno-dock-clearance: calc(
+    var(--juno-dock-h) * var(--juno-dock-clearance-scale) + var(--juno-dock-edge-offset) +
+      var(--juno-dock-clearance-breathing)
+  );
   /* The pillbar is the same shape one size down: no bubble, so its height is
      the tap target plus its own padding and border. */
   --juno-pillbar-h: calc(
     var(--juno-size-tap-comfortable) + 2 * var(--juno-space-4) + 2 * var(--juno-border-width-1)
   );
   --juno-pillbar-clearance: calc(
-    var(--juno-pillbar-h) * var(--juno-dock-clearance-scale) + var(--juno-space-16) +
-      var(--juno-space-8) + env(safe-area-inset-bottom, 0px)
+    var(--juno-pillbar-h) * var(--juno-dock-clearance-scale) + var(--juno-dock-edge-offset) +
+      var(--juno-dock-clearance-breathing)
   );
-
   /* JS-readable motion contract. CSS-only `prefers-reduced-motion` never reaches
      imperative JS (scrollTo/scrollIntoView smooth behavior, rAF-driven transforms,
      an "animate or not" branch) — so the preference is also exposed as a custom
