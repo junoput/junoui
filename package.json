@@ -80,6 +80,7 @@
     "showcase": "npm run build && node scripts/serve.mjs",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
+    "gate:consumer": "node scripts/consumer-gate.mjs",
     "changeset": "changeset",
     "version": "changeset version",
     "release": "npm run build && changeset publish"

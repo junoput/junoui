@@ -83,7 +83,19 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
    `npm run version` needed. (Requires the repo setting _Allow GitHub Actions to create
    and approve pull requests_, and an `NPM_TOKEN` secret with publish rights.)
 
-3. Merge that PR. With no changesets left, the next `release` run publishes to npm
+3. **Before merging that PR, run the consumer gate on the candidate:**
+
+   ```sh
+   npm run gate:consumer
+   ```
+
+   It packs the candidate and builds a real consumer against the tarball. **Red blocks
+   the release** — it is not a note on it. See
+   [the release gate](./docs/release-gate.md) for what it asserts, why it packs rather
+   than links, and why it is a local step rather than a CI job. Record the junoui and
+   consumer SHAs it prints on the release ticket.
+
+4. Merge that PR. With no changesets left, the next `release` run publishes to npm
    (`npm run release` → build + `changeset publish`, with npm provenance via OIDC).
 
 Manual fallback (no CI): `npm run version` then `npm run release`.
