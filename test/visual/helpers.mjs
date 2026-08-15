@@ -45,7 +45,31 @@ export const MASKS = (pw) => [
   pw.locator('[data-pct]'),
 ];
 
+// Freeze the two widgets the showcase animates from JS. They are masked, but a
+// mask covers the element's BOUNDING BOX, and both of these are sized by their
+// own text: `#clock` renders toLocaleTimeString (a 1-digit hour masks 8px
+// narrower than a 2-digit one) and `[data-pct]` counts 1% -> 100% (2 to 4
+// characters). So the mask itself drifts, and the drift lands in the baseline.
+//
+// Under the old 1%-of-page budget that never surfaced: `--update-snapshots`
+// only rewrites a snapshot that FAILS, so every recording kept the previous
+// file and the drift accumulated invisibly for months. At a zero budget it is a
+// guaranteed flake, which is why pinning them is part of the tolerance change
+// and not a separate nicety.
+//
+// app.js calls tick()/driveProgress() once and then on an interval; killing the
+// interval leaves exactly one deterministic call (progress lands on 1%), and
+// pinning toLocaleTimeString fixes the clock string.
+export async function pinVolatile(pw) {
+  await pw.addInitScript(() => {
+    window.setInterval = () => 0;
+    // eslint-disable-next-line no-extend-native
+    Date.prototype.toLocaleTimeString = () => '00:00:00';
+  });
+}
+
 export async function visit(pw, page, mode) {
+  await pinVolatile(pw);
   // seed the persisted theme before any script runs
   await pw.addInitScript((m) => {
     localStorage.setItem('juno:mode', m);

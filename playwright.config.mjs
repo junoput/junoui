@@ -65,6 +65,16 @@ export default defineConfig({
     // ubuntu-24.04 pin in ci.yml / visual-baselines.yml (20260803-001), not a
     // looser budget.
     //
+    // What it cost once, on the way in: the committed `-linux` baselines turned
+    // out to be a FOSSIL. `--update-snapshots` only rewrites a snapshot that
+    // fails, so every past recording kept the previous file whenever the drift
+    // stayed under 1% — and it always did. Dropping to zero rewrote 27 of 48 on
+    // the first recording: real, accumulated, previously-invisible drift, not a
+    // mistake. Two independent recordings agree byte-for-byte at the new budget,
+    // and so do two independent check runs. The two JS-driven widgets that made
+    // the drift inevitable (a clock and a progress counter, both masked, both
+    // sized by their own text) are pinned in helpers.mjs — see pinVolatile().
+    //
     // If CI ever does show a genuine stray pixel, put a budget on THAT case,
     // not back here.
     toHaveScreenshot: { animations: 'disabled', maxDiffPixels: 0, maxDiffPixelRatio: 0 },

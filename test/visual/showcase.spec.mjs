@@ -17,6 +17,7 @@ import {
   PHONE_PAGES,
   PHONE_VIEWPORT,
   openAndShoot,
+  pinVolatile,
   shoot,
 } from './helpers.mjs';
 
@@ -64,6 +65,7 @@ for (const mode of MODES) {
   // auto mode — fresh visitor, nothing stored: the theme must follow the
   // emulated OS scheme (data-juno-mode stays unset)
   test(`index (auto) — os ${mode}`, async ({ page: pw }) => {
+    await pinVolatile(pw);
     await pw.emulateMedia({ colorScheme: mode });
     await pw.goto('/showcase/index.html', { waitUntil: 'networkidle' });
     await pw.evaluate(() => document.fonts.ready);
