@@ -91,7 +91,7 @@ feature newer than the floor.
 | [Browser support](./docs/browser-support.md)                                     | The supported floor, what degrades below it, what breaks      |
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)               |
 | [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more  |
-| [Release gate](./docs/release-gate.md)                                           | The consumer build every release candidate must pass          |
+| [Release gate](./RELEASING.md)                                                   | The consumer build every release candidate must pass          |
 | [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                    |
 | [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                             |
 
@@ -142,7 +142,7 @@ npm run gate:consumer
 which packs the candidate, installs that tarball into a throwaway checkout of a real
 consumer, and runs the consumer's typecheck, tests and production build against it. A
 red gate blocks the release. It is a local step because the consumer lives on the dev
-box, not in this repo's CI — [docs/release-gate.md](./docs/release-gate.md) explains
+box, not in this repo's CI — [RELEASING.md](./RELEASING.md) explains
 what it asserts and what it would take to move it into CI.
 
 ## License

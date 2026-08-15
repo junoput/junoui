@@ -42,7 +42,7 @@ CI runs `lint` + `test` + `npm pack --dry-run`. All must pass.
 
 **Before a release** (not per change): `npm run gate:consumer` — packs the candidate and
 builds a real consumer against the tarball, red blocks the release. It is a local step,
-not CI. Why, and what it asserts: **[docs/release-gate.md](./docs/release-gate.md)**.
+not CI. Why, and what it asserts: **[RELEASING.md](./RELEASING.md)**.
 Never point it, or anything else, at `/work/ios/nexora` — that is the live `:20100`
 worktree; the gate makes its own throwaway clone under `.relgate/`.
 
