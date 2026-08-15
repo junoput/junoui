@@ -48,6 +48,16 @@ Two things depend on it, and both fail **silently**:
 
 Details and sources: [ios-conformance.md](./ios-conformance.md).
 
+### If the page can end up on a Home Screen
+
+From iOS/iPadOS 26 that is every page — "there are now zero requirements for
+'installability'", and the user decides with an **Open as Web App** toggle when
+they add it. So junoui's `display-mode: standalone` rules can run on a site that
+never opted in. What to declare (or knowingly not declare), which status-bar
+style does what, and the one stylesheet copy that must be inline in the `<head>`
+rather than in your bundle:
+[the consumer `<head>` contract](./ios-conformance.md#becoming-a-home-screen-web-app-the-consumer-head-contract).
+
 ## Browser support
 
 |                                             | Safari / iOS | Chrome / Edge | Firefox |
@@ -69,6 +79,10 @@ autoprefixer of its own; the field is there for your build tooling.
 **Every one of these failures is silent** — an engine drops CSS it does not
 understand without reporting anything. The full audit, per feature, with the
 degrade-vs-break verdict: [browser-support.md](./browser-support.md).
+
+Shipping to a phone or a Home Screen? [ios-pwa.md](./ios-pwa.md) is the
+five-minute version — what junoui gives you, the eight things you must supply,
+and what it does not do at all.
 
 ## The model
 

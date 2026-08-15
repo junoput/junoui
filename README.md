@@ -78,22 +78,23 @@ feature newer than the floor.
 
 ## Documentation
 
-|                                                                                  |                                                               |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| [Getting started](./docs/getting-started.md)                                     | Install, model, what ships                                    |
-| [Integration](./docs/integration.md)                                             | Consuming in an app: import order, fonts, token bridge        |
-| [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                            |
-| [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                          |
-| [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt)  |
-| [Boot shell](./docs/boot-shell.md)                                               | Fast first paint: pre-bundle shell, lazy screens, warming     |
-| [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL   |
-| [iOS conformance](./docs/ios-conformance.md)                                     | Sourced iOS metrics — safe areas, tap targets, viewport units |
-| [Browser support](./docs/browser-support.md)                                     | The supported floor, what degrades below it, what breaks      |
-| [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)               |
-| [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more  |
-| [Release gate](./RELEASING.md)                                                   | The consumer build every release candidate must pass          |
-| [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                    |
-| [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                             |
+|                                                                                  |                                                                   |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [Getting started](./docs/getting-started.md)                                     | Install, model, what ships                                        |
+| [Integration](./docs/integration.md)                                             | Consuming in an app: import order, fonts, token bridge            |
+| [Web](./docs/web.md) · [Native](./docs/native.md) · [Flutter](./docs/flutter.md) | Per-platform usage                                                |
+| [Design guidelines](./docs/design-guidelines.md)                                 | Color semantics, a11y — for any tool                              |
+| [Layout](./docs/layout.md)                                                       | Responsive primitives + container queries (how blocks adapt)      |
+| [Boot shell](./docs/boot-shell.md)                                               | Fast first paint: pre-bundle shell, lazy screens, warming         |
+| [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL       |
+| [iOS & PWA](./docs/ios-pwa.md)                                                   | The bounded claim: what's free, what you supply, what it won't do |
+| [iOS conformance](./docs/ios-conformance.md)                                     | Sourced iOS metrics — safe areas, tap targets, viewport units     |
+| [Browser support](./docs/browser-support.md)                                     | The supported floor, what degrades below it, what breaks          |
+| [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)                   |
+| [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more      |
+| [Release gate](./RELEASING.md)                                                   | The consumer build every release candidate must pass              |
+| [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                        |
+| [Roadmap](./docs/roadmap.md)                                                     | Missing capabilities, prioritised                                 |
 
 ## Repository
 

@@ -9,7 +9,10 @@ value into a wrong one later.
 
 This page is about **metrics and behaviour** on iOS. For _which iOS versions
 junoui runs on at all_ — the supported floor, what degrades below it, and what
-breaks — see [browser-support.md](./browser-support.md).
+breaks — see [browser-support.md](./browser-support.md). If you are about to
+integrate and want the bounded version first — what is free, what you supply,
+what junoui does not do — start at [ios-pwa.md](./ios-pwa.md) and come back
+here for the derivations.
 
 > **Verifying anything here.** Apple's HIG is a JavaScript app: a plain `curl`
 > returns an empty shell. Check the backing DocC JSON instead —
@@ -269,6 +272,93 @@ that has a scrollbar. Every call site above either caps well below `100vw`
 scrollbar's width (`calc(100vw - var(--juno-space-24))`). Keep it that way; a
 bare `inline-size: 100vw` is a bug.
 
+## Becoming a Home-Screen web app: the consumer `<head>` contract
+
+Everything in the next section is gated on `display-mode: standalone`. That mode
+is not something junoui can enter for you and not something your CSS decides —
+it is decided in the `<head>`, and now also by the user. So: what makes a page a
+Home-Screen web app at all.
+
+**Two ways in, and as of iOS 26 a third that nobody opts into.**
+
+| Declaration                                                | What it does                                                                         | Source                                                                                                                                                    |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Manifest `"display": "standalone"` (or `"fullscreen"`)     | The standards route: "create a manifest file … and serve it along with your website" | [WebKit — Web Push for Web Apps](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/)                                                  |
+| `<meta name="apple-mobile-web-app-capable" content="yes">` | Apple extension, iOS only: "Sets whether a web application runs in full-screen mode" | [Apple — Supported Meta Tags](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html) |
+| **Nothing at all, on iOS/iPadOS 26**                       | "By default, every website added to the Home Screen opens as a web app"              | [WebKit features in Safari 26.0](https://webkit.org/blog/17333/webkit-features-in-safari-26-0/)                                                           |
+
+Ship one of the first two if you _want_ standalone. Ship neither and, from iOS
+26, you may get it anyway:
+
+> "Simply put, there are now zero requirements for 'installability' in Safari."
+> … "If the user prefers to add a bookmark for their browser, they can disable
+> 'Open as Web App' when adding to Home Screen."
+
+Read that second sentence carefully, because it is the part that changes how you
+test: **standalone is now a user choice made at add-to-Home-Screen time, not a
+property of your document.** The same build is both a tab and a web app
+depending on a toggle you never see. Every `display-mode: standalone` rule
+junoui ships — the letterbox unlock below is the whole list — therefore runs for
+consumers who never asked for it, on a device where nothing in their `<head>`
+said "web app".
+
+`window.navigator.standalone` (read-only Boolean, Apple extension) reports the
+answer at runtime; `matchMedia('(display-mode: standalone)')` is the standard
+test and the one junoui's CSS uses. Check both — see
+[the letterbox flag](#the-letterbox-flag-data-juno-letterboxed) for the exact
+predicate.
+
+### The status bar style, and what it is not for
+
+`<meta name="apple-mobile-web-app-status-bar-style" content="…">` takes exactly
+three values, and Apple states it "has no effect unless you first specify
+full-screen mode using `apple-mobile-web-app-capable`":
+
+| Value               | Status bar            | Web content                                             |
+| ------------------- | --------------------- | ------------------------------------------------------- |
+| `default`           | normal                | displayed **below** the status bar                      |
+| `black`             | black background      | displayed **below** the status bar                      |
+| `black-translucent` | black and translucent | **entire screen**, partially obscured by the status bar |
+
+`default` is the default. Only `black-translucent` puts your content under the
+status bar, which is the case where `env(safe-area-inset-top)` stops being
+decorative and starts being the thing keeping your top row readable.
+
+**It is not a letterbox remedy.** `black` and `black-translucent` were each
+tested with a fresh Home-Screen install on the device; both letterbox
+identically (see the next section). Pick the value for the status bar you want
+and nothing else.
+
+- Source: [Apple — Supported Meta Tags](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)
+  (archived; carries no deprecation banner, and no replacement page for these
+  two tags was found on the current developer site).
+
+### The `<head>` junoui actually needs
+
+Three lines, in one place, none of which a stylesheet can supply:
+
+```html
+<!-- 1. required always — safe areas are inert without viewport-fit=cover,
+        and 1 CSS px = 1 pt only with width=device-width -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<!-- 2. only if you want standalone deliberately; from iOS 26 the user can
+        grant it without you -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<!-- or a manifest with "display": "standalone" -->
+
+<!-- 3. if your shell paints before its CSS bundle: an inline copy of the
+        standalone unlock, because iOS samples the document at launch -->
+<style>
+  /* … see "Consumer obligations" below … */
+</style>
+```
+
+Line 1 is expanded, with the failure modes, in
+[getting-started.md](./getting-started.md). Line 3 is the first-parse obligation
+below, and it is the one that is silent both ways: miss it and the app
+letterboxes, ship it and nothing tells you it worked except a screenshot.
+
 ## Home-Screen standalone: the letterbox, and why `base.css` unlocks it
 
 **The fact, and it is the most expensive thing this codebase has learned about
@@ -358,6 +448,111 @@ that still misbehaves. When that holds, the unlock is dead weight and can be
 removed. Until then it is harmless where it does not apply, because the gate
 excludes every non-iOS and non-installed context.
 
+### The letterbox flag: `data-juno-letterboxed`
+
+The unlock above _prevents_ the letterbox. Nothing above lets a page **react to
+it happening anyway**, and it does happen — to a page whose first-parse copy of
+the unlock is missing, whose `body::after` is taken, or which is not a junoui
+page at all. So junoui fixes the name of that fact, once, here.
+
+**The contract, in four lines:**
+
+|                 |                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Attribute       | `data-juno-letterboxed`, boolean (present or absent — the value is never read)                       |
+| Element         | the root element, `<html>`                                                                           |
+| Who sets it     | **the app.** junoui ships no JS for this; see below                                                  |
+| What it asserts | this window is in standalone display mode **and** is shorter than the screen it is on. Nothing else. |
+
+**The predicate, so two consumers compute the same answer:**
+
+```js
+const SLACK_PX = 1;
+
+const standalone =
+  matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+function isLetterboxed({ standalone, innerHeight, screenHeight }) {
+  if (!standalone) return false;
+  if (!screenHeight || !innerHeight) return false; // the browser is not telling us
+  return innerHeight < screenHeight - SLACK_PX;
+}
+```
+
+Each guard earns its place:
+
+- **Standalone is part of the question, not an optimisation.** In a browser tab
+  the window is legitimately shorter than the screen — that is where the
+  toolbars are — and `env(safe-area-inset-*)` reads `0` there anyway, so
+  flagging a tab would be both wrong and pointless.
+- **One pixel of slack**, because the comparison is between two integers from
+  different APIs describing the same screen; an exact test is brittle for no
+  benefit.
+- **A zero guard**, because `screen.height === 0` means the browser is not
+  answering, and "shorter than nothing" is not a verdict.
+
+**Watch it; do not sample it once.** The window corrects itself to the full
+height unprompted, between **6 seconds and 43 minutes** after navigation, and
+then holds for the life of that document. Re-evaluate on
+`visualViewport.resize` — the event that fired for all seven observed
+corrections — plus `window.resize` and `orientationchange`, because rotation
+changes both dimensions and only the latter is guaranteed to report it.
+
+**What CSS may key off it — one thing.** Inside the 812 px window
+`env(safe-area-inset-bottom)` still reports **34**, but the home indicator is at
+screen y 840–874, _outside_ the window. A layout that correctly honours the
+inset is reserving room for something that is not in the view, on an edge
+already 62 px clear of the glass. So the sanctioned use is to zero the bottom
+inset, and only the bottom inset:
+
+```css
+:root {
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+html[data-juno-letterboxed] {
+  --app-safe-bottom: 0px;
+}
+```
+
+Do **not** key the top inset off it, and do not use it to disable the unlock.
+The 62 px top strip is genuinely reserved by the window manager; only the bottom
+inset is a phantom.
+
+**What junoui does with it today: nothing, and that is deliberate.** junoui's
+own clearances and the nine other `env(safe-area-inset-bottom)` call sites read
+the raw `env()` — eleven in all, across `base.css` (2), `dock.css` (3),
+`pillbar.css` (3), `modal.css`, `drawer.css` and `toast.css` — so a junoui app
+in a letterboxed window over-reserves at the bottom regardless of what the app
+sets: an `env()` inside a component's `calc()` is not overridable from app CSS.
+Fixing that means routing every bottom call site through a single
+`--juno-safe-bottom` indirection, which is a CSS change across six files with a
+visual-regression pass of its own. It is tracked as
+ticket 20260815-039, and doing it by halves is worse than not doing it: convert
+the clearance tokens but not `dock.css`'s margin and the bar moves while its
+clearance does not.
+
+**Why no junoui JS module.** junoui already ships two JS entry points
+(`icons/inline`, `icons/install`), so a third would not be unprecedented. It is
+still wrong here: the module is ~30 lines with no junoui-specific content — it
+reads two DOM globals and writes an attribute — and shipping it would put a
+workaround into the public API, with a semver commitment, a release, and a test,
+for a defect whose entire purpose is to be deleted when WebKit fixes the window.
+A **name** costs nothing and is free to delete. Re-open this decision if the
+flag ever gates junoui's own CSS (20260815-039): a rule junoui ships with no
+supported way to satisfy it would be worse than either half alone.
+
+**It is not an upstream-fix detector.** The test in the previous section needs a
+document that _cannot_ scroll; the unlock makes the document scroll, so a
+correctly integrated junoui app reads `false` while the bug is very much alive.
+The flag catches residual cases, not the platform.
+
+**Prior art, and why the name is fixed now rather than later.** nexora sets
+`data-nx-letterboxed` from `web/src/letterbox.ts` — that module's predicate is
+the one reproduced above, and it predates this contract. New consumers use
+`data-juno-letterboxed`. The cost of leaving it unnamed is that the next
+consumer invents a third spelling for the same fact and none of the three CSS
+rules can ever move into junoui.
+
 - Sources: nexora `CLAUDE.md` §15, entry dated 2026-08-13; the four-mode testbed
   `web/public/expansion-demo.html` (kept as a standing rig); 201 device readings
   collected by `scripts/viewport_probe_collect.py`. Tracked upstream as ticket
@@ -412,8 +607,10 @@ One confirmed change raises the stakes: as of iOS/iPadOS 26, **every website
 added to the Home Screen opens as a web app by default** — "there are now zero
 requirements for 'installability'". junoui's CSS may therefore run in a
 standalone context, where `viewport-fit` and `env()` govern home-indicator and
-Dynamic Island clearance, for sites that never opted in. The concrete
-consequence is measured above in
+Dynamic Island clearance, for sites that never opted in. What that means for
+your `<head>` is
+[the consumer contract above](#becoming-a-home-screen-web-app-the-consumer-head-contract);
+the concrete consequence is measured in
 [Home-Screen standalone: the letterbox](#home-screen-standalone-the-letterbox-and-why-basecss-unlocks-it) —
 a site that never asked to be a web app now inherits both the letterbox and the
 unlock.

@@ -115,6 +115,12 @@ tokens land, and never removes a guarantee without a semver-major note.
   base layer raises `--juno-size-tap-min` to the comfortable 44px, so every
   control sized off the tap minimum grows on touch devices. A cascade override —
   the token values themselves don't change.
+- **One control grows on one axis only.** `.juno-pagination`'s items read the tap
+  minimum for `min-inline-size` but carry a fixed `block-size` of 32px, so on a
+  coarse pointer they are 44 × 32 — above the 24px AA floor, below the 44px
+  enhanced one. Tracked as ticket 20260815-040; the numeric coarse-pointer check
+  in `test/visual/tap-targets.spec.mjs` does not cover pagination yet, which is
+  why it went unnoticed.
 - Hover-revealed affordances get a touch fallback: table row actions stay
   visible under `@media (hover: none)`.
 
