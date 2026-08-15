@@ -310,6 +310,43 @@ test('nothing after the popover fallback re-declares display on the surfaces it 
   );
 });
 
+test('the published surface carries the consumer docs and none of the process docs', () => {
+  // `files` includes "docs" wholesale, so every file added under docs/ reaches
+  // every consumer. That is right for the manual and wrong for anything about
+  // how this repo is run: docs/release-gate.md shipped 9.7 kB of internal
+  // release process to consumers for exactly one merge before it was noticed
+  // (20260815-020). The rule that replaced it is positional — docs/ IS the
+  // published manual; contributor and process documents live at the root
+  // beside CONTRIBUTING.md, which has never shipped — and this pins both
+  // halves, because each fails silently in its own direction: an internal doc
+  // added to docs/ leaks, and a consumer doc dropped from `files` disappears
+  // from under a citation that expects it.
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+  const shipped = new Set(pkg.files);
+
+  // Contributor/process documents, by name. Not a heuristic: a heuristic would
+  // pass until someone names a file something unexpected.
+  for (const f of ['RELEASING.md', 'CONTRIBUTING.md', 'CLAUDE.md']) {
+    assert.ok(existsSync(f), `${f} moved or renamed — update this test with it`);
+    assert.ok(
+      !shipped.has(f),
+      `${f} is a process document and must not ship to consumers (files: ${pkg.files.join(', ')})`,
+    );
+  }
+  assert.ok(!existsSync('docs/release-gate.md'), 'the release gate doc belongs at ./RELEASING.md');
+
+  // The other direction: consumers (and nexora's IOS_BASELINE.md, which cites
+  // the copy inside the installed package) depend on these being present.
+  assert.ok(shipped.has('docs'), '`files` must ship docs/ — consumer docs are cited from it');
+  for (const f of [
+    'docs/ios-conformance.md',
+    'docs/browser-support.md',
+    'docs/getting-started.md',
+  ]) {
+    assert.ok(existsSync(f), `${f} is cited by consumers and must exist`);
+  }
+});
+
 test('committed token reference is up to date', () => {
   const current = readFileSync(REFERENCE_PATH, 'utf8');
   assert.equal(current, buildReference(), 'run `npm run gen-docs` and commit');

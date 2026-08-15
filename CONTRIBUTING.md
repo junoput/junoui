@@ -91,7 +91,7 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
 
    It packs the candidate and builds a real consumer against the tarball. **Red blocks
    the release** — it is not a note on it. See
-   [the release gate](./docs/release-gate.md) for what it asserts, why it packs rather
+   [the release gate](./RELEASING.md) for what it asserts, why it packs rather
    than links, and why it is a local step rather than a CI job. Record the junoui and
    consumer SHAs it prints on the release ticket.
 
