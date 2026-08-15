@@ -384,6 +384,14 @@ iOS Safari is widely observed to zoom the page onto a focused field under 16px.
 behavior, not published spec. The mitigation is harmless, so it stays — but do
 not cite it as documented, and re-verify it on iOS 26.
 
+The floor is now a checked claim, not an asserted one:
+`test/visual/tap-targets.spec.mjs` reads the computed `font-size` of a
+`.juno-input` under the coarse-pointer Playwright project and asserts `>= 16`.
+That check is also what found the floor had never worked — the rule sat in
+`base.css`'s `@media (pointer: coarse)` block, where a media query adds no
+specificity, so `components/input.css`'s own `.juno-input` font-size beat it on
+source order. It now lives in `input.css`. Keep it there.
+
 ## Things a stylesheet controls that Apple says nothing about
 
 No primary Apple source was found for any of: `touch-action`,
