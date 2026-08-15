@@ -1,5 +1,89 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- 71c069c: Two primitives stop encoding junoui's own dimensions and start exposing the
+  derivation, so a consumer that parameterizes them stays correct.
+
+  - **`junoui/icons/install`** — the sprite injector without the sprite (~1 kB).
+    A consumer that subsets with `junoui/subset` can now keep the same-document
+    injection Safari requires without pulling the 66-symbol payload that
+    `junoui/icons/inline` carries; both share one id-guarded holder, so mixing
+    them cannot produce two. `icons/inline` is unchanged for everyone else.
+  - **`--juno-dock-clearance` / `--juno-pillbar-clearance` are derived**, from
+    new published parts: `--juno-dock-h`, `--juno-pillbar-h` and
+    `--juno-dock-clearance-scale`. They were constants that promised to track the
+    dock's geometry and did not — past a 58px bubble they reserved less than the
+    pill's own height plus its margin, hiding content under the dock. Values at
+    the default 44px bubble change from 92px to 86px (dock) and 72px to 78px
+    (pillbar), both now equal to what the control actually measures plus its
+    margin and a breathing gap.
+
+- 0ee41a8: Declare the browser-support baseline, and guard the one gap that is functional.
+
+  New `docs/browser-support.md`: the supported floor (Safari/iOS 17.5, Chrome/Edge
+  117, Firefox 129), the hard floor below which things break (17.0 / 114 / 125),
+  and a per-feature audit of the built bundle with a degrade-vs-break verdict on
+  each. `package.json` now carries a matching `browserslist`; README and
+  getting-started state the floor.
+
+  `base.css` ships one `@supports not selector(:popover-open)` guard. Below Safari
+  17.0 the Popover API is absent, and because the UA rule that hides a closed
+  popover is absent with it, `.juno-menu` and `.juno-popover` were rendering as
+  invisible fixed panels that swallowed taps. The guard hides them instead —
+  absent beats invisibly-present, and apps can branch on
+  `CSS.supports('selector(:popover-open)')`. Guards are for functional failures
+  only; cosmetic gaps (missing entry animations, unanchored placement) are
+  documented, not wrapped.
+
+  `docs/ios-conformance.md` gains the viewport-unit decision it was missing:
+  `dvh` stays at both `.juno-app-shell` and `.juno-drawer`, with the reasoning,
+  what each option costs at the moment browser chrome retracts, and a rule for
+  applying the choice to a new component. It also now records the iOS Home-Screen
+  standalone letterbox — iOS sizes the window from the document's resting
+  scrollability at launch — which is why `base.css` carries the standalone unlock.
+
+  Docs and defaults only; no token or component API changed.
+
+### Patch Changes
+
+- cacdb21: Fix: the 16px `.juno-input` font floor on touch never applied.
+
+  The rule lived in `base.css`'s `@media (pointer: coarse)` block, but a media
+  query adds no specificity — so `components/input.css`'s own
+  `.juno-input { font-size: var(--juno-font-size-14) }`, same 0,1,0 selector and
+  later in the bundle, won every time. On a coarse pointer the field measured
+  14px, i.e. exactly the condition the floor exists to avoid (iOS Safari zooming
+  the page onto a focused sub-16px field). The rule now lives in `input.css`,
+  after the declaration it has to beat.
+
+  Found by the new coarse-pointer visual-regression project (20260815-006): the
+  suite ran only `Desktop Chrome`, where `(pointer: coarse)` never matches, so
+  nothing had ever exercised the rule.
+
+- da03666: Fix: the forced-colors (Windows High Contrast) border never applied.
+
+  `@media (forced-colors: active) { .juno-badge, .juno-btn, .juno-card,
+.juno-readout { border: 1px solid CanvasText } }` lived in `base.css`, which the
+  bundler emits before `components/`. A media query adds no specificity, so each
+  component's own `border` declaration won on source order alone. Measured under
+  emulated forced-colors: `.juno-badge` computed a transparent border — it sets
+  `forced-color-adjust: none` to keep its status fill, and that opt-out also
+  disables the UA repaint that was silently rescuing `.juno-btn` and `.juno-card`.
+
+  New `src/css/overrides.css`, bundled last, is where cross-cutting `@media` /
+  `@supports` gates live now — after everything they guard. Same reasoning the
+  bundler already applied to `utilities.css`.
+
+- 2ec7cff: Stop publishing junoui's internal release process to consumers: the pre-release
+  consumer gate document moves from `docs/release-gate.md` to `RELEASING.md` at
+  the repo root, beside CONTRIBUTING.md, which has never shipped. `files` carries
+  `docs` wholesale, so the rule is now positional — `docs/` IS the published
+  manual, and contributor or process documents live at the root. The published
+  surface loses one file (204 → 203) and no consumer-facing content changes.
+
 ## 0.5.0
 
 ### Minor Changes
