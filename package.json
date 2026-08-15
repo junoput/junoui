@@ -51,6 +51,7 @@
     "./icons": "./dist/icons/juno-icons.svg",
     "./subset": "./tools/subset-sprite.mjs",
     "./icons/inline": "./dist/icons/inline.js",
+    "./icons/install": "./dist/icons/install.js",
     "./package.json": "./package.json"
   },
   "files": [

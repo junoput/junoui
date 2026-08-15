@@ -257,7 +257,7 @@
          <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-dots-three" /></svg>
        </button>
        <div class="juno-pillbar__tray">
-         <div><!-- single wrapper, any element -->
+         <div>\3c !-- single wrapper, any element -->
            …the usual __item / __sep / __input children…
          </div>
        </div>

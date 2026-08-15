@@ -119,6 +119,9 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-icon-loader-ring',
     'juno-icon-loader-ring-width',
     'juno-dock-clearance',
+    'juno-dock-h',
+    'juno-dock-clearance-scale',
+    'juno-pillbar-h',
     'juno-pillbar-clearance',
     'juno-motion',
     'juno-motion-scale',
@@ -345,6 +348,49 @@ test('the published surface carries the consumer docs and none of the process do
   ]) {
     assert.ok(existsSync(f), `${f} is cited by consumers and must exist`);
   }
+});
+
+test('the icon injector ships without the sprite it injects', () => {
+  // A consumer that subsets (junoui/subset) needs the injection mechanism and
+  // NOT the 66-symbol payload: importing junoui/icons/inline to get ~8 lines of
+  // DOM work would drag 25 kB of icons it deliberately does not ship, which is
+  // what made the two features mutually exclusive before (20260815-025).
+  const install = readFileSync('dist/icons/install.js', 'utf8');
+  assert.match(install, /export function installSprite/);
+  assert.match(install, /JUNO_SPRITE_ID/);
+  assert.ok(!install.includes('<symbol'), 'the injector must carry no sprite payload');
+  assert.ok(install.length < 2048, `injector should stay tiny, got ${install.length} B`);
+
+  // And one implementation of the hidden holder, not two that agree today.
+  const inline = readFileSync('dist/icons/inline.js', 'utf8');
+  assert.match(inline, /from '\.\/install\.js'/, 'inline must delegate to the injector');
+  assert.ok(inline.includes('<symbol'), 'the inline module is the one that carries the payload');
+});
+
+test('the floating-nav clearances are derived from the controls they clear', () => {
+  // These were constants (space-72 + space-20) whose own comment promised they
+  // would "stay correct when the dock geometry changes". They could not: the
+  // pill is 62px at the default 44px bubble, and past a 58px bubble the
+  // constant reserved less than the pill's height plus its margin — content
+  // hid under the dock, silently, on any consumer that took junoui's explicit
+  // invitation to parameterize --juno-size-tap-comfortable (20260815-026).
+  const base = readFileSync('src/css/base.css', 'utf8');
+  for (const token of ['--juno-dock-h', '--juno-pillbar-h', '--juno-dock-clearance-scale']) {
+    assert.ok(base.includes(token), `${token} must be published for consumers to read`);
+  }
+  const clearance = base.slice(base.indexOf('--juno-dock-clearance:'));
+  assert.match(clearance, /var\(--juno-dock-h\)/, 'clearance must derive from the pill height');
+  assert.match(
+    clearance,
+    /var\(--juno-dock-clearance-scale\)/,
+    'clearance must honour the scale knob',
+  );
+  assert.ok(
+    !/--juno-dock-clearance:\s*calc\(\s*var\(--juno-space-\d+\)\s*\+\s*var\(--juno-space-\d+\)/.test(
+      base,
+    ),
+    'clearance must not go back to a sum of bare spacing constants',
+  );
 });
 
 test('committed token reference is up to date', () => {

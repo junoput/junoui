@@ -57,3 +57,32 @@ const iconSubset = {
 Keep the manifest where the app's own type for icon names is derived from it,
 so a name that is not in the manifest is a **compile** error rather than a
 blank space at runtime.
+
+## Injecting a subset
+
+Safari intermittently drops external sprite refs (`<use href="file.svg#id">`),
+so the reliable path is a **same-document** ref — which means the sprite has to
+live in the document. `junoui/icons/inline` does that for the full set and
+auto-installs on import; a consumer that subsets wants the injection without
+the 25 kB of symbols, so the mechanism ships separately:
+
+```js
+import { installSprite } from '@junoput01/junoui/icons/install';
+import sprite from 'virtual:my-icon-subset'; // your build's subset (see above)
+
+installSprite(sprite);
+```
+
+| Export                 | Carries                   | Use                                           |
+| ---------------------- | ------------------------- | --------------------------------------------- |
+| `junoui/icons/install` | ~1 kB, no icons           | You subset. Pass your own sprite.             |
+| `junoui/icons/inline`  | the full 66-symbol sprite | You don't subset. Import for the side effect. |
+
+- **Both are id-guarded on the same `juno-icon-sprite` holder**, so importing
+  the full module alongside a subset does not produce two hidden holders
+  shadowing each other — whichever installs first wins and the second call is a
+  no-op returning `false`.
+- `installSprite` returns `true` when it injected, `false` when a sprite was
+  already present or there is no document (server-side, pre-hydration).
+- Subsetting only pays off if the full module never enters the bundle: import
+  `icons/install`, not `icons/inline`.

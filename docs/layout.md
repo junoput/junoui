@@ -269,3 +269,38 @@ You opt in per region; nothing forces a markup shape.
 These are all CSS. Behavior that needs state (resize observers feeding app state,
 virtualization, drag-resizable panels) belongs in your app or a sibling
 `junoui-<framework>` package — not the design system.
+
+## Floating-nav clearance
+
+A scroller that a fixed dock or pillbar floats over reserves room at its foot so
+the last row clears the overlay:
+
+```css
+.my-scroller {
+  padding-block-end: var(--juno-dock-clearance);
+}
+```
+
+The value is **derived from the control it clears**, not a constant:
+
+| Prop                          | Is                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------ |
+| `--juno-dock-h`               | the floating pill's laid-out height — bubble + item padding + pill padding + border        |
+| `--juno-pillbar-h`            | the pillbar's, one size down (no bubble)                                                   |
+| `--juno-dock-clearance-scale` | multiplier on that height, default `1` — see below                                         |
+| `--juno-dock-clearance`       | `height × scale + space-16 (the bar's own margin) + space-8 + env(safe-area-inset-bottom)` |
+
+**Why derived matters.** Set `--juno-size-tap-comfortable` at `:root` — which
+junoui invites, and which is the whole point of a token — and the pill grows;
+the clearance grows with it. The previous constant did not, and past a 58px
+bubble it reserved less than the pill's own height plus its margin, so content
+hid under the dock with nothing reporting it.
+
+**The scale knob is for bars that shrink while scrolling.** Reserve at the SMALL
+size by setting `--juno-dock-clearance-scale` to your compact factor. Reserving
+at the live size means the reservation changes after the last scroll event, and
+content relayouts under a finger that has already stopped moving.
+
+**Custom properties resolve where they are declared.** Override
+`--juno-size-tap-comfortable` at `:root` (or override `--juno-dock-h` directly);
+overriding it on a subtree does not re-derive a token computed at `:root`.

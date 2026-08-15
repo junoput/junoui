@@ -19,13 +19,48 @@
   /* Floating-nav scroll clearance — a page/scroller that a fixed dock or
      pillbar floats over reserves this much room at its foot so the last row
      clears the overlay. Consumers write `padding-block-end:
-     var(--juno-dock-clearance)` and stay correct when the dock geometry
-     changes — no hand-rolled calc() per app. Web-only (they carry env()), so
-     they live in the CSS layer, not the cross-platform token set.
-     --juno-dock-clearance ≈ pill height + bottom margin + breathing room;
-     --juno-pillbar-clearance suits the shorter centered pill. */
-  --juno-dock-clearance: calc(var(--juno-space-72) + var(--juno-space-20) + env(safe-area-inset-bottom, 0px));
-  --juno-pillbar-clearance: calc(var(--juno-space-72) + env(safe-area-inset-bottom, 0px));
+     var(--juno-dock-clearance)`. Web-only (they carry env()), so they live in
+     the CSS layer, not the cross-platform token set.
+
+     DERIVED, not constant. These used to be `space-72 + space-20 + env()`,
+     which promised in this very comment to "stay correct when the dock
+     geometry changes" and could not: the floating pill measures 62px with the
+     default 44px bubble, and junoui explicitly invites a consumer to
+     parameterize that bubble (--juno-size-tap-comfortable). Past a 58px bubble
+     the old constant reserved LESS than the pill's own height plus its margin
+     — content hid under the dock, silently, on exactly the consumers who took
+     the invitation (20260815-026).
+
+     So the parts are named and the arithmetic is visible:
+       --juno-dock-h        the pill's laid-out height: the bubble, the item's
+                            padding-block, the pill's own padding, its border.
+       * -clearance-scale   consumers that SHRINK the bar while scrolling
+                            reserve at the small size, not the live one — a
+                            reservation that tracks a value which changes after
+                            the last scroll event relayouts content under a
+                            finger that has already stopped moving. Default 1.
+       + space-16 + env()   the pill's own bottom margin (dock.css), additive
+                            because a floating element sits OFF the edge —
+                            docs/ios-conformance.md, "max() vs addition".
+       + space-8            breathing room, so the last row is not flush. */
+  --juno-dock-h: calc(
+    var(--juno-size-tap-comfortable) + 4 * var(--juno-space-4) + 2 * var(--juno-border-width-1)
+  );
+  --juno-dock-clearance-scale: 1;
+  --juno-dock-clearance: calc(
+    var(--juno-dock-h) * var(--juno-dock-clearance-scale) + var(--juno-space-16) +
+      var(--juno-space-8) + env(safe-area-inset-bottom, 0px)
+  );
+
+  /* The pillbar is the same shape one size down: no bubble, so its height is
+     the tap target plus its own padding and border. */
+  --juno-pillbar-h: calc(
+    var(--juno-size-tap-comfortable) + 2 * var(--juno-space-4) + 2 * var(--juno-border-width-1)
+  );
+  --juno-pillbar-clearance: calc(
+    var(--juno-pillbar-h) * var(--juno-dock-clearance-scale) + var(--juno-space-16) +
+      var(--juno-space-8) + env(safe-area-inset-bottom, 0px)
+  );
 
   /* JS-readable motion contract. CSS-only `prefers-reduced-motion` never reaches
      imperative JS (scrollTo/scrollIntoView smooth behavior, rAF-driven transforms,
