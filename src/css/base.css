@@ -288,3 +288,30 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
     }
   }
 }
+
+/* ── Popover API absent (Safari/iOS < 17.0) ──────────────────────────────────
+   junoui's overlay surfaces are built on the native Popover API. Without it
+   `popovertarget` does nothing, so they cannot open — an inconvenience. The
+   part that is a BUG is that the UA rule which hides a closed popover
+   (`[popover]:not(:popover-open) { display: none }`) does not exist either, so
+   the panel participates in layout: .juno-menu and .juno-popover are
+   `position: fixed` with `opacity: 0` and no pointer-events reset, i.e. a
+   256-280px INVISIBLE panel parked at its static position, swallowing taps on
+   whatever it covers. (.juno-tooltip__bubble escapes it — it inherits
+   `pointer-events: none` from the CSS-only tooltip rule — and is listed anyway
+   so the set matches the docs.)
+
+   So: hide them. Absent beats invisibly-present. Apps detect the same condition
+   with CSS.supports('selector(:popover-open)') and render a fallback.
+
+   @supports selector() is itself Safari 14.1+; below that this condition is
+   invalid, the block is skipped, and behaviour is what it is today. Fail-open,
+   and far below any supported floor. Guards live here rather than per component
+   so the next popover-based component inherits it — see docs/browser-support.md
+   for the rule about when a feature gap earns a guard at all (functional
+   failures only; a missing animation does not get one). */
+@supports not selector(:popover-open) {
+  .juno-menu[popover],
+  .juno-popover[popover],
+  .juno-tooltip__bubble[popover] { display: none; }
+}

@@ -61,6 +61,21 @@ build-time sRGB hex (identical rendering).
 | ---------------- | -------------------------- | ------------------------------- |
 | CSS, SCSS, JS/TS | Android (xml), iOS (Swift) | Flutter (Dart), JSON (W3C DTCG) |
 
+## Browser support
+
+**Supported floor: Safari / iOS 17.5, Chrome / Edge 117, Firefox 129.**
+Below **17.0 / 114 / 125** (the `browserslist` in `package.json`) the Popover
+API is absent and the overlay surfaces — menu, popover, tooltip, and the
+pillbar's overflow slot — stop working; junoui ships an `@supports` guard so
+they are absent rather than invisibly blocking taps. Between the two floors
+everything functions and entry animations are missing. Full fidelity, including
+anchored placement for those surfaces, wants Safari 26.
+
+CSS failures are silent — an unsupported at-rule is dropped, never reported —
+so the degrade-vs-break audit, the version table and the guard rule live in
+**[browser-support.md](./docs/browser-support.md)**. Read it before adding a
+feature newer than the floor.
+
 ## Documentation
 
 |                                                                                  |                                                               |
@@ -73,6 +88,7 @@ build-time sRGB hex (identical rendering).
 | [Boot shell](./docs/boot-shell.md)                                               | Fast first paint: pre-bundle shell, lazy screens, warming     |
 | [Accessibility](./docs/accessibility.md)                                         | WCAG 2.2 + WAI-ARIA references, focus, motion, targets, RTL   |
 | [iOS conformance](./docs/ios-conformance.md)                                     | Sourced iOS metrics — safe areas, tap targets, viewport units |
+| [Browser support](./docs/browser-support.md)                                     | The supported floor, what degrades below it, what breaks      |
 | [Token reference](./docs/tokens-reference.md)                                    | Every token + value + platform name (generated)               |
 | [Components](./docs/components/README.md)                                        | 30+ — forms, overlays, table, alerts, tabs, icons, nav, more  |
 | [Contributing](./CONTRIBUTING.md)                                                | Add tokens/components, lint, test, release                    |

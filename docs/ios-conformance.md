@@ -7,6 +7,10 @@ Most numbers the design community attributes to Apple are not in Apple's text.
 This page exists so nobody re-derives folklore, and so nobody "fixes" a correct
 value into a wrong one later.
 
+This page is about **metrics and behaviour** on iOS. For _which iOS versions
+junoui runs on at all_ — the supported floor, what degrades below it, and what
+breaks — see [browser-support.md](./browser-support.md).
+
 > **Verifying anything here.** Apple's HIG is a JavaScript app: a plain `curl`
 > returns an empty shell. Check the backing DocC JSON instead —
 > `developer.apple.com/tutorials/data/design/human-interface-guidelines/<page>.json`.
@@ -157,11 +161,10 @@ to `lv*`** — that is the spec-level cause of the classic `100vh` overflow: a
 junoui uses **zero raw `vh`**. Full-height surfaces use `dvh`
 (`layout.css`, `drawer.css`) and `85dvh` caps the bottom sheet.
 
-Caveats worth knowing before changing any of that:
+Caveats that constrain the choice:
 
 - `dv*` is explicitly **not stable** and not guaranteed to update every frame,
-  so it can churn while the address bar collapses. `sv*` is the calm choice when
-  a surface must never overflow.
+  so it can churn while the address bar collapses. `sv*` never overflows.
 - iOS shipped viewport-unit bugs into the **iOS 26** era: Safari 26.0 fixed
   `lvh`/`vh` being sized against the _small_ viewport in `SFSafariViewController`.
   The underlying WebKit bug (255708, filed 2023) is **still open**, so Apple's
@@ -175,6 +178,193 @@ Caveats worth knowing before changing any of that:
   [csswg-drafts#6454](https://github.com/w3c/csswg-drafts/issues/6454),
   [Safari 26.0 release notes](https://developer.apple.com/documentation/safari-release-notes/safari-26-release-notes),
   [WebKit bug 255708](https://bugs.webkit.org/show_bug.cgi?id=255708).
+
+### The decision: `dvh` stays at both call sites
+
+Decided 2026-08-15 (ticket 20260803-033, step 1). `dvh` is kept for **both**
+`.juno-app-shell` and `.juno-drawer`, against the "`sv*` is the calm choice"
+instinct above. The reasoning below is the part to read: it generalises, the
+verdict does not.
+
+**First, price the two options at the only moment they differ** — when browser
+chrome retracts. There is no other moment. Before it and after it, whichever
+unit you picked is simply the current viewport.
+
+|       | what it costs when chrome retracts                                                                                                                                                                                                    |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dvh` | The surface **grows**, so it relayouts. `dv*` is not frame-guaranteed, so that growth can arrive late or in steps. If the surface contains a scroller, the scroll port changes height _during the scroll that caused the retraction_. |
+| `svh` | The surface **does not move** — and is now short by `lvh − svh`. That gap is permanent for the rest of the session, and it is at the bottom edge, where the page background shows through under whatever the surface pinned there.    |
+
+So this is not "stable vs twitchy". It is **one relayout** against **a permanent
+dead strip**. Pick by asking which of those the surface can afford.
+
+**`.juno-app-shell` — `block-size: 100dvh` (`layout.css`).** The shell's whole
+job is to hold the dock against the bottom edge. Under `svh` the dock detaches
+from that edge the first time the user scrolls and stays detached, floating
+`lvh − svh` px up with page background beneath it — a visible defect on every
+subsequent frame, under the primary navigation. The `dvh` relayout it avoids is
+cheap here by construction: the shell is `overflow: hidden` and the scrolling
+lives in `.juno-app-shell__main`, so growing the shell grows the scroll port and
+moves the dock. **No text reflows** — no line breaking, no measured content, no
+intrinsic sizing is touched. One cheap relayout beats a permanent gap.
+
+**`.juno-drawer` — `block-size: 100dvh; max-block-size: 100dvh`
+(`drawer.css`), and the same for the `--bottom` sheet's `60dvh`/`92dvh` and the
+modal's `85dvh` cap.** Here the `dv*` instability **cannot bite at all**, and
+that is the whole argument. The drawer is a `<dialog>` opened with
+`showModal()`: it is in the top layer and the document beneath it is inert. iOS
+Safari retracts and expands chrome in response to _document_ scroll — an inner
+overflow scroller does not drive it — so chrome cannot change state for the
+drawer's whole lifetime. `dvh` therefore never churns, and `svh` cannot prevent
+an overflow that cannot happen. What `svh` _would_ still do is leave the gap:
+open the drawer after scrolling (the ordinary case — you scroll, then reach for
+the menu) and chrome is already retracted, so a `svh` drawer stops
+`lvh − svh` px short of the bottom of a screen it is supposed to fill. `svh`
+here is a pure loss.
+
+> **The exception, and it is the app's to own.** A `<dialog>` opened with the
+> `open` **attribute** instead of `showModal()` is _not_ in the top layer and
+> does **not** block page scroll. Behind such a drawer the page scrolls, chrome
+> retracts, and the churn is live. junoui's CSS cannot tell the two open paths
+> apart. The drawer is documented as `showModal()`
+> ([drawer.md](./components/drawer.md)); open it non-modally and the churn is yours.
+
+### The rule, for a component that does not exist yet
+
+Ask one question — **can browser chrome change state while this surface is on
+screen?** — and then:
+
+1. **It can, and the surface is anchored to the bottom edge** (or contains
+   something that is: a dock, a pillbar, a sticky footer) → **`dvh`**. You are
+   buying edge-adherence and paying one relayout per chrome transition.
+2. **It can, and the surface must not resize once laid out** — content whose
+   height JS measures, a canvas, an animation mid-flight, anything where a
+   late reflow is worse than a gap → **`svh`**. You are buying stability and
+   paying up to `lvh − svh` of dead space, permanently.
+3. **It cannot** — top-layer surfaces (`showModal()` dialogs, `popover`), where
+   the page beneath is inert → **`dvh`**, always. `svh` there buys nothing and
+   still pays the gap on any surface opened while chrome is retracted.
+4. **Never `vh` / `lvh` for a height that must fit.** `vh == lvh` sizes as if
+   chrome were retracted, so on a page where it is _not_, the box overflows by
+   exactly the chrome's height. That is the classic `100vh` bug and it is a
+   spec consequence, not a browser bug. The one legitimate `lvh` in this
+   codebase is the standalone unlock's spacer (`base.css`), which is _supposed_
+   to overflow.
+
+**In `display-mode: standalone` this whole decision is moot** — there is no
+retractable chrome, so `svh == dvh`. Measured on the device: `100dvh`,
+`100svh` and `100%` all resolve to 812 while `100lvh` and `100vh` resolve to
+874, which is the letterbox defect below, not a chrome transition.
+
+### A note on raw `vw`
+
+"Zero raw `vh`" is about **`vh`**. junoui does use raw `vw` in five places
+(`layout.css:18`, `pillbar.css:231`, `popover.css:33`, `toast.css:26`,
+`drawer.css:116`) and that is deliberate: horizontal chrome does not retract,
+so `vw`/`lvw`/`svw`/`dvw` are the same number and the `vh` trap has no
+horizontal twin. The real `vw` hazard is different — `100vw` includes the
+classic scrollbar gutter, so a full-bleed `100vw` box overflows a desktop page
+that has a scrollbar. Every call site above either caps well below `100vw`
+(`min(…, 240px)`, `min(360px, …)`, `85vw`, `clamp()`) or subtracts more than a
+scrollbar's width (`calc(100vw - var(--juno-space-24))`). Keep it that way; a
+bare `inline-size: 100vw` is a bug.
+
+## Home-Screen standalone: the letterbox, and why `base.css` unlocks it
+
+**The fact, and it is the most expensive thing this codebase has learned about
+iOS: in `display-mode: standalone`, iOS sizes the window from the document's
+RESTING scrollability at launch, and letterboxes a document that cannot scroll
+by exactly `env(safe-area-inset-top)`.**
+
+Measured, not inferred. iPhone 16 Pro (402×874 pt), iOS 18.7 / Safari 26.6:
+
+|                                                |         |
+| ---------------------------------------------- | ------- |
+| `screen.height`                                | **874** |
+| `window.innerHeight` · `visualViewport.height` | **812** |
+| `100dvh` · `100svh` · `100%`                   | **812** |
+| `100lvh` · `100vh`                             | **874** |
+| `env(safe-area-inset-top)`                     | **62**  |
+| `env(safe-area-inset-bottom)`                  | 34      |
+| `window.screenY`                               | 0       |
+
+`874 − 812 = 62 = env(safe-area-inset-top)`, exactly. WebKit sizes the
+standalone window as if a retractable toolbar existed, subtracts its height,
+pins the window to the **top**, and then never covers the strip it reserved — so
+the bottom 62 px of the display sits outside the web view and paints black on
+every screen. This is a spec violation on its face: in standalone there is no
+retractable browser UI, so the large and dynamic viewports **must** be equal
+(css-values-4 §6.1.2.1), and here they differ by 62.
+
+### It is the resting structure, and only the resting structure
+
+One install, four document structures, switched by a pill and **persisted across
+cold launches** (`localStorage`), verdict taken per launch:
+
+| document structure at rest                                                              | window                |
+| --------------------------------------------------------------------------------------- | --------------------- |
+| document scrolls normally                                                               | **874** — full screen |
+| fixed shell, an inner scroller, document cannot scroll                                  | 812 — letterboxed     |
+| fixed shell, nothing scrollable anywhere                                                | 812 — letterboxed     |
+| fixed shell **+ the document left scrollable behind it** by an invisible in-flow spacer | **874** — full screen |
+
+**Transient scrollability is not enough.** Seven in-page interventions across
+five controlled runs — with a placebo pinned to the first slot, rotation of the
+rest, and `prior`/`during`/`afterUndo` sampling — all measured 812. Every one of
+them varied scrollability for ~300 ms mid-session and undid itself. iOS samples
+the structure at launch; the axis that decides the window was never varied.
+
+Two device-proven negatives, recorded so nobody spends another round on them:
+
+- **`apple-mobile-web-app-status-bar-style` makes no difference.** `black` and
+  `black-translucent` were each tested with a fresh Home-Screen install. Both
+  letterbox identically.
+- **Nothing applied after first paint reaches it** — see the seven interventions
+  above. The window does correct itself to 874 spontaneously, between 6 seconds
+  and 43 minutes after navigation, and then holds for the life of that document;
+  a reload starts a new document, which starts letterboxed again.
+
+### What junoui does about it
+
+`base.css` carries the **iOS standalone letterbox unlock**: keep the document
+scrollable behind the app, using an invisible `body::after` spacer taller than
+the large viewport, so the document always overflows whatever window iOS grants.
+`overscroll-behavior: none` stops the ghost scroller rubber-banding; apps put
+`overscroll-behavior: contain` on their real scrollers so an inner fling never
+chains into it.
+
+The gate is three conditions, all required — `display-mode: standalone` (only
+installed apps letterbox), `pointer: coarse` (keeps macOS Dock apps out), and
+`@supports (-webkit-touch-callout: none)` (iOS/iPadOS WebKit only). Selectors
+carry `html:root` (specificity 0,1,2) deliberately: app resets commonly declare
+`body { overflow: hidden }` at (0,0,1) _after_ this sheet, and the unlock has to
+win the cascade without `!important`.
+
+Consumer obligations, both silent if missed:
+
+- **Ship the unlock at first parse.** iOS samples at launch, and a bundled
+  stylesheet arrives after it. An app whose shell paints before its CSS bundle
+  must inline a copy of the unlock in the document head — junoui's copy in
+  `juno.css` is too late on its own.
+- **Do not override `body::after`.** The spacer is `body::after`; a consumer
+  that needs that pseudo-element for itself must reproduce the spacer at the
+  same gate. None of junoui's own components use it.
+
+### How to know it is fixed upstream
+
+In standalone, `window.innerHeight === screen.height` **and
+`100lvh === 100dvh`**, for a document that **cannot** scroll — that is the case
+that still misbehaves. When that holds, the unlock is dead weight and can be
+removed. Until then it is harmless where it does not apply, because the gate
+excludes every non-iOS and non-installed context.
+
+- Sources: nexora `CLAUDE.md` §15, entry dated 2026-08-13; the four-mode testbed
+  `web/public/expansion-demo.html` (kept as a standing rig); 201 device readings
+  collected by `scripts/viewport_probe_collect.py`. Tracked upstream as ticket
+  20260812-006, drafted for WebKit Bugzilla / Feedback Assistant and awaiting
+  filing. Related Apple Developer Forums threads: 800798, 798014 (iOS 26
+  safe-area insets wrong until a background/resume — the "corrects itself later"
+  shape matches exactly), 797124.
 
 ## Typography
 
@@ -214,7 +404,11 @@ One confirmed change raises the stakes: as of iOS/iPadOS 26, **every website
 added to the Home Screen opens as a web app by default** — "there are now zero
 requirements for 'installability'". junoui's CSS may therefore run in a
 standalone context, where `viewport-fit` and `env()` govern home-indicator and
-Dynamic Island clearance, for sites that never opted in.
+Dynamic Island clearance, for sites that never opted in. The concrete
+consequence is measured above in
+[Home-Screen standalone: the letterbox](#home-screen-standalone-the-letterbox-and-why-basecss-unlocks-it) —
+a site that never asked to be a web app now inherits both the letterbox and the
+unlock.
 
 Unconfirmed leads, tracked in ticket 20260803-034: `vh` reportedly pinning to
 `window.outerHeight`; three new tab modes yielding different `innerHeight`; a

@@ -48,6 +48,28 @@ Two things depend on it, and both fail **silently**:
 
 Details and sources: [ios-conformance.md](./ios-conformance.md).
 
+## Browser support
+
+|                                             | Safari / iOS | Chrome / Edge | Firefox |
+| ------------------------------------------- | ------------ | ------------- | ------- |
+| **Supported floor** — everything works      | **17.5**     | 117           | 129     |
+| **Hard floor** — below this, overlays break | 17.0         | 114           | 125     |
+
+The hard floor is the Popover API. Below it, `.juno-menu`, `.juno-popover`, the
+top-layer tooltip and the pillbar's overflow slot cannot open; junoui hides them
+with an `@supports` guard so they are absent rather than invisible-and-blocking,
+and your app can branch on `CSS.supports('selector(:popover-open)')`. Between
+the two floors the only loss is entry animations (`@starting-style`). Anchored
+placement for those surfaces is a Safari 26 feature — below it they open at
+their static position, and the app can pin `inset` on the `toggle` event.
+
+The hard floor is what `package.json`'s `browserslist` declares. junoui runs no
+autoprefixer of its own; the field is there for your build tooling.
+
+**Every one of these failures is silent** — an engine drops CSS it does not
+understand without reporting anything. The full audit, per feature, with the
+degrade-vs-break verdict: [browser-support.md](./browser-support.md).
+
 ## The model
 
 - **Palette** — `standard` · `colorblind` · `soft`
