@@ -17,11 +17,31 @@ npm run test:visual # Playwright screenshot diff of every showcase page
 ### Visual regression
 
 `npm run test:visual` snapshots every showcase page (dark + light) and diffs against the
-committed baselines in `test/visual/__screenshots__/`. After an **intentional** visual
-change, re-record with `npm run test:visual:update` and commit the new PNGs. Baselines are
-OS-scoped (filename ends `-<platform>`), since font rendering differs per platform —
-generate them on the same OS you compare on. Run separate from `npm test` (needs the
-Playwright browser: `npx playwright install chromium`).
+committed baselines in `test/visual/__screenshots__/`. Run separate from `npm test` (needs
+the Playwright browser: `npx playwright install chromium`).
+
+**Two projects, and they must stay two.** `chromium` is a fine pointer with no touch;
+`chromium-coarse` sets `hasTouch` + `isMobile`, which is what makes `(pointer: coarse)`
+and `(hover: none)` match. Resizing a desktop context to a phone viewport changes the
+width and nothing else, so before the second project the entire touch layer — the 44px tap
+promotion, the 16px input font floor, the hover fallbacks — was never exercised (and one of
+the three turned out to be broken). Each project owns its own spec file, because the
+snapshot path keys on the name, not the project; `tap-targets.spec.mjs` runs under both and
+asserts the promotion as **numbers**, not pixels.
+
+**The pixel budget is zero.** Not a style preference: a 1% ratio budget on a full-page shot
+was a ~29,700-px licence to change anything, and measurably hid a whole-component restyle
+(6,291 px) and a system-wide button-radius change (worst case 66 px). With the record env
+equal to the check env the honest diff is 0. If a case ever needs slack, give it to that
+case, not to the global.
+
+**Record Linux baselines on CI, never locally.** A Linux dev box is not a valid check env —
+different freetype, hundreds of pixels of text-rendering drift, and at a zero budget that is
+loud. After an **intentional** visual change:
+`gh workflow run visual-baselines.yml --ref <branch>`, then download the `linux-baselines`
+artifact and commit the PNGs. macOS baselines (`-darwin`) are still recorded locally with
+`npm run test:visual:update`. To iterate locally, record a throwaway local set first and
+diff against that.
 
 ## Project layout
 

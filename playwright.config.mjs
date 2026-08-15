@@ -14,6 +14,7 @@
 // ════════════════════════════════════════════════════════════════════════
 
 import { defineConfig, devices } from '@playwright/test';
+import { PHONE_VIEWPORT } from './test/visual/helpers.mjs';
 
 export default defineConfig({
   testDir: './test/visual',
@@ -73,7 +74,47 @@ export default defineConfig({
     viewport: { width: 1280, height: 900 },
     deviceScaleFactor: 1,
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  // ── Two projects, on purpose: the point is that they DIFFER. ─────────────
+  //
+  // `chromium` is a fine pointer with no touch. Its "phone" cases resize the
+  // viewport to 390x844, which changes the width and nothing else —
+  // `(pointer: coarse)` never matched, so the whole touch layer (the 44px tap
+  // promotion, the 16px input font floor, the hover:none fallbacks) was
+  // outside coverage. See 20260815-006.
+  //
+  // `chromium-coarse` supplies hasTouch + isMobile, which is what makes
+  // `(pointer: coarse)` and `(hover: none)` match in Chromium. It is an
+  // explicit context rather than a `devices[...]` phone descriptor for two
+  // reasons: the iPhone descriptors are WebKit-based (defaultBrowserType
+  // 'webkit', a second browser to install), and every phone descriptor carries
+  // a deviceScaleFactor of 2-3, which would make its baselines 4-9x the bytes
+  // and incomparable with the fine-pointer shot at the same viewport. Holding
+  // engine, viewport and scale factor fixed leaves pointer type as the only
+  // variable between the two projects.
+  //
+  // testIgnore splits the snapshot-taking specs between them because
+  // snapshotPathTemplate keys on {arg}+{platform} only: two projects shooting
+  // the same snapshot name would fight over one baseline file. tap-targets
+  // .spec.mjs is in neither ignore list — it takes no screenshots and asserts
+  // the per-project numbers.
+  projects: [
+    {
+      name: 'chromium',
+      testIgnore: /coarse\.spec\.mjs$/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'chromium-coarse',
+      testIgnore: /showcase\.spec\.mjs$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: PHONE_VIEWPORT,
+        deviceScaleFactor: 1,
+        hasTouch: true,
+        isMobile: true,
+      },
+    },
+  ],
   webServer: {
     command: 'npm run showcase',
     url: 'http://localhost:8137/showcase/index.html',
