@@ -267,17 +267,11 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   :root { --juno-border: var(--juno-border-strong); }
 }
 
-/* Windows High Contrast / forced-colors: opt into the system palette so
-   borders and focus stay visible when our colors are overridden. */
-@media (forced-colors: active) {
-  *:focus-visible { outline-color: Highlight; }
-
-  .juno-badge,
-  .juno-btn,
-  .juno-card,
-  .juno-readout { border: 1px solid CanvasText; }
-  .juno-badge { forced-color-adjust: none; } /* keep status fill meaningful */
-}
+/* Windows High Contrast / forced-colors: the opt-in lives in
+   overrides.css, NOT here. A media query adds no specificity, and this file is
+   bundled BEFORE components/, so `.juno-btn { border: … }` in button.css beat
+   the forced-colors border every time — same 0,1,0 selector, later in the
+   bundle. See src/css/overrides.css and ticket 20260815-029. */
 
 /* ── iOS standalone letterbox unlock ─────────────────────────────────────────
    iOS WebKit (observed through 26.6, iPhone 16 Pro, iOS 18.7) sizes a

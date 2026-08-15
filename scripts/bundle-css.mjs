@@ -51,6 +51,13 @@ for (const f of readdirSync(compDir)
 // the cascade to the component's own default.
 parts.push(read(join(SRC, 'utilities.css')));
 
+// Overrides ABSOLUTELY last: cross-cutting @media/@supports gates whose job is
+// to beat a component default. A gate adds no specificity, so a gate written
+// earlier in the bundle loses to the component on source order alone — and
+// loses silently. Four shipped instances of that are catalogued in
+// src/css/overrides.css; test/build.test.mjs asserts there are none left.
+parts.push(read(join(SRC, 'overrides.css')));
+
 let body = parts.join('\n\n');
 
 // CSS requires every @import to precede all style rules. Hoist them to the
