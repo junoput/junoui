@@ -166,6 +166,9 @@ declarations in `@supports` costs bytes and buys nothing.
 
 ## Related
 
+- [ios-pwa.md](./ios-pwa.md) — the five-minute version for a consumer about to
+  integrate: what these floors buy you, what you must ship yourself, and what
+  junoui does not do at all.
 - [ios-conformance.md](./ios-conformance.md) — iOS metrics and behaviour: safe
   areas, tap targets, the viewport-unit decision, and the Home-Screen standalone
   letterbox.

@@ -80,6 +80,10 @@ autoprefixer of its own; the field is there for your build tooling.
 understand without reporting anything. The full audit, per feature, with the
 degrade-vs-break verdict: [browser-support.md](./browser-support.md).
 
+Shipping to a phone or a Home Screen? [ios-pwa.md](./ios-pwa.md) is the
+five-minute version — what junoui gives you, the eight things you must supply,
+and what it does not do at all.
+
 ## The model
 
 - **Palette** — `standard` · `colorblind` · `soft`

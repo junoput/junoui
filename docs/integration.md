@@ -1,6 +1,6 @@
 # Integrating junoui into an app
 
-junoui is **presentational**: tokens + a CSS component layer, zero JS. It dresses a UI
+junoui is **presentational**: tokens + a CSS component layer, no behavioural JS. It dresses a UI
 your app builds. This is the recipe for consuming it cleanly — and the rules for
 extending it without breaking the "one design across all apps" goal.
 
@@ -89,7 +89,13 @@ into junoui, the single-design guarantee dies.
 
 ## 7. Stateful behavior stays in your app
 
-junoui ships no JS. Focus traps, list virtualization, popover positioning, data — all
-yours (or a future sibling `junoui-<framework>` package). junoui gives you the stable,
-semantic DOM (real elements, BEM classes, ARIA hooks) to wire behavior + analytics onto;
-see [accessibility.md](./accessibility.md) for the per-component ARIA contract.
+junoui ships no behavioural JS. Focus traps, scroll locking, gesture handling, list
+virtualization, runtime popover positioning, data — all yours (or a future sibling
+`junoui-<framework>` package). junoui gives you the stable, semantic DOM (real elements,
+BEM classes, ARIA hooks) to wire behavior + analytics onto; see
+[accessibility.md](./accessibility.md) for the per-component ARIA contract.
+
+The only JS in the package is the two icon-sprite helpers, `icons/inline` and
+`icons/install` — see [icon-subsetting.md](./icon-subsetting.md). The full
+does-not-do list for phones and Home-Screen web apps is in
+[ios-pwa.md](./ios-pwa.md).

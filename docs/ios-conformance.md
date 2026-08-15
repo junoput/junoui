@@ -9,7 +9,10 @@ value into a wrong one later.
 
 This page is about **metrics and behaviour** on iOS. For _which iOS versions
 junoui runs on at all_ — the supported floor, what degrades below it, and what
-breaks — see [browser-support.md](./browser-support.md).
+breaks — see [browser-support.md](./browser-support.md). If you are about to
+integrate and want the bounded version first — what is free, what you supply,
+what junoui does not do — start at [ios-pwa.md](./ios-pwa.md) and come back
+here for the derivations.
 
 > **Verifying anything here.** Apple's HIG is a JavaScript app: a plain `curl`
 > returns an empty shell. Check the backing DocC JSON instead —
