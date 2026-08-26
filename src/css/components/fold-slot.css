@@ -12,17 +12,44 @@
  *  gap, the folded slot still occupies one gap — name it in
  *  --juno-fold-gap and the fold swallows it with a negative margin.
  *
+ *  COMPOSITION. The canonical use puts .juno-fold on an element that is
+ *  already a component — a .juno-pillbar__item, a .juno-btn, a .juno-chip
+ *  — because that is where the capsule chrome (tap floor, padding, hover,
+ *  focus ring, aria-pressed) lives. Two things follow, and both are
+ *  load-bearing rather than defensive:
+ *
+ *  1. The fold's own declarations are stated at ATTRIBUTE specificity
+ *     (0,2,0), on both branches of data-juno-in, i.e. always. A component
+ *     class is (0,1,0), and `transition` is a SHORTHAND: a later rule does
+ *     not add to the list, it replaces it. Measured in Chromium against the
+ *     built bundle, before this was raised: on a
+ *     .juno-fold.juno-pillbar__item, transition-property resolved to
+ *     `color, background-color` — pillbar.css sorts after this file, so the
+ *     fold had no transition at all and jumped shut instead of folding.
+ *     inline-size and overflow would lose the same way to a component that
+ *     sets either.
+ *
+ *  2. Owning `transition` means owning ALL of it, so the capsule chrome
+ *     properties are in the fold's list too, at the quick duration the
+ *     components themselves use. Dropping them would trade a broken fold
+ *     for a broken hover.
+ *
+ *  Which floors the fold RELEASES when folded — see the folded rule below:
+ *  min-inline-size, padding-inline, border-inline-width. Those are exactly
+ *  the three inputs that can hold a border-box inline size above zero.
+ *
  *  Canonical use: a transient action in a toolbar/pill row (a
  *  scroll-to-top arrow, a contextual button) whose arrival should slide
  *  the row open rather than jump it.
  *  Usage:
  *    <div style="display:flex; gap:4px">                  (any row)
- *      <button class="juno-fold" data-juno-in aria-label="Scroll to top">…</button>
+ *      <button class="juno-fold juno-pillbar__item" data-juno-in aria-label="Scroll to top">…</button>
  *      …other members…
  *    </div>
  *  prefers-reduced-motion needs nothing component-local — the base
  *  layer zeroes every transition duration. */
-.juno-fold {
+.juno-fold[data-juno-in],
+.juno-fold:not([data-juno-in]) {
   --juno-fold-size: var(--juno-size-tap-comfortable);
   --juno-fold-gap: 0px;
 
@@ -31,13 +58,32 @@
   overflow: hidden;
   transition:
     inline-size var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    min-inline-size var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    padding var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    border-width var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
     margin var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
     opacity var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
-    visibility var(--juno-motion-duration-base) var(--juno-motion-ease-standard);
+    visibility var(--juno-motion-duration-base) var(--juno-motion-ease-standard),
+    color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard),
+    background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
 }
 
+/* Folded away. A min-* floor clamps the USED value whichever rule won the
+   cascade, and a border-box inline size can never resolve below its own
+   padding plus border — so a composed capsule holds the slot open however
+   hard the fold pushes. Measured against the built bundle, composed with
+   .juno-pillbar__item at a 390px viewport: 44px with both floors in place
+   (the tap target), 20px with min-inline-size released (the padding alone),
+   0px with all of them released.
+   min-inline-size is in the transition list above for the OPENING half:
+   released to 0 it would otherwise snap back to the capsule's tap floor the
+   instant data-juno-in returns, and the used width — max(inline-size,
+   min-inline-size) — would jump to full width with nothing to animate. */
 .juno-fold:not([data-juno-in]) {
   inline-size: 0;
+  min-inline-size: 0;
+  padding-inline: 0;
+  border-inline-width: 0;
   margin-inline-end: calc(-1 * var(--juno-fold-gap));
   opacity: 0;
   visibility: hidden;
