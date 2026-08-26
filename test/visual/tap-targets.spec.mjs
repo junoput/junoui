@@ -89,6 +89,27 @@ test.describe('tap targets', () => {
     expect(await boxHeight(item)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
   });
 
+  test('.juno-seg__opt holds the tap minimum', async ({ page: pw }, info) => {
+    const want = EXPECT[info.project.name];
+    // segmented lives on the forms page, not the index the other cases use
+    await pw.addInitScript(() => {
+      localStorage.setItem('juno:mode', 'dark');
+      localStorage.setItem('juno:density', 'comfortable');
+      localStorage.setItem('juno:text', 'base');
+    });
+    await pw.goto('/showcase/forms.html', { waitUntil: 'networkidle' });
+    await pw.evaluate(() => document.fonts.ready);
+    // the PAINTED box, not the label that wraps it: the label is a bare
+    // inline-flex and takes its height from this span (20260826-025)
+    const pill = pw.locator('.juno-seg__opt input + span').first();
+    expect(await pill.evaluate((el) => getComputedStyle(el).minBlockSize)).toBe(want.tapMin);
+    expect(await boxHeight(pill)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
+    // and the label really did follow it — a floor on a box nobody taps is not
+    // a tap target
+    const label = pw.locator('.juno-seg__opt').first();
+    expect(await boxHeight(label)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
+  });
+
   test('.juno-input holds the tap minimum and the 16px font floor', async ({ page: pw }, info) => {
     const want = EXPECT[info.project.name];
     await open(pw);

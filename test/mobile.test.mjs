@@ -102,3 +102,56 @@ test('every pill dock item in the showcase carries an accessible name', () => {
     .filter((tag) => !/aria-label\s*=\s*["'][^"']+["']/.test(tag));
   assert.deepEqual(unnamed, [], `pill dock item without aria-label:\n${unnamed.join('\n')}`);
 });
+
+test('every component named in a touch-default list is a class that exists', () => {
+  // base.css carries two `:where(...)` lists of junoui's own tappable
+  // components — one dropping double-tap-to-zoom recognition, one killing the
+  // UA tap-highlight square under (pointer: coarse). A member spelled wrong is
+  // SILENT: `:where()` matches nothing, the rule still parses, every other
+  // member keeps working, and the component just never gets the default.
+  //
+  // That is not hypothetical. `.juno-seg__option` sat in the touch-action list
+  // while the shipped class has always been `.juno-seg__opt`, so every
+  // segmented control in every consumer kept the ~300ms double-tap delay
+  // (20260826-024). One character, one occurrence, invisible to lint, to the
+  // build, and to a screenshot.
+  const base = stripComments(readFileSync('src/css/base.css', 'utf8'));
+  const defined = new Set();
+  for (const f of components()) {
+    for (const m of stripComments(readFileSync(f, 'utf8')).matchAll(/\.(juno-[\w-]+)/g)) {
+      defined.add(m[1]);
+    }
+  }
+
+  const lists = [...base.matchAll(/:where\(([^)]*)\)/g)].map((m) => m[1]);
+  assert.ok(lists.length >= 2, 'base.css should carry the touch-default :where() lists');
+
+  const offenders = [];
+  for (const list of lists) {
+    for (const m of list.matchAll(/\.(juno-[\w-]+)/g)) {
+      if (!defined.has(m[1])) offenders.push(`.${m[1]}`);
+    }
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `named in a :where() list but defined by no component: ${offenders}`,
+  );
+});
+
+test('the segmented pill holds a tap floor like every other control', () => {
+  // The only interactive primitive that had none: it computed ~25px from its
+  // padding, which meets WCAG 2.2 AA (2.5.8, 24px) by accident and misses the
+  // 44px comfortable target on touch entirely. The floor goes on the painted
+  // box — `input + span` / `button.juno-seg__opt` — because the label that
+  // wraps it is a bare inline-flex taking its height from that box.
+  const css = readFileSync(`${COMPONENT_DIR}/segmented.css`, 'utf8');
+  const pill = ruleBlock(css, '.juno-seg__opt input + span,\nbutton.juno-seg__opt');
+  assert.equal(decl(pill, 'min-block-size'), 'var(--juno-size-tap-min)');
+
+  // ...and --sm does not take it away. Unlike .juno-btn--sm, whose whole
+  // documented purpose is a sub-tap desktop control, a segmented row is often
+  // the only control on a settings section (20260826-025).
+  const sm = stripComments(css).slice(stripComments(css).indexOf('.juno-seg--sm'));
+  assert.ok(!/min-block-size|min-height/.test(sm), '--sm must not restate or drop the tap floor');
+});

@@ -38,11 +38,20 @@
   opacity: 0;
 }
 
-/* the pill — a span after the radio, or the aria-pressed button itself */
+/* the pill — a span after the radio, or the aria-pressed button itself.
+   The tap floor is on the PAINTED box, not on the label that wraps it: the
+   label is a bare inline-flex and takes its height from this. Segmented is a
+   phone-first control and is routinely the only control on a whole settings
+   section, so it holds --juno-size-tap-min like .juno-btn does — 24px (WCAG
+   2.2 AA, 2.5.8) on a fine pointer, promoted to the 44px comfortable target
+   under (pointer: coarse) by base.css. Without it the pill computed ~25px
+   from its padding alone, which is the AA floor by accident and nothing on
+   touch. See 20260826-025. */
 .juno-seg__opt input + span,
 button.juno-seg__opt {
   display: inline-flex;
   align-items: center;
+  min-block-size: var(--juno-size-tap-min);
   gap: var(--juno-gap-control);
   font-family: var(--juno-font-family-sans);
   font-size: var(--juno-font-size-11);
@@ -90,7 +99,11 @@ button.juno-seg__opt:disabled {
   cursor: not-allowed;
 }
 
-/* Small — matches .juno-btn--sm; for dense toolbars */
+/* Small — dense toolbars: less type, tighter padding. UNLIKE .juno-btn--sm it
+   does NOT drop below the tap floor, which the base rule above holds: --sm is a
+   density modifier here, not an opt-out of the touch target. A segmented row is
+   often the only control on a settings section, so a sub-tap variant of it has
+   no safe use on a phone. */
 .juno-seg--sm .juno-seg__opt input + span,
 .juno-seg--sm > button.juno-seg__opt {
   font-size: var(--juno-font-size-10);
