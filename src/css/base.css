@@ -47,6 +47,7 @@
     var(--juno-size-tap-comfortable) + 4 * var(--juno-space-4) + 2 * var(--juno-border-width-1)
   );
   --juno-dock-clearance-scale: 1;
+
   /* The bar's own offset from the bottom edge — declared ONCE and consumed by
      both the bar's margin (dock.css) and the clearance below, so the two cannot
      disagree about where the bar sits.
@@ -62,6 +63,7 @@
      24px at inset 34 (20260815-055), and no single --juno-dock-h could
      reconcile them because one side added the inset and the other maxed it. */
   --juno-dock-edge-offset: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
+
   /* Gap between the bar's top edge and the last row of content. Zero is a
      legitimate setting: a translucent bar that content is MEANT to scroll under
      wants overlap, not breathing room. */
@@ -70,6 +72,7 @@
     var(--juno-dock-h) * var(--juno-dock-clearance-scale) + var(--juno-dock-edge-offset) +
       var(--juno-dock-clearance-breathing)
   );
+
   /* The pillbar is the same shape one size down: no bubble, so its height is
      the tap target plus its own padding and border. */
   --juno-pillbar-h: calc(
@@ -79,6 +82,7 @@
     var(--juno-pillbar-h) * var(--juno-dock-clearance-scale) + var(--juno-dock-edge-offset) +
       var(--juno-dock-clearance-breathing)
   );
+
   /* JS-readable motion contract. CSS-only `prefers-reduced-motion` never reaches
      imperative JS (scrollTo/scrollIntoView smooth behavior, rAF-driven transforms,
      an "animate or not" branch) — so the preference is also exposed as a custom
