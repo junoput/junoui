@@ -187,6 +187,40 @@ over scroll-event discretization — anything longer visibly lags the finger.
   plus the pill's padding and border), `--juno-dock-edge-gap` (what the
   floating margins take from `100%` — default `2 × space.12`).
 
+## How many items fit
+
+`.juno-dock__item` is `flex: 1 1 0`, so the bar divides its inner width by
+however many items are present. A consumer deciding **how many to render** — and
+whether they still hold a tap target — reads that budget from junoui rather than
+re-deriving it from the numbers in `dock.css`:
+
+| Custom property             | What it is                                                                                                            |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `--juno-dock-items`         | The item budget. **You set it** to what you render; junoui does not enforce it, it derives from it.                   |
+| `--juno-dock-item-inline`   | The width one item gets. A prediction of what the flex layout produces — asserted against the measured box in CI.     |
+| `--juno-dock-fit-inline`    | The narrowest viewport at which every item still holds `--juno-size-tap-comfortable`. Below it, drop an item.         |
+| `--juno-dock-chrome-inline` | The bar's total inline chrome (margin + padding + border, both sides). `0` on the full-bleed bar, `34px` on the pill. |
+| `--juno-dock-avail`         | The width the budget divides. Defaults to `100vw`; override it when the bar is not viewport-wide.                     |
+
+```css
+/* five destinations need 254px; below that, render four */
+@media (max-width: 253px) {
+  .my-dock__item--secondary {
+    display: none;
+  }
+}
+```
+
+The margin, padding and border terms are declared **once** and consumed by both
+the variant's own box and the sum above, so the budget cannot disagree with the
+bar it describes — the same construction as `--juno-dock-edge-offset`.
+
+**There is deliberately no scale floor.** "What scale keeps a 44px target?" is
+`44px / --juno-dock-item-inline`, a ratio of two lengths, and CSS cannot divide
+by a length. A consumer that must scale rather than drop compares those two
+values itself. Prefer dropping an item: scaling a bar scales its hit areas with
+it, which is the problem the floor was being computed to avoid.
+
 ## Anatomy (any platform)
 
 - Full-width bar on `s1`, hairline seam on the block-start edge; items split the

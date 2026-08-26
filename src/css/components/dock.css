@@ -29,6 +29,55 @@
      media query. */
   --juno-dock-scale: 1;
 
+  /* ── Horizontal budget contract ──────────────────────────────────────
+     Published so a consumer's capacity planner ("how many items fit, and
+     do they still hold a tap target?") reads junoui's real geometry
+     instead of re-deriving it from the numbers in this file. Two
+     consumers had derived it by hand, twice, in prose — and both had
+     drifted: they subtracted 12px of inline padding where the pill
+     actually spends 8, so their per-item width came out ~0.8px low at
+     every viewport (20260826-027).
+
+     --juno-dock-items      the item budget. junoui does not enforce it —
+                            __item is `flex: 1 1 0`, so the layout divides
+                            by however many items are present — it is the
+                            number the DERIVATIONS below are about, and the
+                            consumer sets it to what it renders.
+     --juno-dock-item-inline  the width one item gets. A prediction of what
+                            the flex layout produces, not an input to it;
+                            asserted against the measured box in the test
+                            suite so it cannot drift from the layout.
+     --juno-dock-fit-inline  the narrowest viewport at which every item
+                            still holds --juno-size-tap-comfortable. Use it
+                            in a media query and DROP an item; that is the
+                            answer junoui can give exactly.
+
+     A SCALE floor (44px / the item's width) is deliberately not published:
+     it is a ratio of two lengths, and CSS cannot divide by a length. A
+     consumer that must scale rather than drop compares
+     --juno-dock-item-inline against --juno-size-tap-comfortable itself.
+
+     The three inline terms are declared ONCE here and consumed by both the
+     variants' own margin/padding/border and the sums below, so the budget
+     cannot disagree with the bar it describes — the same reason
+     --juno-dock-edge-offset exists (20260815-055). The base bar is
+     full-bleed with a top-edge border only, so all three are zero; --pill
+     and --float set them. */
+  --juno-dock-items: 5;
+  --juno-dock-margin-inline: 0px;
+  --juno-dock-pad-inline: 0px;
+  --juno-dock-border-inline: 0px;
+  --juno-dock-chrome-inline: calc(
+    2 * (var(--juno-dock-margin-inline) + var(--juno-dock-pad-inline) + var(--juno-dock-border-inline))
+  );
+  --juno-dock-avail: 100vw;
+  --juno-dock-item-inline: calc(
+    (var(--juno-dock-avail) - var(--juno-dock-chrome-inline)) / var(--juno-dock-items)
+  );
+  --juno-dock-fit-inline: calc(
+    var(--juno-dock-items) * var(--juno-size-tap-comfortable) + var(--juno-dock-chrome-inline)
+  );
+
   position: sticky;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
@@ -123,16 +172,21 @@
 .juno-dock--pill {
   --juno-role: var(--juno-active);
 
+  /* the three inline terms the budget contract sums — see .juno-dock */
+  --juno-dock-margin-inline: var(--juno-space-12);
+  --juno-dock-pad-inline: var(--juno-space-4);
+  --juno-dock-border-inline: var(--juno-border-width-1);
+
   position: fixed;
   inset-inline: 0;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
-  margin: 0 var(--juno-space-12) var(--juno-dock-edge-offset);
-  padding: var(--juno-space-4);
+  margin: 0 var(--juno-dock-margin-inline) var(--juno-dock-edge-offset);
+  padding: var(--juno-dock-pad-inline);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border: var(--juno-border-width-1) solid var(--juno-border);
+  border: var(--juno-dock-border-inline) solid var(--juno-border);
   border-radius: 999px;
   box-shadow: var(--juno-shadow-2);
 }
@@ -226,17 +280,22 @@
    Out of flow (fixed) so the page scrolls UNDER it — reserve room on the
    scroller with padding-block-end: var(--juno-dock-clearance). */
 .juno-dock--float {
+  /* the three inline terms the budget contract sums — see .juno-dock */
+  --juno-dock-margin-inline: var(--juno-space-12);
+  --juno-dock-pad-inline: var(--juno-space-4);
+  --juno-dock-border-inline: var(--juno-border-width-1);
+
   position: fixed;
   inset-inline: 0;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
-  margin: 0 var(--juno-space-12) var(--juno-dock-edge-offset);
-  padding: var(--juno-space-4);
+  margin: 0 var(--juno-dock-margin-inline) var(--juno-dock-edge-offset);
+  padding: var(--juno-dock-pad-inline);
   overflow: hidden;
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border: var(--juno-border-width-1) solid var(--juno-border);
+  border: var(--juno-dock-border-inline) solid var(--juno-border);
   border-radius: 999px;
   box-shadow: var(--juno-shadow-2);
 }
