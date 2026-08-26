@@ -197,7 +197,7 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
     .juno-dock__item,
     .juno-pillbar__item,
     .juno-tabs__tab,
-    .juno-list__item,
+    .juno-list__row,
     .juno-menu__item
   ) {
     -webkit-tap-highlight-color: transparent;
@@ -222,9 +222,9 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   .juno-pillbar__item,
   .juno-pillbar__overflow,
   .juno-tabs__tab,
-  .juno-list__item,
+  .juno-list__row,
   .juno-menu__item,
-  .juno-seg__option,
+  .juno-seg__opt,
   .juno-chip,
   .juno-toggle-btn
 ) {
