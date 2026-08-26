@@ -108,7 +108,7 @@ test.describe('tap targets', () => {
     // Something in the demo page already holds the height, so a showcase-based
     // assertion here passes whether junoui promotes or not — it was written
     // that way first and mutation testing is the only reason that is known.
-    // Filed as 20260826-028. The cases above stay on the showcase because
+    // Filed as 20260826-030. The cases above stay on the showcase because
     // their controls are 44px either way, so nothing masks them.
     await pw.setContent(
       `<meta name="viewport" content="width=device-width,initial-scale=1"><style>${bundle}</style>

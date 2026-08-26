@@ -69,8 +69,17 @@
    --dense is the opt-out, and it is deliberately only meaningful ON --sm:
    a dense touch toolbar is a real thing (a media scrubber, an editor rail),
    but it is a decision someone has to make by name rather than inherit from a
-   size. `:not()` and the pairing are both (0,2,0) and mutually exclusive, so
-   they never race. */
+   size.
+
+   The two rules below are REDUNDANT ON PURPOSE, and mutation testing is how
+   that became a decision rather than an accident: deleting either one leaves
+   --dense at 24px. The `:not()` excludes a dense button from the promotion, so
+   the pairing below it is dead weight — until the `:not()` names the wrong
+   class, at which point the pairing (also (0,2,0), and later in the file) is
+   the only thing holding the opt-out. Each covers the other's failure, so a
+   single edit to either cannot silently promote a --dense button. Both
+   selectors are (0,2,0) and mutually exclusive in the correct state, so they
+   never race. */
 @media (pointer: coarse) {
   .juno-btn--sm:not(.juno-btn--dense) {
     min-height: var(--juno-size-tap-min);
