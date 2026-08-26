@@ -15,6 +15,14 @@
 //   - .juno-input gets `font-size: max(16px, …)`, the floor that stops iOS
 //     Safari zooming the page onto a focused field.
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const bundle = readFileSync(
+  join(dirname(dirname(dirname(fileURLToPath(import.meta.url)))), 'dist/css/juno.css'),
+  'utf8',
+);
 
 // Per-project expectations. Absolute values, not "bigger than before": the
 // point is to pin the contract, and 24 / 44 are the token values themselves
@@ -93,36 +101,51 @@ test.describe('tap targets', () => {
     page: pw,
   }, info) => {
     const want = EXPECT[info.project.name];
-    await pw.addInitScript(() => {
-      localStorage.setItem('juno:mode', 'dark');
-      localStorage.setItem('juno:density', 'comfortable');
-      localStorage.setItem('juno:text', 'base');
-    });
-    await pw.goto('/showcase/buttons.html', { waitUntil: 'networkidle' });
-    await pw.evaluate(() => document.fonts.ready);
+    // Against the BUILT BUNDLE, not the showcase, and that is not a style
+    // preference. Measured 2026-08-26 with the coarse promotion deleted from
+    // button.css: the same markup under the same emulation reports 24px off
+    // the bundle (the defect, correctly) and 44px off /showcase/buttons.html.
+    // Something in the demo page already holds the height, so a showcase-based
+    // assertion here passes whether junoui promotes or not — it was written
+    // that way first and mutation testing is the only reason that is known.
+    // Filed as 20260826-028. The cases above stay on the showcase because
+    // their controls are 44px either way, so nothing masks them.
+    await pw.setContent(
+      `<meta name="viewport" content="width=device-width,initial-scale=1"><style>${bundle}</style>
+       <button class="juno-btn juno-btn--sm juno-btn--ghost" id="sm">EDIT</button>
+       <button class="juno-btn juno-btn--sm juno-btn--dense juno-btn--ghost" id="dense">TRIM</button>
+       <button class="juno-btn" id="base">SAVE</button>`,
+    );
+    const read = (id) =>
+      pw.evaluate((i) => {
+        const el = document.getElementById(i);
+        const cs = getComputedStyle(el);
+        return {
+          minHeight: cs.minHeight,
+          box: Math.round(el.getBoundingClientRect().height),
+          fontSize: parseFloat(cs.fontSize),
+          padInline: parseFloat(cs.paddingLeft),
+        };
+      }, id);
 
     // --sm is a DENSITY, not a tap-target decision: 24px on a fine pointer
     // (WCAG 2.2 AA 2.5.8 exactly), the comfortable target on a coarse one.
-    // `:visible` because the showcase shell carries phone chrome that is
-    // display:none at this viewport — a hidden node has computed style but no
-    // box, and boundingBox() returns null rather than a short target.
-    const sm = pw.locator('.juno-btn--sm:not(.juno-btn--dense):visible').first();
-    expect(await sm.evaluate((el) => getComputedStyle(el).minHeight)).toBe(want.tapMin);
-    expect(await boxHeight(sm)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
+    const sm = await read('sm');
+    expect(sm.minHeight).toBe(want.tapMin);
+    expect(sm.box).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
 
-    // ...and the type and padding still shrink, or --sm stopped being --sm
-    const base = pw.locator('.juno-btn:not(.juno-btn--sm):visible').first();
-    const px = (loc, prop) => loc.evaluate((el, p) => parseFloat(getComputedStyle(el)[p]), prop);
-    expect(await px(sm, 'fontSize')).toBeLessThan(await px(base, 'fontSize'));
-    expect(await px(sm, 'paddingLeft')).toBeLessThan(await px(base, 'paddingLeft'));
+    // ...and type and padding still shrink, or --sm stopped being --sm
+    const base = await read('base');
+    expect(sm.fontSize).toBeLessThan(base.fontSize);
+    expect(sm.padInline).toBeLessThan(base.padInline);
 
-    // --dense keeps 24px on BOTH pointer types — the opt-out is the whole
-    // point, so a project where it silently agreed with --sm proves nothing
-    const dense = pw.locator('.juno-btn--sm.juno-btn--dense:visible').first();
-    expect(await dense.evaluate((el) => getComputedStyle(el).minHeight)).toBe('24px');
-    if (want.coarse) {
-      expect(await dense.evaluate((el) => getComputedStyle(el).minHeight)).not.toBe(want.tapMin);
-    }
+    // --dense opts back out, on both pointer types. Asserting it on the fine
+    // project too is what proves the opt-out is a real branch rather than a
+    // class that happens to agree with --sm wherever it was checked.
+    const dense = await read('dense');
+    expect(dense.minHeight).toBe('24px');
+    expect(dense.box).toBe(24);
+    if (want.coarse) expect(dense.minHeight).not.toBe(want.tapMin);
   });
 
   test('.juno-seg__opt holds the tap minimum', async ({ page: pw }, info) => {
