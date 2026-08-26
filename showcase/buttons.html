@@ -97,7 +97,7 @@
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">04</span>
-        <span class="juno-eyebrow">Small — dense desktop toolbars (.juno-btn--sm)</span>
+        <span class="juno-eyebrow">Small — dense toolbars (.juno-btn--sm, promotes to the tap target on touch)</span>
       </div>
       <article class="juno-card"><div class="juno-card__body" style="gap:20px;">
         <div class="demo-row">
@@ -107,6 +107,11 @@
           <button class="juno-btn juno-btn--sm juno-btn--ghost">EDIT</button>
           <button class="juno-btn juno-btn--sm juno-btn--ghost">EXPORT</button>
           <button class="juno-btn juno-btn--sm juno-btn--ghost" disabled>CLEAR ✕</button>
+        </div>
+        <div class="demo-row">
+          <span class="juno-eyebrow" style="margin-inline-end:auto;">--dense: keeps 24px on touch too</span>
+          <button class="juno-btn juno-btn--sm juno-btn--dense juno-btn--ghost">TRIM</button>
+          <button class="juno-btn juno-btn--sm juno-btn--dense juno-btn--ghost">SPLIT</button>
         </div>
         <div class="demo-row" style="background:var(--juno-s1);border:1px solid var(--juno-border);border-radius:var(--juno-radius-3);padding:6px 12px;">
           <span class="juno-eyebrow" style="margin-inline-end:auto;">46px toolbar</span>

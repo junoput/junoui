@@ -40,14 +40,45 @@
 .juno-btn--ghost:hover { background: var(--juno-s2); filter: none; }
 
 /* Small — for dense desktop toolbars (40–46px bars) where the default
-   control would not fit. Deliberately under the WCAG tap-min target:
-   keep the default size for touch surfaces. Combines with --ghost + roles. */
+   control would not fit. Combines with --ghost + roles.
+   On a FINE pointer this is 24px: the WCAG 2.2 AA floor (2.5.8) exactly, and
+   no more. On a coarse pointer it promotes to the comfortable target — see
+   below. */
 .juno-btn--sm {
   min-height: var(--juno-space-24);
   font-size: var(--juno-font-size-11);
   letter-spacing: var(--juno-font-tracking-wide);
   padding: var(--juno-space-4) var(--juno-space-10);
   border-radius: var(--juno-radius-3);
+}
+
+/* --sm names a DENSITY, and consumers reach for it as a SEMANTIC. Audited
+   across one app: 40 call sites, nearly all of them `--sm --ghost` meaning
+   "secondary", shipping a 24px target on a phone — and junoui's own showcase
+   does it twice in a navbar action slot. A size modifier should not quietly
+   become a tap-target decision, so on touch it holds the same floor every
+   other control does. Type and padding still shrink: --sm stays a density
+   modifier, it just stops being a touch-target one (20260826-026).
+
+   THE RULE LIVES HERE, not in base.css's (pointer: coarse) block: a media
+   query adds no specificity, so a `.juno-btn--sm` there would lose to this
+   file's own `.juno-btn--sm` later in the bundle. That is not a guess — it is
+   what silently happened to the .juno-input font floor until 20260815-006
+   measured it.
+
+   --dense is the opt-out, and it is deliberately only meaningful ON --sm:
+   a dense touch toolbar is a real thing (a media scrubber, an editor rail),
+   but it is a decision someone has to make by name rather than inherit from a
+   size. `:not()` and the pairing are both (0,2,0) and mutually exclusive, so
+   they never race. */
+@media (pointer: coarse) {
+  .juno-btn--sm:not(.juno-btn--dense) {
+    min-height: var(--juno-size-tap-min);
+  }
+
+  .juno-btn--sm.juno-btn--dense {
+    min-height: var(--juno-space-24);
+  }
 }
 
 .juno-btn:disabled {

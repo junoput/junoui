@@ -89,6 +89,42 @@ test.describe('tap targets', () => {
     expect(await boxHeight(item)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
   });
 
+  test('.juno-btn--sm promotes to the tap minimum on touch, and --dense opts out', async ({
+    page: pw,
+  }, info) => {
+    const want = EXPECT[info.project.name];
+    await pw.addInitScript(() => {
+      localStorage.setItem('juno:mode', 'dark');
+      localStorage.setItem('juno:density', 'comfortable');
+      localStorage.setItem('juno:text', 'base');
+    });
+    await pw.goto('/showcase/buttons.html', { waitUntil: 'networkidle' });
+    await pw.evaluate(() => document.fonts.ready);
+
+    // --sm is a DENSITY, not a tap-target decision: 24px on a fine pointer
+    // (WCAG 2.2 AA 2.5.8 exactly), the comfortable target on a coarse one.
+    // `:visible` because the showcase shell carries phone chrome that is
+    // display:none at this viewport — a hidden node has computed style but no
+    // box, and boundingBox() returns null rather than a short target.
+    const sm = pw.locator('.juno-btn--sm:not(.juno-btn--dense):visible').first();
+    expect(await sm.evaluate((el) => getComputedStyle(el).minHeight)).toBe(want.tapMin);
+    expect(await boxHeight(sm)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
+
+    // ...and the type and padding still shrink, or --sm stopped being --sm
+    const base = pw.locator('.juno-btn:not(.juno-btn--sm):visible').first();
+    const px = (loc, prop) => loc.evaluate((el, p) => parseFloat(getComputedStyle(el)[p]), prop);
+    expect(await px(sm, 'fontSize')).toBeLessThan(await px(base, 'fontSize'));
+    expect(await px(sm, 'paddingLeft')).toBeLessThan(await px(base, 'paddingLeft'));
+
+    // --dense keeps 24px on BOTH pointer types — the opt-out is the whole
+    // point, so a project where it silently agreed with --sm proves nothing
+    const dense = pw.locator('.juno-btn--sm.juno-btn--dense:visible').first();
+    expect(await dense.evaluate((el) => getComputedStyle(el).minHeight)).toBe('24px');
+    if (want.coarse) {
+      expect(await dense.evaluate((el) => getComputedStyle(el).minHeight)).not.toBe(want.tapMin);
+    }
+  });
+
   test('.juno-seg__opt holds the tap minimum', async ({ page: pw }, info) => {
     const want = EXPECT[info.project.name];
     // segmented lives on the forms page, not the index the other cases use
