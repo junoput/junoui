@@ -213,6 +213,18 @@ test('the stricter public surface is available and is stricter', () => {
   );
 });
 
+test('junoClassesIn does not return custom-property references', () => {
+  // `--juno-x` and `.juno-x` differ by the two characters in front, and
+  // `junoClassesIn` is a CLASS matcher — a caller reading its output is
+  // entitled to that. Pinned directly because the assertion is otherwise
+  // masked: a leaked `--juno-warning` reads as `juno-warning`, which is a
+  // shipped token, so assertJunoClasses would not report it and the mutation
+  // that drops the lookbehind survived.
+  assert.deepEqual(junoClassesIn('color: var(--juno-warning);'), []);
+  assert.deepEqual(junoClassesIn('var(--juno-not-a-real-token)'), []);
+  assert.deepEqual(junoClassesIn('<div className="juno-warning" />'), ['juno-warning']);
+});
+
 test('junoClassesIn finds names in conditional and template positions', () => {
   // Where typos hide: not in the literal className="…" a matcher would parse.
   const names = junoClassesIn('`juno-btn ${on ? "juno-btn--ghost" : ""}`');
