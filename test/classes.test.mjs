@@ -141,13 +141,29 @@ test('keyframes, tokens and icon ids are read from their own artifacts', () => {
   assert.deepEqual([...iconIds('<symbol id="juno-i-x"/>')].sort(), ['juno-i', 'juno-i-x']);
 });
 
-test('documented classes come from the docs tree', () => {
+test('documentation is a usage position, not a mention', () => {
+  // A selector or a code fence counts; a sentence does not. The first version
+  // counted any occurrence, and a paragraph in conformance-kit.md written to
+  // say "juno-sr-only is undocumented" promptly made juno-sr-only documented.
+  // A heuristic a sentence about it can flip is not measuring documentation.
   const dir = mkdtempSync(join(tmpdir(), 'juno-docs-'));
   mkdirSync(join(dir, 'components'));
-  writeFileSync(join(dir, 'components', 'x.md'), '`.juno-documented` and `.juno-also`');
+  writeFileSync(
+    join(dir, 'components', 'x.md'),
+    [
+      '`.juno-selector`',
+      '',
+      '```html',
+      '<div class="juno-in-a-fence">',
+      '```',
+      '',
+      'the juno-prose-mention class',
+    ].join('\n'),
+  );
   const found = documentedClasses(dir);
-  assert.ok(found.has('juno-documented'));
-  assert.ok(found.has('juno-also'));
+  assert.ok(found.has('juno-selector'));
+  assert.ok(found.has('juno-in-a-fence'));
+  assert.ok(!found.has('juno-prose-mention'));
 });
 
 test('public is a subset of all, and roles are always in it', () => {

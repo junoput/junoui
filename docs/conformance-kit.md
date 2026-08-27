@@ -79,10 +79,28 @@ assertJunoClasses(['src/**/*.tsx']); // throws listing every juno-* class no rul
 Generalizes nexora's `junoClasses.ts`, which caught 11 misspelled BEM names
 that compiled silently and broke actions on phones.
 
-**Open question for review:** whether `all` is the whole surface or only the
-classes a consumer is meant to author. A `.juno-dock__bubble` is authored; a
-`.juno-pillbar--collapsible:has(...)` internal is not. Proposal: one flat `all`
-plus a `public` subset, and the helper checks against `public` by default.
+**Shipped**, with two revisions the implementation forced. Both came from
+running the helper against a real consumer rather than from taste.
+
+**The helper checks `all` by default, not `public`.** Measured on the 0.7.0
+build: 310 classes have rules, 277 are named anywhere in `docs/`. The 33-name
+difference is not an internals list — it is `juno-sr-only`, `juno-bg-s0`,
+`juno-hide-below-lg`, `juno-eyebrow` and friends: public utilities nobody wrote
+up. Defaulting to `public` would have failed consumers for using shipped API.
+`public` stays available as a stricter surface, and the docs gap is junoui's to
+close, tracked separately.
+
+**The claim is "junoui ships nothing by this name", not "this is not a class".**
+A consumer writes `junoPx('juno-pillbar-gap')` and `` `#juno-i-${n}` ``, and no
+regex over source text distinguishes those from a class. First run against
+nexora reported 24 names; 8 were tokens, an icon-id template and a keyframe —
+all names junoui does ship. So the manifest carries `tokens`, `keyframes` and
+`icons` alongside the classes, and component-local custom properties are read
+from the **bundle**, not only `juno-tokens.css` (that alone accounted for three
+of the eight).
+
+Final state on nexora's 133 source files: the only reports are 13 in the fixture
+file that deliberately names wrong classes, and 3 consumer-owned names.
 
 ## B. Tap floors owned by the library
 
@@ -209,7 +227,7 @@ the guard that would have failed did not exist on that branch (20260826-039).
 
 | Slice | Contents                                     | Depends on |
 | ----- | -------------------------------------------- | ---------- |
-| 1     | A (manifest + helper)                        | —          |
+| ~~1~~ | ~~A (manifest + helper)~~ — **shipped**      | —          |
 | 2     | B2 (generate the `:where()` lists)           | 1          |
 | 3     | C (one pointer-first mechanism)              | —          |
 | 4     | D (buckets + floating chrome owns its inset) | 3          |
@@ -217,7 +235,7 @@ the guard that would have failed did not exist on that branch (20260826-039).
 | 6     | F (doctor)                                   | 1, 3       |
 | 7     | G (checklist, reduced to what F checks)      | 6          |
 
-B1 and E-for-dock are done. 024–027 are absorbed and closed.
+Slice 1, B1 and E-for-dock are done. 024–027 are absorbed and closed.
 
 **Review asks:** the three open questions above (A's public subset, B's two
 lists, C's condition), and whether slice 6 is worth its cost before slice 1

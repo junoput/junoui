@@ -88,7 +88,20 @@ export function documentedClasses(docsDir) {
       const p = join(dir, entry.name);
       if (entry.isDirectory()) walk(p);
       else if (entry.name.endsWith('.md')) {
-        for (const m of readFileSync(p, 'utf8').matchAll(CLASS_RE)) found.add(m[0]);
+        const md = readFileSync(p, 'utf8');
+        // Only USAGE positions count: a selector (`.juno-x`) or anything
+        // inside a fenced code block. A bare prose mention does not.
+        //
+        // This is not fussiness. The first version counted any occurrence, and
+        // then a paragraph in conformance-kit.md written to say "juno-sr-only
+        // is undocumented" made juno-sr-only documented. A heuristic that a
+        // sentence about it can flip is not measuring documentation.
+        for (const m of md.matchAll(/```[\s\S]*?```/g)) {
+          for (const c of m[0].matchAll(CLASS_RE)) found.add(c[0]);
+        }
+        for (const m of md.matchAll(/\.(juno-{1,2}[a-z0-9]+(?:[-_]{1,2}[a-z0-9]+)*)/g)) {
+          found.add(m[1]);
+        }
       }
     }
   };

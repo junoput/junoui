@@ -87,7 +87,47 @@ Do not remap junoui's roles to a brand hue — that erases the shared meaning ac
 Rule of thumb: extend **additively and namespaced**. If every app injects its own palette
 into junoui, the single-design guarantee dies.
 
-## 7. Stateful behavior stays in your app
+## 7. Guarding your class names
+
+A `juno-*` class name in your source is a string that has to match something in
+junoui's stylesheet, and nothing checks it. When it does not match, nothing
+fails: the file compiles, the tests pass, and the element renders as unstyled UA
+defaults. One consumer shipped eleven such names in a dialog; on a phone the
+result was a confirm button off the bottom of the screen with no way to reach it.
+
+junoui ships the check:
+
+```js
+import { assertJunoClasses } from 'junoui/testing';
+
+it('every juno class this app names exists', () => {
+  assertJunoClasses(['src/**/*.tsx'], {
+    // names YOUR stylesheet defines in the juno- namespace. Each one is a
+    // claim you are making — check it against your own sheet.
+    allowed: ['juno-icons-subset'],
+  });
+});
+```
+
+It reads `junoui/classes.json`, the manifest this build generates from its own
+selectors, so it cannot drift from what you installed. It throws — no framework
+needed — and it throws rather than passing when the globs match no files.
+
+**What it answers:** "junoui ships nothing by this name." **What it does not:**
+whether the class still does what your component assumes. A class that exists
+but was repurposed upstream passes.
+
+The manifest is readable directly (`junoui/classes.json`) for anything else you
+want to assert: `all`, `public` (the documented subset), `roles`, `components`
+grouped BEM-wise, plus the other namespaces junoui ships and a consumer writes
+as bare strings — `tokens`, `keyframes`, `icons`.
+
+```js
+import manifest from 'junoui/classes.json' with { type: 'json' };
+manifest.components.seg; // { block, elements: ['juno-seg__opt'], modifiers: [...] }
+```
+
+## 8. Stateful behavior stays in your app
 
 junoui ships no behavioural JS. Focus traps, scroll locking, gesture handling, list
 virtualization, runtime popover positioning, data — all yours (or a future sibling
