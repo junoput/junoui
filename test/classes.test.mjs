@@ -63,6 +63,21 @@ test('a class is what has a RULE, not what a comment mentions', () => {
   assert.ok(!found.has('juno-not-a-rule'), 'a string in a declaration is not a selector');
 });
 
+test('an at-rule prelude is not a selector', () => {
+  // `@keyframes juno-blink {` is a prelude carrying a juno-* name, so a
+  // collector that does not skip at-rules files the animation as a CLASS —
+  // and the manifest then vouches for a class with no rules, which is the one
+  // thing it must never do. This is the case the earlier fixture missed: its
+  // only at-rule was `@media (pointer: coarse)`, which contains no juno name,
+  // so the mutation survived.
+  const found = definedClasses('@keyframes juno-blink { 0% { opacity: 1; } }');
+  assert.ok(!found.has('juno-blink'));
+  // ...and the shipped manifest agrees
+  for (const k of manifest.keyframes) {
+    assert.ok(!manifest.all.includes(k), `${k} is a keyframe, not a class`);
+  }
+});
+
 test('a custom property is not a class', () => {
   // `--juno-warning` and `.juno-warning` differ by two characters that a naive
   // matcher drops. Counting one made an earlier version of this matcher report
