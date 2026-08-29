@@ -1,5 +1,109 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- aad6351: **`.juno-btn--sm` promotes to the tap target on touch; `.juno-btn--dense` is the opt-out.**
+
+  `--sm` names a **density**, and consumers reach for it as a **semantic**. Audited across one app: 40 call sites, nearly all `--sm --ghost` meaning "secondary", shipping a 24px target on a phone — and junoui's own showcase does it twice, in a navbar action slot.
+
+  A size modifier should not quietly become a tap-target decision. Under `(pointer: coarse)`, `.juno-btn--sm` now holds `--juno-size-tap-min` like every other control. Type and padding still shrink, so it stays a density modifier and stops being a touch-target one. **On a fine pointer nothing changes** — still 24px, the WCAG 2.2 AA floor (2.5.8) exactly.
+
+  `.juno-btn--dense` opts a `--sm` button back out, for a toolbar that is genuinely dense on touch (a scrubber, an editor rail). It is meaningful only in combination with `--sm`, on purpose: a dense touch target should be chosen by name, never inherited from a size.
+
+  **This is a visual change on touch devices.** Any `--sm` button in a phone layout grows to 44px unless you add `--dense`. Audit your `--sm` call sites: the ones that meant "secondary" want `--ghost` alone and are now correct for free; the ones that meant "dense" want `--dense` added.
+
+  The rule lives in `button.css`, not `base.css`'s coarse block — a media query adds no specificity, so a `.juno-btn--sm` there would lose to `button.css`'s own `.juno-btn--sm` later in the bundle.
+
+- 40a5e43: **Class manifest + `junoui/testing` — conformance kit slice 1.**
+
+  A `juno-*` class name in a consumer's source is a string that has to match something in junoui's stylesheet, and nothing checked it. When it does not match, nothing fails: the file compiles, the tests pass, and the element renders as unstyled UA defaults. One consumer shipped eleven such names in a dialog; on a phone that put the confirm button off the bottom of the screen with no way to reach it. junoui had the same defect pointing the other way — `.juno-seg__option` sat in a `touch-action` list that never matched anything, because the shipped class is `.juno-seg__opt`.
+
+  **New: `junoui/classes.json`**, generated at build time from the bundle's own selectors — `all`, `public` (the documented subset), `roles`, `components` grouped BEM-wise, plus the other `juno-*` namespaces junoui ships and a consumer writes as bare strings: `tokens`, `keyframes`, `icons`.
+
+  **New: `junoui/testing`**, dependency-free and framework-agnostic:
+
+  ```js
+  import { assertJunoClasses } from 'junoui/testing';
+  assertJunoClasses(['src/**/*.tsx'], { allowed: ['my-own-juno-namespaced-thing'] });
+  ```
+
+  It throws with every offending `file: name`, and throws rather than passing when its globs match no files.
+
+  **What it answers:** "junoui ships nothing by this name." **What it does not:** whether the class still does what your component assumes.
+
+  Nothing existing changes; both entries are additive.
+
+- 447c133: The floating bar's offset from the bottom edge is now one token,
+  `--juno-dock-edge-offset`, consumed by both `.juno-dock--pill`/`--float`'s margin
+  and `--juno-dock-clearance`. Plus `--juno-dock-clearance-breathing` (default
+  `space-8`) for the gap between the bar and the last row.
+
+  No default changes: the offset still resolves to `space-16 + env(safe-area-inset-bottom)`
+  and the clearances to the same 86px / 78px they did at a 44px bubble.
+
+  What it fixes: the inset FORM used to be written separately at each site, so a
+  consumer whose design puts the bar flush above the home indicator —
+  `max(8px, env(safe-area-inset-bottom))` — changed its margin and could not change
+  the reservation, which kept adding. Measured at 16px of dead band at inset 0 and
+  24px at inset 34, with no value of `--juno-dock-h` able to reconcile them because
+  one side added the inset and the other maxed it. Both now follow the token, so
+  they agree by construction at every inset.
+
+- e852323: **The dock publishes its horizontal item budget.**
+
+  `.juno-dock__item` is `flex: 1 1 0`, so the bar divides its inner width by however many items are present. A consumer deciding how many to render — and whether they still hold a tap target — had to re-derive that from the numbers in `dock.css`. Two did, in prose, twice, and both drifted the same way: they subtracted 12px of inline padding where the pill actually spends 8 (`--juno-space-4` a side), so every per-item width came out ~0.8px low.
+
+  New custom properties on `.juno-dock`:
+
+  | Property                    | What it is                                                                                    |
+  | --------------------------- | --------------------------------------------------------------------------------------------- |
+  | `--juno-dock-items`         | The item budget. You set it to what you render (default `5`).                                 |
+  | `--juno-dock-item-inline`   | The width one item gets — a prediction of the flex layout, asserted against the measured box. |
+  | `--juno-dock-fit-inline`    | The narrowest viewport at which every item still holds `--juno-size-tap-comfortable`.         |
+  | `--juno-dock-chrome-inline` | The bar's total inline chrome. `0` full-bleed, `34px` on `--pill`/`--float`.                  |
+  | `--juno-dock-avail`         | The width the budget divides (default `100vw`).                                               |
+
+  The margin, padding and border terms are declared once and consumed by both the variant's own box and the sum, so the budget cannot disagree with the bar it describes — the same construction as `--juno-dock-edge-offset`. One consequence worth knowing: `--pill`/`--float` now paint their border from `--juno-dock-border-inline`, so overriding that term to `0` removes the hairline as well as widening the items. That is deliberate — the sum follows the paint.
+
+  **No scale floor is published.** `44px / --juno-dock-item-inline` is a ratio of two lengths and CSS cannot divide by a length. A consumer that must scale rather than drop an item compares the two values itself.
+
+### Patch Changes
+
+- 770f331: **fold-slot: the fold now reaches zero when composed with a component class.**
+  `.juno-fold` promises its inline-size folds to zero, and the canonical use puts it on an element that already carries the capsule chrome — `.juno-pillbar__item`, `.juno-btn`, `.juno-chip`. Composed that way it could not: `min-inline-size` (the 44px tap floor), `padding-inline` and `border-inline-width` each hold a border-box inline size open, and the folded state released none of them. Measured against the built bundle at a 390px viewport, composed with `.juno-pillbar__item`: 44px folded, 20px with the floor released, 0px with all three. A consumer's pill carried one dead 44px slot whenever the folded action was absent.
+
+  The folded state now releases all three, and each is in the fold's transition list so nothing snaps as the fold opens or shuts.
+
+  Also fixed, and invisible from the source: `transition` is a shorthand, `.juno-fold` was one class of specificity, and `pillbar.css` sorts after `fold-slot.css` — so `.juno-pillbar__item`'s own `transition` replaced the fold's whole list and the slot jumped shut instead of folding. The fold's declarations now sit at attribute specificity, and its transition list carries the chrome properties (`color`, `background-color`) too, since owning the shorthand means owning all of it. A component of your own that composes with `.juno-fold` and needs a third property transitioned must state it above `(0,2,0)`.
+
+- a1f3f53: New `docs/ios-pwa.md`: a bounded statement of what junoui gives you on iOS and in
+  a Home-Screen web app — what you get for free, what your app must supply, and
+  what junoui explicitly does not do. `docs/ios-conformance.md` gains the
+  standalone `<head>` contract and names the letterbox flag
+  (`data-juno-letterboxed`, app-set, documented rather than shipped).
+
+  Docs ship in the package, so a consumer installing this version receives both.
+  Two corrections travel with them: the letterbox flag is **not** an upstream-fix
+  detector (that test needs a document that cannot scroll, and the unlock makes it
+  scroll), and `.juno-pagination`'s items take the coarse-pointer promotion on the
+  inline axis only — 44 × 32 on touch, which clears WCAG 2.5.8 AA and not the
+  44 px comfortable target the docs previously implied.
+
+- 4568157: **Two mistyped class names in the touch-default lists, and a tap floor for the segmented pill.**
+
+  `base.css` carries two `:where()` lists of junoui's own tappable components — one dropping double-tap-to-zoom recognition (`touch-action: manipulation`), one killing the UA tap-highlight square under `(pointer: coarse)`. Two members named classes that do not exist, so `:where()` matched nothing, the rule still parsed, every other member kept working, and the named components silently kept the defaults they were listed to opt out of:
+
+  - `.juno-seg__option` → `.juno-seg__opt` (touch-action list)
+  - `.juno-list__item` → `.juno-list__row` (**both** lists)
+
+  Every segmented control and every grouped list row in every consumer has been carrying the ~300ms double-tap delay. No consumer change is needed — the fix lands in the shipped stylesheet.
+
+  `.juno-seg__opt` was also the only interactive primitive with no tap floor: it computed 25.39px from its padding, which meets WCAG 2.2 AA (2.5.8, 24px) by accident and misses the comfortable touch target entirely. It now holds `--juno-size-tap-min` on the painted box, like `.juno-btn`. Measured against the built bundle: **fine pointer unchanged at 25.39px, coarse 25.39 → 44.00**, width unchanged either way — so no showcase baseline moves.
+
+  Unlike `.juno-btn--sm`, `.juno-seg--sm` does **not** drop below that floor: it reduces type and padding only. A segmented row is routinely the only control on a whole settings section, so a sub-tap variant of it has no safe use on a phone.
+
 ## 0.6.0
 
 ### Minor Changes
