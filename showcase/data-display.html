@@ -29,6 +29,78 @@
         <code class="juno-mono">.juno--&lt;role&gt;</code> class.</p>
     </div>
 
+    <!-- Tree / outliner -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">00</span>
+        <span class="juno-eyebrow">Tree — nested rows, disclosure, selection, reorder (.juno-tree)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <ul class="juno-tree" role="tree" aria-label="Scene" id="demo-tree" style="max-width:420px;">
+          <li class="juno-tree__item" role="treeitem" aria-level="1" aria-expanded="true" aria-selected="false">
+            <div class="juno-tree__row">
+              <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+              <span class="juno-tree__label">Basemap</span>
+              <span class="juno-tree__count">3</span>
+              <button class="juno-tree__handle" aria-label="Reorder Basemap"></button>
+            </div>
+            <ul class="juno-tree__group" role="group">
+              <li class="juno-tree__item" role="treeitem" aria-level="2" aria-selected="false">
+                <div class="juno-tree__row">
+                  <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+                  <span class="juno-tree__label">Satellite</span>
+                  <span class="juno-tree__trail"><span class="juno-badge juno--nominal">ON</span></span>
+                  <button class="juno-tree__handle" aria-label="Reorder Satellite"></button>
+                </div>
+              </li>
+              <li class="juno-tree__item" role="treeitem" aria-level="2" aria-selected="true">
+                <div class="juno-tree__row">
+                  <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+                  <span class="juno-tree__label">Terrain</span>
+                  <button class="juno-tree__handle" aria-label="Reorder Terrain"></button>
+                </div>
+              </li>
+              <li class="juno-tree__item" role="treeitem" aria-level="2" aria-expanded="false" aria-selected="false">
+                <div class="juno-tree__row">
+                  <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+                  <span class="juno-tree__label">Labels</span>
+                  <span class="juno-tree__count">2</span>
+                  <button class="juno-tree__handle" aria-label="Reorder Labels"></button>
+                </div>
+                <ul class="juno-tree__group" role="group">
+                  <li class="juno-tree__item" role="treeitem" aria-level="3" aria-selected="false">
+                    <div class="juno-tree__row">
+                      <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+                      <span class="juno-tree__label">Place names</span>
+                      <button class="juno-tree__handle" aria-label="Reorder Place names"></button>
+                    </div>
+                  </li>
+                  <li class="juno-tree__item" role="treeitem" aria-level="3" aria-selected="false">
+                    <div class="juno-tree__row">
+                      <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+                      <span class="juno-tree__label">Roads</span>
+                      <button class="juno-tree__handle" aria-label="Reorder Roads"></button>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li class="juno-tree__item" role="treeitem" aria-level="1" aria-current="true" aria-selected="false">
+            <div class="juno-tree__row">
+              <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+              <span class="juno-tree__label">Measurements</span>
+              <button class="juno-tree__handle" aria-label="Reorder Measurements"></button>
+            </div>
+          </li>
+        </ul>
+        <p class="juno-text-muted" style="font-size:12px;margin-top:12px;">
+          Arrow keys walk the tree; Left collapses or steps out, Right expands or steps in.
+          Selection, aria-current and hover are three different states and are shown here at once.
+        </p>
+      </div></article>
+    </section>
+
     <!-- Badges -->
     <section class="demo-section">
       <div class="demo-section__title">

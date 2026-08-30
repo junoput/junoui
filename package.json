@@ -51,6 +51,7 @@
     "./rust": "./dist/rust/juno_tokens.rs",
     "./icons": "./dist/icons/juno-icons.svg",
     "./subset": "./tools/subset-sprite.mjs",
+    "./tree": "./tools/tree.mjs",
     "./testing": "./tools/testing.mjs",
     "./classes.json": "./dist/classes.json",
     "./icons/inline": "./dist/icons/inline.js",
