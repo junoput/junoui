@@ -30,6 +30,41 @@
     </div>
 
     <!-- Inputs -->
+    <!-- Colour swatch + palette -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">00</span>
+        <span class="juno-eyebrow">Colour swatch &amp; palette (.juno-swatch / .juno-palette)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body" style="gap:20px;">
+        <div class="demo-row" style="gap:10px;align-items:center;">
+          <span class="juno-swatch" style="--juno-swatch-color:#C41E3A" role="img" aria-label="Crimson"></span>
+          <span class="juno-swatch juno-swatch--circle" style="--juno-swatch-color:#2E8B57" role="img" aria-label="Sea green"></span>
+          <span class="juno-swatch" style="--juno-swatch-color:#111111" role="img" aria-label="Near black"></span>
+          <span class="juno-swatch" style="--juno-swatch-color:#F2F2F2" role="img" aria-label="Off white"></span>
+          <span class="juno-swatch juno-swatch--none" role="img" aria-label="No colour"></span>
+          <button class="juno-swatch juno-swatch--button" style="--juno-swatch-color:#1F6FEB"
+                  aria-label="Annotation colour: Azure" popovertarget="demo-palette"></button>
+        </div>
+        <div class="juno-popover" popover id="demo-palette">
+          <div class="juno-palette" role="listbox" aria-label="Annotation colour" id="demo-palette-grid">
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#C41E3A" aria-label="Crimson"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#E8A317" aria-label="Amber"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#2E8B57" aria-label="Sea green"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="true" style="--juno-swatch-color:#1F6FEB" aria-label="Azure"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#7D3CB5" aria-label="Violet"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#111111" aria-label="Near black"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#F2F2F2" aria-label="Off white"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+            <button class="juno-palette__option" role="option" aria-selected="false" style="--juno-swatch-color:#8A8A8A" aria-label="Grey"><svg class="juno-icon juno-palette__check" aria-hidden="true"><use href="#juno-i-check" /></svg></button>
+          </div>
+        </div>
+        <p class="juno-text-muted" style="font-size:12px;">
+          Every swatch carries a NAME — colour is never the only signal. The chosen one shows a
+          check glyph as well as a ring, and both rings are drawn so they stay visible on any hue.
+        </p>
+      </div></article>
+    </section>
+
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>

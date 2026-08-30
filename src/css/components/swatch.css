@@ -1,0 +1,187 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Colour swatch + palette
+ *  Showing a user-chosen colour, and letting someone pick one. Diagrams,
+ *  calendars, tag and label systems, chart series colours, annotation
+ *  tools, theming UIs, kanban boards.
+ *
+ *  THE HARD PART IS NOT THE SQUARE. A swatch shows an ARBITRARY colour, so
+ *  every piece of chrome on it — its border, its focus ring, its checked
+ *  indicator — has to stay visible against a colour junoui has never seen.
+ *  A single hairline fails at one end of the range: a dark border vanishes
+ *  on near-black, a light one vanishes on near-white, and the swatch that
+ *  loses its border is the one that has merged with the panel behind it.
+ *
+ *  The answer is a PAIR of hairlines drawn as an inset and an outset ring.
+ *  They do NOT do the same job, which is the part worth reading twice: the
+ *  inset one composites over the SWATCH and edges it against its own fill,
+ *  the outset one composites over the PANEL and separates it from the
+ *  surface. With the swatch's own contrast against that panel, the boundary
+ *  has three ways to be visible and needs only one of them.
+ *
+ *  Guarded by sweeping the swatch colour against both panels rather than by
+ *  asserting a border value (test/swatch.test.mjs).
+ *
+ *  COLOUR IS NEVER THE ONLY SIGNAL. junoui's own standing rule, and a bare
+ *  swatch is exactly what violates it: every swatch carries an accessible
+ *  NAME, and the checked state carries a GLYPH, not just a hue.
+ *
+ *  The app owns the colour list and which one is chosen.
+ *  Usage:
+ *    <button class="juno-swatch juno-swatch--button" style="--juno-swatch-color:#C41E3A"
+ *            aria-label="Crimson"></button>
+ *
+ *    <div class="juno-popover" popover id="palette">
+ *      <div class="juno-palette" role="listbox" aria-label="Annotation colour">
+ *        <button class="juno-palette__option" role="option" aria-selected="true"
+ *                style="--juno-swatch-color:#C41E3A" aria-label="Crimson">
+ *          <svg class="juno-icon juno-palette__check" aria-hidden="true">
+ *            <use href="…#juno-i-check" /></svg>
+ *        </button>
+ *      </div>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-swatch {
+  /* The colour the app is showing. Named rather than an inline `background`
+     so the rings below can sit on top of it without the caller reassembling
+     the whole box-shadow stack. */
+  --juno-swatch-color: var(--juno-muted);
+
+  /* Sized off the control scale, so a swatch in a form row matches the
+     controls beside it and grows with them on a coarse pointer. */
+  --juno-swatch-size: var(--juno-size-tap-min);
+
+  display: inline-block;
+  inline-size: var(--juno-swatch-size);
+  block-size: var(--juno-swatch-size);
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--juno-radius-3);
+  background: var(--juno-swatch-color);
+
+  /* THE TWO-TONE RING, and the alphas are measured rather than chosen.
+     The inset ring composites over the SWATCH and gives it an edge against
+     its own fill; the outset ring composites over the PANEL — an outset
+     box-shadow is outside the element — and separates the swatch from the
+     surface behind it. Between them, plus the swatch's own contrast with the
+     panel, the boundary is discernible whatever colour the app supplies.
+
+     At 0.45 / 0.35 that property FAILS: on a light panel a mid-grey swatch
+     (around #919191) leaves the best of the three at 2.57:1, under the 3:1
+     non-text floor. 0.65 on both takes the worst case to 3.39:1. The sweep in
+     test/swatch.test.mjs is what measured it — the first version of that test
+     asked the wrong question (both rings against the swatch) and reported 145
+     failures; the right question is whether the BOUNDARY is visible, and it
+     has three ways to be.
+
+     Deliberately not `border`, which would eat into the colour area and change
+     the swatch's size with its style. */
+  box-shadow:
+    inset 0 0 0 var(--juno-border-width-1) rgb(0 0 0 / 0.65),
+    0 0 0 var(--juno-border-width-1) rgb(255 255 255 / 0.65);
+}
+
+.juno-swatch--circle {
+  border-radius: 50%;
+}
+
+.juno-swatch--sm {
+  --juno-swatch-size: var(--juno-space-16);
+}
+
+.juno-swatch--lg {
+  --juno-swatch-size: var(--juno-size-tap-comfortable);
+}
+
+/* A swatch used as a trigger — the thing you click to open the palette. */
+.juno-swatch--button {
+  padding: 0;
+  cursor: pointer;
+}
+
+/* FOCUS RINGS ON AN ARBITRARY HUE. The ring is drawn OUTSIDE the swatch,
+   with an offset, so its contrast is against the panel — a known surface —
+   rather than against a colour junoui cannot predict. A ring drawn on the
+   swatch itself has the same unsolvable problem as the border, and "use a
+   thicker ring" does not fix a hue collision. */
+.juno-swatch--button:focus-visible,
+.juno-palette__option:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-4);
+}
+
+/* ── palette ───────────────────────────────────────────────────────────
+   A grid of swatches inside a .juno-popover. junoui ships the grid and the
+   states; the app owns the list and which one is chosen. */
+.juno-palette {
+  display: grid;
+  grid-template-columns: repeat(var(--juno-palette-columns, 6), auto);
+  gap: var(--juno-space-8);
+  padding: var(--juno-space-4);
+}
+
+.juno-palette__option {
+  --juno-swatch-color: var(--juno-muted);
+  --juno-swatch-size: var(--juno-size-tap-min);
+
+  position: relative;
+  inline-size: var(--juno-swatch-size);
+  block-size: var(--juno-swatch-size);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: var(--juno-radius-3);
+  background: var(--juno-swatch-color);
+  cursor: pointer;
+  box-shadow:
+    inset 0 0 0 var(--juno-border-width-1) rgb(0 0 0 / 0.65),
+    0 0 0 var(--juno-border-width-1) rgb(255 255 255 / 0.65);
+}
+
+/* THE CHECKED STATE IS A GLYPH, NOT A HUE. Colour is never the only signal,
+   and "the chosen one is the one that looks slightly different" is exactly
+   the failure that rule exists to prevent — it is invisible to anyone who
+   cannot separate the two hues, and to anyone looking at a screenshot.
+
+   The check itself sits on the arbitrary colour, so it gets the same
+   treatment as the swatch's own ring: a light glyph with a dark halo, which
+   is the canvas-ink pair at glyph scale. */
+.juno-palette__check {
+  display: none;
+  color: #fff;
+  filter: drop-shadow(0 0 var(--juno-border-width-1) rgb(0 0 0 / 0.9))
+    drop-shadow(0 0 var(--juno-border-width-2) rgb(0 0 0 / 0.7));
+}
+
+.juno-palette__option[aria-selected='true'] .juno-palette__check,
+.juno-palette__option[aria-checked='true'] .juno-palette__check {
+  display: block;
+}
+
+/* ...and a second, non-glyph cue for the same state, because a check inside a
+   28px square is small: the selected option also grows a ring in the active
+   role, drawn OUTSIDE the swatch where its contrast is against the panel. */
+.juno-palette__option[aria-selected='true'],
+.juno-palette__option[aria-checked='true'] {
+  box-shadow:
+    inset 0 0 0 var(--juno-border-width-1) rgb(0 0 0 / 0.65),
+    0 0 0 var(--juno-border-width-1) rgb(255 255 255 / 0.65),
+    0 0 0 calc(var(--juno-border-width-1) + var(--juno-border-width-2)) var(--juno-active);
+}
+
+/* A swatch showing "no colour" — transparent, unset, inherit. Without this a
+   consumer paints it in a mid grey and the user cannot tell "grey" from
+   "none", which is a different thing to know. */
+.juno-swatch--none,
+.juno-palette__option--none {
+  background:
+    linear-gradient(
+        to bottom right,
+        transparent calc(50% - var(--juno-border-width-1)),
+        var(--juno-warning) calc(50% - var(--juno-border-width-1)),
+        var(--juno-warning) calc(50% + var(--juno-border-width-1)),
+        transparent calc(50% + var(--juno-border-width-1))
+      )
+      var(--juno-s1);
+}
