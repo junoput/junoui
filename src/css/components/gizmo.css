@@ -1,0 +1,238 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Viewport orientation gizmo (compass ring + pitch arc)
+ *  The orientation widget any 3D or map viewport ships: a ring showing a
+ *  heading with clickable snap targets, a secondary arc for a second
+ *  angle (pitch / tilt / elevation) inside a clamped range, and a centre
+ *  target that resets the view.
+ *
+ *  A RING, NOT A CUBE, and that is a design decision rather than a style
+ *  one. An Autodesk-style ViewCube is the wrong shape for anything with a
+ *  privileged up-vector — a map, a terrain, a site plan — because there is
+ *  no meaningful front, right or bottom face to click. A ring degrades to
+ *  the up-vector case and generalises to the free-orbit one; a cube does
+ *  not go the other way.
+ *
+ *  THE APP OWNS THE CAMERA. It writes two angles in as custom properties
+ *  and junoui rotates the marks; nothing here stores or changes state.
+ *    element.style.setProperty('--juno-gizmo-heading', `${yaw}deg`);
+ *    element.style.setProperty('--juno-gizmo-pitch', `${pitch}deg`);
+ *
+ *  Usage — see docs/components/gizmo.md for the full a11y contract, which
+ *  is the half apps get wrong and the reason this is upstream:
+ *    <div class="juno-gizmo" role="group" aria-label="View orientation">
+ *      <p class="juno-gizmo__readout" aria-live="polite">Facing north, 0 degrees.</p>
+ *      <div class="juno-gizmo__ring">
+ *        <span class="juno-gizmo__needle" aria-hidden="true"></span>
+ *        <button class="juno-gizmo__mark" style="--juno-gizmo-at:0deg"
+ *                aria-label="Face north" aria-current="true">N</button>
+ *        …seven more…
+ *        <button class="juno-gizmo__center" aria-label="Reset view">⌖</button>
+ *      </div>
+ *      <div class="juno-gizmo__arc">
+ *        <span class="juno-gizmo__arc-hand" aria-hidden="true"></span>
+ *      </div>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-gizmo {
+  --juno-role: var(--juno-active);
+
+  /* The angles the app writes. Defaults are a level view facing north, so a
+     gizmo that is mounted before the camera reports is not a blank circle. */
+  --juno-gizmo-heading: 0deg;
+  --juno-gizmo-pitch: 0deg;
+
+  /* MINIMUM DIAMETER, DERIVED — and derived from the CHORD, which is the
+     correction that matters. N marks sit evenly around the rim, so the
+     straight-line distance between two adjacent centres is d * sin(pi / N).
+     For their targets not to overlap THAT must be at least one tap target:
+
+         d >= tap / sin(pi / N)
+
+     ...and the marks sit INSIDE the rim, so their centres are on a circle of
+     radius d/2 - tap/2, not d/2. Substituting that and solving:
+
+         d >= tap * (1 / sin(pi / N) + 1)
+
+     THIS DERIVATION WAS WRONG TWICE, and the browser guard caught both. First
+     it sized off the ARC between centres (N * tap / pi) — an arc is longer
+     than its chord, so at N=8 and a 44px target that gave 112.05px whose chord
+     is 42.9px, a 1.1px overlap on every neighbouring pair. Corrected to the
+     chord, it still measured 27.16px between centres, because the inset had
+     been left out of the radius. Neither error is visible in the source; both
+     are one measurement away.
+
+     The tap floor MOVES, 24px to 44px on a coarse pointer, which is precisely
+     when the ring has to grow; a hard-coded diameter ships eight overlapping
+     targets to a phone. The 96px is an aesthetic floor, not a derived one —
+     a 63px ring is legible-but-cramped on desktop — and max() keeps whichever
+     is larger. */
+  --juno-gizmo-marks: 8;
+  --juno-gizmo-size: max(
+    96px,
+    calc(var(--juno-size-tap-min) * (1 / sin(180deg / var(--juno-gizmo-marks)) + 1))
+  );
+
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--juno-space-8);
+  font-family: var(--juno-font-family-sans);
+  color: var(--juno-data);
+}
+
+/* The spoken state. Visible by default — a bearing is useful to everyone —
+   but it is the live region either way, because a rotating needle announces
+   nothing. Consumers that want it invisible use .juno-sr-only rather than
+   display:none, which would take it out of the accessibility tree too. */
+.juno-gizmo__readout {
+  margin: 0;
+  font-size: var(--juno-font-size-11);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--juno-font-tracking-label);
+  color: var(--juno-label);
+}
+
+.juno-gizmo__ring {
+  position: relative;
+  inline-size: var(--juno-gizmo-size);
+  block-size: var(--juno-gizmo-size);
+  border-radius: 50%;
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
+}
+
+/* The needle points where the camera looks. Rotated by the app's angle, and
+   the transition runs on the motion scale so prefers-reduced-motion collapses
+   it without this file needing its own media query (base.css owns that). */
+.juno-gizmo__needle {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  pointer-events: none;
+  rotate: var(--juno-gizmo-heading);
+  transition: rotate calc(var(--juno-motion-duration-base) * var(--juno-motion-scale))
+    var(--juno-motion-ease-standard);
+}
+
+.juno-gizmo__needle::before {
+  content: '';
+  inline-size: var(--juno-border-width-2);
+  block-size: 38%;
+  margin-block-start: var(--juno-space-4);
+  background: linear-gradient(var(--juno-role), transparent);
+  border-radius: var(--juno-border-width-2);
+}
+
+/* ── snap targets ──────────────────────────────────────────────────────
+   REAL BUTTONS. Not a canvas hit test, not a div with a click handler: a
+   button is focusable, activates on Enter and Space, is announced as a
+   control, and works with a screen reader's forms mode. That is most of
+   this component's value and the reason it is upstream.
+
+   Positioned by rotating the mark out to the rim and counter-rotating the
+   glyph, so the letter stays upright at every angle. --juno-gizmo-at is the
+   mark's own bearing, set per element. */
+.juno-gizmo__mark {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-size-tap-min);
+  block-size: var(--juno-size-tap-min);
+  margin: calc(var(--juno-size-tap-min) / -2);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--juno-label);
+  font: inherit;
+  font-size: var(--juno-font-size-11);
+  font-weight: var(--juno-font-weight-bold);
+  cursor: pointer;
+  transform: rotate(var(--juno-gizmo-at, 0deg))
+    translate(0, calc(var(--juno-gizmo-size) / -2 + var(--juno-size-tap-min) / 2))
+    rotate(calc(-1 * var(--juno-gizmo-at, 0deg)));
+}
+
+.juno-gizmo__mark:hover {
+  color: var(--juno-data);
+  background: var(--juno-s2);
+}
+
+/* The mark the camera is currently nearest. aria-current, not a class: the
+   app already has to say it for the screen reader, and a class would be a
+   second copy of the same fact. */
+.juno-gizmo__mark[aria-current='true'] {
+  color: var(--juno-role);
+  background: var(--juno-s3);
+}
+
+.juno-gizmo__mark:focus-visible,
+.juno-gizmo__center:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+}
+
+/* Centre target — reset to the default view. */
+.juno-gizmo__center {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-size-tap-min);
+  block-size: var(--juno-size-tap-min);
+  margin: calc(var(--juno-size-tap-min) / -2);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: var(--juno-border-width-1) solid var(--juno-border);
+  border-radius: 50%;
+  background: var(--juno-s1);
+  color: var(--juno-label);
+  font: inherit;
+  cursor: pointer;
+}
+
+.juno-gizmo__center:hover {
+  color: var(--juno-role);
+  border-color: var(--juno-role);
+}
+
+/* ── pitch arc ─────────────────────────────────────────────────────────
+   The second angle, inside a CLAMPED range — a camera that can tilt 0..85°
+   should not show a hand that can point anywhere, or the widget lies about
+   what the app will accept. The clamp lives here so every consumer gets it
+   without re-deriving it from its own camera limits. */
+.juno-gizmo__arc {
+  --juno-gizmo-pitch-min: 0deg;
+  --juno-gizmo-pitch-max: 85deg;
+
+  position: relative;
+  inline-size: var(--juno-gizmo-size);
+  block-size: calc(var(--juno-gizmo-size) / 2);
+  overflow: hidden;
+  border-block-end: var(--juno-border-width-1) solid var(--juno-border);
+}
+
+.juno-gizmo__arc-hand {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-border-width-2);
+  block-size: 80%;
+  background: var(--juno-role);
+  transform-origin: bottom center;
+  rotate: clamp(var(--juno-gizmo-pitch-min), var(--juno-gizmo-pitch), var(--juno-gizmo-pitch-max));
+  transition: rotate calc(var(--juno-motion-duration-base) * var(--juno-motion-scale))
+    var(--juno-motion-ease-standard);
+}
+
+/* ── touch ─────────────────────────────────────────────────────────────
+   Nothing to grow here, and that is the point: the marks are sized in
+   --juno-size-tap-min, which base.css promotes to the comfortable target on a
+   coarse pointer, and --juno-gizmo-size is derived from it — so the whole ring
+   grows and the marks stay non-overlapping by construction. A gizmo that keeps
+   its desktop diameter on a phone has eight overlapping targets, which is the
+   defect this derivation exists to make impossible. */

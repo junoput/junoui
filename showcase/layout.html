@@ -30,6 +30,39 @@
     </div>
 
     <!-- grid-auto -->
+    <!-- Viewport orientation gizmo -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">00</span>
+        <span class="juno-eyebrow">Viewport gizmo — compass ring, pitch arc, snap targets (.juno-gizmo)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div class="juno-gizmo" role="group" aria-label="View orientation" id="demo-gizmo"
+             style="--juno-gizmo-heading:45deg; --juno-gizmo-pitch:35deg;">
+          <p class="juno-gizmo__readout" aria-live="polite">Facing north-east, 45 degrees. Tilted 35 degrees.</p>
+          <div class="juno-gizmo__ring">
+            <span class="juno-gizmo__needle" aria-hidden="true"></span>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:0deg" aria-label="Face north">N</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:45deg" aria-label="Face north-east" aria-current="true">NE</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:90deg" aria-label="Face east">E</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:135deg" aria-label="Face south-east">SE</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:180deg" aria-label="Face south">S</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:225deg" aria-label="Face south-west">SW</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:270deg" aria-label="Face west">W</button>
+            <button class="juno-gizmo__mark" style="--juno-gizmo-at:315deg" aria-label="Face north-west">NW</button>
+            <button class="juno-gizmo__center" aria-label="Reset view to north, level">&#8982;</button>
+          </div>
+          <div class="juno-gizmo__arc">
+            <span class="juno-gizmo__arc-hand" aria-hidden="true"></span>
+          </div>
+        </div>
+        <p class="juno-text-muted" style="font-size:12px;margin-top:12px;">
+          One Tab stop; arrow keys move between marks and wrap, Enter activates.
+          The app writes the two angles as custom properties — junoui does not hold the camera.
+        </p>
+      </div></article>
+    </section>
+
     <section class="demo-section">
       <div class="demo-section__title">
         <span class="juno-mono juno-text-nominal" style="font-size:11px;">01</span>
