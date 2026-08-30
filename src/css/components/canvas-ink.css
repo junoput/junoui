@@ -1,0 +1,97 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Canvas ink (marks drawn over arbitrary imagery)
+ *  For text and vector ink sitting on a photo, a map, a video frame or a
+ *  camera feed: anywhere the background is CONTENT rather than one of
+ *  junoui's surfaces.
+ *
+ *  WHY IT IS NOT JUST A COLOUR. junoui's whole contrast story assumes a
+ *  controlled surface, s0 through s3 — every role colour's ratio is
+ *  computed against a known background. Over imagery there is no known
+ *  background. In one orthophoto a black shadow and a snowfield are
+ *  adjacent pixels, so no single ink colour is legible and no contrast
+ *  ratio can be asserted about one. The answer is a PAIR that spans the
+ *  luminance range: over a light backing the halo carries the contrast,
+ *  over a dark one the ink does. Neither half works alone, which is why
+ *  they are applied together by one class.
+ *
+ *  NOT THEMED, on purpose. A satellite image does not get lighter because
+ *  the user chose light mode. Theming this pair would make it track the
+ *  app's surface, which is precisely the background it is NOT over.
+ *  Usage:
+ *    <figcaption class="juno-canvas-ink">Sector 7 · 1.2 km</figcaption>
+ *    <svg class="juno-canvas-ink"><path class="juno-canvas-ink__stroke" …/></svg>
+ *    <div class="juno-canvas-scrim">…chrome floating over the content…</div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Text. Four offset shadows rather than one blur: a blurred shadow fades at
+   the glyph's corners, which is exactly where a thin stroke needs the most
+   help, and it costs the same. `paint-order` is for SVG text, where a real
+   stroke is available and better. */
+.juno-canvas-ink {
+  color: var(--juno-ink-canvas-ink);
+  paint-order: stroke fill;
+  stroke: var(--juno-ink-canvas-halo);
+  stroke-width: var(--juno-ink-canvas-halo-width);
+  text-shadow:
+    var(--juno-ink-canvas-halo-width) 0 0 var(--juno-ink-canvas-halo),
+    calc(-1 * var(--juno-ink-canvas-halo-width)) 0 0 var(--juno-ink-canvas-halo),
+    0 var(--juno-ink-canvas-halo-width) 0 var(--juno-ink-canvas-halo),
+    0 calc(-1 * var(--juno-ink-canvas-halo-width)) 0 var(--juno-ink-canvas-halo);
+}
+
+/* Display sizes: a 2px halo reads as a hairline against a heavier stroke. */
+.juno-canvas-ink--lg {
+  stroke-width: var(--juno-ink-canvas-halo-width-lg);
+  text-shadow:
+    var(--juno-ink-canvas-halo-width-lg) 0 0 var(--juno-ink-canvas-halo),
+    calc(-1 * var(--juno-ink-canvas-halo-width-lg)) 0 0 var(--juno-ink-canvas-halo),
+    0 var(--juno-ink-canvas-halo-width-lg) 0 var(--juno-ink-canvas-halo),
+    0 calc(-1 * var(--juno-ink-canvas-halo-width-lg)) 0 var(--juno-ink-canvas-halo);
+}
+
+/* Vector ink — measurement lines, selection outlines. Two passes: the halo
+   is the same path drawn wider underneath. In SVG give the halo element
+   this class and the mark element __stroke; in canvas, stroke twice. */
+.juno-canvas-ink__halo {
+  fill: none;
+  stroke: var(--juno-ink-canvas-halo);
+  stroke-width: calc(var(--juno-ink-canvas-halo-width) * 2);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.juno-canvas-ink__stroke {
+  fill: none;
+  stroke: var(--juno-ink-canvas-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Status over canvas. The themed role hues are chosen against s0–s3 and wash
+   out over a saturated backdrop, so these are the same hues at raised chroma.
+   Louder than the panel roles by design — they will look wrong on a panel. */
+.juno-canvas-ink--nominal { color: var(--juno-ink-vivid-nominal); }
+.juno-canvas-ink--active { color: var(--juno-ink-vivid-active); }
+.juno-canvas-ink--target { color: var(--juno-ink-vivid-target); }
+.juno-canvas-ink--caution { color: var(--juno-ink-vivid-caution); }
+.juno-canvas-ink--warning { color: var(--juno-ink-vivid-warning); }
+
+/* Chrome floating over live content. Deliberately NOT --juno-opacity-scrim
+   (0.62): that value suppresses a modal's background, and here the background
+   is the thing the chrome is annotating — greying it out defeats the purpose. */
+.juno-canvas-scrim {
+  background: color-mix(in srgb, var(--juno-s0) calc(var(--juno-ink-canvas-scrim) * 100%), transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* A translucent bar over moving content is the case where reduced
+   transparency matters most — the motion behind the text is the problem, not
+   the blur. Fall back to the opaque surface. */
+@media (prefers-reduced-transparency: reduce) {
+  .juno-canvas-scrim {
+    background: var(--juno-s0);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

@@ -248,6 +248,12 @@ StyleDictionary.registerFormat({
       const id = camel(t.path.slice(1));
       return `    public static let ${id} = JunoColor.hex(0x${h})`;
     });
+    const inkLines = coreTokens(dictionary)
+      .filter((t) => classify(val(t)) === 'color')
+      .map(
+        (t) =>
+          `    public static let ${camel(t.path)} = JunoColor.hex(0x${toHex(String(val(t))).slice(1)})`,
+      );
     const dimLines = coreTokens(dictionary)
       .filter((t) => /px$/.test(String(val(t))))
       .map((t) => `    public static let ${camel(t.path)}: CGFloat = ${parseFloat(val(t))}`);
@@ -265,6 +271,8 @@ public enum JunoColor {
 public enum JunoTokens {
 ${colorLines.join('\n')}
 
+${inkLines.join('\n')}
+
 ${dimLines.join('\n')}
 }
 `;
@@ -280,6 +288,12 @@ StyleDictionary.registerFormat({
       const id = camel(t.path.slice(1));
       return `  static const Color ${id} = Color(0xFF${h});`;
     });
+    const inkLines = coreTokens(dictionary)
+      .filter((t) => classify(val(t)) === 'color')
+      .map(
+        (t) =>
+          `  static const Color ${camel(t.path)} = Color(0xFF${toHex(String(val(t))).slice(1)});`,
+      );
     const dimLines = coreTokens(dictionary)
       .filter((t) => /px$/.test(String(val(t))))
       .map((t) => `  static const double ${camel(t.path)} = ${parseFloat(val(t))};`);
@@ -290,6 +304,8 @@ class JunoTokens {
   JunoTokens._();
 
 ${colorLines.join('\n')}
+
+${inkLines.join('\n')}
 
 ${dimLines.join('\n')}
 }
@@ -349,6 +365,13 @@ StyleDictionary.registerFormat({
         .map((t) => render(t, val(t)))
         .join('\n');
 
+    // Unthemed colours (ink.canvas.*, ink.vivid.*): they carry no palette or
+    // mode because the backing is arbitrary imagery, not an app surface.
+    const inks = emit(
+      'color',
+      (t, v) =>
+        `pub const ${screamingSnake(t.path)}: Rgba = Rgba::hex(0x${toHex(String(v)).slice(1)});`,
+    );
     const lengths = emit(
       'px',
       (t, v) => `pub const ${screamingSnake(t.path)}: f32 = ${f32Literal(numeric(v))};`,
@@ -432,6 +455,9 @@ ${paletteLines.join('\n\n')}
 
 // ── colors, flat ────────────────────────────────────────────────────────
 ${colorLines.join('\n')}
+
+// ── canvas ink — unthemed, for marks over arbitrary imagery ─────────────
+${inks}
 
 // ── lengths (px) ────────────────────────────────────────────────────────
 ${lengths}

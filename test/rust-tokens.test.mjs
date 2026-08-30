@@ -91,11 +91,15 @@ test('every core token reaches Rust in the form its value implies', () => {
       continue;
     }
     const want =
-      kind === 'text'
-        ? { type: '&str', value: JSON.stringify(String(value)) }
-        : kind === 'int'
-          ? { type: 'i32', value: String(numeric(value)) }
-          : { type: 'f32', value: f32Literal(numeric(value)) };
+      kind === 'color'
+        ? // unthemed colours (ink.canvas.*, ink.vivid.*) — no palette or mode,
+          // because the backing is arbitrary imagery rather than an app surface
+          { type: 'Rgba', value: `Rgba::hex(0x${toHex(String(value)).slice(1)})` }
+        : kind === 'text'
+          ? { type: '&str', value: JSON.stringify(String(value)) }
+          : kind === 'int'
+            ? { type: 'i32', value: String(numeric(value)) }
+            : { type: 'f32', value: f32Literal(numeric(value)) };
     if (got.type !== want.type || got.value !== want.value) {
       wrong.push(`${name}: want ${want.type} = ${want.value}, got ${got.type} = ${got.value}`);
     }
@@ -117,6 +121,8 @@ test('the value mapping is pinned, not derived from the thing it checks', () => 
   assert.equal(classify('160ms'), 'ms');
   assert.equal(classify(100), 'int');
   assert.equal(classify(0.45), 'float');
+  assert.equal(classify('#FFFFFF'), 'color');
+  assert.equal(classify('oklch(76% 0.28 148)'), 'color');
   assert.equal(classify('0 4px 14px rgb(0 0 0 / 0.35)'), 'text');
   assert.equal(classify("'B612', sans-serif"), 'text');
 
@@ -128,6 +134,9 @@ test('the value mapping is pinned, not derived from the thing it checks', () => 
     MOTION_DURATION_BASE_MS: { type: 'f32', value: '200.0' },
     Z_RAISED: { type: 'i32', value: '100' },
     OPACITY_DISABLED: { type: 'f32', value: '0.45' },
+    // an unthemed colour must not fall through to &str, which is what a
+    // classifier that did not know about them would produce
+    INK_CANVAS_HALO: { type: 'Rgba', value: 'Rgba::hex(0x000000)' },
   };
   for (const [name, want] of Object.entries(expect)) {
     const got = declared.get(name);
