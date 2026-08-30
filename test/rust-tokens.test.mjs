@@ -103,6 +103,46 @@ test('every core token reaches Rust in the form its value implies', () => {
   assert.deepEqual(wrong, []);
 });
 
+test('the value mapping is pinned, not derived from the thing it checks', () => {
+  // THE BLIND SPOT THIS CLOSES. `classify` is shared by the generator and by
+  // the assertions above — which is right for NAMES (a mismatch is a compile
+  // error either way) and wrong for the value mapping: mutate classify and
+  // both sides move together, so a duration emitted as a length passes. Two
+  // mutations survived on exactly that before this test existed.
+  //
+  // So the mapping is stated here as a specification, independently of the
+  // implementation. These are remembered values on purpose: they are the
+  // contract, not a copy of the data.
+  assert.equal(classify('24px'), 'px');
+  assert.equal(classify('160ms'), 'ms');
+  assert.equal(classify(100), 'int');
+  assert.equal(classify(0.45), 'float');
+  assert.equal(classify('0 4px 14px rgb(0 0 0 / 0.35)'), 'text');
+  assert.equal(classify("'B612', sans-serif"), 'text');
+
+  // ...and the same contract as it lands in the output, on real tokens. A
+  // length is not a duration, a count is not a ratio, and a CSS string is not
+  // silently numeric.
+  const expect = {
+    SIZE_TAP_COMFORTABLE: { type: 'f32', value: '44.0' },
+    MOTION_DURATION_BASE_MS: { type: 'f32', value: '200.0' },
+    Z_RAISED: { type: 'i32', value: '100' },
+    OPACITY_DISABLED: { type: 'f32', value: '0.45' },
+  };
+  for (const [name, want] of Object.entries(expect)) {
+    const got = declared.get(name);
+    assert.ok(got, `${name} is absent from the Rust output`);
+    assert.equal(got.type, want.type, `${name} has the wrong Rust type`);
+    assert.equal(got.value, want.value, `${name} has the wrong value`);
+  }
+  assert.equal(declared.get('SHADOW_2')?.type, '&str');
+  assert.match(declared.get('FONT_FAMILY_SANS')?.value ?? '', /^"/);
+
+  // a duration must NOT also appear without its suffix, which is what
+  // classifying ms as px produces
+  assert.equal(declared.get('MOTION_DURATION_BASE'), undefined);
+});
+
 test('the output carries nothing the source does not', () => {
   // The other direction, and the one that catches a hand-edit: a const with no
   // token behind it. Without this the file could accumulate values nobody can
