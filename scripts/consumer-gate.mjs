@@ -61,6 +61,8 @@ import {
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { baselineVerdict } from './gate-currency.mjs';
+
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const WORK = join(REPO, '.relgate');
 const STAGE = join(WORK, 'pack-src');
@@ -69,6 +71,9 @@ const CONSUMER = join(WORK, 'nexora');
 const DEFAULTS = {
   repo: 'git@github.com:junoput/nexora.git',
   ref: 'ios/develop',
+  // The branch `ref` is a lane OF. A lane far behind this is a consumer
+  // snapshot, not the consumer — see the currency check below.
+  baseline: 'develop',
   // The consumer's package directory — where package.json / node_modules live.
   subdir: 'web',
   // The dependency name in the consumer. nexora aliases the scoped package to
@@ -88,6 +93,8 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === '--dev') opts.dev = true;
   else if (a === '--repo') opts.repo = next();
   else if (a === '--ref') opts.ref = next();
+  else if (a === '--baseline') opts.baseline = next();
+  else if (a === '--no-baseline-check') opts.baseline = null;
   else if (a === '--subdir') opts.subdir = next();
   else if (a === '--as') opts.as = next();
   else if (a === '--drop-files') opts.dropFiles.push(next());
@@ -321,6 +328,66 @@ const consumerSha = run('git', ['rev-parse', 'HEAD'], CONSUMER, { capture: true 
 const pkgDir = join(CONSUMER, opts.subdir);
 if (!existsSync(join(pkgDir, 'package.json'))) die(`no package.json in ${pkgDir}`);
 record('consumer checked out', true, `${opts.ref} @ ${consumerSha.slice(0, 8)}`);
+
+// 4b. IS THIS CONSUMER STILL THE CONSUMER?
+//
+// The gate's claim is that a candidate "compiles into an app that consumes it".
+// It checks out a LANE by default, and a lane drifts: on 2026-08-26 this
+// reported GATE GREEN twice against a nexora ios/develop 260 commits behind its
+// own develop. The guard that would have failed — dockClearance.test.ts,
+// reading the shipped juno.css — did not exist on that branch yet. So the gate
+// proved "this candidate builds against a consumer snapshot from some weeks
+// ago", which is not the claim RELEASING.md makes for it (20260826-039).
+//
+// The remedy is the shape junoui already runs on ITSELF one section up: assert
+// the branch has taken its baseline back.
+//
+// Shallow clones make the comparison awkward, handled explicitly: with depth 1
+// on both sides there is no common history, so the fetch deepens until
+// merge-base can answer. If it still cannot, this FAILS — see baselineVerdict.
+if (opts.baseline && opts.baseline !== opts.ref) {
+  head('the consumer is current with its own baseline');
+  let outcome = null;
+  for (const depth of [50, 500, 0]) {
+    // EXPLICIT REFSPECS. The checkout is cloned with `--branch <ref>`, whose
+    // refspec maps that one branch only — so `git fetch origin develop` sets
+    // FETCH_HEAD and creates no `origin/develop` to compare against, and every
+    // comparison finds nothing. That is how this check reported "could not
+    // compare" on its own first run.
+    const spec = [opts.ref, opts.baseline].map((b) => `+refs/heads/${b}:refs/remotes/origin/${b}`);
+    const args = depth
+      ? ['fetch', '--depth', String(depth), 'origin', ...spec]
+      : ['fetch', '--unshallow', 'origin', ...spec];
+    const fetched = run('git', args, CONSUMER, { allowFail: true });
+    if (fetched.code !== 0 && depth === 0) {
+      // --unshallow errors on an already-complete repo, which is success here
+      run('git', ['fetch', 'origin', ...spec], CONSUMER, { allowFail: true });
+    }
+    const base = run('git', ['rev-parse', `origin/${opts.baseline}`], CONSUMER, {
+      allowFail: true,
+      capture: true,
+    });
+    if (base.code !== 0) continue;
+    const anc = run('git', ['merge-base', '--is-ancestor', base.out.trim(), 'HEAD'], CONSUMER, {
+      allowFail: true,
+    });
+    if (anc.code !== 0 && anc.code !== 1) continue;
+    const behindRun = run('git', ['rev-list', '--count', `HEAD..${base.out.trim()}`], CONSUMER, {
+      allowFail: true,
+      capture: true,
+    });
+    outcome = baselineVerdict({
+      ancestorCode: anc.code,
+      behind: behindRun.code === 0 ? behindRun.out.trim() : null,
+      ref: opts.ref,
+      baseline: opts.baseline,
+    });
+    break;
+  }
+  const { ok, detail } =
+    outcome ?? baselineVerdict({ ancestorCode: 2, ref: opts.ref, baseline: opts.baseline });
+  record(`${opts.ref} has taken ${opts.baseline} back`, ok, detail);
+}
 
 // 5. Install the consumer's own dependencies, then overwrite junoui with the
 //    candidate tarball.
