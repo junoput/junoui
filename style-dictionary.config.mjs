@@ -11,6 +11,15 @@
 
 import StyleDictionary from 'style-dictionary';
 import { toHex } from './scripts/color.mjs';
+import {
+  ROLES,
+  camel,
+  classify,
+  f32Literal,
+  numeric,
+  screamingSnake,
+  snake,
+} from './scripts/token-names.mjs';
 
 // ── value + name helpers ────────────────────────────────────────────────
 const val = (t) => t.original?.$value ?? t.$value ?? t.value;
@@ -20,14 +29,8 @@ const colorTokens = (d) => d.allTokens.filter((t) => isColorToken(t));
 
 // CSS/SCSS variable name from token path: space.16 → juno-space-16
 const flatName = (t) => 'juno-' + t.path.join('-');
-// camelCase identifier: color.standard.dark.nominal → colorStandardDarkNominal.
-// Hyphens in a segment (e.g. data-dim) are word breaks so native identifiers
-// stay valid: ['standard','dark','data-dim'] → standardDarkDataDim.
-const camel = (parts) =>
-  parts
-    .flatMap((p) => String(p).split('-'))
-    .map((w, i) => (i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1)))
-    .join('');
+// camel / snake / screamingSnake / ROLES / classify come from
+// scripts/token-names.mjs — see that file for why they are shared.
 
 // ── group color tokens into { palette: { mode: { role: value } } } ──────
 function byTheme(d, transform = (x) => x) {
@@ -38,23 +41,6 @@ function byTheme(d, transform = (x) => x) {
   }
   return themes;
 }
-const ROLES = [
-  'nominal',
-  'active',
-  'target',
-  'caution',
-  'warning',
-  'data',
-  'data-dim',
-  'label',
-  'muted',
-  'border',
-  'border-strong',
-  's0',
-  's1',
-  's2',
-  's3',
-];
 
 // ════════════════════════════════════════════════════════════════════════
 //  Formats
@@ -311,6 +297,165 @@ ${dimLines.join('\n')}
   },
 });
 
+// Rust — a const module for any native stack (egui, iced, Slint, Bevy,
+// Dioxus desktop, Tauri's Rust side). X1 / ticket 20260829-021.
+//
+// WHY IT EXISTS. Rust was the one mainstream native target missing, so a Rust
+// consumer had to hand-transcribe hex values — which drift silently on the
+// first patch release with no lint to catch the stale copy. That is the
+// mirrored-constant defect, and this file is how it stops being available.
+//
+// SHAPE. Flat consts like the Swift and Dart targets, PLUS a `Palette` struct
+// and one const per (palette, mode). A Rust app picks a theme at runtime and
+// wants a value it can pass around; fifteen loose constants per theme is not
+// that. The struct's fields and the constants that fill it both come from
+// ROLES, so a role cannot reach one and miss the other.
+StyleDictionary.registerFormat({
+  name: 'rust/juno-rust',
+  format: ({ dictionary }) => {
+    const colors = colorTokens(dictionary);
+
+    // flat color consts, one per palette/mode/role
+    const colorLines = colors.map((t) => {
+      const h = toHex(val(t)).slice(1);
+      return `pub const ${screamingSnake(t.path.slice(1))}: Rgba = Rgba::hex(0x${h});`;
+    });
+
+    // grouped, so a consumer can hold "the theme" as one value
+    const themes = {};
+    for (const t of colors) {
+      const [, palette, mode, role] = t.path;
+      ((themes[palette] ??= {})[mode] ??= {})[role] = toHex(val(t)).slice(1);
+    }
+    const paletteLines = [];
+    for (const [palette, modes] of Object.entries(themes)) {
+      for (const [mode, roles] of Object.entries(modes)) {
+        const fields = ROLES.map((r) => {
+          const hex = roles[r];
+          if (!hex) throw new Error(`rust target: ${palette}/${mode} has no \`${r}\` role`);
+          return `    ${snake([r])}: Rgba::hex(0x${hex}),`;
+        });
+        paletteLines.push(
+          `pub const ${screamingSnake([palette, mode])}: Palette = Palette {\n${fields.join('\n')}\n};`,
+        );
+      }
+    }
+
+    // core tokens, bucketed by the FORM of their value (see classify)
+    const core = coreTokens(dictionary);
+    const emit = (kind, render) =>
+      core
+        .filter((t) => classify(val(t)) === kind)
+        .map((t) => render(t, val(t)))
+        .join('\n');
+
+    const lengths = emit(
+      'px',
+      (t, v) => `pub const ${screamingSnake(t.path)}: f32 = ${f32Literal(numeric(v))};`,
+    );
+    const durations = emit(
+      'ms',
+      (t, v) => `pub const ${screamingSnake(t.path)}_MS: f32 = ${f32Literal(numeric(v))};`,
+    );
+    const ints = emit('int', (t, v) => `pub const ${screamingSnake(t.path)}: i32 = ${numeric(v)};`);
+    const floats = emit(
+      'float',
+      (t, v) => `pub const ${screamingSnake(t.path)}: f32 = ${f32Literal(numeric(v))};`,
+    );
+    const texts = emit(
+      'text',
+      (t, v) => `pub const ${screamingSnake(t.path)}: &str = ${JSON.stringify(String(v))};`,
+    );
+
+    const fieldDecls = ROLES.map((r) => `    pub ${snake([r])}: Rgba,`).join('\n');
+
+    return `// junoui design tokens — Rust. Generated; do not edit.
+//
+// Regenerate with \`npm run build\` in the junoui repo. Every value here comes
+// from the same DTCG source as the CSS, Swift, Dart and Android outputs, so a
+// token change reaches all of them at once. Do not transcribe these values
+// into your own crate: that copy is what goes stale.
+#![allow(dead_code)]
+
+/// A non-premultiplied sRGB color with 8 bits per channel.
+///
+/// Deliberately plain, and deliberately not a dependency on any UI crate:
+/// junoui does not know whether you are on egui, iced, Slint, Bevy or wgpu
+/// directly. Convert at your boundary — \`to_f32_array()\` is what most GPU
+/// paths want, and it is sRGB-encoded, NOT linear. If your pipeline expects
+/// linear (wgpu with a non-sRGB surface format), convert there; junoui cannot
+/// know which surface you created.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Rgba {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+    pub a: u8,
+}
+
+impl Rgba {
+    /// From a 0xRRGGBB literal, fully opaque.
+    pub const fn hex(v: u32) -> Self {
+        Self {
+            r: ((v >> 16) & 0xFF) as u8,
+            g: ((v >> 8) & 0xFF) as u8,
+            b: (v & 0xFF) as u8,
+            a: 0xFF,
+        }
+    }
+
+    /// sRGB-encoded components in 0.0..=1.0, in RGBA order.
+    pub const fn to_f32_array(self) -> [f32; 4] {
+        [
+            self.r as f32 / 255.0,
+            self.g as f32 / 255.0,
+            self.b as f32 / 255.0,
+            self.a as f32 / 255.0,
+        ]
+    }
+
+    /// The same color at a different alpha — for the opacity tokens below.
+    pub const fn with_alpha(self, a: u8) -> Self {
+        Self { a, ..self }
+    }
+}
+
+/// One theme's semantic roles. Fields are generated from junoui's role list,
+/// so every palette/mode constant below carries all of them.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Palette {
+${fieldDecls}
+}
+
+// ── themes ──────────────────────────────────────────────────────────────
+${paletteLines.join('\n\n')}
+
+// ── colors, flat ────────────────────────────────────────────────────────
+${colorLines.join('\n')}
+
+// ── lengths (px) ────────────────────────────────────────────────────────
+${lengths}
+
+// ── durations (ms) ──────────────────────────────────────────────────────
+${durations}
+
+// ── whole numbers (z-index, font weight) ────────────────────────────────
+${ints}
+
+// ── ratios (opacity, line height) ───────────────────────────────────────
+${floats}
+
+// ── CSS-authored values, verbatim ───────────────────────────────────────
+//
+// Shadows and font stacks are authored as CSS and are shipped unparsed. A
+// Rust renderer cannot consume \`0 4px 14px rgb(0 0 0 / 0.35)\` directly — it is
+// here so the values exist in one place and a webview or a parser can reach
+// them, not as ready-made native input.
+${texts}
+`;
+  },
+});
+
 // ════════════════════════════════════════════════════════════════════════
 //  Build — single source, no transforms (values stay literal / authored).
 // ════════════════════════════════════════════════════════════════════════
@@ -364,6 +509,11 @@ const sd = new StyleDictionary({
       transforms: [],
       buildPath: 'dist/flutter/',
       files: [{ destination: 'juno_tokens.dart', format: 'flutter/juno-dart' }],
+    },
+    rust: {
+      transforms: [],
+      buildPath: 'dist/rust/',
+      files: [{ destination: 'juno_tokens.rs', format: 'rust/juno-rust' }],
     },
   },
 });

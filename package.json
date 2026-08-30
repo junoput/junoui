@@ -48,6 +48,7 @@
     "./android/dimens": "./dist/android/dimens.xml",
     "./ios": "./dist/ios/JunoTokens.swift",
     "./flutter": "./dist/flutter/juno_tokens.dart",
+    "./rust": "./dist/rust/juno_tokens.rs",
     "./icons": "./dist/icons/juno-icons.svg",
     "./subset": "./tools/subset-sprite.mjs",
     "./testing": "./tools/testing.mjs",
