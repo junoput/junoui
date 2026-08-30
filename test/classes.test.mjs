@@ -16,7 +16,7 @@ import {
   tokenNames,
 } from '../scripts/build-classes.mjs';
 import { assertJunoClasses, junoClassesIn, loadJunoClasses } from '../tools/testing.mjs';
-import { TOUCH_SURFACES } from '../src/css/touch-surfaces.mjs';
+import { TOUCH_SURFACES, touchDefaultsCss } from '../src/css/touch-surfaces.mjs';
 
 const manifest = loadJunoClasses();
 const components = () => readdirSync('src/css/components').map((f) => `src/css/components/${f}`);
@@ -132,6 +132,16 @@ test('the two touch defaults are generated from one member list', () => {
 
   assert.deepEqual(names(ta[1]), [...TOUCH_SURFACES].sort());
   assert.deepEqual(names(th[1]), names(ta[1]), 'the two lists have drifted apart again');
+
+  // Membership, not just agreement. The two lists comparing equal to each
+  // other and to TOUCH_SURFACES is satisfied by dropping a member from all
+  // three — which is exactly the regression this change fixed, since the
+  // shorter of the two hand-written lists was a strict subset. These four are
+  // the ones it omitted; losing any of them again puts a UA highlight square
+  // back behind a rounded control.
+  for (const c of ['juno-chip', 'juno-pillbar__overflow', 'juno-seg__opt', 'juno-toggle-btn']) {
+    assert.ok(TOUCH_SURFACES.includes(c), `${c} was dropped from the touch surfaces`);
+  }
 });
 
 test('the touch defaults are not hand-written in base.css any more', () => {
@@ -156,14 +166,18 @@ test('only the tap highlight is gated on a coarse pointer', () => {
   // trackpad) reports a fine primary pointer while still taking touch input,
   // and the property is inert on a mouse anyway. The highlight only exists on
   // touch, so it is gated.
-  const css = readFileSync('dist/css/juno.css', 'utf8');
-  const taAt = css.search(/:where\([^)]*\)\s*\{\s*touch-action: manipulation/);
-  const coarseAt = css.indexOf('@media (pointer: coarse)', taAt);
-  const thAt = css.search(/:where\([^)]*\)\s*\{\s*-webkit-tap-highlight-color/);
-  assert.ok(taAt > -1 && thAt > -1);
-  assert.ok(coarseAt > -1 && coarseAt < thAt, 'the tap highlight is not inside a coarse block');
-  // and the touch-action rule sits before that block opens
-  assert.ok(taAt < coarseAt, 'touch-action got gated on pointer type');
+  // Asked of the GENERATED SOURCE, not of an index comparison in the bundle:
+  // `indexOf('@media …', taAt)` finds the NEXT coarse block, so it stays
+  // satisfied when the touch-action rule is itself wrapped in one. That
+  // mutation survived until this was rewritten.
+  const gen = touchDefaultsCss();
+  const taAt = gen.indexOf('touch-action: manipulation');
+  const mediaAt = gen.indexOf('@media');
+  const thAt = gen.indexOf('-webkit-tap-highlight-color');
+  assert.ok(taAt > -1 && mediaAt > -1 && thAt > -1, 'the generated layer lost a rule');
+  assert.ok(taAt < mediaAt, 'touch-action got gated on pointer type');
+  assert.ok(mediaAt < thAt, 'the tap highlight is no longer inside the coarse block');
+  assert.match(gen.slice(mediaAt), /^@media \(pointer: coarse\)/);
 });
 
 test('components group into block, elements and modifiers', () => {
