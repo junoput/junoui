@@ -1,0 +1,259 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Tree / outliner (nested rows, disclosure, selection)
+ *  Layer stacks, file browsers, settings trees, org charts, comment
+ *  threads, nested navigation. Where .juno-list is flat and
+ *  .juno-accordion is single-level, this nests to arbitrary depth and
+ *  carries a selection.
+ *
+ *  ZERO JS FOR THE VISUALS. Indentation comes from the nested `role=group`
+ *  lists the ARIA pattern already requires, so depth costs no custom
+ *  property and no inline style; collapse is `[aria-expanded='false']`
+ *  hiding the child group. The app owns the attribute, exactly like
+ *  __item's aria-pressed elsewhere in junoui.
+ *
+ *  KEYBOARD IS NOT OPTIONAL and is not CSS. A tree without arrow-key
+ *  traversal and a roving tabindex is a list of buttons wearing tree
+ *  roles. junoui ships the contract in docs/components/tree.md and a
+ *  stateless enhancer at `junoui/tree` — use one or the other, but a tree
+ *  that has neither is not accessible and no stylesheet can fix it.
+ *
+ *  Usage (the markup the roles require — see the doc for the full ARIA
+ *  contract, which is the half apps get wrong):
+ *    <ul class="juno-tree" role="tree" aria-label="Scene">
+ *      <li class="juno-tree__item" role="treeitem" aria-level="1"
+ *          aria-expanded="true" aria-selected="false">
+ *        <div class="juno-tree__row">
+ *          <button class="juno-tree__caret" tabindex="-1" aria-hidden="true"></button>
+ *          <svg class="juno-icon juno-tree__icon" aria-hidden="true">…</svg>
+ *          <span class="juno-tree__label">Terrain</span>
+ *          <span class="juno-tree__count">12</span>
+ *          <span class="juno-tree__trail">…</span>
+ *          <button class="juno-tree__handle" aria-label="Reorder Terrain"></button>
+ *        </div>
+ *        <ul class="juno-tree__group" role="group">…</ul>
+ *      </li>
+ *    </ul>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-tree {
+  --juno-role: var(--juno-active);
+
+  /* One indent step. Applied per nested group, so depth is structural and
+     arbitrary rather than a level number someone has to keep in sync. */
+  --juno-tree-indent: var(--juno-space-16);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--juno-font-family-sans);
+  font-size: var(--juno-font-size-13);
+  color: var(--juno-data);
+}
+
+.juno-tree__group {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--juno-tree-indent);
+  list-style: none;
+}
+
+/* Collapsed: the child group goes. `display: none` and not a height
+   animation — a tree collapses an unknown number of rows at an unknown
+   depth, so there is no end value to transition to, and interpolate-size
+   is not available everywhere junoui targets. */
+.juno-tree__item[aria-expanded='false'] > .juno-tree__group {
+  display: none;
+}
+
+.juno-tree__row {
+  display: flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+  inline-size: 100%;
+  min-block-size: var(--juno-size-tap-min);
+  padding-inline: var(--juno-space-8);
+  padding-block: var(--juno-space-4);
+  border: none;
+  border-radius: var(--juno-radius-3);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.juno-tree__row:hover {
+  background: var(--juno-s2);
+}
+
+/* SELECTION is a different fact from hover and from aria-current, and the
+   ticket is right that conflating them is the common bug: hover is where the
+   pointer is, aria-current is which page you are on, aria-selected is what
+   the next action will apply to. A layer stack has all three at once. */
+.juno-tree__item[aria-selected='true'] > .juno-tree__row {
+  background: var(--juno-s3);
+  color: var(--juno-role);
+}
+
+.juno-tree__item[aria-current] > .juno-tree__row {
+  box-shadow: inset var(--juno-border-width-2) 0 0 var(--juno-role);
+}
+
+.juno-tree__row:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-border-width-2));
+}
+
+/* ── disclosure caret ──────────────────────────────────────────────────
+   aria-hidden and tabindex=-1 on purpose: the row itself is the treeitem
+   and Left/Right already collapse and expand, so a separately focusable
+   caret puts a second stop in the tab order for an action the row has. It
+   stays a real button for the pointer. */
+.juno-tree__caret {
+  flex-shrink: 0;
+  inline-size: var(--juno-space-16);
+  block-size: var(--juno-space-16);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--juno-label);
+  cursor: pointer;
+  transition: transform var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-tree__caret::before {
+  content: '';
+  inline-size: 0;
+  block-size: 0;
+  border-block: calc(var(--juno-space-4) + 1px) solid transparent;
+  border-inline-start: calc(var(--juno-space-4) + 2px) solid currentcolor;
+}
+
+.juno-tree__item[aria-expanded='true'] > .juno-tree__row > .juno-tree__caret {
+  transform: rotate(90deg);
+}
+
+/* A leaf keeps the caret's box so labels line up down the column, but paints
+   nothing — an empty gap would let sibling labels wander. */
+.juno-tree__item:not([aria-expanded]) > .juno-tree__row > .juno-tree__caret {
+  visibility: hidden;
+  cursor: default;
+}
+
+.juno-tree__icon {
+  flex-shrink: 0;
+  color: var(--juno-label);
+}
+
+.juno-tree__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Count badge on a group row. Pushed to the trailing edge with the rest of
+   the trailing furniture. */
+.juno-tree__count {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  font-size: var(--juno-font-size-11);
+  font-variant-numeric: tabular-nums;
+  color: var(--juno-muted);
+}
+
+/* The same trailing-control slot .juno-list__row has: a switch, a menu
+   trigger, a value. Follows the count when both are present. */
+.juno-tree__trail {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--juno-space-8);
+}
+
+.juno-tree__count + .juno-tree__trail {
+  margin-inline-start: 0;
+}
+
+/* ── reorder handle ────────────────────────────────────────────────────
+   The AFFORDANCE and its hit area; the reorder logic is the app's, which is
+   junoui's usual line. It is a real button and always visible on touch: a
+   long-press-drag is the obvious gesture and the wrong one, because a tree
+   sitting on or beside a pan/zoom surface has to let the pan win. An
+   explicit handle is the only unambiguous target — see the doc.
+   `touch-action: none` on the handle ALONE, so dragging it never scrolls
+   while the rest of the row still pans normally. */
+.juno-tree__handle {
+  flex-shrink: 0;
+  inline-size: var(--juno-space-16);
+  block-size: var(--juno-space-16);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--juno-muted);
+  cursor: grab;
+  touch-action: none;
+}
+
+.juno-tree__handle:active {
+  cursor: grabbing;
+}
+
+.juno-tree__handle::before {
+  content: '';
+  inline-size: var(--juno-space-10);
+  block-size: var(--juno-border-width-1);
+  box-shadow:
+    0 calc(-1 * var(--juno-space-4)) 0 currentcolor,
+    0 var(--juno-space-4) 0 currentcolor;
+  background: currentcolor;
+}
+
+/* The row being dragged, while the app moves it. */
+.juno-tree__item[data-juno-dragging] > .juno-tree__row {
+  opacity: var(--juno-opacity-muted);
+}
+
+/* Drop target edge. A line rather than a filled row: the drop lands BETWEEN
+   rows, and a filled highlight says "into this one", which is a different
+   operation in a tree and the one users complain about. */
+.juno-tree__item[data-juno-drop='before'] > .juno-tree__row {
+  box-shadow: inset 0 var(--juno-border-width-2) 0 var(--juno-active);
+}
+
+.juno-tree__item[data-juno-drop='after'] > .juno-tree__row {
+  box-shadow: inset 0 calc(-1 * var(--juno-border-width-2)) 0 var(--juno-active);
+}
+
+.juno-tree__item[data-juno-drop='into'] > .juno-tree__row {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-border-width-2));
+}
+
+/* ── touch ─────────────────────────────────────────────────────────────
+   The caret and the handle paint small so a dense tree stays dense, but a
+   16px target is not tappable. Grow the HIT AREA only, with a transparent
+   overlay, exactly as .nx-check does downstream: a 44px painted caret would
+   swallow the row it sits in. The row's own floor comes from
+   --juno-size-tap-min, which base.css promotes on a coarse pointer. */
+@media (pointer: coarse) {
+  .juno-tree__caret,
+  .juno-tree__handle {
+    position: relative;
+  }
+
+  .juno-tree__caret::after,
+  .juno-tree__handle::after {
+    content: '';
+    position: absolute;
+
+    /* (44 - 16) / 2 = 14 */
+    inset: calc(-1 * (var(--juno-size-tap-comfortable) - var(--juno-space-16)) / 2);
+  }
+}

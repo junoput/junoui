@@ -226,7 +226,8 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
   .juno-menu__item,
   .juno-seg__opt,
   .juno-chip,
-  .juno-toggle-btn
+  .juno-toggle-btn,
+  .juno-tree__row
 ) {
   touch-action: manipulation;
 }
