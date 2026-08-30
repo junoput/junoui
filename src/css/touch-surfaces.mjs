@@ -51,6 +51,7 @@ export const TOUCH_SURFACES = [
   'juno-gizmo__center',
   'juno-swatch--button',
   'juno-palette__option',
+  'juno-splitter',
 ];
 
 /** The `:where()` selector list, formatted for the bundle. */
