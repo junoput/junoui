@@ -34,6 +34,21 @@ const svg = subsetSprite(sprite, ['gear', 'x', 'squares-four']);
   decoration.
 - Node-only tooling on purpose: subsetting at runtime would defeat the point.
 
+## What is in the set
+
+Phosphor Icons (bold), MIT — one family, one licence, vendored under
+`src/icons/` with the licence beside them. Media, files, system and status,
+plus a spatial group for map, GIS, CAD and 3D consumers: `crosshair`,
+`crosshair-simple`, `ruler`, `polygon`, `path`, `map-pin`, `map-trifold`,
+`stack`, `globe`, `mountains`, `cube`, `compass`, `scissors`, `selection`.
+
+**Adding an icon means adding a Phosphor bold glyph.** Not "an icon that looks
+similar" — the set's value is that it is one family, and a glyph from elsewhere
+arrives on a different canvas, at a different optical weight, often carrying its
+own `fill`. `test/icons-family.test.mjs` enforces the contract: one `0 0 256 256`
+canvas, colour inherited via `currentColor`, no `<style>`, no classes, no
+external references, and the sprite and `src/icons/` agreeing in both directions.
+
 ## Vite
 
 ```js
@@ -76,7 +91,7 @@ installSprite(sprite);
 | Export                 | Carries                   | Use                                           |
 | ---------------------- | ------------------------- | --------------------------------------------- |
 | `junoui/icons/install` | ~1 kB, no icons           | You subset. Pass your own sprite.             |
-| `junoui/icons/inline`  | the full 66-symbol sprite | You don't subset. Import for the side effect. |
+| `junoui/icons/inline`  | the full 80-symbol sprite | You don't subset. Import for the side effect. |
 
 - **Both are id-guarded on the same `juno-icon-sprite` holder**, so importing
   the full module alongside a subset does not produce two hidden holders
