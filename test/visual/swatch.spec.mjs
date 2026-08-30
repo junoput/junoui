@@ -65,8 +65,19 @@ test('the selected option carries a second, non-colour cue', async ({ page: pw }
     off: getComputedStyle(document.getElementById('off')).boxShadow,
   }));
   expect(shadows.on).not.toBe(shadows.off);
-  // three layers on the selected one: inset ring, outset ring, active ring
-  expect(shadows.on.split(/,(?![^(]*\))/).length).toBeGreaterThan(
-    shadows.off.split(/,(?![^(]*\))/).length,
-  );
+
+  // The ring must carry the ACTIVE ROLE, not merely add a layer. A mutation
+  // replacing it with `0 0 0 0 transparent` kept the layer count and the
+  // strings different, and survived a count comparison — the ring was gone and
+  // the test said nothing.
+  const active = await pw.evaluate(() => {
+    const probe = document.createElement('span');
+    probe.style.color = 'var(--juno-active)';
+    document.body.append(probe);
+    const c = getComputedStyle(probe).color;
+    probe.remove();
+    return c;
+  });
+  expect(shadows.on, 'the selected ring is not painted in the active role').toContain(active);
+  expect(shadows.off).not.toContain(active);
 });
