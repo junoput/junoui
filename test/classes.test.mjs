@@ -2,7 +2,7 @@
 // 20260826-036). Static analysis plus the helper run against fixtures; no DOM.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, mkdtempSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -16,8 +16,10 @@ import {
   tokenNames,
 } from '../scripts/build-classes.mjs';
 import { assertJunoClasses, junoClassesIn, loadJunoClasses } from '../tools/testing.mjs';
+import { TOUCH_SURFACES, touchDefaultsCss } from '../src/css/touch-surfaces.mjs';
 
 const manifest = loadJunoClasses();
+const components = () => readdirSync('src/css/components').map((f) => `src/css/components/${f}`);
 
 test('the manifest ships and describes this build', () => {
   const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
@@ -96,20 +98,86 @@ test('the shipped typo classes are gone and the real ones are present', () => {
   assert.ok(!manifest.all.includes('juno-list__item'));
 });
 
-test('every class named in a touch-default list is in the manifest', () => {
-  // Slice 2 will generate these lists FROM the manifest; until then this is
-  // the same guarantee stated as a check. Both mistyped members would fail
-  // here.
-  const base = readFileSync('src/css/base.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ');
-  const named = new Set();
-  for (const m of base.matchAll(/:where\(([^)]*)\)/g)) {
-    for (const c of m[1].matchAll(/\.(juno-[\w-]+)/g)) named.add(c[1]);
+test('every declared touch surface is a class some component defines', () => {
+  // Slice 2's guarantee, and the one that makes the generated lists safe.
+  //
+  // NOT against the manifest: the manifest is built from the bundle, and the
+  // bundle now CONTAINS the generated `:where()` lists — so a misspelled
+  // member would appear as a selector, land in `all`, and vouch for itself.
+  // Checked against the component sources instead, which is the non-circular
+  // question: does a rule define this class anywhere other than the touch
+  // block that names it?
+  const defined = new Set();
+  for (const f of components()) {
+    for (const m of definedClasses(readFileSync(f, 'utf8'))) defined.add(m);
   }
-  assert.ok(named.size > 5, 'the :where() lists were not found');
   assert.deepEqual(
-    [...named].filter((c) => !manifest.all.includes(c)),
+    TOUCH_SURFACES.filter((c) => !defined.has(c)),
     [],
+    'declared as a touch surface but no component defines it',
   );
+});
+
+test('the two touch defaults are generated from one member list', () => {
+  // The defect this replaces was TWO hand-maintained lists that had drifted
+  // from each other: the tap-highlight set was a strict subset, missing four
+  // rounded tappables, with nothing recording whether that was deliberate.
+  const css = readFileSync('dist/css/juno.css', 'utf8');
+  const names = (sel) => [...sel.matchAll(/\.(juno-[\w-]+)/g)].map((m) => m[1]).sort();
+
+  const ta = /:where\(([^)]*)\)\s*\{\s*touch-action: manipulation/.exec(css);
+  const th = /:where\(([^)]*)\)\s*\{\s*-webkit-tap-highlight-color/.exec(css);
+  assert.ok(ta, 'the touch-action default is not in the bundle');
+  assert.ok(th, 'the tap-highlight default is not in the bundle');
+
+  assert.deepEqual(names(ta[1]), [...TOUCH_SURFACES].sort());
+  assert.deepEqual(names(th[1]), names(ta[1]), 'the two lists have drifted apart again');
+
+  // Membership, not just agreement. The two lists comparing equal to each
+  // other and to TOUCH_SURFACES is satisfied by dropping a member from all
+  // three — which is exactly the regression this change fixed, since the
+  // shorter of the two hand-written lists was a strict subset. These four are
+  // the ones it omitted; losing any of them again puts a UA highlight square
+  // back behind a rounded control.
+  for (const c of ['juno-chip', 'juno-pillbar__overflow', 'juno-seg__opt', 'juno-toggle-btn']) {
+    assert.ok(TOUCH_SURFACES.includes(c), `${c} was dropped from the touch surfaces`);
+  }
+});
+
+test('the touch defaults are not hand-written in base.css any more', () => {
+  // A second copy would win or lose on source order and nobody would know.
+  //
+  // Scoped to `:where()` lists, not to the properties: base.css legitimately
+  // declares touch-action on the opt-in gesture utilities
+  // (.juno-gesture-surface, .juno-pan-x/-y), which are a different contract —
+  // an element whose pointer events an app's own JS owns, not one of junoui's
+  // tappable components.
+  const base = readFileSync('src/css/base.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ');
+  for (const m of base.matchAll(/:where\([^)]*\)\s*\{([^}]*)\}/g)) {
+    assert.ok(
+      !/touch-action|-webkit-tap-highlight-color/.test(m[1]),
+      'base.css hand-writes a touch default again; it is generated',
+    );
+  }
+});
+
+test('only the tap highlight is gated on a coarse pointer', () => {
+  // touch-action must NOT be: a hybrid device (touch laptop, iPad with a
+  // trackpad) reports a fine primary pointer while still taking touch input,
+  // and the property is inert on a mouse anyway. The highlight only exists on
+  // touch, so it is gated.
+  // Asked of the GENERATED SOURCE, not of an index comparison in the bundle:
+  // `indexOf('@media …', taAt)` finds the NEXT coarse block, so it stays
+  // satisfied when the touch-action rule is itself wrapped in one. That
+  // mutation survived until this was rewritten.
+  const gen = touchDefaultsCss();
+  const taAt = gen.indexOf('touch-action: manipulation');
+  const mediaAt = gen.indexOf('@media');
+  const thAt = gen.indexOf('-webkit-tap-highlight-color');
+  assert.ok(taAt > -1 && mediaAt > -1 && thAt > -1, 'the generated layer lost a rule');
+  assert.ok(taAt < mediaAt, 'touch-action got gated on pointer type');
+  assert.ok(mediaAt < thAt, 'the tap highlight is no longer inside the coarse block');
+  assert.match(gen.slice(mediaAt), /^@media \(pointer: coarse\)/);
 });
 
 test('components group into block, elements and modifiers', () => {

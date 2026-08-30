@@ -20,6 +20,8 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 
+import { touchDefaultsCss } from '../src/css/touch-surfaces.mjs';
+
 const TOKENS = 'dist/css/juno-tokens.css';
 const SRC = 'src/css';
 const OUT = 'dist/css/juno.css';
@@ -34,6 +36,14 @@ const parts = [];
 
 parts.push(read(TOKENS));
 parts.push(read(join(SRC, 'base.css')));
+
+// The touch defaults, generated from ONE declared member list so the two rules
+// that share it cannot drift from each other or from the classes. Emitted
+// straight after base.css, where they were authored by hand until 20260826-024
+// found two members naming classes that do not exist. `:where()` carries zero
+// specificity, so position among the layers is not load-bearing — but keeping
+// them beside base's other resets is where a reader will look.
+parts.push(touchDefaultsCss().trim());
 parts.push(read(join(SRC, 'layout.css')));
 parts.push(read(join(SRC, 'density.css')));
 parts.push(read(join(SRC, 'typescale.css')));

@@ -121,9 +121,21 @@ file that deliberately names wrong classes, and 3 consumer-owned names.
    Generated, the typo class of defect cannot exist and the divergence becomes
    a visible decision.
 
-**Open question for review:** the two lists should probably become one set with
-a per-property opt-out, but "which primitives want `manipulation`" and "which
-want the highlight killed" may genuinely differ. Needs a decision, not a merge.
+**Shipped**, and the question is answered: **one set**, decided on the rules'
+own rationales rather than merged for tidiness. The tap-highlight rule exists so
+a UA square "never flashes past a rounded control on tap", and every name the
+shorter list omitted is a rounded tappable — `.juno-chip` and
+`.juno-pillbar__overflow` are 999px pills, `.juno-seg__opt` and
+`.juno-toggle-btn` carry `radius-3`. The omission had no stated reason and the
+rationale covers them, so it was an omission, not a decision.
+
+`src/css/touch-surfaces.mjs` declares the set; `bundle-css.mjs` emits both
+rules. `touch-action` stays out of the coarse block (a hybrid device reports a
+fine primary pointer while still taking touch input); the highlight stays in it.
+
+The guard checks the declared set against the **component sources**, not the
+manifest — the manifest is built from the bundle, and the bundle now contains
+these lists, so a misspelled member would vouch for itself there.
 
 ## C. Pointer-first responsiveness
 
@@ -225,17 +237,17 @@ the guard that would have failed did not exist on that branch (20260826-039).
 
 ## Sequencing
 
-| Slice | Contents                                     | Depends on |
-| ----- | -------------------------------------------- | ---------- |
-| ~~1~~ | ~~A (manifest + helper)~~ — **shipped**      | —          |
-| 2     | B2 (generate the `:where()` lists)           | 1          |
-| 3     | C (one pointer-first mechanism)              | —          |
-| 4     | D (buckets + floating chrome owns its inset) | 3          |
-| 5     | E (pillbar budget)                           | —          |
-| 6     | F (doctor)                                   | 1, 3       |
-| 7     | G (checklist, reduced to what F checks)      | 6          |
+| Slice | Contents                                             | Depends on |
+| ----- | ---------------------------------------------------- | ---------- |
+| ~~1~~ | ~~A (manifest + helper)~~ — **shipped**              | —          |
+| ~~2~~ | ~~B2 (generate the `:where()` lists)~~ — **shipped** | 1          |
+| 3     | C (one pointer-first mechanism)                      | —          |
+| 4     | D (buckets + floating chrome owns its inset)         | 3          |
+| 5     | E (pillbar budget)                                   | —          |
+| 6     | F (doctor)                                           | 1, 3       |
+| 7     | G (checklist, reduced to what F checks)              | 6          |
 
-Slice 1, B1 and E-for-dock are done. 024–027 are absorbed and closed.
+Slices 1 and 2, B1 and E-for-dock are done. 024–027 are absorbed and closed.
 
 **Review asks:** the three open questions above (A's public subset, B's two
 lists, C's condition), and whether slice 6 is worth its cost before slice 1
