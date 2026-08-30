@@ -113,6 +113,21 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 | `shadow.2` | `0 4px 14px rgb(0 0 0 / 0.35)` | `var(--juno-shadow-2)` | `JunoTokens.shadow2` |
 | `shadow.3` | `0 12px 32px rgb(0 0 0 / 0.50)` | `var(--juno-shadow-3)` | `JunoTokens.shadow3` |
 
+### ink
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `ink.canvas.ink` | `#FFFFFF` | `var(--juno-ink-canvas-ink)` | `JunoTokens.inkCanvasInk` |
+| `ink.canvas.halo` | `#000000` | `var(--juno-ink-canvas-halo)` | `JunoTokens.inkCanvasHalo` |
+| `ink.canvas.halo-width` | `2px` | `var(--juno-ink-canvas-halo-width)` | `JunoTokens.inkCanvasHalo-width` |
+| `ink.canvas.halo-width-lg` | `3px` | `var(--juno-ink-canvas-halo-width-lg)` | `JunoTokens.inkCanvasHalo-width-lg` |
+| `ink.canvas.scrim` | `0.28` | `var(--juno-ink-canvas-scrim)` | `JunoTokens.inkCanvasScrim` |
+| `ink.vivid.nominal` | `oklch(76% 0.28 148)` | `var(--juno-ink-vivid-nominal)` | `JunoTokens.inkVividNominal` |
+| `ink.vivid.active` | `oklch(76% 0.24 205)` | `var(--juno-ink-vivid-active)` | `JunoTokens.inkVividActive` |
+| `ink.vivid.target` | `oklch(70% 0.30 328)` | `var(--juno-ink-vivid-target)` | `JunoTokens.inkVividTarget` |
+| `ink.vivid.caution` | `oklch(82% 0.20 82)` | `var(--juno-ink-vivid-caution)` | `JunoTokens.inkVividCaution` |
+| `ink.vivid.warning` | `oklch(68% 0.28 25)` | `var(--juno-ink-vivid-warning)` | `JunoTokens.inkVividWarning` |
+
 ### Motion
 
 | Token | Value | CSS variable | Flutter / iOS |

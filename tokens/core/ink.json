@@ -1,0 +1,41 @@
+{
+  "$description": "Canvas ink — UI drawn over arbitrary imagery, where no background is known.",
+  "ink": {
+    "canvas": {
+      "$description": "junoui's contrast story assumes a controlled surface, s0 through s3: every role colour's ratio is computed against a known background. Content drawn over a photo, a map, a video frame or a camera feed has no known background — in one orthophoto a black shadow and a snowfield are adjacent pixels, so no single ink colour is legible and no contrast ratio can be asserted about one. These tokens are the halo answer: an ink and an outline that carry each other, so legibility stops depending on what is underneath. NOT themed, on purpose — see docs/canvas-ink.md.",
+      "ink": {
+        "$value": "#FFFFFF",
+        "$type": "color",
+        "$description": "The mark itself: glyphs, measurement lines, selection outlines. Near-white rather than a role hue because it must survive a saturated backdrop, and paired with `halo` it is the high-luminance half of the pair."
+      },
+      "halo": {
+        "$value": "#000000",
+        "$type": "color",
+        "$description": "The outline drawn behind and around `ink` (text-shadow, paint-order stroke, or a widened stroke pass). Pure black, and that is FORCED rather than chosen: with a white ink the worst backing is a mid grey where both halves are at their weakest, and the sweep floor there is 4.61:1 at #000000 against a 4.5:1 requirement. A tasteful near-black with a blue cast (#0A0C10) drops it to 4.43:1 and fails. The pair has ~0.1 of headroom, which is why both halves sit at the extremes of the luminance range and neither can be nudged for looks."
+      },
+      "halo-width": {
+        "$value": "2px",
+        "$type": "dimension",
+        "$description": "Outline width at body sizes. Two device pixels is the smallest that survives resampling on a moving map; below that the halo thins to nothing at the glyph's corners."
+      },
+      "halo-width-lg": {
+        "$value": "3px",
+        "$type": "dimension",
+        "$description": "Outline width for display sizes (font.size.20 and up), where a 2px halo reads as a hairline against the stroke weight."
+      },
+      "scrim": {
+        "$value": 0.28,
+        "$type": "number",
+        "$description": "Backdrop opacity for chrome floating OVER live content — a translucent bar on a map or a video. Deliberately distinct from opacity.scrim (0.62), which is tuned to suppress a full-screen modal's background and is far too heavy here: it would grey out the very content the chrome is annotating."
+      }
+    },
+    "vivid": {
+      "$description": "Role hues at raised chroma, for the same case. junoui's chrome-tuned hues are chosen against s0–s3 and wash out over a saturated backdrop; these are the same hues pushed out in chroma so a status colour still reads as that status over imagery. Use them ONLY over canvas, with a halo — they are deliberately louder than the themed roles and will look wrong on a panel.",
+      "nominal": { "$value": "oklch(76% 0.28 148)", "$type": "color" },
+      "active": { "$value": "oklch(76% 0.24 205)", "$type": "color" },
+      "target": { "$value": "oklch(70% 0.30 328)", "$type": "color" },
+      "caution": { "$value": "oklch(82% 0.20 82)", "$type": "color" },
+      "warning": { "$value": "oklch(68% 0.28 25)", "$type": "color" }
+    }
+  }
+}

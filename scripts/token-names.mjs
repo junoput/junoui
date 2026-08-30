@@ -63,6 +63,7 @@ export const screamingSnake = (parts) => snake(parts).toUpperCase();
  * `z.raised` is `100`, both "core" tokens, and a new group tomorrow carries
  * whatever it carries. The form is what a target has to be able to emit.
  *
+ *   color "#FFFFFF" / "oklch(…)" → an unthemed colour; Rgba in Rust
  *   px    "24px"    → a length; f32 in Rust
  *   ms    "160ms"   → a duration; f32 milliseconds
  *   int   100       → i32 (z-index, font weight)
@@ -72,6 +73,11 @@ export const screamingSnake = (parts) => snake(parts).toUpperCase();
 export function classify(value) {
   if (typeof value === 'number') return Number.isInteger(value) ? 'int' : 'float';
   const s = String(value).trim();
+  // A colour OUTSIDE the themed color.* tree — the canvas ink pair and the
+  // vivid role hues, which are deliberately unthemed (there is no known
+  // background to theme against). Native targets must emit these as colours,
+  // not as strings; the web keeps the authored value.
+  if (/^#[0-9a-fA-F]{6}$/.test(s) || /^oklch\(/i.test(s)) return 'color';
   if (/^-?\d+(\.\d+)?px$/.test(s)) return 'px';
   if (/^-?\d+(\.\d+)?ms$/.test(s)) return 'ms';
   if (/^-?\d+$/.test(s)) return 'int';
