@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- 6a63629: **Geospatial and 3D-viewport icons — the sprite goes from 66 to 80 symbols.**
+
+  The 0.7.0 sprite covered media, files, system and status with **zero spatial vocabulary**: no crosshair, no ruler, no polygon, no map pin, no globe, no layers stack, no compass, no cube. Every map, GIS, CAD or 3D consumer therefore sourced icons elsewhere — and the moment they did, half the UI stopped matching Phosphor bold, which is the cohesion junoui exists to provide.
+
+  Added, all Phosphor bold so the set stays one family and one licence: `crosshair`, `crosshair-simple`, `ruler`, `polygon`, `path`, `map-pin`, `map-trifold`, `stack`, `globe`, `mountains`, `cube`, `compass`, `scissors`, `selection`.
+
+  Nothing new is needed to use them — the `.juno-icon` sizing and colour contract is unchanged, and the existing subset tooling covers them. The showcase gallery renders from the sprite, so they appear there automatically.
+
+  `test/icons-family.test.mjs` now enforces the property the ticket actually cares about, which is cohesion rather than inventory: one `0 0 256 256` canvas for every symbol, colour inherited through `currentColor`, no `<style>` blocks, classes or external references, no empty symbols, the sprite and `src/icons/` agreeing in both directions, and the MIT licence travelling with the glyphs. A test that only counted symbols would pass with a Material crosshair dropped in beside Phosphor's.
+
+### Patch Changes
+
+- 28d6fd1: **The consumer gate now checks that its consumer is still the consumer.**
+
+  `gate:consumer` claims a candidate "compiles into an app that consumes it". It checks out a _lane_ by default (`ios/develop`), and a lane drifts: on 2026-08-26 it reported GATE GREEN twice against a nexora `ios/develop` that was **260 commits behind its own develop**, on which the guard that would have failed did not yet exist. The gate proved something true and much weaker than the sentence `RELEASING.md` uses to justify it.
+
+  New stage, the same shape junoui already runs on itself one section up: assert the checked-out branch has taken its baseline back. `--baseline` (default `develop`) and `--no-baseline-check` for a consumer that genuinely has no baseline.
+
+  It **fails closed**: if shallow history cannot support the comparison, that is not an answer and the stage is red, because a gate that cannot tell whether its consumer is current is the gate this replaces.
+
+  Internal to the release process; no consumer-facing change.
+
 ## 0.8.0
 
 ### Minor Changes
