@@ -189,47 +189,18 @@ code, kbd, samp, pre { font-family: var(--juno-font-family-mono); }
      `.juno-input` font-size later in the bundle. It did, silently, until
      20260815-006's coarse-pointer project measured it. */
 
-  /* Kill the UA tap-highlight square on the interactive surfaces so it never
-     flashes past a rounded control on tap. Consumers were adding this by hand
-     per component; make it a first-class touch default. See 20260802-020. */
-  :where(
-    .juno-btn,
-    .juno-dock__item,
-    .juno-pillbar__item,
-    .juno-tabs__tab,
-    .juno-list__row,
-    .juno-menu__item
-  ) {
-    -webkit-tap-highlight-color: transparent;
-  }
+  /* The tap-highlight default that used to live here is GENERATED now, from
+     src/css/touch-surfaces.mjs, together with the touch-action default that
+     shares its member list. Two hand-maintained lists had drifted from the
+     classes and from each other; see that file. */
 }
 
-/* Tappable primitives opt out of double-tap-to-zoom. A browser that still
-   recognises that gesture has to WAIT after the first tap to see whether a
-   second one is coming, which reads as a late, mushy tap on exactly the
-   surfaces a phone UI is built from. `manipulation` keeps panning and
-   pinch-zoom (so the page stays zoomable — never `none` here, that would be an
-   a11y regression) and drops only the double-tap.
-   NOT inside the pointer:coarse block above: a hybrid device (touch laptop,
-   iPad with a trackpad) reports a fine primary pointer while still taking
-   touch input, and the property is inert on a mouse anyway.
-   Community convention — no primary Apple/WebKit source names it; see
-   docs/ios-conformance.md. Named components only, so a consumer's own elements
-   are untouched. See 20260803-038. */
-:where(
-  .juno-btn,
-  .juno-dock__item,
-  .juno-pillbar__item,
-  .juno-pillbar__overflow,
-  .juno-tabs__tab,
-  .juno-list__row,
-  .juno-menu__item,
-  .juno-seg__opt,
-  .juno-chip,
-  .juno-toggle-btn
-) {
-  touch-action: manipulation;
-}
+/* The touch defaults that used to be two hand-maintained `:where()` lists here
+   are GENERATED from src/css/touch-surfaces.mjs and emitted straight after this
+   file. Both lists had drifted — from the classes (`.juno-seg__option`,
+   `.juno-list__item`: neither exists, so `:where()` matched nothing and the
+   rule parsed anyway) and from each other. One declared set now feeds both.
+   See 20260826-024 and docs/conformance-kit.md. */
 
 /* Gesture-owned surfaces — for an element whose pointer events are fully
    driven by app JS (drag-pan, pinch-zoom, swipe classification: a state
