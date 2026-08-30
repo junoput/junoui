@@ -77,6 +77,22 @@ test.describe('keyboard traversal', () => {
     await pw.locator('#satellite > .juno-tree__row').focus();
     expect(await tabbable()).toBe(1);
     expect(await focused(pw)).toBe('satellite');
+
+    // THE POINTER PATH, which keyboard traversal never exercises: a click
+    // focuses a row directly without going through the enhancer's own move, so
+    // only the focusin handler keeps the invariant. Removing that handler
+    // survived every other assertion in this file.
+    await pw.locator('#measurements > .juno-tree__row').click();
+    expect(await tabbable()).toBe(1);
+    expect(await focused(pw)).toBe('measurements');
+    expect(
+      await pw.evaluate(() => document.querySelector('#measurements > .juno-tree__row').tabIndex),
+    ).toBe(0);
+
+    // ...and an arrow key then continues from where the pointer left off,
+    // rather than jumping back to wherever focus notionally was.
+    await pw.keyboard.press('ArrowUp');
+    expect(await focused(pw)).toBe('labels');
   });
 
   test('down and up walk VISIBLE items across levels', async ({ page: pw }) => {

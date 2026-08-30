@@ -48,7 +48,14 @@ function visibleItems(root) {
 const rowOf = (item) => item.querySelector(':scope > .juno-tree__row') ?? item;
 
 /** Move the roving tabindex, and focus. Exactly one row is tabbable at a
- *  time; that is the difference between one Tab stop and one per node. */
+ *  time; that is the difference between one Tab stop and one per node.
+ *
+ *  The reset here and the one in `onFocusIn` are REDUNDANT ON PURPOSE, and
+ *  mutation testing is what turned that into a decision: removing either alone
+ *  leaves the invariant holding, because `row.focus()` below fires focusin.
+ *  They cover different entrances — this one the keyboard, that one a pointer
+ *  click, which never passes through here — so neither is dead, and a single
+ *  edit to either cannot leave two rows tabbable. */
 function focusItem(root, item) {
   for (const other of root.querySelectorAll(ITEM)) rowOf(other).tabIndex = -1;
   const row = rowOf(item);
