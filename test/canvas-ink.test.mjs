@@ -155,8 +155,21 @@ test('the pair ships as CSS a consumer can apply, not just as tokens', () => {
   const rule = /\.juno-canvas-ink\s*\{([^}]*)\}/.exec(css)?.[1] ?? '';
   assert.ok(rule, 'no .juno-canvas-ink rule in the bundle');
   assert.match(rule, /color:\s*var\(--juno-ink-canvas-ink\)/);
-  assert.match(rule, /var\(--juno-ink-canvas-halo\)/);
-  assert.match(rule, /text-shadow:/);
+
+  // ALL FOUR offsets, not "the halo appears somewhere in the rule". A
+  // mutation that painted one of the four `transparent` survived that weaker
+  // check: the glyph then loses its outline on one side, which over imagery
+  // is where the contrast was coming from. Four offsets rather than one
+  // blurred shadow because a blur fades at the glyph's corners, exactly where
+  // a thin stroke needs the most help.
+  const shadow = /text-shadow:([^;]*);/.exec(rule)?.[1] ?? '';
+  assert.ok(shadow, 'no text-shadow on .juno-canvas-ink');
+  assert.equal(
+    [...shadow.matchAll(/var\(--juno-ink-canvas-halo\)/g)].length,
+    4,
+    'the halo does not cover all four offsets',
+  );
+  assert.ok(!/transparent|none/.test(shadow), 'part of the halo is painted with no colour');
   // and the vector half, which is a different mechanism for the same pair
   assert.match(css, /\.juno-canvas-ink__halo\s*\{[^}]*var\(--juno-ink-canvas-halo\)/);
   assert.match(css, /\.juno-canvas-ink__stroke\s*\{[^}]*var\(--juno-ink-canvas-ink\)/);
