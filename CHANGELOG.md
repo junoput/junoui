@@ -1,5 +1,110 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- 584359f: **Canvas ink — a halo pair for UI drawn over arbitrary imagery.**
+
+  junoui's contrast story assumes a controlled surface, `s0` through `s3`: every role colour's ratio is computed against a known background. Content drawn over a photo, a map, a video frame or a camera feed has no known background — in one orthophoto a black shadow and a snowfield are adjacent pixels, so no single ink colour is legible and no contrast ratio can be asserted about one.
+
+  New `ink.canvas.ink` / `ink.canvas.halo`: a pair that spans the luminance range, applied together. Over a light backing the halo carries the contrast, over a dark one the ink does. Plus `ink.vivid.*` (role hues at raised chroma, since chrome-tuned hues wash out over a saturated backdrop) and `ink.canvas.scrim` (`0.28`, for chrome floating over live content — deliberately distinct from `opacity.scrim` at `0.62`, which suppresses a modal's background and here would grey out the content being annotated).
+
+  Shipped as CSS you can apply, not only as tokens: `.juno-canvas-ink` (+ `--lg` and the role modifiers), `.juno-canvas-ink__halo` / `__stroke` for vector marks, and `.juno-canvas-scrim` with a reduced-transparency fallback. Every platform target carries the tokens — CSS, SCSS, JS, Swift, Dart, Android and Rust.
+
+  **The pair is not themed**, on purpose: a satellite image does not get lighter because the user chose light mode.
+
+  **The halo is pure black because the arithmetic requires it.** The worst backing is a mid grey where both halves are weakest; the sweep floor there is 4.61:1 against a 4.5:1 requirement, and a near-black with a blue cast measures 4.43:1 and fails. The guard sweeps all 256 grey backings rather than sampling the extremes, which are the easy cases.
+
+  Additive: no existing token or output changes.
+
+- 63ddc0e: **Viewport orientation gizmo — compass ring, pitch arc, snap targets.**
+
+  The orientation widget any 3D or map viewport ships: a ring showing a heading with clickable snap targets, a secondary arc for a second angle (pitch, tilt, elevation) inside a clamped range, and a centre target that resets the view. For CAD and BIM viewers, product configurators, virtual tours, model previews, floor plans, and any map with a tilt.
+
+  **A ring, not a cube.** An Autodesk-style ViewCube is the wrong shape for anything with a privileged up-vector — a map, a terrain, a site plan — because there is no meaningful front, right or bottom face to click. A ring degrades to that case and generalises to free orbit; a cube does not go the other way.
+
+  **The app owns the camera.** It writes `--juno-gizmo-heading` and `--juno-gizmo-pitch`; junoui rotates the needle and the hand and never stores an angle.
+
+  The accessibility contract is why this is upstream rather than app-local: snap targets are real `<button>`s (focusable, activate on Enter _and_ Space, announced as controls, work in a screen reader's forms mode); every mark carries a real name, because `"N"` is a letter and not one; the widget is **one focus stop** with wrapping arrow keys, not eight tab stops for eight compass points; and the bearing is announced in words through a live region, because a rotating needle announces nothing and `"37deg"` is a number the listener has to convert.
+
+  ```js
+  import { enhanceGizmo, orientationLabel, bearingLabel } from 'junoui/gizmo';
+  bearingLabel(37); // → "north-east"
+  ```
+
+  **The ring's diameter is derived, not chosen:** `d ≥ tap · (1 / sin(π/N) + 1)`. The tap floor moves from 24px to 44px on a coarse pointer, so a hard-coded diameter ships eight overlapping targets to a phone.
+
+- cc1e29d: **Rust token target — `junoui/rust`.**
+
+  junoui compiles one DTCG source to CSS, SCSS, JS, Android XML, iOS Swift, Flutter Dart and DTCG JSON. Rust was the one mainstream native target missing, so a Rust consumer had to hand-transcribe hex values — which drift silently on the first patch release, with no lint to catch the stale copy. That is the mirrored-constant defect; this removes the reason to commit it.
+
+  `dist/rust/juno_tokens.rs` (exported as `junoui/rust`) is a dependency-free const module for any native Rust stack — egui, iced, Slint, Bevy, Dioxus desktop, Tauri's Rust side:
+
+  ```rust
+  let bg = STANDARD_DARK.s0.to_f32_array();   // a whole theme, picked at runtime
+  let accent = STANDARD_DARK_ACTIVE;          // or one role, flat
+  let gap = SPACE_16;                         // f32 px
+  let fade = MOTION_DURATION_BASE_MS;         // f32 milliseconds
+  ```
+
+  Colors become an `Rgba` struct with `const fn hex()`, `to_f32_array()` and `with_alpha()`; core tokens are bucketed by the **form** of their value rather than by which file they came from — `px` → `f32`, `ms` → `f32` suffixed `_MS`, whole numbers → `i32`, ratios → `f32`, and CSS-authored strings (shadows, font stacks) shipped verbatim as `&str`.
+
+  Beyond the flat constants the Swift and Dart targets ship, there is a `Palette` struct and one const per palette/mode, because a Rust app picks a theme at runtime and wants a value it can pass around. Its fields and the constants that fill it both come from junoui's role list, so a role cannot reach one and miss the other.
+
+  `to_f32_array()` is sRGB-encoded, not linear — convert at your boundary if your pipeline wants linear.
+
+  Additive: no existing output changes.
+
+- cd1dd93: **Colour swatch + palette.**
+
+  `classes.json` 0.7.0 had no class matching _swatch_ or _color_: no way to show a user-chosen colour or let someone pick one. For diagrams, calendars, tag and label systems, chart series colours, annotation tools, theming UIs and kanban boards.
+
+  **The hard part is not the square.** A swatch shows an arbitrary colour, so its border, its focus ring and its checked indicator all have to stay visible against a colour junoui has never seen. The border is a **pair** of hairlines that do different jobs: the inset one composites over the _swatch_ and edges it against its own fill; the outset one composites over the _panel_ and separates it from the surface. With the swatch's own contrast against that panel, the boundary has three ways to be visible and needs only one.
+
+  The alphas are measured, not chosen: at 0.45 / 0.35 a mid-grey swatch on a light panel leaves the best of the three at **2.57:1**, under the 3:1 non-text floor. At 0.65 the worst case is 3.39:1. The guard sweeps the swatch colour against both panels and keeps the old values as its control.
+
+  **Focus rings sit outside the swatch**, so their contrast is against the panel — a known surface. A ring drawn _on_ the swatch has the same unsolvable problem as the border, and a thicker ring does not fix a hue collision.
+
+  **Colour is never the only signal**, which is junoui's own rule and exactly what a bare swatch violates: every swatch carries an accessible name, the checked state is a **glyph** (with a dark halo, since it sits on the arbitrary colour) _plus_ a ring, and `--none` is a slash rather than a grey — a consumer without it paints unset as mid grey and the user cannot tell _grey_ from _none_.
+
+  `.juno-palette` is the grid that goes inside an existing `.juno-popover`; the app owns the colour list and the state.
+
+- 671db90: **Tree / outliner — nested rows, disclosure, selection, reorder.**
+
+  `.juno-list` is flat and `.juno-accordion` is single-level. `.juno-tree` nests to arbitrary depth and carries a selection, a count slot, the same trailing-control slot `.juno-list__row` has, and a reorder handle. For layer stacks, file browsers, settings trees, org charts, comment threads and nested navigation.
+
+  **Zero JS for the visuals.** Indentation comes from the nested `role="group"` lists the ARIA pattern already requires, so depth is structural — no per-row custom property, no level number to keep in sync with `aria-level`. Collapse is `[aria-expanded="false"]` on the item, which the app owns, exactly like `aria-pressed` elsewhere.
+
+  **Keyboard is not optional and is not CSS.** A tree without arrow-key traversal and a roving tabindex is a list of buttons wearing tree roles, so junoui ships a stateless enhancer at `junoui/tree`:
+
+  ```js
+  import { enhanceTree } from 'junoui/tree';
+  const stop = enhanceTree(document.querySelector('.juno-tree'));
+  ```
+
+  It stores nothing — expansion and selection live on the DOM and belong to you. It moves focus and dispatches `juno-tree-toggle` / `juno-tree-select` (bubbling, cancelable, `detail.item`); it does not expand, collapse, select or reorder, because expanding a node may need to load it.
+
+  **Three states that get conflated are painted separately:** `:hover` is where the pointer is, `aria-current` is which node you are on, `aria-selected` is what the next action applies to. A layer stack has all three at once.
+
+  **Touch.** The row holds `--juno-size-tap-min`. The caret and handle paint small so a dense tree stays dense and grow only their _hit area_ — a 44px painted caret would swallow its row. The handle is explicit and carries `touch-action: none` on itself alone: long-press-drag is the obvious gesture and the wrong one, because a tree beside a pan surface has to let the pan win.
+
+  Reorder _logic_ stays yours; junoui ships the affordance, its hit area, and the drop styling (`data-juno-drop="before|after|into"`, `data-juno-dragging`) — where a between-rows drop and an into-a-row drop look different, because they are different operations.
+
+### Patch Changes
+
+- 4f466ff: **The touch defaults are generated from one declared set — conformance kit slice 2.**
+
+  `base.css` carried two hand-maintained `:where()` lists, and both had drifted.
+
+  **From the classes:** `.juno-seg__option` (the shipped class is `.juno-seg__opt`) and `.juno-list__item` (it is `.juno-list__row`) sat in them. `:where()` matched nothing, the rule still parsed, every other member kept working — so every segmented control and every grouped list row in every consumer kept the ~300ms double-tap delay.
+
+  **From each other:** the tap-highlight list was a strict subset of the touch-action one, missing `__overflow`, `__opt`, `chip` and `toggle-btn`.
+
+  **Consumer-visible change:** `.juno-chip`, `.juno-pillbar__overflow`, `.juno-seg__opt` and `.juno-toggle-btn` now have their UA tap-highlight square suppressed on a coarse pointer, like every other tappable primitive. Verified in Chromium on both pointer types. Nothing else moves.
+
+  `src/css/touch-surfaces.mjs` is now the source of truth; the two rules are emitted from it. Adding a component to the touch defaults is one line and gets both. `touch-action` stays outside the coarse block — a hybrid device reports a fine primary pointer while still taking touch input — and the highlight stays inside it.
+
 ## 0.7.0
 
 ### Minor Changes
