@@ -19,6 +19,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+// This file reads ITSELF, to assert the showcase locators stayed scoped — see
+// the specimen helper below and 20260826-030.
+const SPEC = fileURLToPath(import.meta.url);
+
 const bundle = readFileSync(
   join(dirname(dirname(dirname(fileURLToPath(import.meta.url)))), 'dist/css/juno.css'),
   'utf8',
@@ -38,6 +42,27 @@ const EXPECT = {
 // artefact, not a short tap target. Caught with `--repeat-each=4` before this
 // shipped, which is the only reason it is not a future intermittent red.
 const boxHeight = async (locator) => Math.round((await locator.boundingBox()).height);
+
+// EVERY showcase locator is scoped to `main`, and that is the fix for
+// 20260826-030 rather than a tidy-up.
+//
+// app.js injects the showcase's own chrome — a phone navbar, a pillbar —
+// around each page, and `.juno-navbar__actions > *` carries
+// `min-block-size: var(--juno-size-tap-min)` (navbar.css:102). So the FIRST
+// VISIBLE `.juno-btn--sm` on every showcase page is a chrome button that is
+// 44px for a legitimate reason that has nothing to do with the rule under
+// test. A `.first()` locator picked it, and the assertion passed with the
+// promotion it was written to check deleted from the bundle.
+//
+// Measured: with the coarse `--sm` promotion stripped, the same markup reports
+// 24px off the bundle and 44px off /showcase/buttons.html — because the two
+// were never looking at the same element. Not a stylesheet override; a
+// selector pointing at the wrong button.
+//
+// `main` contains the page's own specimens and none of the injected chrome, so
+// scoping there is what makes a showcase assertion mean what it says. The
+// `--sm` case reads the built bundle directly, which is stronger still.
+const specimen = (pw, selector) => pw.locator(`main ${selector}`);
 
 async function open(pw) {
   await pw.addInitScript(() => {
@@ -76,12 +101,36 @@ test.describe('tap targets', () => {
     expect(tapMin).toBe(want.tapMin);
   });
 
+  test("the specimens measured are the page's own, not the injected chrome", () => {
+    // THE GUARD FOR 20260826-030, and it has to exist separately because
+    // scoping is not self-guarding: removing `main ` from the helper leaves
+    // every assertion in this file GREEN. The chrome button happens to satisfy
+    // them — `.juno-navbar__actions > *` carries min-block-size:
+    // var(--juno-size-tap-min) (navbar.css:102) — so an unscoped locator
+    // measures a 44px element for a reason unrelated to the rule under test.
+    //
+    // That is how a tap-target assertion passed with the coarse --sm promotion
+    // deleted from the bundle: 24px off the bundle, 44px off the showcase, two
+    // different buttons.
+    expect(
+      readFileSync(SPEC, 'utf8'),
+      'the showcase locator helper is no longer scoped to main',
+    ).toMatch(/const specimen = \(pw, selector\) => pw\.locator\(`main \$\{selector\}`\)/);
+
+    // ...and nothing in this file reaches for a bare locator on a junoui class,
+    // which is the shape that picked up chrome in the first place.
+    const stray = [
+      ...readFileSync(SPEC, 'utf8').matchAll(/pw\.locator\('([^']*juno-[^']*)'\)/g),
+    ].map((m) => m[1]);
+    expect(stray, 'a junoui class is being located outside the specimen helper').toEqual([]);
+  });
+
   test('.juno-btn holds the tap minimum', async ({ page: pw }, info) => {
     const want = EXPECT[info.project.name];
     await open(pw);
     // a plain .juno-btn — NOT .juno-btn--sm, which is deliberately below the
     // tap minimum for dense desktop toolbars (see button.css)
-    const btn = pw.locator('button.juno-btn:not(.juno-btn--sm)').first();
+    const btn = specimen(pw, 'button.juno-btn:not(.juno-btn--sm)').first();
     expect(await btn.evaluate((el) => getComputedStyle(el).minHeight)).toBe(want.tapMin);
     // computed style is the contract; the rendered box is the promise kept
     expect(await boxHeight(btn)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
@@ -92,7 +141,7 @@ test.describe('tap targets', () => {
     await open(pw);
     // the menu ships in a closed popover — open it so the box is real
     await pw.evaluate(() => document.getElementById('o-menu').showPopover());
-    const item = pw.locator('#o-menu .juno-menu__item').first();
+    const item = specimen(pw, '#o-menu .juno-menu__item').first();
     expect(await item.evaluate((el) => getComputedStyle(el).minBlockSize)).toBe(want.tapMin);
     expect(await boxHeight(item)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
   });
@@ -160,19 +209,19 @@ test.describe('tap targets', () => {
     await pw.evaluate(() => document.fonts.ready);
     // the PAINTED box, not the label that wraps it: the label is a bare
     // inline-flex and takes its height from this span (20260826-025)
-    const pill = pw.locator('.juno-seg__opt input + span').first();
+    const pill = specimen(pw, '.juno-seg__opt input + span').first();
     expect(await pill.evaluate((el) => getComputedStyle(el).minBlockSize)).toBe(want.tapMin);
     expect(await boxHeight(pill)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
     // and the label really did follow it — a floor on a box nobody taps is not
     // a tap target
-    const label = pw.locator('.juno-seg__opt').first();
+    const label = specimen(pw, '.juno-seg__opt').first();
     expect(await boxHeight(label)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
   });
 
   test('.juno-input holds the tap minimum and the 16px font floor', async ({ page: pw }, info) => {
     const want = EXPECT[info.project.name];
     await open(pw);
-    const input = pw.locator('input.juno-input').first();
+    const input = specimen(pw, 'input.juno-input').first();
     const style = await input.evaluate((el) => {
       const cs = getComputedStyle(el);
       return { minBlockSize: cs.minBlockSize, fontSize: parseFloat(cs.fontSize) };
