@@ -1,6 +1,6 @@
 {
   "name": "@junoput01/junoui",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "junoui — a token-driven design system. Color carries semantic meaning, never decoration: every hue has one assigned role (NOMINAL / ACTIVE / TARGET / CAUTION / WARNING). Ships multi-platform tokens (CSS, SCSS, JS/TS, JSON, Android, iOS, Flutter) plus a framework-agnostic CSS component layer.",
   "type": "module",
   "license": "MIT",
