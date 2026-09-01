@@ -264,6 +264,65 @@ No restructuring required — additive and incremental:
 
 You opt in per region; nothing forces a markup shape.
 
+## Pointer-first
+
+**Width is not the question.** A landscape iPhone is 844×390 — wider than `md` —
+so a width-keyed rail serves it the desktop rail on a device held in two hands.
+
+junoui states **two** conditions, because they answer different questions:
+
+| Condition            | Governs                                  | Query                                                              |
+| -------------------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| `--juno-coarse`      | touch ergonomics — tap floors, hit areas | `(pointer: coarse)`                                                |
+| `--juno-compact-nav` | navigation shape — rail vs dock          | `(pointer: coarse) and ((width <= 767.98px) or (height <= 500px))` |
+
+A finger is a finger on a kiosk too, so the ergonomics condition has **no size
+term**. Navigation shape does, and the term is **height**, because that is what
+separates a landscape phone from a tablet or a coarse-pointer kiosk:
+
+|                       |             | wants phone nav   |
+| --------------------- | ----------- | ----------------- |
+| portrait phone        | 390 × 844   | yes — narrow      |
+| landscape phone       | 844 × 390   | yes — short       |
+| tablet, either way    | 834 × 1112  | no                |
+| coarse kiosk          | 2560 × 1440 | no                |
+| narrow desktop window | 600 × 900   | no — fine pointer |
+
+Landscape phones run 320–430px tall and tablets start at 768, so the 500px cut
+sits in a gap rather than on an edge. A 27" touchscreen keeps its rail: giving it
+phone navigation would be the mirror of the bug being fixed.
+
+```css
+@media (pointer: coarse) and ((width <= 767.98px) or (height <= 500px)) { … }
+/* with postcss-custom-media: @media (--juno-compact-nav) { … } */
+```
+
+```js
+import { matchesCompactNav, onCompactNav } from 'junoui/pointer';
+onCompactNav((compact) => setNav(compact ? 'dock' : 'rail'));
+```
+
+A **listener**, not a one-shot read: rotating a phone crosses this condition
+without a reload, which is exactly the case a width-only check got wrong.
+
+### Pair the two halves on ONE condition
+
+```html
+<nav class="juno-rail juno-rail--responsive">…</nav>
+<nav class="juno-dock juno-dock--pill juno-dock--responsive">…</nav>
+```
+
+**Do not** pair a responsive rail with `.juno-hide-from-md` on the dock. Those are
+two conditions that happen to line up on a portrait phone and do not line up in
+landscape: at 844×390 the rail hides (coarse and short) and the dock hides too
+(844 ≥ md), leaving the app with **no primary navigation at all**.
+`.juno-dock--responsive` and `.juno-pillbar--responsive` key on the inverse of the
+same condition, so exactly one half shows at every size and pointer type.
+
+The generic `.juno-hide-below-md` / `.juno-hide-from-md` helpers stay width-only
+on purpose — they mean "hide at this width", and making them pointer-aware would
+silently change what a consumer asked for by name.
+
 ## The JS line
 
 These are all CSS. Behavior that needs state (resize observers feeding app state,

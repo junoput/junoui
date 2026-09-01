@@ -165,6 +165,14 @@
   flex-shrink: 0;
 }
 
+/* Responsive — the pillbar's half of the rail↔pill swap, same condition and
+   same reason as .juno-dock--responsive (see dock.css): paired with a
+   width-only helper instead, a landscape phone loses BOTH and the app has no
+   primary navigation. */
+@media not ((pointer: coarse) and ((width <= 767.98px) or (height <= 500px))) {
+  .juno-pillbar--responsive { display: none !important; }
+}
+
 /* Fixed — pin to the viewport instead of flowing at the column's end.
    Sticky only pins while the column overflows; on a short (non-scrolling)
    page the sticky pillbar lands mid-content. Use --fixed in a page-scroll
