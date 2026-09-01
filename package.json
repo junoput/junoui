@@ -63,7 +63,8 @@
     "./classes.json": "./dist/classes.json",
     "./icons/inline": "./dist/icons/inline.js",
     "./icons/install": "./dist/icons/install.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./rules": "./dist/rust/juno_rules.rs"
   },
   "files": [
     "dist",
@@ -80,7 +81,7 @@
     "build:icons": "node scripts/build-icons.mjs",
     "build:css": "node scripts/bundle-css.mjs",
     "build:classes": "node scripts/build-classes.mjs",
-    "build": "npm run build:tokens && npm run build:icons && npm run build:css && npm run build:classes",
+    "build": "npm run build:tokens && npm run build:rules && npm run build:icons && npm run build:css && npm run build:classes",
     "gen-docs": "node scripts/gen-docs.mjs",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
     "lint:css": "stylelint \"src/css/**/*.css\"",
@@ -96,7 +97,9 @@
     "gate:consumer": "node scripts/consumer-gate.mjs",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "npm run build && changeset publish"
+    "release": "npm run build && changeset publish",
+    "build:rules": "node scripts/build-rules.mjs",
+    "test:rust": "node scripts/test-rust.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
