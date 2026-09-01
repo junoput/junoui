@@ -57,6 +57,40 @@ test('the present slot keeps the tap floor', async ({ page: pw }) => {
   expect(w).toBeGreaterThanOrEqual(tap);
 });
 
+test('a declared section leaves LAYOUT when hidden for the page shot', async ({ page: pw }) => {
+  // The mechanism that makes this section additive rather than disruptive.
+  //
+  // A full-page baseline is every component on the page stacked vertically, so
+  // adding one moves everything below it and reds every unrelated section. A
+  // section marked data-vr-shot is therefore removed from the page shot and
+  // shot on its own.
+  //
+  // `display: none` is load-bearing and `visibility: hidden` would NOT do: the
+  // section has to leave layout, or the page is still taller and every baseline
+  // below it still moves — the same bug with an extra step. So the assertion is
+  // on the page HEIGHT, not on whether the section is visible.
+  const before = await pw.evaluate(() => document.documentElement.scrollHeight);
+  const section = await pw.locator('[data-vr-shot]').evaluate((el) => el.offsetHeight);
+  await pw.addStyleTag({ content: '[data-vr-shot] { display: none !important; }' });
+  const after = await pw.evaluate(() => document.documentElement.scrollHeight);
+
+  expect(section).toBeGreaterThan(0);
+  expect(before - after).toBeGreaterThanOrEqual(section);
+  // and measured against main on this branch: 4086 shown, 3835 hidden, and
+  // main's own mobile.html is 3835 — the existing baselines are untouched.
+});
+
+test('every declared shot id on a page is unique', async ({ page: pw }) => {
+  // Two sections sharing an id write the same baseline file, so the second
+  // silently overwrites the first and one component loses its picture without
+  // anything going red.
+  const ids = await pw.evaluate(() =>
+    [...document.querySelectorAll('[data-vr-shot]')].map((el) => el.dataset.vrShot),
+  );
+  expect(ids.length).toBeGreaterThan(0);
+  expect(new Set(ids).size).toBe(ids.length);
+});
+
 test('the two rows differ by exactly the folded item and its gap', async ({ page: pw }) => {
   // The property a reader of the snapshot is meant to see, stated as a number.
   // Same markup, one attribute apart — so any difference other than one item

@@ -83,11 +83,49 @@ export async function visit(pw, page, mode) {
   await pw.evaluate(() => document.fonts.ready);
 }
 
+/** Sections that carry their own baseline, keyed by page.
+ *
+ *  A section marked `data-vr-shot="<id>"` is shot on its own and REMOVED from
+ *  the full-page shot. That is the whole mechanism, and the reason for it is
+ *  the failure mode rather than tidiness: a full-page baseline is a picture of
+ *  every component on the page stacked vertically, so ADDING a component moves
+ *  everything below it and reds every unrelated section's snapshot. A suite
+ *  that does that trains people to re-record without looking, which is how
+ *  these baselines drifted for months before (ci.yml, 20260815-011).
+ *
+ *  `display: none` and not `visibility: hidden`: the section has to leave
+ *  layout entirely, or the page is still taller and every baseline below it
+ *  still moves — which is the bug, with an extra step.
+ *
+ *  Coverage is not reduced. The union of (page minus declared sections) and
+ *  (each declared section) is the whole page; what changes is that the pieces
+ *  fail independently. */
+export async function sectionShots(pw) {
+  return pw.evaluate(() =>
+    [...document.querySelectorAll('[data-vr-shot]')].map((el) => el.dataset.vrShot),
+  );
+}
+
+async function hideDeclaredSections(pw) {
+  await pw.addStyleTag({ content: '[data-vr-shot] { display: none !important; }' });
+}
+
 export async function shoot(pw, page, mode, name) {
   await visit(pw, page, mode);
+  await hideDeclaredSections(pw);
 
   await expect(pw).toHaveScreenshot(name, {
     fullPage: true,
+    mask: MASKS(pw),
+  });
+}
+
+/** Shoot one declared section, clipped to itself. */
+export async function shootSection(pw, page, mode, id) {
+  await visit(pw, page, mode);
+  const section = pw.locator(`[data-vr-shot="${id}"]`);
+  await expect(section).toHaveCount(1);
+  await expect(section).toHaveScreenshot(`${page}-${id}-${mode}.png`, {
     mask: MASKS(pw),
   });
 }
