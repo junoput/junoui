@@ -24,6 +24,10 @@ export const MODES = ['dark', 'light'];
 export const OVERLAYS = [
   { id: 'ov-modal', name: 'modal' },
   { id: 'ov-modal-danger', name: 'modal-warning' },
+  // A body that genuinely overflows. Without it the scroll-port contract
+  // (20260803-029) is invisible: every other fixture is short enough that a
+  // flex column and a block box lay out identically. See 20260815-027.
+  { id: 'ov-modal-tall', name: 'modal-scrolling' },
   { id: 'ov-drawer-end', name: 'drawer-end' },
   { id: 'ov-drawer-start', name: 'drawer-start' },
   { id: 'ov-drawer-bottom', name: 'sheet-bottom' },
