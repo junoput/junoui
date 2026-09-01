@@ -11,7 +11,13 @@
 // What is under test (src/css/base.css, `@media (pointer: coarse)`):
 //   - --juno-size-tap-min flips from --juno-size-tap-min (24px, WCAG 2.2 AA
 //     floor) to --juno-size-tap-comfortable (44px), which every control that
-//     sizes off it inherits: .juno-btn, .juno-menu__item, .juno-input.
+//     sizes off it inherits: .juno-btn, .juno-menu__item, .juno-input,
+//     .juno-seg__opt, .juno-pagination__item.
+//
+// A CONTROL NOT NAMED HERE IS NOT CHECKED. Pagination sat at 44x32 on touch for
+// weeks because it was absent from the table below, not because any rule was
+// wrong — the promotion reached its inline axis and its block axis was a hard
+// 32px (20260815-040). When a component grows a tap surface, it gets a row.
 //   - .juno-input gets `font-size: max(16px, …)`, the floor that stops iOS
 //     Safari zooming the page onto a focused field.
 import { expect, test } from '@playwright/test';
@@ -32,8 +38,8 @@ const bundle = readFileSync(
 // point is to pin the contract, and 24 / 44 are the token values themselves
 // (tokens/core/size.json → size.tap.min / size.tap.comfortable).
 const EXPECT = {
-  chromium: { coarse: false, tapMin: '24px', inputFontMin: 0 },
-  'chromium-coarse': { coarse: true, tapMin: '44px', inputFontMin: 16 },
+  chromium: { coarse: false, tapMin: '24px', inputFontMin: 0, paginationBlock: '32px' },
+  'chromium-coarse': { coarse: true, tapMin: '44px', inputFontMin: 16, paginationBlock: '44px' },
 };
 
 // Chromium reports a fractional box height when a control lands on a
@@ -216,6 +222,66 @@ test.describe('tap targets', () => {
     // a tap target
     const label = specimen(pw, '.juno-seg__opt').first();
     expect(await boxHeight(label)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
+  });
+
+  test('.juno-pagination__item holds the tap minimum on BOTH axes', async ({ page: pw }, info) => {
+    // 20260815-040. The shipped defect was 44 WIDE and 32 TALL on a coarse
+    // pointer: `min-inline-size` read --juno-size-tap-min and took the coarse
+    // promotion, while `block-size` was a hard 32px that could not. Clears WCAG
+    // 2.2 2.5.8 (24px), misses 2.5.5 (44px) that every other control here meets.
+    //
+    // It survived because THIS FILE never looked. The expectation table listed
+    // .juno-btn, .juno-input and .juno-menu__item, so the numeric coarse check
+    // that found the 16px input floor walked straight past pagination — a guard
+    // is only a guard for the controls it names.
+    //
+    // Against the built bundle for the reason the --sm case is: a showcase page
+    // carries chrome that can hold a height for unrelated reasons (20260826-030).
+    await pw.setContent(
+      `<meta name="viewport" content="width=device-width,initial-scale=1"><style>${bundle}</style>
+       <nav class="juno-pagination" aria-label="Pagination">
+         <button class="juno-pagination__item" id="prev" aria-label="Previous" disabled>&lsaquo;</button>
+         <button class="juno-pagination__item" id="cur" aria-current="page">1</button>
+         <button class="juno-pagination__item" id="wide">1234</button>
+       </nav>`,
+    );
+    const want = EXPECT[info.project.name];
+    const read = (id) =>
+      pw.evaluate((i) => {
+        const el = document.getElementById(i);
+        const cs = getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        return {
+          minBlockSize: cs.minBlockSize,
+          minInlineSize: cs.minInlineSize,
+          w: Math.round(r.width),
+          h: Math.round(r.height),
+        };
+      }, id);
+
+    // The block axis is the one that was broken. On a fine pointer it holds the
+    // component's own 32px design height — NOT the 24px token — because reading
+    // the token straight would have shrunk desktop pagination to fix a phone.
+    const cur = await read('cur');
+    expect(cur.minBlockSize).toBe(want.paginationBlock);
+    expect(cur.minInlineSize).toBe(want.tapMin);
+
+    // ...and the rendered box on BOTH axes, which is the assertion the original
+    // guard could not have made because it only had one axis in it.
+    const floor = parseInt(want.tapMin, 10);
+    for (const id of ['prev', 'cur', 'wide']) {
+      const box = await read(id);
+      expect(box.h, `${id} is short on the block axis: ${box.w}x${box.h}`).toBeGreaterThanOrEqual(
+        floor,
+      );
+      expect(box.w, `${id} is short on the inline axis: ${box.w}x${box.h}`).toBeGreaterThanOrEqual(
+        floor,
+      );
+    }
+
+    // A floor, not a fixed size: a wide label still grows past it, or the fix
+    // traded one hard number for another.
+    expect((await read('wide')).w).toBeGreaterThan((await read('cur')).w);
   });
 
   test('.juno-input holds the tap minimum and the 16px font floor', async ({ page: pw }, info) => {
