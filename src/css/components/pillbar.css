@@ -38,8 +38,14 @@
   --juno-pillbar-pad: var(--juno-space-4);
   --juno-pillbar-edge: var(--juno-space-16);
 
+  /* The bar's own offset from the edge — declared ONCE, so a consumer that
+     wants it flush above the home indicator restates this and every site
+     follows. [floating chrome] bucket, additive by default: a floating element
+     sits off the edge, so its gap and the inset stack. See docs/safe-area.md. */
+  --juno-pillbar-edge-offset: calc(var(--juno-pillbar-edge) + var(--juno-safe-bottom));
+
   position: sticky;
-  inset-block-end: calc(var(--juno-pillbar-edge) + env(safe-area-inset-bottom, 0px));
+  inset-block-end: var(--juno-pillbar-edge-offset);
   z-index: var(--juno-z-raised);
   margin-inline: auto;
   margin-block-end: var(--juno-pillbar-edge);
@@ -208,23 +214,23 @@
 }
 
 .juno-pillbar--top-right {
-  inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px));
-  inset-inline-end: calc(var(--juno-space-12) + env(safe-area-inset-right, 0px));
+  inset-block-start: calc(var(--juno-space-10) + var(--juno-safe-top));
+  inset-inline-end: calc(var(--juno-space-12) + var(--juno-safe-right));
 }
 
 .juno-pillbar--top-left {
-  inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px));
-  inset-inline-start: calc(var(--juno-space-12) + env(safe-area-inset-left, 0px));
+  inset-block-start: calc(var(--juno-space-10) + var(--juno-safe-top));
+  inset-inline-start: calc(var(--juno-space-12) + var(--juno-safe-left));
 }
 
 .juno-pillbar--bottom-right {
-  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
-  inset-inline-end: calc(var(--juno-space-12) + env(safe-area-inset-right, 0px));
+  inset-block-end: calc(var(--juno-space-16) + var(--juno-safe-bottom));
+  inset-inline-end: calc(var(--juno-space-12) + var(--juno-safe-right));
 }
 
 .juno-pillbar--bottom-left {
-  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
-  inset-inline-start: calc(var(--juno-space-12) + env(safe-area-inset-left, 0px));
+  inset-block-end: calc(var(--juno-space-16) + var(--juno-safe-bottom));
+  inset-inline-start: calc(var(--juno-space-12) + var(--juno-safe-left));
 }
 
 /* Input slot — an expandable search field living inside the pill. Borderless

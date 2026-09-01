@@ -34,7 +34,7 @@
   align-items: center;
   gap: var(--juno-space-8);
   padding-inline: var(--juno-space-8);
-  padding-block-start: env(safe-area-inset-top, 0);
+  padding-block-start: var(--juno-safe-top);
   min-block-size: var(--juno-size-tap-comfortable);
   background: var(--juno-s1);
   border-block-end: var(--juno-border-width-1) solid var(--juno-border);

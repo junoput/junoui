@@ -32,6 +32,11 @@
 .juno-toast-stack--start { inset-inline: var(--juno-space-24) auto; }
 
 .juno-toast {
+  /* This stack's offset from the edge, declared once — [floating chrome]
+     bucket, additive by default. Restate it to sit flush above the home
+     indicator; see docs/safe-area.md. */
+  --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
+
   --juno-role: var(--juno-active);
 
   pointer-events: auto;
@@ -95,7 +100,7 @@
     /* unit-bearing env() fallback: inside calc() a unitless `0` is a <number>,
        which invalidates the sum and drops the whole declaration (the stack
        would then sit flush at 0 on any device without a safe area). */
-    inset-block-end: calc(var(--juno-space-12) + env(safe-area-inset-bottom, 0px));
+    inset-block-end: var(--juno-toast-edge-offset);
     inline-size: auto;
   }
 
