@@ -237,19 +237,27 @@ the guard that would have failed did not exist on that branch (20260826-039).
 
 ## Sequencing
 
-| Slice | Contents                                             | Depends on |
-| ----- | ---------------------------------------------------- | ---------- |
-| ~~1~~ | ~~A (manifest + helper)~~ — **shipped**              | —          |
-| ~~2~~ | ~~B2 (generate the `:where()` lists)~~ — **shipped** | 1          |
-| 3     | C (one pointer-first mechanism)                      | —          |
-| 4     | D (buckets + floating chrome owns its inset)         | 3          |
-| 5     | E (pillbar budget)                                   | —          |
-| 6     | F (doctor)                                           | 1, 3       |
-| 7     | G (checklist, reduced to what F checks)              | 6          |
+| Slice | Contents                                                       | Depends on |
+| ----- | -------------------------------------------------------------- | ---------- |
+| ~~1~~ | ~~A (manifest + helper)~~ — **shipped**                        | —          |
+| ~~2~~ | ~~B2 (generate the `:where()` lists)~~ — **shipped**           | 1          |
+| 3     | C (one pointer-first mechanism)                                | —          |
+| ~~4~~ | ~~D (buckets + floating chrome owns its inset)~~ — **shipped** | 3          |
+| ~~5~~ | ~~E (pillbar budget)~~ — **shipped**                           | —          |
+| ~~6~~ | ~~F (doctor)~~ — **shipped**                                   | 1, 3       |
+| ~~7~~ | ~~G (checklist, reduced to what F checks)~~ — **shipped**      | 6          |
 
-Slices 1 and 2, B1 and E-for-dock are done. 024–027 are absorbed and closed.
+**All seven slices are shipped**, plus B1. 024–027 are absorbed and closed. 024–027 are absorbed and closed.
 
-**Review asks:** the three open questions above (A's public subset, B's two
-lists, C's condition), and whether slice 6 is worth its cost before slice 1
-lands — the doctor is the piece a consumer feels, and slices 1–5 are the pieces
-that stop the defects existing.
+**No open questions remain.** A was answered by measurement (the helper checks
+`all`, because the "internals" turned out to be undocumented public utilities);
+B by the rules' own rationales (one set — every omitted name was a rounded
+tappable); C by a device table (coarse **and** narrow-or-short, because a
+landscape phone is wider than `md`).
+
+**What the kit found while being built**, which is the case for it: the fold's
+composition floor, two mistyped `:where()` members that had never matched
+anything, a pagination control floored on one axis, `.juno-btn--sm` shipping
+24px targets at 40 call sites, a dock clearance disagreeing with its own margin
+by 16–24px, and — from junoui's own documented pairing — a landscape phone with
+**no primary navigation at all**. None of these was found by reading.
