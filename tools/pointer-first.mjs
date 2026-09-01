@@ -47,31 +47,24 @@
 //      with a phone's dock, or a landscape phone with a desktop rail.
 // ════════════════════════════════════════════════════════════════════════
 
-/** Below this height a coarse-pointer device is a phone on its side.
- *  Landscape phones are 320-430px tall; tablets start at 768px. 500 sits in
- *  the gap with room on both sides, so it is not a value that needs tuning
- *  per device — anything from ~460 to ~760 picks the same set. */
-export const SHORT_MAX_PX = 500;
-
-/** The md breakpoint's `below` half, which junoui already publishes. */
-export const NARROW_MAX_PX = 767.98;
+// The two bounds and the predicate live in scripts/rules.mjs, which is also
+// what generates dist/rust/juno_rules.rs. RE-EXPORTED, not restated: a painted
+// consumer and a DOM consumer answering this question differently is the exact
+// defect 20260901-051 is about, and two copies that agree today is how it
+// starts.
+//
+//   SHORT_MAX_PX  — landscape phones are 320-430px tall, tablets start at 768;
+//                   500 sits in the gap with room either side, so anything from
+//                   ~460 to ~760 picks the same set. Not a per-device tuning.
+//   NARROW_MAX_PX — the md breakpoint's `below` half, which junoui publishes.
+export { SHORT_MAX_PX, NARROW_MAX_PX, wantsCompactNav } from '../scripts/rules.mjs';
+import { SHORT_MAX_PX, NARROW_MAX_PX } from '../scripts/rules.mjs';
 
 /** Touch ergonomics: a finger, whatever it is attached to. No size term. */
 export const COARSE_POINTER = '(pointer: coarse)';
 
 /** Navigation shape: a coarse pointer with phone-sized room in one axis. */
 export const COMPACT_NAV = `(pointer: coarse) and ((width <= ${NARROW_MAX_PX}px) or (height <= ${SHORT_MAX_PX}px))`;
-
-/**
- * Does a viewport want phone navigation?
- *
- * Pure, so the decision is testable over a device table without a browser —
- * and so the same rule can be applied by an app that is choosing a component
- * rather than a stylesheet.
- */
-export function wantsCompactNav({ width, height, coarse }) {
-  return Boolean(coarse) && (width <= NARROW_MAX_PX || height <= SHORT_MAX_PX);
-}
 
 /** The `@custom-media` block, emitted into dist/css/juno-custom-media.css. */
 export function customMediaBlock() {

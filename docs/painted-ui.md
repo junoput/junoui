@@ -9,9 +9,29 @@ mechanisms do not: `text-shadow` has no painter equivalent, a media query is not
 available to a render loop, and `min-block-size` is not a thing you can set on a
 circle you are about to draw.
 
-What can transfer is the reasoning. These three rules were each re-derived by
-hand, correctly, by a consumer that had no way to look them up. They are written
-here so the next one does not have to.
+What can transfer is the reasoning — and, since `20260901-051`, the arithmetic.
+Each rule below has a pure-function core, and those cores now ship:
+
+```rust
+// dist/rust/juno_rules.rs — generated, alongside juno_tokens.rs
+wants_compact_nav(width, height, coarse) -> bool
+tap_min(coarse) -> f32
+ring_diameter_for_marks(marks, tap_px) -> f32
+labels_that_clear(marks, ratio, radius_px, glyph_px) -> u32
+halo_offsets(font_px, halo_width_px, reference_px) -> [(f32, f32); 4]
+```
+
+**One definition, two targets, one table.** Each rule is defined once in
+`scripts/rules.mjs`; `tools/pointer-first.mjs` re-exports it, the Rust is
+generated from it, and the Rust's `#[test]` bodies are generated from the same
+`CASES` table the JS tests run. There is no way to cover one target and miss the
+other, which matters more than any single rule here — two implementations that
+agree today is how this gap opens in the first place.
+
+These three rules were each re-derived by hand, correctly, by a consumer that
+had no way to look them up. They are written out below so the next one does not
+have to, and so the functions above have their reasoning attached rather than
+being five signatures.
 
 ## 1. A quantity held fixed against a projected axis is degenerate at some angle
 
@@ -69,8 +89,29 @@ Two details that cost a round each when re-derived:
 And canvas ink is pinned to the dark palette in _both_ light and dark mode. It
 is not app chrome; its background is the picture, not the theme.
 
+## What still does not transfer
+
+Stated plainly, because five functions can read like more coverage than they
+are:
+
+- **Nothing here draws anything.** These answer sizing and placement questions;
+  what you paint, and whether it looks right, is yours. See
+  [appearance.md](./appearance.md).
+- **No probe reaches you.** `junoui-doctor` reads the DOM. A canvas has none, so
+  none of its checks apply to what you render into one.
+- **The halo is offsets, not a shadow API.** `halo_offsets` tells you where to
+  stamp the ink four times; your painter has to do the stamping.
+- **`labels_that_clear` divides by two.** Eight falls back to four, never to
+  six, because the cardinals are the set worth keeping. If your instrument wants
+  a different fallback, the rule to copy is _derive it from the room the
+  projection leaves_, not this function.
+- **junoui's CI does not compile this file.** The generated tests are real and
+  they pass, but the repo has no Rust toolchain in CI — wiring one in touches
+  `.github` and is the operator's call. Until then the guard that runs on every
+  build is the JS half plus the generated-assertion count; the Rust half is
+  verified by whoever runs `rustc --test`.
+
 ---
 
-None of this is checked by anything. It is here because three of these were
-found the expensive way on the same day, by a consumer this library had no way
-to help.
+The three rules below were found the expensive way on the same day, by a
+consumer this library had no way to help.
