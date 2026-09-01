@@ -106,7 +106,7 @@
    equal specificity. env() fallback keeps its unit inside calc() — see
    docs/ios-conformance.md. */
 .juno-modal.juno-drawer--bottom .juno-modal__body {
-  padding-block-end: calc(var(--juno-pad-surface-inline) + env(safe-area-inset-bottom, 0px));
+  padding-block-end: calc(var(--juno-pad-surface-inline) + var(--juno-safe-bottom));
 }
 
 /* ── narrow viewports ────────────────────────────────────────────────────

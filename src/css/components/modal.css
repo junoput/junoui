@@ -174,7 +174,7 @@
      <number>, the addition is invalid, and the whole declaration is dropped —
      silently losing the padding on every device without a safe area. */
   .juno-modal:not(.juno-drawer) .juno-modal__body {
-    padding-block-end: calc(var(--juno-pad-surface-inline) + env(safe-area-inset-bottom, 0px));
+    padding-block-end: calc(var(--juno-pad-surface-inline) + var(--juno-safe-bottom));
   }
 
   /* full-width actions read better on a sheet */

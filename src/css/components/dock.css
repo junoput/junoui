@@ -85,7 +85,7 @@
   align-items: stretch;
   background: var(--juno-s1);
   border-block-start: var(--juno-border-width-1) solid var(--juno-border);
-  padding-block-end: env(safe-area-inset-bottom, 0);
+  padding-block-end: var(--juno-safe-bottom);
   transform: scale(var(--juno-dock-scale));
   transform-origin: bottom center;
   transition: transform calc(var(--juno-motion-duration-quick) * var(--juno-motion-scale)) var(--juno-motion-ease-standard);

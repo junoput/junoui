@@ -36,10 +36,44 @@
   --juno-pillbar-item: var(--juno-size-tap-comfortable);
   --juno-pillbar-gap: var(--juno-space-2);
   --juno-pillbar-pad: var(--juno-space-4);
+
+  /* ── Horizontal budget, derived (conformance kit slice 5) ──────────────
+     The same contract .juno-dock publishes, for the same reason: a consumer
+     deciding how many items fit was re-deriving it from the numbers in this
+     file, and two of them did — in prose, twice — and both drifted.
+
+     Unlike the dock, a pillbar's items do NOT stretch: it is
+     `inline-size: fit-content` with a gap between fixed-width items, so the
+     chrome is its padding, its border AND the gaps, and the arithmetic is
+     different. Deriving it here is what stops a consumer assuming the dock's.
+
+     --juno-pillbar-items    the budget the consumer sets
+     --juno-pillbar-chrome-inline  padding + border + the gaps between items
+     --juno-pillbar-inline   the width the bar will lay out at
+     --juno-pillbar-fit-inline  the narrowest viewport it still fits in,
+                             INCLUDING the edge offsets it floats inside
+
+     No scale floor, for the reason dock.css states: 44px / an item width is a
+     ratio of two lengths and CSS cannot divide by a length. */
+  --juno-pillbar-items: 4;
+  --juno-pillbar-chrome-inline: calc(
+    2 * var(--juno-pillbar-pad) + 2 * var(--juno-border-width-1) +
+      (var(--juno-pillbar-items) - 1) * var(--juno-pillbar-gap)
+  );
+  --juno-pillbar-inline: calc(
+    var(--juno-pillbar-items) * var(--juno-pillbar-item) + var(--juno-pillbar-chrome-inline)
+  );
+  --juno-pillbar-fit-inline: calc(var(--juno-pillbar-inline) + 2 * var(--juno-pillbar-edge));
   --juno-pillbar-edge: var(--juno-space-16);
 
+  /* The bar's own offset from the edge — declared ONCE, so a consumer that
+     wants it flush above the home indicator restates this and every site
+     follows. [floating chrome] bucket, additive by default: a floating element
+     sits off the edge, so its gap and the inset stack. See docs/safe-area.md. */
+  --juno-pillbar-edge-offset: calc(var(--juno-pillbar-edge) + var(--juno-safe-bottom));
+
   position: sticky;
-  inset-block-end: calc(var(--juno-pillbar-edge) + env(safe-area-inset-bottom, 0px));
+  inset-block-end: var(--juno-pillbar-edge-offset);
   z-index: var(--juno-z-raised);
   margin-inline: auto;
   margin-block-end: var(--juno-pillbar-edge);
@@ -208,23 +242,23 @@
 }
 
 .juno-pillbar--top-right {
-  inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px));
-  inset-inline-end: calc(var(--juno-space-12) + env(safe-area-inset-right, 0px));
+  inset-block-start: calc(var(--juno-space-10) + var(--juno-safe-top));
+  inset-inline-end: calc(var(--juno-space-12) + var(--juno-safe-right));
 }
 
 .juno-pillbar--top-left {
-  inset-block-start: calc(var(--juno-space-10) + env(safe-area-inset-top, 0px));
-  inset-inline-start: calc(var(--juno-space-12) + env(safe-area-inset-left, 0px));
+  inset-block-start: calc(var(--juno-space-10) + var(--juno-safe-top));
+  inset-inline-start: calc(var(--juno-space-12) + var(--juno-safe-left));
 }
 
 .juno-pillbar--bottom-right {
-  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
-  inset-inline-end: calc(var(--juno-space-12) + env(safe-area-inset-right, 0px));
+  inset-block-end: calc(var(--juno-space-16) + var(--juno-safe-bottom));
+  inset-inline-end: calc(var(--juno-space-12) + var(--juno-safe-right));
 }
 
 .juno-pillbar--bottom-left {
-  inset-block-end: calc(var(--juno-space-16) + env(safe-area-inset-bottom, 0px));
-  inset-inline-start: calc(var(--juno-space-12) + env(safe-area-inset-left, 0px));
+  inset-block-end: calc(var(--juno-space-16) + var(--juno-safe-bottom));
+  inset-inline-start: calc(var(--juno-space-12) + var(--juno-safe-left));
 }
 
 /* Input slot — an expandable search field living inside the pill. Borderless
