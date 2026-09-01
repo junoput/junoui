@@ -82,6 +82,42 @@
       </div>
     </section>
 
+    <!-- 01b FOLD SLOT — declares its own VR shot (data-vr-shot), so it is
+         clipped out of the full-page baseline and gets one of its own. Adding
+         a section must not move every other section's picture. -->
+    <section class="demo-section" data-vr-shot="fold-slot">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">01b</span>
+        <span class="juno-eyebrow">.juno-fold — animated presence for a row member</span>
+      </div>
+
+      <p class="juno-eyebrow demo-lead">
+        <code class="juno-mono">.juno-fold</code> on a <code class="juno-mono">__item</code> — animated presence for a row member.
+        Both bars are the same markup; the left one's first slot has no <code class="juno-mono">data-juno-in</code>.
+        A folded slot must measure <strong>zero</strong>. The row uses a gap, so the slot also names it in
+        <code class="juno-mono">--juno-fold-gap</code> and the fold swallows it with a negative margin —
+        without that the two rows differ by one item and still carry a stray 2px.
+      </p>
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="position:relative;">
+          <nav class="juno-pillbar" id="fold-out" style="position:static;margin-block-end:0;margin-inline:0;" aria-label="Fold demo, folded">
+            <button class="juno-pillbar__item juno-fold" style="--juno-fold-gap:var(--juno-pillbar-gap);" aria-label="Scroll to top"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrow-up" /></svg></button>
+            <button class="juno-pillbar__item" aria-label="Play"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-play" /></svg></button>
+            <button class="juno-pillbar__item" aria-label="Favorite"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-heart" /></svg></button>
+          </nav>
+          <p class="juno-mono juno-text-nominal" style="font-size:11px;margin-block-start:8px;">folded away</p>
+        </div>
+        <div style="position:relative;">
+          <nav class="juno-pillbar" id="fold-in" style="position:static;margin-block-end:0;margin-inline:0;" aria-label="Fold demo, present">
+            <button class="juno-pillbar__item juno-fold" style="--juno-fold-gap:var(--juno-pillbar-gap);" data-juno-in aria-label="Scroll to top"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-arrow-up" /></svg></button>
+            <button class="juno-pillbar__item" aria-label="Play"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-play" /></svg></button>
+            <button class="juno-pillbar__item" aria-label="Favorite"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-heart" /></svg></button>
+          </nav>
+          <p class="juno-mono juno-text-nominal" style="font-size:11px;margin-block-start:8px;">present</p>
+        </div>
+      </div>
+    </section>
+
     <!-- 02 NAVBAR -->
     <section class="demo-section">
       <div class="demo-section__title">

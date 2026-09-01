@@ -83,11 +83,62 @@ export async function visit(pw, page, mode) {
   await pw.evaluate(() => document.fonts.ready);
 }
 
+/** Sections that carry their own baseline, keyed by page.
+ *
+ *  A section marked `data-vr-shot="<id>"` is shot on its own and REMOVED from
+ *  the full-page shot. That is the whole mechanism, and the reason for it is
+ *  the failure mode rather than tidiness: a full-page baseline is a picture of
+ *  every component on the page stacked vertically, so ADDING a component moves
+ *  everything below it and reds every unrelated section's snapshot. A suite
+ *  that does that trains people to re-record without looking, which is how
+ *  these baselines drifted for months before (ci.yml, 20260815-011).
+ *
+ *  `display: none` and not `visibility: hidden`: the section has to leave
+ *  layout entirely, or the page is still taller and every baseline below it
+ *  still moves — which is the bug, with an extra step.
+ *
+ *  Coverage is not reduced. The union of (page minus declared sections) and
+ *  (each declared section) is the whole page; what changes is that the pieces
+ *  fail independently. */
+export async function sectionShots(pw) {
+  return pw.evaluate(() =>
+    [...document.querySelectorAll('[data-vr-shot]')].map((el) => el.dataset.vrShot),
+  );
+}
+
+export async function hideDeclaredSections(pw) {
+  await pw.addStyleTag({ content: '[data-vr-shot] { display: none !important; }' });
+}
+
 export async function shoot(pw, page, mode, name) {
   await visit(pw, page, mode);
+  await hideDeclaredSections(pw);
 
   await expect(pw).toHaveScreenshot(name, {
     fullPage: true,
+    mask: MASKS(pw),
+  });
+}
+
+/** The baseline filename for a section shot.
+ *
+ *  ONE definition, used by `shootSection` and by the baseline audit
+ *  (test/section-baselines.test.mjs). Two copies of a filename rule drift
+ *  silently: mutation showed that dropping the `section-` prefix here left the
+ *  audit green, because the audit was reading disk and agreeing with itself. */
+export const sectionShotName = (page, id, mode) => `section-${page}-${id}-${mode}.png`;
+
+/** Shoot one declared section, clipped to itself. */
+export async function shootSection(pw, page, mode, id) {
+  await visit(pw, page, mode);
+  const section = pw.locator(`[data-vr-shot="${id}"]`);
+  await expect(section).toHaveCount(1);
+  // The `section-` prefix (see sectionShotName) puts these in their own
+  // namespace so the audit can tell a section shot from a full-page one
+  // EXACTLY rather than by a heuristic over the stem — its first version had to
+  // guess whether `mobile-phone-dark` was a viewport variant or a section
+  // called `phone`, and claimed `index-auto-dark` as an orphan on its first run.
+  await expect(section).toHaveScreenshot(sectionShotName(page, id, mode), {
     mask: MASKS(pw),
   });
 }

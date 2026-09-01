@@ -18,7 +18,10 @@ import {
   PHONE_VIEWPORT,
   openAndShoot,
   pinVolatile,
+  sectionShots,
   shoot,
+  shootSection,
+  visit,
 } from './helpers.mjs';
 
 const PAGES = [
@@ -47,6 +50,18 @@ for (const mode of MODES) {
     test(`${page} (phone) — ${mode}`, async ({ page: pw }) => {
       await pw.setViewportSize(PHONE_VIEWPORT);
       await shoot(pw, page, mode, `${page}-phone-${mode}.png`);
+    });
+  }
+
+  // Sections that carry their own baseline. Enumerated from the page itself
+  // rather than from a list here, so declaring one is a single attribute in
+  // the HTML and cannot be half-registered.
+  for (const page of PAGES) {
+    test(`${page} sections — ${mode}`, async ({ page: pw }) => {
+      await visit(pw, page, mode);
+      const ids = await sectionShots(pw);
+      test.skip(ids.length === 0, 'no section declares its own shot');
+      for (const id of ids) await shootSection(pw, page, mode, id);
     });
   }
 
