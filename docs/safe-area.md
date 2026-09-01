@@ -26,17 +26,27 @@ a desktop, and nothing in a headless test could see it.
 **No rule in junoui calls `env()` directly.** Everything reads these four. That
 buys two things consumers were otherwise doing by hand:
 
-**You can zero or substitute an inset in one place.** iOS reports a top inset
-inside a letterboxed standalone window where there is no notch to clear.
-Honouring it wastes a strip of an already-shortened window, and an app that has
-detected the letterbox previously had to override every rule mentioning `env()`.
-Now:
+**You can zero or substitute an inset in one place.** In a letterboxed
+standalone window iOS keeps reporting `safe-area-inset-bottom` while the home
+indicator is outside the window entirely, so honouring it reserves room for
+something not in the view. An app that has detected the letterbox previously had
+to override every rule mentioning `env()`. Now:
 
 ```html
 <html data-juno-letterboxed></html>
 ```
 
-…and all four go to zero. Or restate one:
+…and `--juno-safe-bottom` goes to zero.
+
+**Only the bottom, and that is deliberate.** Measured on an iPhone 16 Pro /
+iOS 18.7: the window is 812 of the screen's 874 points and sits at the **top**,
+so the dead strip is the bottom 62. The window's top edge is therefore _under_
+the Dynamic Island — the top inset is real, and zeroing it would put content
+under the Island in the one window this attribute exists for. Left and right are
+0 in portrait and real in landscape. Neither is a phantom, so neither is touched.
+See ticket `20260815-039`.
+
+Or restate one:
 
 ```css
 :root {

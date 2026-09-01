@@ -105,9 +105,10 @@
      hand:
 
      1. A consumer can zero or substitute an inset in ONE place. iOS reports a
-        top inset inside a letterboxed standalone window where there is no
-        notch to clear, and an app that has detected that had to override every
-        rule that mentioned env(); now it sets one property.
+        BOTTOM inset inside a letterboxed standalone window where the home
+        indicator is outside the window entirely, and an app that had detected
+        that used to override every rule mentioning env(); now it sets one
+        property.
      2. A test can substitute a literal and measure a device that is not
         present. env() cannot be forced in a headless browser, so every
         safe-area measurement in this repo works by rewriting the stylesheet —
@@ -123,15 +124,23 @@
   --juno-safe-left: env(safe-area-inset-left, 0px);
 }
 
-/* A letterboxed standalone window has no notch to clear — iOS reports the
-   inset anyway, and honouring it wastes a strip of an already-shortened
-   window. An app that has detected the letterbox sets this attribute and
-   every inset in junoui goes to zero at once. */
+/* A letterboxed standalone window: ONLY THE BOTTOM INSET IS A PHANTOM, and
+   zeroing the others would be actively harmful.
+   Measured, iPhone 16 Pro / iOS 18.7 (ticket 20260815-039, and the NX EXPAND
+   testbed before it). The window is 812 of the screen's 874 points and sits at
+   the TOP, so the dead strip is the bottom 62:
+     · the window's top edge is under the Dynamic Island, so the top inset is
+       REAL — zero it and content goes under the Island, in the one window this
+       attribute exists for;
+     · the home indicator is at screen y 840–874, OUTSIDE the window, while iOS
+       still reports safe-area-inset-bottom as 34. Honouring that reserves room
+       for something not in the view, at the bottom of an already-short window;
+     · left and right are 0 in portrait and real in landscape. Neither is a
+       phantom, so neither is touched.
+   An app that has detected the letterbox sets this attribute and gets the one
+   correction it needs, rather than four. */
 html[data-juno-letterboxed] {
-  --juno-safe-top: 0px;
-  --juno-safe-right: 0px;
   --juno-safe-bottom: 0px;
-  --juno-safe-left: 0px;
 }
 
 :root[data-juno-mode='dark'] { color-scheme: dark; }

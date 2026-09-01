@@ -76,13 +76,29 @@ test('every fallback carries a unit', () => {
   );
 });
 
-test('the letterbox override zeroes every edge', () => {
-  // iOS reports a top inset inside a letterboxed standalone window where there
-  // is no notch to clear. Zeroing three of four would leave one strip.
+test('the letterbox override zeroes the bottom edge and ONLY the bottom edge', () => {
+  // The first version of this test asserted all four, and asserted it with the
+  // wrong reason attached ("no notch to clear"). It was a guard pinning a
+  // defect: measured on an iPhone 16 Pro / iOS 18.7, the letterboxed window is
+  // 812 of 874 points and sits at the TOP of the screen, so
+  //   · its top edge is UNDER the Dynamic Island — the top inset is real, and
+  //     zeroing it puts content under the Island in the one window this
+  //     attribute exists for;
+  //   · the home indicator is at screen y 840-874, outside the window, while
+  //     iOS still reports inset-bottom as 34 — that one is the phantom.
+  // Left and right are 0 in portrait and real in landscape; neither is a
+  // phantom. See 20260815-039, which states this explicitly, and the NX EXPAND
+  // testbed that measured the geometry.
   const rule = /html\[data-juno-letterboxed\]\s*\{([^}]*)\}/.exec(bundle);
   assert.ok(rule, 'no letterbox override');
-  for (const e of EDGES) {
-    assert.match(rule[1], new RegExp(`--juno-safe-${e}:\\s*0px`), `${e} is not zeroed`);
+  assert.match(rule[1], /--juno-safe-bottom:\s*0px/, 'the bottom inset is not zeroed');
+  for (const e of EDGES.filter((x) => x !== 'bottom')) {
+    assert.doesNotMatch(
+      rule[1],
+      new RegExp(`--juno-safe-${e}:\\s*0px`),
+      `${e} is zeroed by the letterbox override, and it is not a phantom — ` +
+        `zeroing top puts content under the Dynamic Island`,
+    );
   }
 });
 
