@@ -36,6 +36,34 @@
   --juno-pillbar-item: var(--juno-size-tap-comfortable);
   --juno-pillbar-gap: var(--juno-space-2);
   --juno-pillbar-pad: var(--juno-space-4);
+
+  /* ── Horizontal budget, derived (conformance kit slice 5) ──────────────
+     The same contract .juno-dock publishes, for the same reason: a consumer
+     deciding how many items fit was re-deriving it from the numbers in this
+     file, and two of them did — in prose, twice — and both drifted.
+
+     Unlike the dock, a pillbar's items do NOT stretch: it is
+     `inline-size: fit-content` with a gap between fixed-width items, so the
+     chrome is its padding, its border AND the gaps, and the arithmetic is
+     different. Deriving it here is what stops a consumer assuming the dock's.
+
+     --juno-pillbar-items    the budget the consumer sets
+     --juno-pillbar-chrome-inline  padding + border + the gaps between items
+     --juno-pillbar-inline   the width the bar will lay out at
+     --juno-pillbar-fit-inline  the narrowest viewport it still fits in,
+                             INCLUDING the edge offsets it floats inside
+
+     No scale floor, for the reason dock.css states: 44px / an item width is a
+     ratio of two lengths and CSS cannot divide by a length. */
+  --juno-pillbar-items: 4;
+  --juno-pillbar-chrome-inline: calc(
+    2 * var(--juno-pillbar-pad) + 2 * var(--juno-border-width-1) +
+      (var(--juno-pillbar-items) - 1) * var(--juno-pillbar-gap)
+  );
+  --juno-pillbar-inline: calc(
+    var(--juno-pillbar-items) * var(--juno-pillbar-item) + var(--juno-pillbar-chrome-inline)
+  );
+  --juno-pillbar-fit-inline: calc(var(--juno-pillbar-inline) + 2 * var(--juno-pillbar-edge));
   --juno-pillbar-edge: var(--juno-space-16);
 
   /* The bar's own offset from the edge — declared ONCE, so a consumer that
