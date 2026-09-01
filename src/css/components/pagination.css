@@ -24,8 +24,18 @@
 .juno-pagination__item {
   display: inline-grid;
   place-content: center;
-  min-inline-size: var(--juno-size-tap-min, var(--juno-space-32));
-  block-size: var(--juno-space-32);
+  /* BOTH AXES, and that asymmetry was the bug (20260815-040). The inline
+     size was already floored at the tap target, so a coarse pointer widened
+     these to 44px and left them 32px tall — a control that is a tap target in
+     one direction and not the other, which is not a tap target.
+
+     max(), not a plain swap: --juno-size-tap-min is 24px on a fine pointer, so
+     `min-block-size: var(--juno-size-tap-min)` alone would let a desktop page
+     button shrink below the 32px this component is drawn at. The max keeps 32
+     where the design wants it and takes 44 where the finger needs it, with no
+     media query and nothing to keep in sync. */
+  min-inline-size: max(var(--juno-space-32), var(--juno-size-tap-min));
+  min-block-size: max(var(--juno-space-32), var(--juno-size-tap-min));
   padding-inline: var(--juno-space-8);
   border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
   border-radius: var(--juno-radius-4);

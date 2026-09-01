@@ -218,6 +218,37 @@ test.describe('tap targets', () => {
     expect(await boxHeight(label)).toBeGreaterThanOrEqual(parseInt(want.tapMin, 10));
   });
 
+  test('.juno-pagination__item holds the tap minimum on BOTH axes', async ({ page: pw }, info) => {
+    // 20260815-040. Pagination was floored on its inline axis only, so a coarse
+    // pointer widened these to 44px and left them 32px tall — a control that is
+    // a tap target in one direction and not the other, which is not a tap
+    // target. It went unnoticed because this file's expectation table did not
+    // list pagination, so the numeric coarse check that found the 16px input
+    // floor never looked here.
+    //
+    // BOTH dimensions are asserted, which is the actual lesson: a single-axis
+    // check would have passed throughout the bug's whole life.
+    const want = EXPECT[info.project.name];
+    await pw.addInitScript(() => {
+      localStorage.setItem('juno:mode', 'dark');
+      localStorage.setItem('juno:density', 'comfortable');
+      localStorage.setItem('juno:text', 'base');
+    });
+    await pw.goto('/showcase/layout.html', { waitUntil: 'networkidle' });
+    await pw.evaluate(() => document.fonts.ready);
+
+    const item = specimen(pw, '.juno-pagination__item').first();
+    const floor = parseInt(want.tapMin, 10);
+    const box = await item.boundingBox();
+    expect(box, 'no pagination item in the showcase to measure').not.toBeNull();
+    expect(Math.round(box.width), `${box.width}px wide`).toBeGreaterThanOrEqual(floor);
+    expect(Math.round(box.height), `${box.height}px tall`).toBeGreaterThanOrEqual(floor);
+
+    // ...and the design size is not lost on a fine pointer: these are drawn at
+    // 32px, and a floor of 24 must not shrink them to it.
+    if (!want.coarse) expect(Math.round(box.height)).toBe(32);
+  });
+
   test('.juno-input holds the tap minimum and the 16px font floor', async ({ page: pw }, info) => {
     const want = EXPECT[info.project.name];
     await open(pw);
