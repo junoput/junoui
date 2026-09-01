@@ -54,11 +54,13 @@ Full per-feature audit, with the degrade-or-break verdict for all 15 features:
   **44 px** under `@media (pointer: coarse)`. Everything that sizes off it
   inherits the promotion: `.juno-btn` (`min-height`), `.juno-input` and
   `textarea` (`min-block-size`, the latter at 3×), `.juno-menu__item`,
-  `.juno-navbar__actions > *`, and `.juno-modal__close` on both axes.
-  **One exception, stated so you can size around it:** `.juno-pagination`'s
-  items take the promotion on the **inline** axis only — their `block-size` is a
-  fixed `--juno-space-32`, so they are 44 × 32 on touch. That clears the 24 px
-  AA floor and not the 44 px comfortable one (ticket 20260815-040).
+  `.juno-navbar__actions > *`, `.juno-pagination__item` (both axes since
+  20260815-040), and `.juno-modal__close` on both axes.
+  **No exceptions as of 0.10.** Pagination was one until 20260815-040: its
+  `min-inline-size` read the token and its `block-size` was a fixed
+  `--juno-space-32`, so it sat at 44 × 32 on touch — clearing the 24 px AA floor
+  and not the 44 px comfortable one. If you are pinned below that release, size
+  around it.
 - **Verified numerically, not by screenshot.**
   `test/visual/tap-targets.spec.mjs` asserts the computed `min-height` **and**
   the rendered box under **both** Playwright projects — `44px` under

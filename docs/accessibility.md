@@ -107,20 +107,28 @@ tokens land, and never removes a guarantee without a semver-major note.
 - `--juno-size-tap-comfortable` = 44px — WCAG **2.5.5** Target Size (Enhanced), AAA;
   recommended for primary actions on touch.
 - `.juno-btn` already sets `min-height: var(--juno-size-tap-min)`. The other
-  touch surfaces — `.juno-menu__item` (dock overflow lands here on phones) and
-  `.juno-navbar__actions > *` — do too, so nothing routed onto a phone falls
-  under the minimum. Don't use `.juno-btn--sm` on a touch surface: it is
-  deliberately below the tap minimum (see `button.css`).
+  touch surfaces — `.juno-menu__item` (dock overflow lands here on phones),
+  `.juno-navbar__actions > *` and `.juno-pagination__item` — do too, so nothing
+  routed onto a phone falls under the minimum. `.juno-btn--sm` is a _density_,
+  not a tap-target decision: it is 24px on a fine pointer and takes the
+  promotion on a coarse one (20260826-026). `.juno-btn--dense` is the opt-out,
+  and it is for dense desktop toolbars — not for anything a finger reaches.
 - **On coarse pointers this is automatic:** under `@media (pointer: coarse)` the
   base layer raises `--juno-size-tap-min` to the comfortable 44px, so every
   control sized off the tap minimum grows on touch devices. A cascade override —
   the token values themselves don't change.
-- **One control grows on one axis only.** `.juno-pagination`'s items read the tap
-  minimum for `min-inline-size` but carry a fixed `block-size` of 32px, so on a
-  coarse pointer they are 44 × 32 — above the 24px AA floor, below the 44px
-  enhanced one. Tracked as ticket 20260815-040; the numeric coarse-pointer check
-  in `test/visual/tap-targets.spec.mjs` does not cover pagination yet, which is
-  why it went unnoticed.
+- **A floor is needed on both axes, not one.** `.juno-pagination`'s items read
+  the tap minimum for `min-inline-size` and carried a _fixed_ `block-size` of
+  32px, so on a coarse pointer they were 44 × 32 — above the 24px AA floor,
+  below the 44px enhanced one — for weeks. Fixed in 20260815-040 with
+  `min-block-size: max(var(--juno-space-32), var(--juno-size-tap-min))`: the
+  larger of the component's own design height and what the pointer needs, since
+  reading the token alone would have shrunk desktop pagination to 24px.
+  The general lesson, which cost more than the fix: **a control absent from
+  `test/visual/tap-targets.spec.mjs` is not checked.** That table listed
+  `.juno-btn`, `.juno-input` and `.juno-menu__item`, so the numeric coarse check
+  that found the 16px input floor walked straight past pagination. A component
+  that grows a tap surface gets a row in it.
 - Hover-revealed affordances get a touch fallback: table row actions stay
   visible under `@media (hover: none)`.
 

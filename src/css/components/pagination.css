@@ -25,7 +25,19 @@
   display: inline-grid;
   place-content: center;
   min-inline-size: var(--juno-size-tap-min, var(--juno-space-32));
-  block-size: var(--juno-space-32);
+
+  /* A FLOOR on both axes, not a fixed height. `block-size: var(--juno-space-32)`
+     was a hard 32px, so the coarse-pointer promotion in base.css — which raises
+     --juno-size-tap-min to the comfortable 44px — reached the inline axis and
+     nothing else: the item became 44 wide and stayed 32 tall. That clears WCAG
+     2.2 2.5.8 (24px) and misses 2.5.5 (44px), which every other junoui touch
+     control meets on a phone.
+     max() rather than the token alone because 32 is this component's own design
+     height and exceeds the 24px fine-pointer floor — reading the token straight
+     would SHRINK it on desktop. Same idiom as the 16px text-entry floor in
+     base.css: take the larger of what the design wants and what the pointer
+     needs. See 20260815-040. */
+  min-block-size: max(var(--juno-space-32), var(--juno-size-tap-min));
   padding-inline: var(--juno-space-8);
   border: var(--juno-border-width-1) solid var(--juno-control-edge-strong);
   border-radius: var(--juno-radius-4);
