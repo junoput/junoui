@@ -14,4 +14,17 @@ New: `--juno-coarse` and `--juno-compact-nav` in `dist/css/juno-custom-media.css
 
 The generic `.juno-hide-below-md` / `.juno-hide-from-md` helpers stay width-only on purpose.
 
-**Migration:** swap `.juno-hide-from-md` on a dock or pillbar that pairs with `.juno-rail--responsive` for `.juno-dock--responsive` / `.juno-pillbar--responsive`. A dock paired the old way keeps working on portrait phones and loses navigation in landscape.
+## Migration — read this even though nothing you have will fail to compile
+
+**A consumer pairing the old way loses navigation entirely on a landscape phone.** That is a breaking change in effect, even though the types still compile and no class was removed: `.juno-hide-from-md` still exists and still does what it says. The break is in the _pairing_, which is why nothing warns you.
+
+At 844×390 the rail hides (coarse and short) and the dock also hides (844 ≥ md), and the screen has no primary navigation at all — no rail, no dock, no way to move between sections until the device is rotated.
+
+Swap `.juno-hide-from-md` for `.juno-dock--responsive` (or `.juno-pillbar--responsive`) on any dock or pillbar that pairs with `.juno-rail--responsive`:
+
+```diff
+-<nav class="juno-dock juno-dock--pill juno-hide-from-md">
++<nav class="juno-dock juno-dock--pill juno-dock--responsive">
+```
+
+If you keep the old pairing it still works on portrait phones and on desktop, which is exactly what makes it easy to miss.
