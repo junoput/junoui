@@ -282,6 +282,18 @@ test.describe('tap targets', () => {
     // A floor, not a fixed size: a wide label still grows past it, or the fix
     // traded one hard number for another.
     expect((await read('wide')).w).toBeGreaterThan((await read('cur')).w);
+
+    // ON THE TWO BOX ASSERTIONS ABOVE, because a mutation run says something
+    // about them that is worth not re-deriving. Deleting the INLINE one alone
+    // survives: on a healthy item the computed `minInlineSize` check and the
+    // `wide > cur` check already cover that axis, so nothing is left uncovered.
+    // That does not make it decoration. The distinction this file draws
+    // elsewhere — "computed style is the contract; the rendered box is the
+    // promise kept" — is real, and `scale: 0.5` on the item is the input that
+    // separates them: every computed floor still reads 44px, `wide` is still
+    // wider than `cur`, and the painted target is 22x16. That is caught here
+    // and ONLY here, and survives with both box assertions removed. Measured,
+    // not argued.
   });
 
   test('.juno-input holds the tap minimum and the 16px font floor', async ({ page: pw }, info) => {
