@@ -121,6 +121,47 @@
       </div>
     </dialog>
 
+
+    <!-- A modal whose __body genuinely OVERFLOWS. The other fixtures are short
+         enough that a flex column and a block box lay out identically, so the
+         scroll-port contract (20260803-029) was invisible to every snapshot —
+         a reverse patch of it moved 0 px across all 48. See 20260815-027.
+         __foot is a SIBLING of __body here, not inside it: measured, with the
+         footer inside the body it scrolls 407 px out of view while the body is
+         at its end, which is the "confirm button you cannot reach" shape. -->
+    <dialog class="juno-modal" id="ov-modal-tall" aria-labelledby="ov-mt-t">
+      <div class="juno-modal__stripe"></div>
+      <div class="juno-modal__head"><span class="juno-modal__tag">CLUSTER</span>
+        <form method="dialog"><button class="juno-modal__close" aria-label="Close"><svg class="juno-icon juno-icon--sm" aria-hidden="true"><use href="#juno-i-x" /></svg></button></form></div>
+      <div class="juno-modal__body">
+        <h2 class="juno-modal__title" id="ov-mt-t">Drain 24 nodes?</h2>
+        <p class="juno-modal__text"><strong class="juno-mono">node-01</strong> — region eu-west-2, 43 GiB free, last heartbeat 1s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-02</strong> — region eu-west-3, 46 GiB free, last heartbeat 2s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-03</strong> — region eu-west-1, 49 GiB free, last heartbeat 3s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-04</strong> — region eu-west-2, 52 GiB free, last heartbeat 4s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-05</strong> — region eu-west-3, 55 GiB free, last heartbeat 5s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-06</strong> — region eu-west-1, 58 GiB free, last heartbeat 6s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-07</strong> — region eu-west-2, 61 GiB free, last heartbeat 7s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-08</strong> — region eu-west-3, 64 GiB free, last heartbeat 8s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-09</strong> — region eu-west-1, 67 GiB free, last heartbeat 9s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-10</strong> — region eu-west-2, 70 GiB free, last heartbeat 10s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-11</strong> — region eu-west-3, 73 GiB free, last heartbeat 11s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-12</strong> — region eu-west-1, 76 GiB free, last heartbeat 12s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-13</strong> — region eu-west-2, 79 GiB free, last heartbeat 13s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-14</strong> — region eu-west-3, 82 GiB free, last heartbeat 14s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-15</strong> — region eu-west-1, 85 GiB free, last heartbeat 15s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-16</strong> — region eu-west-2, 88 GiB free, last heartbeat 16s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-17</strong> — region eu-west-3, 91 GiB free, last heartbeat 17s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-18</strong> — region eu-west-1, 94 GiB free, last heartbeat 18s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-19</strong> — region eu-west-2, 97 GiB free, last heartbeat 19s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-20</strong> — region eu-west-3, 100 GiB free, last heartbeat 20s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-21</strong> — region eu-west-1, 103 GiB free, last heartbeat 21s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-22</strong> — region eu-west-2, 106 GiB free, last heartbeat 22s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-23</strong> — region eu-west-3, 109 GiB free, last heartbeat 23s ago.</p>
+        <p class="juno-modal__text"><strong class="juno-mono">node-24</strong> — region eu-west-1, 112 GiB free, last heartbeat 24s ago.</p>
+      </div>
+      <form method="dialog" class="juno-modal__foot"><button class="juno-btn juno-btn--ghost">CANCEL</button><button class="juno-btn">DRAIN ALL</button></form>
+    </dialog>
     <dialog class="juno-modal juno--warning" id="ov-modal-danger" aria-labelledby="ov-dd-t">
       <div class="juno-modal__stripe"></div>
       <div class="juno-modal__head"><span class="juno-modal__tag">CONFIRMATION REQUIRED</span>
