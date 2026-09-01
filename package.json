@@ -32,6 +32,9 @@
     "**/*.css",
     "./dist/icons/inline.js"
   ],
+  "bin": {
+    "junoui-doctor": "./tools/doctor.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/js/tokens.d.ts",
@@ -54,6 +57,7 @@
     "./tree": "./tools/tree.mjs",
     "./gizmo": "./tools/gizmo.mjs",
     "./pointer": "./tools/pointer.mjs",
+    "./doctor": "./tools/doctor.mjs",
     "./splitter": "./tools/splitter.mjs",
     "./testing": "./tools/testing.mjs",
     "./classes.json": "./dist/classes.json",
