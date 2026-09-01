@@ -106,7 +106,7 @@ export async function sectionShots(pw) {
   );
 }
 
-async function hideDeclaredSections(pw) {
+export async function hideDeclaredSections(pw) {
   await pw.addStyleTag({ content: '[data-vr-shot] { display: none !important; }' });
 }
 

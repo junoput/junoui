@@ -17,6 +17,8 @@
 // where the snapshot proves nothing — this runs in that window too.
 import { expect, test } from '@playwright/test';
 
+import { hideDeclaredSections } from './helpers.mjs';
+
 const box = (pw, sel) => pw.locator(sel).evaluate((el) => el.getBoundingClientRect().width);
 
 test.beforeEach(async ({ page: pw }) => {
@@ -69,9 +71,13 @@ test('a declared section leaves LAYOUT when hidden for the page shot', async ({ 
   // section has to leave layout, or the page is still taller and every baseline
   // below it still moves — the same bug with an extra step. So the assertion is
   // on the page HEIGHT, not on whether the section is visible.
+  // Calls the PRODUCTION helper, not a copy of its rule. The first version of
+  // this test pasted `display: none` inline, so mutating helpers.mjs to
+  // `visibility: hidden` left it green — a guard that reimplements the thing it
+  // guards can only ever report on itself.
   const before = await pw.evaluate(() => document.documentElement.scrollHeight);
   const section = await pw.locator('[data-vr-shot]').evaluate((el) => el.offsetHeight);
-  await pw.addStyleTag({ content: '[data-vr-shot] { display: none !important; }' });
+  await hideDeclaredSections(pw);
   const after = await pw.evaluate(() => document.documentElement.scrollHeight);
 
   expect(section).toBeGreaterThan(0);
