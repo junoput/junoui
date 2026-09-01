@@ -1,0 +1,24 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Dock, responsive pairing
+ *  The reciprocal of .juno-rail--responsive. Pair the two and the rail↔dock
+ *  swap is automatic and, more to the point, EXHAUSTIVE: exactly one of them
+ *  shows at every size and pointer type.
+ *
+ *  DO NOT pair a responsive rail with `.juno-hide-from-md` on the dock. That
+ *  was the documented pairing and it leaves a hole: a landscape phone is
+ *  844x390, so the rail correctly hides (coarse and short) while the dock
+ *  ALSO hides (844 >= md) and the app has no primary navigation at all. Two
+ *  conditions that happen to line up on a portrait phone do not line up in
+ *  landscape. The pairing has to key on ONE condition — this is its inverse.
+ *
+ *  A file of its own rather than a block appended to dock.css so the pairing
+ *  reads as one thing with pillbar's half, and so the condition appears
+ *  exactly twice in the source instead of being buried in two long files.
+ *  See docs/layout.md#pointer-first and scripts/../tools/pointer-first.mjs.
+ * ════════════════════════════════════════════════════════════════════ */
+
+@media not ((pointer: coarse) and ((width <= 767.98px) or (height <= 500px))) {
+  .juno-dock--responsive {
+    display: none !important;
+  }
+}

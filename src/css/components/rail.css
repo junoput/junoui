@@ -95,10 +95,25 @@
   padding-inline: 0;
 }
 
-/* Responsive — the rail self-hides below md, so you pair it with a
-   .juno-dock (or .juno-pillbar) carrying .juno-hide-from-md and get the
-   rail↔dock swap without hanging a juno-hide-below-md on the rail yourself.
-   Reciprocal of the dock's md pairing; see dock.css / docs/layout.md#app-shell. */
-@media (width <= 767.98px) {
+/* Responsive — the rail self-hides where phone navigation belongs, so you
+   pair it with a .juno-dock (or .juno-pillbar) and get the rail↔dock swap
+   without hanging a helper class on the rail yourself.
+
+   POINTER-FIRST, NOT WIDTH-FIRST, and that is a fix rather than a
+   refinement (conformance kit slice 3, 20260826-036). This keyed on
+   `width <= 767.98px` alone, and a landscape iPhone is 844x390 — WIDER than
+   md — so it was served the desktop rail on a device held in two hands. The
+   condition is now a coarse pointer with phone-sized room in one axis:
+
+       (pointer: coarse) and ((width <= 767.98px) or (height <= 500px))
+
+   Height is the term that separates a landscape phone (320-430px tall) from
+   a tablet or a coarse-pointer kiosk (768px and up), both of which keep the
+   rail — a 27" touchscreen has room for one, and giving it phone navigation
+   would be the mirror of the bug being fixed. Authored as the literal
+   because @custom-media needs a build step; --juno-compact-nav in
+   dist/css/juno-custom-media.css is the same string, and a test asserts they
+   agree. See docs/layout.md#pointer-first. */
+@media (pointer: coarse) and ((width <= 767.98px) or (height <= 500px)) {
   .juno-rail--responsive { display: none !important; }
 }

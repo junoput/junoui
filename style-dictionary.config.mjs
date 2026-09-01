@@ -11,6 +11,7 @@
 
 import StyleDictionary from 'style-dictionary';
 import { toHex } from './scripts/color.mjs';
+import { customMediaBlock } from './tools/pointer-first.mjs';
 import {
   ROLES,
   camel,
@@ -131,7 +132,8 @@ StyleDictionary.registerFormat({
           );
         })
         .join('\n\n') +
-      '\n'
+      '\n\n' +
+      customMediaBlock()
     );
   },
 });
