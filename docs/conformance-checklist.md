@@ -50,6 +50,15 @@ prevent.
 - **Whether a control is in the right place.** A 44px target in the wrong corner
   passes everything here.
 - **Routes you did not visit**, and states behind interaction.
+- **Anything about how it LOOKS.** Every check in this kit is geometry,
+  presence or text; none reads the picture. A correctly-structured page that
+  renders wrong passes all of them. `junoui-doctor` now reports a control that
+  occupies space and cannot be seen or pressed — `visibility: hidden`,
+  `opacity: 0`, or covered by something — because that case is cheap and certain
+  and is the one a geometry probe is most likely to certify. Everything else
+  about appearance is uncovered on purpose. See [appearance.md](./appearance.md),
+  which lists per check what it asserts and what it passes while the screen is
+  wrong.
 - **UI that is painted rather than laid out.** Every check here reads the DOM —
   boxes, computed styles, class names. A widget drawn into a canvas or a GPU
   frame is invisible to all of them, and geovista is the first junoui consumer
