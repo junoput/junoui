@@ -26,6 +26,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { sectionShotName } from './visual/helpers.mjs';
+
 const SHOTS = 'test/visual/__screenshots__';
 const MODES = ['dark', 'light'];
 const PLATFORM = 'linux'; // the platform CI checks; darwin is updated locally
@@ -43,8 +45,24 @@ function declared() {
   return out;
 }
 
+/** The audit, as a pure function over two sets.
+ *
+ *  Separated from the filesystem so it can be tested on SYNTHETIC input. On a
+ *  healthy tree there are no orphans and nothing missing, so `orphans = []` and
+ *  `missing = []` are indistinguishable from the real thing — mutation showed
+ *  both directions could be deleted with the suite staying green. A comparison
+ *  is only evidence where its subjects are allowed to disagree. */
+export function auditBaselines({ expected, onDisk }) {
+  const want = new Set(expected);
+  const have = new Set(onDisk);
+  return {
+    missing: expected.filter((f) => !have.has(f)),
+    orphans: [...have].filter((f) => isSectionShot(f) && !want.has(f)),
+  };
+}
+
 const expected = declared().flatMap(({ page, id }) =>
-  MODES.map((mode) => `section-${page}-${id}-${mode}-${PLATFORM}.png`),
+  MODES.map((mode) => sectionShotName(page, id, mode).replace(/\.png$/, `-${PLATFORM}.png`)),
 );
 const onDisk = new Set(readdirSync(SHOTS));
 
@@ -67,7 +85,7 @@ test('a declared section id is unique within its page', () => {
 });
 
 test('every declared section has a baseline — a missing one is NEW, and recording it is safe', () => {
-  const missing = expected.filter((f) => !onDisk.has(f));
+  const { missing } = auditBaselines({ expected, onDisk: [...onDisk] });
   assert.deepEqual(
     missing,
     [],
@@ -84,8 +102,7 @@ test('every section baseline still has a section declaring it', () => {
   // The other direction, which nothing else checks. A renamed or deleted
   // section leaves its picture behind, and a stale baseline is worse than none:
   // it is a green check over a component that no longer exists.
-  const want = new Set(expected);
-  const orphans = [...onDisk].filter((f) => isSectionShot(f) && !want.has(f));
+  const { orphans } = auditBaselines({ expected, onDisk: [...onDisk] });
   assert.deepEqual(
     orphans,
     [],
@@ -109,5 +126,40 @@ test('the audit can tell a section shot from a full-page one, in both directions
     isSectionShot('section-mobile-fold-slot-dark-darwin.png'),
     false,
     'darwin is not the checked platform',
+  );
+});
+
+test('the audit reports both directions on synthetic input', () => {
+  // The self-test, and it exists because mutation found it missing: on a
+  // healthy tree `missing = []` and `orphans = []` are true whatever the code
+  // does, so deleting either direction survived the whole suite. Here they are
+  // fed a tree that HAS both, where a broken audit cannot agree by accident.
+  const got = auditBaselines({
+    expected: ['section-mobile-fold-slot-dark-linux.png', 'section-mobile-gone-dark-linux.png'],
+    onDisk: [
+      'section-mobile-fold-slot-dark-linux.png',
+      'section-mobile-stale-dark-linux.png',
+      'mobile-dark-linux.png',
+    ],
+  });
+  assert.deepEqual(
+    got.missing,
+    ['section-mobile-gone-dark-linux.png'],
+    'the MISSING direction is dead',
+  );
+  assert.deepEqual(
+    got.orphans,
+    ['section-mobile-stale-dark-linux.png'],
+    'the ORPHAN direction is dead',
+  );
+});
+
+test('the audit and the shot builder share one filename rule', () => {
+  // Not two copies that agree today: shootSection and this file both call
+  // sectionShotName. Mutation showed a second copy here stayed green when the
+  // helper dropped its prefix.
+  assert.equal(sectionShotName('mobile', 'fold-slot', 'dark'), 'section-mobile-fold-slot-dark.png');
+  assert.ok(
+    isSectionShot(sectionShotName('mobile', 'fold-slot', 'dark').replace(/\.png$/, '-linux.png')),
   );
 });
