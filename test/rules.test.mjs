@@ -7,6 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 
 import * as rules from '../scripts/rules.mjs';
 import * as pointerFirst from '../tools/pointer-first.mjs';
@@ -121,6 +122,17 @@ test('the Rust half is verifiable, and the limit is stated where it is read', ()
   assert.equal(pkg.scripts['test:rust'], 'node scripts/test-rust.mjs');
   const runner = readFileSync('scripts/test-rust.mjs', 'utf8');
   assert.match(runner, /refusal, not a skip/, 'the rust runner may now skip silently');
+
+  // ...and it is DRIVEN, not read. Asserting the wording of a refusal proves
+  // nothing about what it returns: a mutation that kept the message and exited
+  // 0 survived until this ran the thing. A runner that reports "unverified"
+  // and exits 0 is a skip wearing a refusal's words.
+  const bare = spawnSync(process.execPath, ['scripts/test-rust.mjs'], {
+    env: { ...process.env, PATH: '/usr/bin:/bin' },
+    encoding: 'utf8',
+  });
+  assert.equal(bare.status, 2, 'the rust runner does not fail when rustc is absent');
+  assert.match(bare.stderr, /refusal, not a skip/);
   const doc = readFileSync('docs/painted-ui.md', 'utf8');
   assert.match(
     doc,
