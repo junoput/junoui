@@ -16,7 +16,7 @@ here so the next one does not have to.
 ## 1. A quantity held fixed against a projected axis is degenerate at some angle
 
 A ring drawn under camera tilt is an ellipse whose vertical semi-axis is
-`sin(pitch)` times its horizontal one. It collapses toward a *line*. Anything
+`sin(pitch)` times its horizontal one. It collapses toward a _line_. Anything
 constant against that — an inset in pixels, a count of labels, a padding — is
 correct at the tilt you tested and wrong at some other tilt, and the failure is
 not gradual: it is two rows of text where a compass should be.
@@ -29,17 +29,18 @@ inward toward the centre while east and west do not, so "does this label fit"
 is a question about that label.
 
 ## 2. Coarse pointer, compact navigation, and "does the text fit" are three
+
 questions with three predicates
 
 They are routinely conflated, and each conflation has shipped:
 
-| question | predicate | what it decides |
-|---|---|---|
-| how big must a target be | `(pointer: coarse)` alone | tap ergonomics |
-| which navigation shape | coarse **and** (narrow **or** short) | rail vs dock |
-| does this text fit | the available width, measured | field lists, truncation |
+| question                 | predicate                            | what it decides         |
+| ------------------------ | ------------------------------------ | ----------------------- |
+| how big must a target be | `(pointer: coarse)` alone            | tap ergonomics          |
+| which navigation shape   | coarse **and** (narrow **or** short) | rail vs dock            |
+| does this text fit       | the available width, measured        | field lists, truncation |
 
-A reduced field list keyed on *portrait and coarse* leaves a narrow desktop
+A reduced field list keyed on _portrait and coarse_ leaves a narrow desktop
 window overflowing, because width is the thing that decides whether text fits
 and it was never consulted. A rail keyed on width alone vanishes on a landscape
 phone at 844×390 — wider than `md`, and still a phone.
@@ -65,7 +66,7 @@ Two details that cost a round each when re-derived:
 - **Scale the offset to the glyph.** Two points of outline around a ten-point
   label closes the counters and the label reads as a smudge.
 
-And canvas ink is pinned to the dark palette in *both* light and dark mode. It
+And canvas ink is pinned to the dark palette in _both_ light and dark mode. It
 is not app chrome; its background is the picture, not the theme.
 
 ---

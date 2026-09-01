@@ -36,7 +36,6 @@
      bucket, additive by default. Restate it to sit flush above the home
      indicator; see docs/safe-area.md. */
   --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
-
   --juno-role: var(--juno-active);
 
   pointer-events: auto;
