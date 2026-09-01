@@ -152,7 +152,10 @@ test('a clean run still says what it did not cover', () => {
 
 test('the limits name the things that have actually bitten', () => {
   const joined = LIMITS.join(' ');
-  for (const must of ['WebKit', 'env()', 'Routes you did not visit']) {
+  // 'never the picture' is the one that cost a sibling project a shattered
+  // frame on a change that passed its tests and improved both its metrics.
+  // Without it here, deleting that admission from LIMITS is silent.
+  for (const must of ['WebKit', 'env()', 'Routes you did not visit', 'never the picture']) {
     assert.ok(joined.includes(must), `the limits do not mention ${must}`);
   }
 });

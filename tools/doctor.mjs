@@ -51,6 +51,7 @@ export const LIMITS = [
   'env() is not forced: insets read 0 unless the page itself substitutes them, so safe-area arithmetic is NOT verified here.',
   'It checks what is rendered on the URL you gave it. Routes you did not visit, and states behind interaction, are uncovered.',
   'It cannot judge intent — a 44px target in the wrong place still passes.',
+  'It reads geometry, presence and text — never the picture. A correctly-structured page that renders wrong passes every check here; see docs/appearance.md.',
 ];
 
 /** The manifest of classes this junoui build ships. */
@@ -79,6 +80,17 @@ export function shortTargets({ elements, floor }) {
   return elements
     .filter((e) => Math.round(e.width) < floor || Math.round(e.height) < floor)
     .map((e) => `${e.label} ${Math.round(e.width)}x${Math.round(e.height)} (floor ${floor})`);
+}
+
+/** Controls that occupy space and cannot be seen or tapped.
+ *
+ *  Reported separately from a short target because they are a different
+ *  question with a different fix, and because the size check would call every
+ *  one of these fine. */
+export function unpaintedTargets({ elements }) {
+  return elements
+    .filter((e) => e.fault)
+    .map((e) => `${e.label} ${Math.round(e.width)}x${Math.round(e.height)} — ${e.fault}`);
 }
 
 /** Did the page keep exactly one primary navigation? */
@@ -123,6 +135,40 @@ export function parseArgs(argv) {
 /** Collected in the page. Kept in one function so what the checks see is
  *  exactly what the browser reported, with no interpretation in between. */
 const COLLECT = () => {
+  // Why an element is not on screen, or null if it is.
+  //
+  // `display !== 'none'` plus a non-empty rect is NOT "visible" — it is
+  // "occupies space". An element can satisfy both and be invisible three ways
+  // that cost nothing to check, and one of them (being covered) is the one a
+  // geometry probe is most likely to certify as correct. See docs/appearance.md.
+  const paintFault = (el) => {
+    for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (cs.display === 'none') return 'display:none';
+      if (cs.visibility === 'hidden' || cs.visibility === 'collapse') {
+        return `visibility:${cs.visibility}`;
+      }
+      if (parseFloat(cs.opacity) === 0) return 'opacity:0';
+      if (cs.contentVisibility === 'hidden') return 'content-visibility:hidden';
+    }
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return 'zero-sized';
+
+    // Covered. Sample the centre, clamped into the viewport so an element
+    // straddling an edge is asked about a point that exists.
+    const cx = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1);
+    const cy = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+    const hit = document.elementFromPoint(cx, cy);
+    // A descendant painting there is this element painting there; so is an
+    // ancestor, which is what comes back when the element itself sets
+    // pointer-events: none. Anything else is on top of it.
+    if (hit && hit !== el && !el.contains(hit) && !hit.contains(el)) {
+      const cls = typeof hit.className === 'string' ? hit.className.trim().split(/\s+/)[0] : '';
+      return `covered at its centre by ${cls || hit.tagName.toLowerCase()}`;
+    }
+    return null;
+  };
+
   const usedClasses = new Set();
   for (const el of document.querySelectorAll('[class]')) {
     for (const c of el.classList) if (/^juno-{1,2}/.test(c)) usedClasses.add(c);
@@ -131,18 +177,22 @@ const COLLECT = () => {
     'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=option], [role=treeitem], [role=separator][tabindex], [tabindex]:not([tabindex="-1"])';
   const elements = [];
   for (const el of document.querySelectorAll(INTERACTIVE)) {
+    const fault = paintFault(el);
+    // Not laid out at all: nothing to say about it, same as before.
+    if (fault === 'display:none' || fault === 'zero-sized') continue;
     const r = el.getBoundingClientRect();
-    if (!r.width || !r.height) continue; // not rendered
-    if (getComputedStyle(el).display === 'none') continue;
     const label =
       el.getAttribute('aria-label') ||
       (el.textContent || '').trim().slice(0, 24) ||
       el.tagName.toLowerCase();
-    elements.push({ label, width: r.width, height: r.height, cls: el.className });
+    // `fault` rides along rather than skipping the element: a control that is
+    // the right SIZE and cannot be seen or tapped is exactly the thing a
+    // size-only check certifies as fine.
+    elements.push({ label, width: r.width, height: r.height, cls: el.className, fault });
   }
   const shown = (sel) => {
     const el = document.querySelector(sel);
-    return Boolean(el) && getComputedStyle(el).display !== 'none' && el.getClientRects().length > 0;
+    return Boolean(el) && paintFault(el) === null;
   };
   return {
     used: [...usedClasses],
@@ -190,6 +240,9 @@ export async function runDoctor(opts, { chromium }) {
     const floor = Number.isFinite(facts.tapMin) ? facts.tapMin : profile.coarse ? 44 : 24;
     for (const t of shortTargets({ elements: facts.elements, floor })) {
       findings.push(`tap target below the floor: ${t}`);
+    }
+    for (const t of unpaintedTargets({ elements: facts.elements })) {
+      findings.push(`control is laid out but not on screen: ${t}`);
     }
     for (const c of unknownClasses({ used: facts.used, manifest, allowed: opts.allowed })) {
       findings.push(`class junoui does not define: ${c}`);
