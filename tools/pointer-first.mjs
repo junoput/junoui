@@ -60,8 +60,7 @@ export const NARROW_MAX_PX = 767.98;
 export const COARSE_POINTER = '(pointer: coarse)';
 
 /** Navigation shape: a coarse pointer with phone-sized room in one axis. */
-export const COMPACT_NAV =
-  `(pointer: coarse) and ((width <= ${NARROW_MAX_PX}px) or (height <= ${SHORT_MAX_PX}px))`;
+export const COMPACT_NAV = `(pointer: coarse) and ((width <= ${NARROW_MAX_PX}px) or (height <= ${SHORT_MAX_PX}px))`;
 
 /**
  * Does a viewport want phone navigation?
