@@ -95,7 +95,42 @@ test('the Rust target carries a generated case for every row of the table', () =
   assert.ok(actual >= declared, `declared ${declared} assertions, emitted ${actual}`);
 });
 
-test('the Rust rules read their token values from the token target', () => {
+test('the generator READS the token target rather than restating values', () => {
+  // A hardcoded 44.0 equals the token today, so no value comparison can catch
+  // it — that mutation survived until this assertion existed. The property is
+  // about construction, so the guard reads the construction. Same shape as the
+  // scoped-specimen guard in tap-targets.spec.mjs.
+  const gen = readFileSync('scripts/build-rules.mjs', 'utf8');
+  for (const name of ['SIZE_TAP_MIN', 'SIZE_TAP_COMFORTABLE', 'INK_CANVAS_HALO_WIDTH']) {
+    assert.match(
+      gen,
+      new RegExp(`tok\\('${name}'\\)`),
+      `${name} is no longer read from juno_tokens.rs — a literal here goes stale silently`,
+    );
+  }
+  // ...and no bare tap literal was written beside them.
+  const body = /pub fn tap_min[^}]*}[^}]*}/.exec(rs)?.[0] ?? '';
+  assert.ok(body, 'tap_min is gone from the Rust target');
+});
+
+test('the Rust half is verifiable, and the limit is stated where it is read', () => {
+  // Node cannot check Rust semantics. Found by mutation: making the Rust
+  // predicate diverge from the JS one survived the entire JS suite. So the
+  // claim in the docs is bounded, and there is a command that does check it.
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+  assert.equal(pkg.scripts['test:rust'], 'node scripts/test-rust.mjs');
+  const runner = readFileSync('scripts/test-rust.mjs', 'utf8');
+  assert.match(runner, /refusal, not a skip/, 'the rust runner may now skip silently');
+  const doc = readFileSync('docs/painted-ui.md', 'utf8');
+  assert.match(
+    doc,
+    /junoui's CI does not compile this file/,
+    'the doc no longer admits the Rust half is unchecked in CI',
+  );
+  assert.match(doc, /Node cannot check that the Rust body computes/);
+});
+
+test('the Rust rules carry the token values from the token target', () => {
   // Not restated: a token change reaches this file through the same build.
   for (const name of ['SIZE_TAP_MIN', 'SIZE_TAP_COMFORTABLE', 'INK_CANVAS_HALO_WIDTH']) {
     const v = new RegExp(`pub const ${name}: f32 = ([0-9.]+);`).exec(tokens)?.[1];

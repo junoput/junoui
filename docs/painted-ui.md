@@ -21,12 +21,22 @@ labels_that_clear(marks, ratio, radius_px, glyph_px) -> u32
 halo_offsets(font_px, halo_width_px, reference_px) -> [(f32, f32); 4]
 ```
 
-**One definition, two targets, one table.** Each rule is defined once in
-`scripts/rules.mjs`; `tools/pointer-first.mjs` re-exports it, the Rust is
-generated from it, and the Rust's `#[test]` bodies are generated from the same
-`CASES` table the JS tests run. There is no way to cover one target and miss the
-other, which matters more than any single rule here — two implementations that
-agree today is how this gap opens in the first place.
+**One table, two targets — and one honest limit.** Each rule is defined once in
+`scripts/rules.mjs`; `tools/pointer-first.mjs` re-exports it rather than
+restating it, the Rust is generated from it, and the Rust's `#[test]` bodies are
+generated from the same `CASES` table the JS tests run. Adding a case covers
+both targets; there is no way to add one and miss the other.
+
+What that does **not** buy, said plainly because it would be easy to imply
+otherwise: **Node cannot check that the Rust body computes what the JS body
+computes.** The JS suite verifies the table, the two bounds as numbers, the
+generated-case count, and that nothing kept a second copy of the predicate. Only
+`rustc` can check the Rust semantics, by running those generated tests —
+`npm run test:rust`, which **refuses** rather than skips when no toolchain is
+present. junoui's CI has none; wiring one touches `.github` and is the
+operator's call. Mutation testing is how this was found rather than assumed: a
+mutation that made the Rust predicate diverge from the JS one survived the whole
+JS suite.
 
 These three rules were each re-derived by hand, correctly, by a consumer that
 had no way to look them up. They are written out below so the next one does not
@@ -106,10 +116,11 @@ are:
   a different fallback, the rule to copy is _derive it from the room the
   projection leaves_, not this function.
 - **junoui's CI does not compile this file.** The generated tests are real and
-  they pass, but the repo has no Rust toolchain in CI — wiring one in touches
-  `.github` and is the operator's call. Until then the guard that runs on every
-  build is the JS half plus the generated-assertion count; the Rust half is
-  verified by whoever runs `rustc --test`.
+  they pass under `npm run test:rust`, but the repo has no Rust toolchain in CI
+  — wiring one in touches `.github` and is the operator's call. Until then the
+  guard that runs on every build is the JS half plus the generated-assertion
+  count, and **a Rust body that diverges from its JS twin will not be caught by
+  junoui's CI.** Run `npm run test:rust` before trusting a change to these.
 
 ---
 

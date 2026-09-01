@@ -98,7 +98,8 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "npm run build && changeset publish",
-    "build:rules": "node scripts/build-rules.mjs"
+    "build:rules": "node scripts/build-rules.mjs",
+    "test:rust": "node scripts/test-rust.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
