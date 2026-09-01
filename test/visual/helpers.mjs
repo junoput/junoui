@@ -125,7 +125,13 @@ export async function shootSection(pw, page, mode, id) {
   await visit(pw, page, mode);
   const section = pw.locator(`[data-vr-shot="${id}"]`);
   await expect(section).toHaveCount(1);
-  await expect(section).toHaveScreenshot(`${page}-${id}-${mode}.png`, {
+  // `section-` prefix, deliberately: it puts these in their own namespace so a
+  // baseline audit can tell a section shot from a full-page one EXACTLY, rather
+  // than by a heuristic over the stem. The first version of that audit had to
+  // guess which of `mobile-phone-dark` and `mobile-fold-slot-dark` was a
+  // viewport variant and which was a section, and claimed `index-auto-dark` as
+  // an orphan on its first run.
+  await expect(section).toHaveScreenshot(`section-${page}-${id}-${mode}.png`, {
     mask: MASKS(pw),
   });
 }
