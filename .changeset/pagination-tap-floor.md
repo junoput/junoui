@@ -6,7 +6,7 @@
 
 `min-inline-size` read `--juno-size-tap-min` and took the coarse-pointer promotion; `block-size` was a hard `--juno-space-32` and could not. So on a phone every pagination control was **44 × 32** — clearing WCAG 2.2 **2.5.8** Target Size (Minimum, 24px) and missing **2.5.5** Enhanced (44px), which every other junoui touch control meets.
 
-The floor is now `min-block-size: max(var(--juno-space-32), var(--juno-size-tap-min))` — the larger of the component's own 32px design height and what the pointer needs. Reading the token alone would have *shrunk* desktop pagination to 24px to fix a phone.
+The floor is now `min-block-size: max(var(--juno-space-32), var(--juno-size-tap-min))` — the larger of the component's own 32px design height and what the pointer needs. Reading the token alone would have _shrunk_ desktop pagination to 24px to fix a phone.
 
 **Nothing changes on a fine pointer**: 32px before and after, measured. On a coarse pointer items go 44 × 32 → 44 × 44.
 
