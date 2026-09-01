@@ -17,6 +17,9 @@
 // where the snapshot proves nothing — this runs in that window too.
 import { expect, test } from '@playwright/test';
 
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
 import { hideDeclaredSections } from './helpers.mjs';
 
 const box = (pw, sel) => pw.locator(sel).evaluate((el) => el.getBoundingClientRect().width);
@@ -84,6 +87,29 @@ test('a declared section leaves LAYOUT when hidden for the page shot', async ({ 
   expect(before - after).toBeGreaterThanOrEqual(section);
   // and measured against main on this branch: 4086 shown, 3835 hidden, and
   // main's own mobile.html is 3835 — the existing baselines are untouched.
+});
+
+test('the full-page shot hides declared sections before it fires', () => {
+  // The other half of the mechanism, and it cannot be observed from here: only
+  // `shoot()` takes the page picture, and its failure mode is a baseline diff
+  // on the runner — where this change is invisible until every mobile-* shot
+  // goes red, which is the outcome the whole design exists to prevent.
+  //
+  // So the guard reads the CONSTRUCTION, the same way tap-targets.spec.mjs
+  // guards its scoped specimen helper and for the same reason: hiding is not
+  // self-guarding. Found by mutation — removing the call from shoot() left
+  // every test in this file green.
+  const src = readFileSync(new URL('./helpers.mjs', import.meta.url), 'utf8');
+  const shoot = /export async function shoot\([^)]*\)\s*\{([\s\S]*?)\n\}/.exec(src)?.[1];
+  assert.ok(shoot, 'shoot() is gone from helpers.mjs');
+  assert.ok(
+    shoot.indexOf('hideDeclaredSections') !== -1,
+    'the full-page shot no longer hides declared sections — adding any section will red every baseline below it',
+  );
+  assert.ok(
+    shoot.indexOf('hideDeclaredSections') < shoot.indexOf('toHaveScreenshot'),
+    'declared sections are hidden AFTER the shot is taken, which is no hiding at all',
+  );
 });
 
 test('every declared shot id on a page is unique', async ({ page: pw }) => {
