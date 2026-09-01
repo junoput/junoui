@@ -60,7 +60,7 @@ test('the checklist keeps a "what nothing checks yet" section', () => {
   // the failure it exists to prevent — it reads as coverage of the things
   // nobody looked at.
   assert.match(doc, /What nothing checks yet/i);
-  for (const gap of ['WebKit', 'env()', 'Routes you did not visit']) {
+  for (const gap of ['WebKit', 'env()', 'Routes you did not visit', 'how it LOOKS']) {
     assert.ok(doc.includes(gap), `the gaps section no longer names ${gap}`);
   }
 });
@@ -69,8 +69,10 @@ test('the doctor and the checklist agree about the limits', () => {
   // Two places state what is uncovered — the CLI output and this doc — and
   // they are read by the same person in different moments. Drift between them
   // is how a limit quietly disappears from one of them.
-  for (const gap of ['WebKit', 'env()']) {
+  for (const gap of ['WebKit', 'env()', 'never the picture']) {
     assert.ok(doctor.includes(gap), `the doctor no longer admits ${gap}`);
+  }
+  for (const gap of ['WebKit', 'env()', 'appearance.md']) {
     assert.ok(doc.includes(gap), `the checklist no longer admits ${gap}`);
   }
 });
