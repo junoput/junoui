@@ -50,3 +50,11 @@ prevent.
 - **Whether a control is in the right place.** A 44px target in the wrong corner
   passes everything here.
 - **Routes you did not visit**, and states behind interaction.
+- **UI that is painted rather than laid out.** Every check here reads the DOM —
+  boxes, computed styles, class names. A widget drawn into a canvas or a GPU
+  frame is invisible to all of them, and geovista is the first junoui consumer
+  that has one. What transfers to it today is the token values (`juno_tokens.rs`)
+  and the reasoning in these docs; no check in the kit runs against it and no
+  mechanism in the kit is callable from it. See `docs/painted-ui.md` for the
+  three rules that consumer re-derived by hand, which is the gap this bullet
+  names.
