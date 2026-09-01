@@ -115,6 +115,7 @@
      behind once the body hits its end — the rubber-band-under-the-sheet effect
      on iOS. NOTE: overscroll-behavior is community convention here, not Apple
      guidance; no primary Apple source covers it. See 20260803-029. */
+
   /* min-block-size is INERT ON CHROMIUM and kept deliberately. Measured
      2026-09-01 against #ov-modal-tall with and without it: identical numbers
      (body 1125/761, port engaged, footer visible) — a scroll container's
