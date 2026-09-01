@@ -137,6 +137,8 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-sheet-h',
     'juno-sheet-max',
     'juno-dock-scale',
+    'juno-splitter-line',
+    'juno-splitter-hit',
     'juno-tree-indent',
     'juno-gizmo-heading',
     'juno-gizmo-pitch',

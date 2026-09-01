@@ -53,6 +53,7 @@
     "./subset": "./tools/subset-sprite.mjs",
     "./tree": "./tools/tree.mjs",
     "./gizmo": "./tools/gizmo.mjs",
+    "./splitter": "./tools/splitter.mjs",
     "./testing": "./tools/testing.mjs",
     "./classes.json": "./dist/classes.json",
     "./icons/inline": "./dist/icons/inline.js",
