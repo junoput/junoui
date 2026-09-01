@@ -54,6 +54,7 @@
     "./tree": "./tools/tree.mjs",
     "./gizmo": "./tools/gizmo.mjs",
     "./pointer": "./tools/pointer.mjs",
+    "./splitter": "./tools/splitter.mjs",
     "./testing": "./tools/testing.mjs",
     "./classes.json": "./dist/classes.json",
     "./icons/inline": "./dist/icons/inline.js",

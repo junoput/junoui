@@ -1,0 +1,132 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Splitter (resize separator)
+ *  The handle between two panes: a side panel over a canvas, an editor
+ *  next to a preview, a list beside a detail.
+ *
+ *  THE BOUNDARY, because layout.md draws one and this sits right on it.
+ *  "Behavior that needs state belongs in your app" — and it still does.
+ *  junoui ships NO resize state machine here: no pointer capture, no
+ *  width arithmetic, no persistence, no collapse policy. What it ships is
+ *  the half it already claims elsewhere — .juno-gesture-surface's CSS
+ *  without the recognizer, .juno-pillbar's geometry props without the
+ *  collapse policy — namely the affordance, its hit area, and the ARIA
+ *  contract. That contract is the part consumers omit, and it is not
+ *  app-specific: `role=separator` with aria-valuenow/min/max and arrow-key
+ *  resizing is the same in every app that has two panes.
+ *
+ *  The app owns the number. It writes the current position in, and moves
+ *  it when this element asks.
+ *
+ *  Usage — see docs/components/splitter.md for the full contract:
+ *    <div class="juno-splitter" role="separator" tabindex="0"
+ *         aria-orientation="vertical" aria-label="Resize panel"
+ *         aria-valuenow="320" aria-valuemin="180" aria-valuemax="640"></div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-splitter {
+  --juno-role: var(--juno-active);
+
+  /* The painted hairline, and the hit area, which are different numbers on
+     purpose — see below. */
+  --juno-splitter-line: var(--juno-border-width-1);
+  --juno-splitter-hit: var(--juno-size-tap-min);
+
+  /* THE HIT AREA IS THE COMPONENT'S REASON TO EXIST as much as the ARIA is.
+     A 1px separator is a 1px target: fine for a mouse aimed carefully, a
+     coin flip for a trackpad, and unusable with a finger. So the ELEMENT is
+     tap-sized and the LINE is painted inside it — grow the target, not the
+     rule. --juno-size-tap-min promotes to 44px on a coarse pointer through
+     base.css, so the handle widens on touch without this file knowing what
+     a phone is.
+
+     The pane layout must not pay for that: the splitter is centred on the
+     boundary with a negative margin, so it overlaps its neighbours rather
+     than pushing them apart. A consumer that laid out a 44px gap to hold it
+     would have a 44px gap on desktop too. */
+  flex: 0 0 var(--juno-splitter-line);
+  position: relative;
+  align-self: stretch;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+/* The painted line, centred in the hit area. A pseudo-element so the hit
+   area can be wide while the line stays a hairline — the two cannot be the
+   same box. */
+.juno-splitter::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-splitter-line);
+  translate: -50% 0;
+  background: var(--juno-border);
+  transition: background-color var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+/* The hit area, overlapping the neighbours rather than displacing them. */
+.juno-splitter::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-splitter-hit);
+  translate: -50% 0;
+}
+
+.juno-splitter:hover::before,
+.juno-splitter[data-juno-dragging]::before {
+  background: var(--juno-role);
+}
+
+/* A hairline is a hard thing to see a focus ring on, so the ring goes on the
+   whole hit area — which is also the honest picture of what is focused. */
+.juno-splitter:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-border-width-2));
+}
+
+.juno-splitter:focus-visible::before {
+  background: var(--juno-role);
+}
+
+/* ── horizontal: two panes stacked, the handle runs left-to-right ───────
+   `aria-orientation` is the source of truth, not a modifier class: the app
+   has to set it for the screen reader anyway, and a class would be a second
+   copy of the same fact free to disagree with it. */
+.juno-splitter[aria-orientation='horizontal'] {
+  flex: 0 0 var(--juno-splitter-line);
+  cursor: row-resize;
+}
+
+.juno-splitter[aria-orientation='horizontal']::before {
+  inset-block: auto;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  inline-size: auto;
+  block-size: var(--juno-splitter-line);
+  translate: 0 -50%;
+}
+
+.juno-splitter[aria-orientation='horizontal']::after {
+  inset-block: auto;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  inline-size: auto;
+  block-size: var(--juno-splitter-hit);
+  translate: 0 -50%;
+}
+
+/* A collapsed pane's handle stays reachable — it is the only way back. */
+.juno-splitter[aria-valuenow='0']::before {
+  background: var(--juno-role);
+}
+
+.juno-splitter:disabled,
+.juno-splitter[aria-disabled='true'] {
+  cursor: default;
+  opacity: var(--juno-opacity-disabled);
+}

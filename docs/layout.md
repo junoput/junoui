@@ -329,6 +329,15 @@ These are all CSS. Behavior that needs state (resize observers feeding app state
 virtualization, drag-resizable panels) belongs in your app or a sibling
 `junoui-<framework>` package — not the design system.
 
+**Where that line falls for a resizable panel**, since it is the case that keeps
+coming up: junoui ships `.juno-splitter` — the separator's affordance, its
+tap-sized hit area, and the `role="separator"` keyboard and ARIA contract — and
+ships no resize state machine at all. No pointer capture, no width arithmetic,
+no persistence, no collapse policy. It is the same split as
+`.juno-gesture-surface` (CSS here, recognizer yours) and `.juno-pillbar`
+(geometry props here, collapse policy yours). See
+[components/splitter.md](./components/splitter.md).
+
 ## Floating-nav clearance
 
 A scroller that a fixed dock or pillbar floats over reserves room at its foot so
