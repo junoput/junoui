@@ -65,7 +65,8 @@
     "./icons/install": "./dist/icons/install.js",
     "./package.json": "./package.json",
     "./rules": "./dist/rust/juno_rules.rs",
-    "./scrubber": "./tools/scrubber.mjs"
+    "./scrubber": "./tools/scrubber.mjs",
+    "./range": "./tools/range.mjs"
   },
   "files": [
     "dist",

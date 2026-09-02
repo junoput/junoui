@@ -1,0 +1,158 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Range (dual-thumb slider)
+ *  A track with two thumbs and the span between them filled. Price
+ *  filters, date ranges, histogram brushing, audio trim, threshold
+ *  pairs, zoom windows.
+ *
+ *  .juno-slider is single-value, so a range today is two sliders side by
+ *  side and nothing stops the low one passing the high one.
+ *
+ *  ARIA: a GROUP containing two sliders, each with its own accessible
+ *  name — "Minimum"/"Maximum", never `slider` twice, which is unusable.
+ *  Each thumb's aria-valuemin/max is the OTHER THUMB'S POSITION, not the
+ *  track's, so the constraint is announced rather than merely enforced.
+ *  `thumbBounds()` in junoui/range computes them.
+ *
+ *  ── THE COARSE-POINTER PROBLEM IS NOT JUST SIZE ─────────────────────
+ *  Each thumb needs the tap floor on both axes (20260815-040). But two
+ *  44px thumbs OVERLAP as soon as their centres are within 44px, which is
+ *  most of a short track — so "which thumb does this tap grab" is a rule,
+ *  and it lives in junoui/range::pickThumb, not in z-order. Read the
+ *  header there; the summary is nearest-centre between the thumbs,
+ *  direction-of-travel outside them.
+ *
+ *  What CSS owns is making the overlap *visible* and keeping the top
+ *  thumb from swallowing the other's whole target: the thumbs paint
+ *  small inside their tap-sized boxes, so at rest a user can see two
+ *  distinct grips even when the boxes overlap completely.
+ *
+ *  Crossing CLAMPS — it never swaps and never pushes. See junoui/range.
+ *
+ *  The app owns the values and the clamping.
+ *
+ *  Usage — see docs/components/range.md:
+ *    <div class="juno-range" role="group" aria-label="Price"
+ *         data-juno-min="0" data-juno-max="100"
+ *         style="--juno-range-lo:30%; --juno-range-hi:70%">
+ *      <div class="juno-range__track"><div class="juno-range__fill"></div></div>
+ *      <div class="juno-range__thumb juno-range__thumb--lo" role="slider"
+ *           tabindex="0" aria-label="Minimum"
+ *           aria-valuemin="0" aria-valuemax="70" aria-valuenow="30"></div>
+ *      <div class="juno-range__thumb juno-range__thumb--hi" role="slider"
+ *           tabindex="0" aria-label="Maximum"
+ *           aria-valuemin="30" aria-valuemax="100" aria-valuenow="70"></div>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-range {
+  --juno-role: var(--juno-active);
+
+  /* Painted geometry and hit geometry are different numbers, deliberately. */
+  --juno-range-track: var(--juno-space-4);
+  --juno-range-grip: var(--juno-space-16);
+
+  /* Where the thumbs are. Percentages, so the app never needs the pixel
+     width of a box it does not own — percentOf() builds them. */
+  --juno-range-lo: 0%;
+  --juno-range-hi: 100%;
+
+  position: relative;
+  display: block;
+  inline-size: 100%;
+
+  /* The tap floor, on the host, so an audit measuring the border box sees
+     what a finger hits (20260902-014). */
+  block-size: var(--juno-size-tap-min);
+}
+
+.juno-range__track {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  block-size: var(--juno-range-track);
+  translate: 0 -50%;
+  border-radius: 999px;
+  background: var(--juno-control-edge-strong);
+}
+
+/* The selected span. Between the thumbs, so it is the thing that reads as
+   "the range" rather than "progress from the left". */
+.juno-range__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--juno-range-lo);
+  inline-size: calc(var(--juno-range-hi) - var(--juno-range-lo));
+  border-radius: inherit;
+  background: var(--juno-role);
+}
+
+/* Each thumb is a tap-sized BOX with a small grip painted inside it. Both
+   axes, on the element — the 20260815-040 rule. */
+.juno-range__thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: var(--juno-size-tap-min);
+  block-size: var(--juno-size-tap-min);
+  translate: -50% -50%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* The painted grip. Small, so two overlapping tap boxes still read as two
+   distinct thumbs — the overlap is in the hit areas, which are invisible,
+   and if the PAINT overlapped too the control would look like one thumb
+   and behave like two. */
+.juno-range__thumb::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-range-grip);
+  block-size: var(--juno-range-grip);
+  translate: -50% -50%;
+  border-radius: 999px;
+  background: var(--juno-role);
+  box-shadow: 0 0 0 var(--juno-border-width-2) var(--juno-s0);
+  transition: scale var(--juno-motion-duration-quick) var(--juno-motion-ease-standard);
+}
+
+.juno-range__thumb--lo {
+  inset-inline-start: var(--juno-range-lo);
+}
+
+.juno-range__thumb--hi {
+  inset-inline-start: var(--juno-range-hi);
+}
+
+/* The focused or dragged thumb paints above the other, so the grip a
+   keyboard user is moving is never hidden behind its neighbour. */
+.juno-range__thumb:focus-visible,
+.juno-range__thumb[data-juno-dragging] {
+  z-index: 1;
+}
+
+.juno-range__thumb:focus-visible::before,
+.juno-range__thumb[data-juno-dragging]::before {
+  scale: 1.15;
+}
+
+.juno-range__thumb:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: calc(-1 * var(--juno-border-width-2));
+  border-radius: 999px;
+}
+
+.juno-range__thumb[data-juno-dragging] {
+  cursor: grabbing;
+}
+
+.juno-range[aria-disabled='true'] {
+  opacity: var(--juno-opacity-disabled);
+}
+
+.juno-range[aria-disabled='true'] .juno-range__thumb {
+  cursor: not-allowed;
+}
