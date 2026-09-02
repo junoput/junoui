@@ -258,6 +258,55 @@
       </div></article>
     </section>
 
+
+    <!-- Declares its own VR shot, so adding it moves no other baseline. -->
+    <section class="demo-section" data-vr-shot="range">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">RG</span>
+        <span class="juno-eyebrow">.juno-range — dual-thumb slider: two sliders in a group, each announcing the other as its limit</span>
+      </div>
+
+      <p class="juno-eyebrow demo-lead">
+        The second pair is 4% apart: their tap boxes already overlap while the 16px grips are still two
+        dots — the overlap is in the hit areas, not the paint. How wide that band is depends on the
+        track's width, which is why the grip is smaller than its box rather than a fixed gap. The third pair is exactly
+        coincident, where the grips necessarily coincide too; that is the case nearest-centre cannot
+        answer and the direction rule does (junoui/range::pickThumb).
+      </p>
+      <div style="max-width:520px;display:grid;gap:32px;">
+        <div class="juno-range" id="rg-apart" role="group" aria-label="Price"
+             data-juno-min="0" data-juno-max="100"
+             style="--juno-range-lo:30%;--juno-range-hi:70%;">
+          <div class="juno-range__track"><div class="juno-range__fill"></div></div>
+          <div class="juno-range__thumb juno-range__thumb--lo" role="slider" tabindex="0"
+               aria-label="Minimum price" aria-valuemin="0" aria-valuemax="70" aria-valuenow="30"
+               aria-valuetext="30 pounds"></div>
+          <div class="juno-range__thumb juno-range__thumb--hi" role="slider" tabindex="0"
+               aria-label="Maximum price" aria-valuemin="30" aria-valuemax="100" aria-valuenow="70"
+               aria-valuetext="70 pounds"></div>
+        </div>
+
+
+        <div class="juno-range" id="rg-close" role="group" aria-label="Threshold"
+             data-juno-min="0" data-juno-max="100"
+             style="--juno-range-lo:48%;--juno-range-hi:52%;">
+          <div class="juno-range__track"><div class="juno-range__fill"></div></div>
+          <div class="juno-range__thumb juno-range__thumb--lo" role="slider" tabindex="0"
+               aria-label="Lower threshold" aria-valuemin="0" aria-valuemax="52" aria-valuenow="48"></div>
+          <div class="juno-range__thumb juno-range__thumb--hi" role="slider" tabindex="0"
+               aria-label="Upper threshold" aria-valuemin="48" aria-valuemax="100" aria-valuenow="52"></div>
+        </div>
+        <div class="juno-range" id="rg-together" role="group" aria-label="Zoom window"
+             data-juno-min="0" data-juno-max="100"
+             style="--juno-range-lo:52%;--juno-range-hi:52%;">
+          <div class="juno-range__track"><div class="juno-range__fill"></div></div>
+          <div class="juno-range__thumb juno-range__thumb--lo" role="slider" tabindex="0"
+               aria-label="Minimum zoom" aria-valuemin="0" aria-valuemax="52" aria-valuenow="52"></div>
+          <div class="juno-range__thumb juno-range__thumb--hi" role="slider" tabindex="0"
+               aria-label="Maximum zoom" aria-valuemin="52" aria-valuemax="100" aria-valuenow="52"></div>
+        </div>
+      </div>
+    </section>
   </main>
   <script type="module" src="./app.js"></script>
 </body>

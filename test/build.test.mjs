@@ -109,6 +109,12 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-scrubber-in',
     'juno-scrubber-out',
     'juno-scrubber-preview-at',
+    // .juno-range's own geometry and thumb positions, set on the component and
+    // written by the app as percentages. Component-local, like juno-slider-pct.
+    'juno-range-track',
+    'juno-range-grip',
+    'juno-range-lo',
+    'juno-range-hi',
     'juno-arc-size',
     'juno-arc-width',
     'juno-beacon-size',

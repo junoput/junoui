@@ -54,6 +54,7 @@ export const TOUCH_SURFACES = [
   'juno-splitter',
   'juno-scrubber',
   'juno-scrubber__mark',
+  'juno-range__thumb',
 ];
 
 /** The `:where()` selector list, formatted for the bundle. */
