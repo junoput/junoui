@@ -1,0 +1,216 @@
+/* ════════════════════════════════════════════════════════════════════
+ *  Component — Scrubber (timeline / transport)
+ *  A track with a playhead, a loaded range distinct from the played one,
+ *  optional in/out marks, optional chapter ticks, and a preview slot the
+ *  app fills. For media playback, telemetry replay, session replay,
+ *  animation timelines.
+ *
+ *  NOT .juno-slider. A slider is a single-value FORM control whose value
+ *  is a number; a scrubber has three ranges over one axis (loaded,
+ *  played, in..out), announces a TIME rather than a number, and its
+ *  playhead is dragged rather than nudged. Same ARIA role, different
+ *  component.
+ *
+ *  THE HIT AREA IS WHY THIS EXISTS as much as the ARIA is. A 4px track is
+ *  unhittable with a finger and is the single most common failure of
+ *  hand-rolled scrubbers. So the HOST is tap-sized on the block axis and
+ *  the track is painted inside it — grow the target, not the rule.
+ *
+ *  And the host, not a pseudo-element, carries that size. `.juno-splitter`
+ *  puts its hit area on ::after, which leaves its measured border box a
+ *  1px hairline; anything auditing tap targets by `getBoundingClientRect`
+ *  — junoui-doctor included — reads that as a short target. Sizing the
+ *  host keeps the measurement honest. See 20260902-014.
+ *
+ *  BOTH AXES, because that is the failure this component is shaped to
+ *  avoid: pagination held --juno-size-tap-min on its inline axis and a
+ *  fixed 32px on its block axis, and was 44x32 on a phone for weeks
+ *  (20260815-040). The in/out marks here are sized on both.
+ *
+ *  TOUCH-ACTION IS BOTH, and the split is deliberate. Both surfaces are
+ *  registered in src/css/touch-surfaces.mjs, which is what gets them the
+ *  tap-highlight suppression every touch control wants. But that layer's
+ *  `touch-action: manipulation` is wrong for a drag: it leaves the browser
+ *  free to claim a horizontal pan, so a scrub on a phone scrolls the page
+ *  instead. `none` is set locally, which wins because the generated layer is
+ *  `:where()` and contributes zero specificity. `.juno-splitter` does exactly
+ *  this, for the same reason.
+ *
+ *  The app owns the numbers. It writes the percentages in and moves them.
+ *
+ *  Usage — see docs/components/scrubber.md:
+ *    <div class="juno-scrubber" role="slider" tabindex="0"
+ *         aria-label="Playback position"
+ *         aria-valuemin="0" aria-valuemax="212" aria-valuenow="87"
+ *         aria-valuetext="1:27 of 3:32"
+ *         style="--juno-scrubber-played:41%; --juno-scrubber-loaded:68%">
+ *      <div class="juno-scrubber__track">
+ *        <div class="juno-scrubber__loaded"></div>
+ *        <div class="juno-scrubber__played"></div>
+ *      </div>
+ *      <div class="juno-scrubber__head"></div>
+ *    </div>
+ * ════════════════════════════════════════════════════════════════════ */
+
+.juno-scrubber {
+  --juno-role: var(--juno-active);
+
+  /* Painted geometry and hit geometry are different numbers, deliberately. */
+  --juno-scrubber-track: var(--juno-space-4);
+  --juno-scrubber-head: var(--juno-space-12);
+  --juno-scrubber-mark: var(--juno-border-width-2);
+
+  /* How far along the app is. Percentages so the app never needs the pixel
+     width of a box it does not own. */
+  --juno-scrubber-played: 0%;
+  --juno-scrubber-loaded: 0%;
+  --juno-scrubber-in: 0%;
+  --juno-scrubber-out: 100%;
+
+  position: relative;
+  display: block;
+  inline-size: 100%;
+
+  /* The tap floor, on the host. Promotes to 44px on a coarse pointer through
+     base.css, so this file never mentions a phone. */
+  block-size: var(--juno-size-tap-min);
+  cursor: pointer;
+
+  /* Overrides the generated layer's `manipulation` — see the header. */
+  touch-action: none;
+}
+
+/* The painted track, centred in the hit area. */
+.juno-scrubber__track {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  block-size: var(--juno-scrubber-track);
+  translate: 0 -50%;
+  border-radius: var(--juno-radius-full);
+  background: var(--juno-control-edge-strong);
+  overflow: hidden;
+}
+
+/* Loaded and played are two ranges over one axis, not one bar with two
+   colours: a stream can be buffered past the playhead, and showing that is
+   the whole reason a scrubber is not a progress bar. */
+.juno-scrubber__loaded,
+.juno-scrubber__played {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-radius: inherit;
+}
+
+.juno-scrubber__loaded {
+  inline-size: var(--juno-scrubber-loaded);
+  background: var(--juno-muted);
+}
+
+.juno-scrubber__played {
+  inline-size: var(--juno-scrubber-played);
+  background: var(--juno-role);
+}
+
+/* The in..out selection, drawn over the track and under the playhead. */
+.juno-scrubber__range {
+  position: absolute;
+  inset-block-start: 50%;
+  block-size: var(--juno-scrubber-track);
+  inset-inline-start: var(--juno-scrubber-in);
+  inline-size: calc(var(--juno-scrubber-out) - var(--juno-scrubber-in));
+  translate: 0 -50%;
+  background: color-mix(in srgb, var(--juno-role) 28%, transparent);
+  outline: var(--juno-border-width-1) solid var(--juno-role);
+  pointer-events: none;
+}
+
+/* The playhead. Painted small, but it is NOT a separate tap target: the host
+   carries role=slider and the tabindex, so the thing a finger aims at is the
+   whole 44px strip. Pointer-events off so a drag started on the head is a
+   drag on the host. */
+.juno-scrubber__head {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--juno-scrubber-played);
+  inline-size: var(--juno-scrubber-head);
+  block-size: var(--juno-scrubber-head);
+  translate: -50% -50%;
+  border-radius: var(--juno-radius-full);
+  background: var(--juno-role);
+  pointer-events: none;
+}
+
+/* Chapter / tick marks. Decorative by default — a mark a screen reader has to
+   read is a list, not a tick. */
+.juno-scrubber__ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.juno-scrubber__tick {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: var(--juno-scrubber-mark);
+  block-size: var(--juno-scrubber-track);
+  translate: -50% -50%;
+  background: var(--juno-s0);
+}
+
+/* In and out marks. These ARE separate controls — an app lets you drag them —
+   so they get their own tap floor ON BOTH AXES, sized on the element rather
+   than a pseudo-element so an audit measures what a finger hits. The flag is
+   painted inside; the box is transparent. */
+.juno-scrubber__mark {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: var(--juno-size-tap-min);
+  block-size: var(--juno-size-tap-min);
+  translate: -50% -50%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.juno-scrubber__mark::before {
+  content: '';
+  position: absolute;
+  inset-block: 25%;
+  inset-inline-start: 50%;
+  inline-size: var(--juno-border-width-2);
+  translate: -50% 0;
+  background: var(--juno-role);
+}
+
+.juno-scrubber__mark--in {
+  inset-inline-start: var(--juno-scrubber-in);
+}
+
+.juno-scrubber__mark--out {
+  inset-inline-start: var(--juno-scrubber-out);
+}
+
+/* The preview slot: the app fills it (a thumbnail, a timestamp, a sparkline).
+   junoui positions it and gets out of the way. */
+.juno-scrubber__preview {
+  position: absolute;
+  inset-block-end: calc(100% + var(--juno-space-4));
+  inset-inline-start: var(--juno-scrubber-preview-at, var(--juno-scrubber-played));
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.juno-scrubber:focus-visible {
+  outline: var(--juno-border-width-2) solid var(--juno-active);
+  outline-offset: var(--juno-space-2);
+  border-radius: var(--juno-radius-4);
+}
+
+.juno-scrubber[aria-disabled='true'] {
+  opacity: var(--juno-opacity-disabled);
+  cursor: not-allowed;
+}
