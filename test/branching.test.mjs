@@ -81,13 +81,19 @@ test('the doc records why develop was deleted, not merely that it was', () => {
   assert.match(doc, /all 33 merged PRs targeted/, 'the evidence for the deletion is gone');
 });
 
-test('the doc keeps the residual: the CLASS is not closed by the deletion', () => {
-  // Deleting one branch removes one trap. Any other base still gets zero checks
-  // while the pull_request trigger is filtered, and that is an operator change.
-  // A doc that claimed the problem was solved would be the more dangerous
-  // outcome of this ticket.
-  assert.match(doc, /does not close the class/i);
-  assert.match(doc, /pull_request` trigger is filtered/);
+test('the doc states the residual that survives the fix', () => {
+  // This assertion used to demand the doc say the class was OPEN, which was
+  // right until the filter was dropped and then became a test pinning a defect.
+  // The state-dependent half is handled by the bidirectional test above; what
+  // belongs here is the part that is true either way.
+  //
+  // A branch with no PR open still gets no CI until one exists. That is by
+  // design — workflow_dispatch covers wanting a run first — and it is the
+  // reason the visual baselines once drifted for months with nobody seeing a
+  // red job (20260815-011). A doc that dropped it would read as "everything is
+  // covered now", which is the failure this ticket is about, one turn later.
+  assert.match(doc, /no PR open/i, 'the doc no longer states that a PR-less branch gets no CI');
+  assert.match(doc, /20260815-011/, 'the doc lost the incident that makes that residual concrete');
 });
 
 test('the doc distinguishes nexora’s develop from junoui having one', () => {
