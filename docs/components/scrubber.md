@@ -95,11 +95,11 @@ const stop = enhanceScrubber(el, { step: 5, pageStep: 30 });
 el.addEventListener('juno-scrubber-seek', (e) => player.seek(e.detail.value));
 ```
 
-| Key                 | Moves                              |
-| ------------------- | ---------------------------------- |
-| `←` `→` `↑` `↓`     | one `step`                         |
-| `PageUp` `PageDown` | one `pageStep`                     |
-| `Home` `End`        | to `aria-valuemin` / `-valuemax`   |
+| Key                 | Moves                            |
+| ------------------- | -------------------------------- |
+| `←` `→` `↑` `↓`     | one `step`                       |
+| `PageUp` `PageDown` | one `pageStep`                   |
+| `Home` `End`        | to `aria-valuemin` / `-valuemax` |
 
 Any other key returns `null` from `keyDelta` and is left alone — "no movement"
 and "not mine" are different, and collapsing them is how a scrubber ends up
@@ -110,30 +110,30 @@ without throttling arrow keys.
 
 ## Classes
 
-| Class                                              | Role                                                        |
-| -------------------------------------------------- | ----------------------------------------------------------- |
-| `.juno-scrubber`                                    | Host. Carries the ARIA and the tap floor.                    |
-| `.juno-scrubber__track`                             | The painted hairline.                                        |
-| `.juno-scrubber__loaded`                            | Buffered / available range.                                  |
-| `.juno-scrubber__played`                            | Elapsed range.                                               |
-| `.juno-scrubber__range`                             | The in..out selection.                                       |
-| `.juno-scrubber__head`                              | The playhead. Not a separate target — the host is.           |
-| `.juno-scrubber__ticks` / `.juno-scrubber__tick`    | Chapter marks. Decorative; a mark a reader must read is a list. |
-| `.juno-scrubber__mark`                              | A draggable in/out handle. Tap-floored on both axes.         |
-| `.juno-scrubber__mark--in` / `--out`                | Which end it is.                                             |
-| `.juno-scrubber__preview`                           | Slot the app fills — thumbnail, timestamp, sparkline.        |
+| Class                                            | Role                                                            |
+| ------------------------------------------------ | --------------------------------------------------------------- |
+| `.juno-scrubber`                                 | Host. Carries the ARIA and the tap floor.                       |
+| `.juno-scrubber__track`                          | The painted hairline.                                           |
+| `.juno-scrubber__loaded`                         | Buffered / available range.                                     |
+| `.juno-scrubber__played`                         | Elapsed range.                                                  |
+| `.juno-scrubber__range`                          | The in..out selection.                                          |
+| `.juno-scrubber__head`                           | The playhead. Not a separate target — the host is.              |
+| `.juno-scrubber__ticks` / `.juno-scrubber__tick` | Chapter marks. Decorative; a mark a reader must read is a list. |
+| `.juno-scrubber__mark`                           | A draggable in/out handle. Tap-floored on both axes.            |
+| `.juno-scrubber__mark--in` / `--out`             | Which end it is.                                                |
+| `.juno-scrubber__preview`                        | Slot the app fills — thumbnail, timestamp, sparkline.           |
 
 ## Custom properties
 
-| Property                    | Default | Meaning                                    |
-| --------------------------- | ------- | ------------------------------------------ |
-| `--juno-scrubber-played`    | `0%`    | Elapsed position.                          |
-| `--juno-scrubber-loaded`    | `0%`    | Buffered extent.                           |
-| `--juno-scrubber-in`        | `0%`    | Clip start.                                |
-| `--juno-scrubber-out`       | `100%`  | Clip end.                                  |
-| `--juno-scrubber-preview-at`| played  | Where the preview sits, if not the head.   |
-| `--juno-scrubber-track`     | `4px`   | Painted track thickness.                   |
-| `--juno-scrubber-head`      | `12px`  | Painted playhead size.                     |
+| Property                     | Default | Meaning                                  |
+| ---------------------------- | ------- | ---------------------------------------- |
+| `--juno-scrubber-played`     | `0%`    | Elapsed position.                        |
+| `--juno-scrubber-loaded`     | `0%`    | Buffered extent.                         |
+| `--juno-scrubber-in`         | `0%`    | Clip start.                              |
+| `--juno-scrubber-out`        | `100%`  | Clip end.                                |
+| `--juno-scrubber-preview-at` | played  | Where the preview sits, if not the head. |
+| `--juno-scrubber-track`      | `4px`   | Painted track thickness.                 |
+| `--juno-scrubber-head`       | `12px`  | Painted playhead size.                   |
 
 Percentages, so the app never needs the pixel width of a box it does not own —
 `percentOf(value, min, max)` builds them.

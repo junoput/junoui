@@ -98,6 +98,17 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-rail-width',
     'juno-thumb-glyph',
     'juno-progress',
+    // .juno-scrubber's own geometry and position, set on the component and
+    // written by the app (percentages, so it never needs the pixel width of a
+    // box it does not own). Component-local by design, like juno-slider-pct.
+    'juno-scrubber-track',
+    'juno-scrubber-head',
+    'juno-scrubber-mark',
+    'juno-scrubber-played',
+    'juno-scrubber-loaded',
+    'juno-scrubber-in',
+    'juno-scrubber-out',
+    'juno-scrubber-preview-at',
     'juno-arc-size',
     'juno-arc-width',
     'juno-beacon-size',

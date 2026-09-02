@@ -87,7 +87,7 @@
   inset-block-start: 50%;
   block-size: var(--juno-scrubber-track);
   translate: 0 -50%;
-  border-radius: var(--juno-radius-full);
+  border-radius: 999px;
   background: var(--juno-control-edge-strong);
   overflow: hidden;
 }
@@ -137,7 +137,7 @@
   inline-size: var(--juno-scrubber-head);
   block-size: var(--juno-scrubber-head);
   translate: -50% -50%;
-  border-radius: var(--juno-radius-full);
+  border-radius: 999px;
   background: var(--juno-role);
   pointer-events: none;
 }
