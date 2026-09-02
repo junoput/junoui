@@ -66,9 +66,17 @@ export function pickThumb({ value, lo, hi, min = -Infinity, max = Infinity, last
   if (value < lo) return 'lo';
   if (value > hi) return 'hi';
 
-  // Between them: nearest centre.
-  const dLo = value - lo;
-  const dHi = hi - value;
+  // Between them: nearest centre, by ABSOLUTE distance.
+  //
+  // Signed differences would also work here and would make the two guards above
+  // dead code — `value - lo` is negative exactly when the tap is left of the
+  // pair, so the comparison silently re-derives the direction rule. Mutation
+  // found that: deleting both guards changed no test. That is a correctness
+  // that depends on a sign property a reader has to notice, and it collapses
+  // two stated rules into one accidental one. Absolute distance means
+  // "nearest" means nearest, and the guards carry the outside case explicitly.
+  const dLo = Math.abs(value - lo);
+  const dHi = Math.abs(hi - value);
   if (dLo < dHi) return 'lo';
   if (dHi < dLo) return 'hi';
 
