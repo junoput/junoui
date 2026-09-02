@@ -66,21 +66,51 @@ test('coincident thumbs overlap in the HIT area', async ({ page: pw }, info) => 
   );
 });
 
-test('...and stay separate in the PAINT', async ({ page: pw }) => {
-  // The other half, and the reason the grip is small: two fully-overlapping tap
-  // boxes must still read as two thumbs. If the paint overlapped too, the
-  // control would look like one thumb and behave like two.
+test('...while the GRIPS stay separate, when the thumbs are close but not equal', async ({
+  page: pw,
+}) => {
+  // Measured on #rg-close (8% apart), NOT on the coincident pair — and that
+  // distinction is the point. At exact coincidence the grips necessarily
+  // coincide too, so a claim that they "stay visibly separate" there is false;
+  // the showcase caption said so until the recorded baseline was opened and
+  // looked at, and the picture disproved it.
+  //
+  // What IS true, and what the small grip buys, is the band between "boxes
+  // overlap" and "positions equal": the tap boxes are already on top of each
+  // other while the grips are still two distinct dots.
   await open(pw);
-  const grip = await pw.evaluate(() => {
-    const t = document.querySelector('#rg-together .juno-range__thumb--lo');
-    const cs = getComputedStyle(t, '::before');
-    const box = t.getBoundingClientRect();
-    return { grip: parseFloat(cs.inlineSize || cs.width), box: box.width };
+  const m = await pw.evaluate(() => {
+    const root = document.getElementById('rg-close');
+    const b = (sel) => root.querySelector(sel).getBoundingClientRect();
+    const lo = b('.juno-range__thumb--lo');
+    const hi = b('.juno-range__thumb--hi');
+    const grip = parseFloat(
+      getComputedStyle(root.querySelector('.juno-range__thumb--lo'), '::before').inlineSize,
+    );
+    return {
+      boxOverlap: Math.min(lo.right, hi.right) - Math.max(lo.left, hi.left),
+      centreGap: hi.left + hi.width / 2 - (lo.left + lo.width / 2),
+      grip,
+      box: lo.width,
+    };
   });
-  expect(grip.grip).toBeGreaterThan(0);
-  expect(grip.grip, 'the grip fills its tap box — two thumbs will read as one').toBeLessThan(
-    grip.box,
-  );
+  expect(
+    m.boxOverlap,
+    'the tap boxes do not overlap — wrong fixture for this claim',
+  ).toBeGreaterThan(0);
+  // And the BAND exists: grip < box means there is a separation at which the
+  // boxes overlap while the grips are still two distinct dots. That is the
+  // design property, and it is what is asserted — NOT a pixel gap on this
+  // fixture, because the two projects render the track at different widths, so
+  // one percentage cannot sit inside the band for both. Measured: 4% is 20.8px
+  // on the desktop track (inside the 16–24px band) and 14.3px on the phone one
+  // (below the 16px grip). Pinning the fixture would have been pinning the
+  // viewport, which is how a guard starts reporting on the machine.
+  expect(m.grip, 'the grip fills its tap box — two thumbs would read as one').toBeLessThan(m.box);
+  expect(
+    m.box - m.grip,
+    'no separation exists where the boxes overlap but the grips do not',
+  ).toBeGreaterThan(0);
 });
 
 test('a tap on the overlap resolves to a thumb that can move', async ({ page: pw }) => {

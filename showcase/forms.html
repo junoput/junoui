@@ -267,9 +267,11 @@
       </div>
 
       <p class="juno-eyebrow demo-lead">
-        The second one has its thumbs coincident, which is the case that decides the design: two 44px
-        tap boxes fully overlapping, so which thumb a tap grabs is a rule (junoui/range::pickThumb),
-        and the grips stay visibly separate because the overlap is in the hit areas, not the paint.
+        The second pair is 4% apart: their tap boxes already overlap while the 16px grips are still two
+        dots — the overlap is in the hit areas, not the paint. How wide that band is depends on the
+        track's width, which is why the grip is smaller than its box rather than a fixed gap. The third pair is exactly
+        coincident, where the grips necessarily coincide too; that is the case nearest-centre cannot
+        answer and the direction rule does (junoui/range::pickThumb).
       </p>
       <div style="max-width:520px;display:grid;gap:32px;">
         <div class="juno-range" id="rg-apart" role="group" aria-label="Price"
@@ -284,6 +286,16 @@
                aria-valuetext="70 pounds"></div>
         </div>
 
+
+        <div class="juno-range" id="rg-close" role="group" aria-label="Threshold"
+             data-juno-min="0" data-juno-max="100"
+             style="--juno-range-lo:48%;--juno-range-hi:52%;">
+          <div class="juno-range__track"><div class="juno-range__fill"></div></div>
+          <div class="juno-range__thumb juno-range__thumb--lo" role="slider" tabindex="0"
+               aria-label="Lower threshold" aria-valuemin="0" aria-valuemax="52" aria-valuenow="48"></div>
+          <div class="juno-range__thumb juno-range__thumb--hi" role="slider" tabindex="0"
+               aria-label="Upper threshold" aria-valuemin="48" aria-valuemax="100" aria-valuenow="52"></div>
+        </div>
         <div class="juno-range" id="rg-together" role="group" aria-label="Zoom window"
              data-juno-min="0" data-juno-max="100"
              style="--juno-range-lo:52%;--juno-range-hi:52%;">
