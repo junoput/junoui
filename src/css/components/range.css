@@ -26,12 +26,21 @@
  *  small inside their tap-sized boxes, so at rest a user can see two
  *  distinct grips even when the boxes overlap completely.
  *
+ *  And the host declares `data-juno-hit="delegated"`, because at
+ *  coincident positions one thumb IS entirely under the other and a
+ *  per-element hit audit would correctly report it as unreachable. It is
+ *  unreachable in DOM terms and reachable in fact: pickThumb decides,
+ *  from a handler on the host. The attribute says so rather than leaving
+ *  junoui-doctor to report junoui's own component as broken, and the
+ *  doctor prints how many controls used it on every run. See 20260902-014.
+ *
  *  Crossing CLAMPS — it never swaps and never pushes. See junoui/range.
  *
  *  The app owns the values and the clamping.
  *
  *  Usage — see docs/components/range.md:
  *    <div class="juno-range" role="group" aria-label="Price"
+ *         data-juno-hit="delegated"
  *         data-juno-min="0" data-juno-max="100"
  *         style="--juno-range-lo:30%; --juno-range-hi:70%">
  *      <div class="juno-range__track"><div class="juno-range__fill"></div></div>

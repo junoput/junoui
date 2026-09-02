@@ -82,6 +82,38 @@ test('it passes a target that meets the floor on both axes', () => {
   );
 });
 
+test('it judges the HIT area when one was measured, not the border box', () => {
+  // 20260902-014. A hit area on a pseudo-element is invisible to
+  // getBoundingClientRect, so .juno-splitter — a 1px painted hairline whose
+  // ::after is a 44px target — was reported as a 1px tap target by junoui's own
+  // doctor.
+  const splitterish = [{ label: 'Resize', width: 1, height: 200, hit: { width: 44, height: 200 } }];
+  assert.deepEqual(shortTargets({ elements: splitterish, floor: 44 }), []);
+});
+
+test('...and the mirror: a big box with a shrunk hit area is reported', () => {
+  // The dangerous direction, which the border box reported as clean.
+  const masked = [{ label: 'masked', width: 44, height: 44, hit: { width: 12, height: 44 } }];
+  const out = shortTargets({ elements: masked, floor: 44 });
+  assert.equal(out.length, 1);
+  assert.match(out[0], /box 44x44, hit 12x44/, 'the message hides one of the two numbers');
+});
+
+test('the message stays simple when box and hit agree', () => {
+  // "44 wide, hit 12" and "12 wide" need different fixes; a plain short target
+  // should not grow a second measurement that repeats the first.
+  const plain = [{ label: 'tiny', width: 20, height: 20, hit: { width: 20, height: 20 } }];
+  assert.match(shortTargets({ elements: plain, floor: 44 })[0], /tiny 20x20 \(floor 44\)/);
+});
+
+test('an element with no measured hit area falls back to its box', () => {
+  // `hit` is null when the element is covered at its own centre — a different
+  // finding, reported by unpaintedTargets. Falling back keeps this check honest
+  // rather than silently passing everything it could not probe.
+  const nohit = [{ label: 'buried', width: 12, height: 12, hit: null }];
+  assert.equal(shortTargets({ elements: nohit, floor: 44 }).length, 1);
+});
+
 test('it uses the profile floor, so desktop is not judged by a phone', () => {
   const el = [{ label: 'small', width: 24, height: 24 }];
   assert.deepEqual(shortTargets({ elements: el, floor: 24 }), []);
