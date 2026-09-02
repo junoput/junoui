@@ -64,7 +64,8 @@
     "./icons/inline": "./dist/icons/inline.js",
     "./icons/install": "./dist/icons/install.js",
     "./package.json": "./package.json",
-    "./rules": "./dist/rust/juno_rules.rs"
+    "./rules": "./dist/rust/juno_rules.rs",
+    "./scrubber": "./tools/scrubber.mjs"
   },
   "files": [
     "dist",

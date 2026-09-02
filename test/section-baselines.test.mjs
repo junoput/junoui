@@ -93,7 +93,11 @@ test('every declared section has a baseline — a missing one is NEW, and record
       missing.map((f) => `    ${f}`).join('\n') +
       `\n  Record on the runner (the visual-baselines workflow, or the visual-diff-report\n` +
       `  artifact of a failing run), NEVER locally: baselines are pinned to ubuntu-24.04 and a\n` +
-      `  local render encodes this machine's fonts.\n` +
+      `  local render encodes this machine's fonts.\n\n` +
+      `  EXPECTED ONCE per new section: a baseline can only be recorded from a run that\n` +
+      `  rendered it, so the first push of a section is red here and in the visual job, and\n` +
+      `  green on the next. That is a bootstrap, not a defect — but it is red for a REASON\n` +
+      `  you can act on, which is why it is not silenced.\n\n` +
       `  This is NOT the same as a baseline that CHANGED — that one needs a human to look first.`,
   );
 });

@@ -326,6 +326,50 @@
       </div>
     </section>
 
+
+    <!-- Declares its own VR shot, so adding it moves no other baseline. -->
+    <section class="demo-section" data-vr-shot="scrubber">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">SC</span>
+        <span class="juno-eyebrow">.juno-scrubber — timeline / transport: track, playhead, in-out marks</span>
+      </div>
+
+      <p class="juno-eyebrow demo-lead">
+        Loaded and played are two ranges over one axis — a stream buffers past the playhead, which is
+        what makes this not a progress bar. The host carries the tap floor; the track is painted inside it.
+      </p>
+      <div style="max-width:520px;display:grid;gap:24px;">
+        <div class="juno-scrubber" id="sc-basic" role="slider" tabindex="0"
+             aria-label="Playback position" aria-valuemin="0" aria-valuemax="212" aria-valuenow="87"
+             aria-valuetext="1:27 of 3:32"
+             style="--juno-scrubber-played:41%;--juno-scrubber-loaded:68%;">
+          <div class="juno-scrubber__track">
+            <div class="juno-scrubber__loaded"></div>
+            <div class="juno-scrubber__played"></div>
+          </div>
+          <div class="juno-scrubber__head"></div>
+        </div>
+
+        <div class="juno-scrubber" id="sc-marks" role="slider" tabindex="0"
+             aria-label="Clip range" aria-valuemin="0" aria-valuemax="212" aria-valuenow="120"
+             aria-valuetext="2:00 of 3:32"
+             style="--juno-scrubber-played:57%;--juno-scrubber-loaded:92%;--juno-scrubber-in:22%;--juno-scrubber-out:74%;">
+          <div class="juno-scrubber__track">
+            <div class="juno-scrubber__loaded"></div>
+            <div class="juno-scrubber__played"></div>
+          </div>
+          <div class="juno-scrubber__range"></div>
+          <div class="juno-scrubber__ticks" aria-hidden="true">
+            <span class="juno-scrubber__tick" style="inset-inline-start:12%"></span>
+            <span class="juno-scrubber__tick" style="inset-inline-start:38%"></span>
+            <span class="juno-scrubber__tick" style="inset-inline-start:66%"></span>
+          </div>
+          <div class="juno-scrubber__head"></div>
+          <button class="juno-scrubber__mark juno-scrubber__mark--in" aria-label="Clip start"></button>
+          <button class="juno-scrubber__mark juno-scrubber__mark--out" aria-label="Clip end"></button>
+        </div>
+      </div>
+    </section>
   </main>
   <script type="module" src="./app.js"></script>
 </body>
