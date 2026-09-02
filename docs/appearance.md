@@ -13,16 +13,16 @@ because nothing automated was looking at the picture.
 
 ## What each check actually asserts
 
-| Check                             | Asserts                                   | Passes while the screen is wrong if…                                |
-| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| tap floors (`shortTargets`)       | a box is ≥ the floor on both axes         | the control is the right size and in the wrong place, or unreadable |
-| navigation (`navigationVerdict`)  | exactly one of rail/dock is painted       | it is painted in the wrong place, or over content                   |
-| class manifest (`unknownClasses`) | every `juno-*` name is one junoui defines | every name is real and applied to the wrong element                 |
-| horizontal overflow               | `scrollWidth ≤ clientWidth`               | the page fits and the content inside it is clipped                  |
-| the budgets (dock, pillbar)       | a predicted width equals a laid-out width | the prediction and the layout are both wrong                        |
-| the cascade resolver              | which declaration wins for a property     | the winning declaration is the wrong value                          |
-| the safe-area seam                | every inset reads through one seam        | the seam resolves to the wrong number                               |
-| canvas ink                        | a token pair holds a contrast ratio       | the ink is drawn over something else entirely                       |
+| Check                             | Asserts                                                | Passes while the screen is wrong if…                                |
+| --------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| tap floors (`shortTargets`)       | the effective **hit area** is ≥ the floor on both axes | the control is the right size and in the wrong place, or unreadable |
+| navigation (`navigationVerdict`)  | exactly one of rail/dock is painted                    | it is painted in the wrong place, or over content                   |
+| class manifest (`unknownClasses`) | every `juno-*` name is one junoui defines              | every name is real and applied to the wrong element                 |
+| horizontal overflow               | `scrollWidth ≤ clientWidth`                            | the page fits and the content inside it is clipped                  |
+| the budgets (dock, pillbar)       | a predicted width equals a laid-out width              | the prediction and the layout are both wrong                        |
+| the cascade resolver              | which declaration wins for a property                  | the winning declaration is the wrong value                          |
+| the safe-area seam                | every inset reads through one seam                     | the seam resolves to the wrong number                               |
+| canvas ink                        | a token pair holds a contrast ratio                    | the ink is drawn over something else entirely                       |
 
 Read down the right-hand column: **every one of these is satisfied by a
 correctly-structured page that looks wrong.** That is not a defect in the
@@ -45,6 +45,37 @@ which is what comes back when the element itself sets `pointer-events: none`. An
 overlay that sets `pointer-events: none` is correctly **not** reported: it is not
 between the finger and the control, and flagging it would make the probe noisy
 on every app with a decorative scrim. A probe nobody runs checks nothing.
+
+## The hit area is probed, not read off the box
+
+`getBoundingClientRect` is not the hit area, and reading it was wrong both ways:
+
+- **Noise.** `.juno-splitter` is a 1px painted hairline whose `::after` is a 44px
+  target overlapping its neighbours — deliberate, since a 44px gap on desktop
+  would be wrong. Pseudo-elements cannot be measured, so the doctor reported
+  junoui's own component as a 1px tap target. An audit that cries wolf on a
+  legitimate, common pattern gets muted.
+- **The dangerous mirror.** A control sized 44px whose real hit area is shrunk by
+  something on top of it was reported **clean**.
+
+The extent is probed with `elementFromPoint`, outward from the centre, bounded by
+the floor. Where box and hit disagree the finding names both — "box 44x44, hit
+12x44" and "12x12" need different fixes.
+
+### The one opt-out, and why it is printed
+
+A control whose pointer input is routed by a shared handler on an ancestor
+cannot be audited per element. `junoui/range` is the case: at coincident
+positions one thumb is entirely under the other, and which one a tap grabs is
+decided by `pickThumb` from a handler on the host, not by stacking order.
+
+```html
+<div class="juno-range" data-juno-hit="delegated">…</div>
+```
+
+The doctor skips those and **prints how many it skipped on every run, including a
+clean one**. An opt-out nobody can see is how an audit gets muted — the same
+failure this document exists to name.
 
 ## What is left, and will stay left
 

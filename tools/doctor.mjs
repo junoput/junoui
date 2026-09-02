@@ -75,11 +75,31 @@ export function unknownClasses({ used, manifest, allowed = [] }) {
   return used.filter((c) => !known.has(c)).sort();
 }
 
-/** Interactive elements below the tap floor for this profile. */
+/** Interactive elements below the tap floor for this profile.
+ *
+ *  Judges the EFFECTIVE HIT AREA where one was measured, not the border box.
+ *  The two differ whenever a hit area lives on a pseudo-element, in padding, or
+ *  in a transparent overlapping child — and `.juno-splitter` is exactly that:
+ *  a 1px painted hairline whose ::after is a 44px target. Reporting its border
+ *  box called junoui's own component a defect (20260902-014).
+ *
+ *  The message names both when they disagree, because "44 wide, hit 12" and
+ *  "12 wide" need different fixes. */
 export function shortTargets({ elements, floor }) {
   return elements
-    .filter((e) => Math.round(e.width) < floor || Math.round(e.height) < floor)
-    .map((e) => `${e.label} ${Math.round(e.width)}x${Math.round(e.height)} (floor ${floor})`);
+    .filter((e) => {
+      const w = e.hit ? e.hit.width : e.width;
+      const h = e.hit ? e.hit.height : e.height;
+      return Math.round(w) < floor || Math.round(h) < floor;
+    })
+    .map((e) => {
+      const box = `${Math.round(e.width)}x${Math.round(e.height)}`;
+      if (!e.hit) return `${e.label} ${box} (floor ${floor})`;
+      const hit = `${Math.round(e.hit.width)}x${Math.round(e.hit.height)}`;
+      return hit === box
+        ? `${e.label} ${box} (floor ${floor})`
+        : `${e.label} box ${box}, hit ${hit} (floor ${floor})`;
+    });
 }
 
 /** Controls that occupy space and cannot be seen or tapped.
@@ -134,7 +154,7 @@ export function parseArgs(argv) {
 
 /** Collected in the page. Kept in one function so what the checks see is
  *  exactly what the browser reported, with no interpretation in between. */
-const COLLECT = () => {
+const COLLECT = (tapFloor) => {
   // Why an element is not on screen, or null if it is.
   //
   // `display !== 'none'` plus a non-empty rect is NOT "visible" — it is
@@ -173,10 +193,65 @@ const COLLECT = () => {
   for (const el of document.querySelectorAll('[class]')) {
     for (const c of el.classList) if (/^juno-{1,2}/.test(c)) usedClasses.add(c);
   }
+  // How far the element actually responds to a pointer, which is NOT its border
+  // box. Probes outward from the centre and reports the furthest offset in each
+  // direction that still resolves to this element.
+  //
+  // WHY: a hit area on a pseudo-element is invisible to getBoundingClientRect —
+  // ::after cannot be measured — so `.juno-splitter`, whose element box is a
+  // 1px hairline and whose ::after is a 44px target overlapping its neighbours,
+  // was reported as a 1px tap target by junoui's own doctor. Padding and
+  // transparent overlapping children have the same shape. See 20260902-014.
+  //
+  // Asymmetric in the other direction too, and that is the dangerous one: an
+  // element sized 44px whose real hit area is shrunk by something on top of it
+  // was reported CLEAN. This measures what a finger reaches, both ways.
+  const hitExtent = (el, floor) => {
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    // The element or something inside it. NOT an ancestor: allowing one made the
+    // extent leak into the parent's whole area, and a 20x20 button measured
+    // 33x33 because probing past its edge hit <body>, which contains it. Found
+    // by reading the probe's own numbers rather than by a test — a hit area
+    // LARGER than the border box should have been impossible.
+    const mine = (x, y) => {
+      if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
+      const hit = document.elementFromPoint(x, y);
+      return Boolean(hit) && (hit === el || el.contains(hit));
+    };
+    const reach = (dx, dy) => {
+      const limit = Math.ceil(floor / 2);
+      let out = 0;
+      for (let d = 1; d <= limit; d += 1) {
+        if (!mine(cx + dx * d, cy + dy * d)) break;
+        out = d;
+      }
+      return out;
+    };
+    return {
+      width: reach(-1, 0) + reach(1, 0) + 1,
+      height: reach(0, -1) + reach(0, 1) + 1,
+    };
+  };
+
   const INTERACTIVE =
     'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=option], [role=treeitem], [role=separator][tabindex], [tabindex]:not([tabindex="-1"])';
   const elements = [];
+  let delegated = 0;
   for (const el of document.querySelectorAll(INTERACTIVE)) {
+    // A control whose pointer input is routed by a shared handler on an
+    // ancestor — junoui/range's two thumbs are the case: at coincident
+    // positions one thumb is entirely under the other, and which one a tap
+    // grabs is decided by pickThumb, not by stacking order. Auditing its
+    // individual hit area asks a question the component does not answer.
+    //
+    // Counted and REPORTED, never silent: an opt-out nobody can see is how an
+    // audit gets muted.
+    if (el.closest('[data-juno-hit="delegated"]')) {
+      delegated += 1;
+      continue;
+    }
     const fault = paintFault(el);
     // Not laid out at all: nothing to say about it, same as before.
     if (fault === 'display:none' || fault === 'zero-sized') continue;
@@ -188,7 +263,20 @@ const COLLECT = () => {
     // `fault` rides along rather than skipping the element: a control that is
     // the right SIZE and cannot be seen or tapped is exactly the thing a
     // size-only check certifies as fine.
-    elements.push({ label, width: r.width, height: r.height, cls: el.className, fault });
+    elements.push({
+      label,
+      width: r.width,
+      height: r.height,
+      cls: el.className,
+      fault,
+      // Only probed when paintFault found nothing, which already establishes
+      // that the centre resolves to this element — so hitExtent needs no
+      // covered-at-the-centre bail of its own. It had one; mutation showed it
+      // was unreachable, and a defensive check nothing can reach is a claim
+      // rather than a guard. If these two are ever decoupled, the bail comes
+      // back with it.
+      hit: fault ? null : hitExtent(el, tapFloor),
+    });
   }
   const shown = (sel) => {
     const el = document.querySelector(sel);
@@ -196,6 +284,7 @@ const COLLECT = () => {
   };
   return {
     used: [...usedClasses],
+    delegated,
     elements,
     railShown: shown('.juno-rail'),
     dockShown: shown('.juno-dock, .juno-pillbar'),
@@ -225,7 +314,8 @@ export async function runDoctor(opts, { chromium }) {
     });
     const page = await ctx.newPage();
     await page.goto(opts.url, { waitUntil: 'networkidle' });
-    const facts = await page.evaluate(COLLECT);
+    const tapFloor = profile.coarse ? 44 : 24;
+    const facts = await page.evaluate(COLLECT, tapFloor);
 
     // The emulation is proven before its readings are used. If hasTouch stopped
     // making (pointer: coarse) match, every touch finding below would be
@@ -257,7 +347,12 @@ export async function runDoctor(opts, { chromium }) {
       findings.push(`the page scrolls horizontally (${facts.scrollWidth} > ${facts.clientWidth})`);
     }
 
-    results.push({ profile: name, dims: `${profile.width}x${profile.height}`, findings });
+    results.push({
+      profile: name,
+      dims: `${profile.width}x${profile.height}`,
+      findings,
+      delegated: facts.delegated,
+    });
     await ctx.close();
   }
 
@@ -272,6 +367,13 @@ export function report(run) {
     total += r.findings.length;
     lines.push(`${r.findings.length ? '✗' : '✓'} ${r.profile} (${r.dims})`);
     for (const f of r.findings) lines.push(`    ${f}`);
+    // An opt-out nobody can see is how an audit gets muted, so it is printed
+    // even on a clean profile.
+    if (r.delegated) {
+      lines.push(
+        `    · ${r.delegated} control(s) declared data-juno-hit="delegated" — not audited`,
+      );
+    }
   }
   lines.push('', 'NOT COVERED BY THIS RUN:');
   for (const l of run.limits) lines.push(`  · ${l}`);

@@ -69,7 +69,7 @@ test('coincident thumbs overlap in the HIT area', async ({ page: pw }, info) => 
 test('...while the GRIPS stay separate, when the thumbs are close but not equal', async ({
   page: pw,
 }) => {
-  // Measured on #rg-close (8% apart), NOT on the coincident pair — and that
+  // Measured on #rg-close (4% apart), NOT on the coincident pair — and that
   // distinction is the point. At exact coincidence the grips necessarily
   // coincide too, so a claim that they "stay visibly separate" there is false;
   // the showcase caption said so until the recorded baseline was opened and
@@ -132,6 +132,21 @@ test('a tap on the overlap resolves to a thumb that can move', async ({ page: pw
     const canMove =
       thumb === 'lo' ? value <= geo.lo || geo.lo > 0 : value >= geo.hi || geo.hi < 100;
     expect(canMove, `tap at ${value.toFixed(1)} grabbed ${thumb}, which cannot move`).toBe(true);
+  }
+});
+
+test('the host declares delegated hit handling', async ({ page: pw }) => {
+  // Not decoration: at coincident positions one thumb is entirely under the
+  // other, so a per-element hit audit correctly reports it unreachable — and it
+  // is unreachable in DOM terms while being reachable in fact, because
+  // pickThumb decides from a handler on the host. Without this attribute
+  // junoui-doctor reports junoui's own component as broken (20260902-014).
+  //
+  // Asserted on the SHOWCASE markup, which is what a consumer copies.
+  await open(pw);
+  for (const id of ['#rg-apart', '#rg-close', '#rg-together']) {
+    const v = await pw.locator(id).getAttribute('data-juno-hit');
+    expect(v, `${id} does not declare delegated hit handling`).toBe('delegated');
   }
 });
 
