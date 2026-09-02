@@ -75,6 +75,12 @@ export function pickThumb({ value, lo, hi, min = -Infinity, max = Infinity, last
   // that depends on a sign property a reader has to notice, and it collapses
   // two stated rules into one accidental one. Absolute distance means
   // "nearest" means nearest, and the guards carry the outside case explicitly.
+  //
+  // The mirror is true and is recorded rather than left looking covered: WITH
+  // the guards in place, abs and signed agree on every input, because inside
+  // the pair both differences are non-negative. So no test can fail on this
+  // Math.abs alone — it is defensive, and it is what stops the guards above
+  // from silently becoming dead code again if someone reorders this function.
   const dLo = Math.abs(value - lo);
   const dHi = Math.abs(hi - value);
   if (dLo < dHi) return 'lo';
