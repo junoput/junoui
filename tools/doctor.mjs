@@ -220,7 +220,6 @@ const COLLECT = (tapFloor) => {
       const hit = document.elementFromPoint(x, y);
       return Boolean(hit) && (hit === el || el.contains(hit));
     };
-    if (!mine(cx, cy)) return null; // covered at its own centre — a different finding
     const reach = (dx, dy) => {
       const limit = Math.ceil(floor / 2);
       let out = 0;
@@ -270,6 +269,12 @@ const COLLECT = (tapFloor) => {
       height: r.height,
       cls: el.className,
       fault,
+      // Only probed when paintFault found nothing, which already establishes
+      // that the centre resolves to this element — so hitExtent needs no
+      // covered-at-the-centre bail of its own. It had one; mutation showed it
+      // was unreachable, and a defensive check nothing can reach is a claim
+      // rather than a guard. If these two are ever decoupled, the bail comes
+      // back with it.
       hit: fault ? null : hitExtent(el, tapFloor),
     });
   }
