@@ -34,15 +34,38 @@ test('the parser reads a branch list, and can come back empty', () => {
   assert.deepEqual(triggerBranches('\non:\n  push:\n    branches: [a, b]\njobs:\n'), [['a', 'b']]);
 });
 
-test('every branch CI acts on is main, and nothing else', () => {
-  const lists = triggerBranches(ci);
-  assert.ok(lists.length > 0, 'ci.yml declares no branch filters at all');
-  const named = new Set(lists.flat());
+test('every branch CI NAMES is main, and nothing else', () => {
+  // Named, not "at least one named". An ABSENT filter is not a violation — it
+  // is the recommended fix, since an unfiltered pull_request trigger runs CI on
+  // a PR to any base, so a mis-targeted PR is honestly red or green instead of
+  // showing an empty check list. The first version of this test required a
+  // filter to exist and would therefore have blocked the improvement it is
+  // written to argue for.
+  const named = new Set(triggerBranches(ci).flat());
   assert.deepEqual(
     [...named],
-    ['main'],
+    named.size ? ['main'] : [],
     'ci.yml names a branch other than main — document it in docs/branching.md ' +
       'or remove it, but do not leave a branch that CI half-knows about',
+  );
+});
+
+test('the doc and the pull_request filter agree about whether the class is open', () => {
+  // The residual is only a residual while the trigger is filtered. When the
+  // filter goes, this test is what tells whoever removed it that the doc now
+  // overstates the danger — rather than leaving a document that warns about a
+  // trap the repo has already closed.
+  const on = ci.slice(ci.indexOf('\non:'), ci.indexOf('\njobs:'));
+  const prBlock = /pull_request:\s*\n(\s+branches:[^\n]*)?/.exec(on);
+  const filtered = Boolean(prBlock && prBlock[1]);
+  const claimsOpen = /does not close the class/i.test(doc);
+  assert.equal(
+    claimsOpen,
+    filtered,
+    filtered
+      ? 'pull_request is still filtered, so docs/branching.md must keep the residual'
+      : 'pull_request is no longer filtered — the class is closed, so the residual ' +
+          'section in docs/branching.md is now wrong and should say so',
   );
 });
 
