@@ -50,6 +50,36 @@ test('every branch CI NAMES is main, and nothing else', () => {
   );
 });
 
+test('push is filtered and pull_request is not — the asymmetry is the design', () => {
+  // Both halves, because each alone is wrong:
+  //
+  //   pull_request filtered   a PR to another base shows an EMPTY check list,
+  //                           which reads as green. The trap this closed.
+  //   push unfiltered         every topic-branch push builds, AND every push to
+  //                           a PR branch fires push AND pull_request — the
+  //                           double run a branch filter is usually for.
+  //
+  // Mutation found the second: unfiltering `push` survived, because the other
+  // assertions only check which branches are NAMED and an unfiltered trigger
+  // names none. The doc argues this asymmetry explicitly, so the test holds it.
+  const on = ci.slice(ci.indexOf('\non:'), ci.indexOf('\njobs:'));
+  const filterFor = (trigger) => {
+    const m = new RegExp(`\n  ${trigger}:\\s*\n(\\s+branches:\\s*\\[([^\\]]*)\\])?`).exec(on);
+    return m && m[1] ? m[2].split(',').map((x) => x.trim()) : null;
+  };
+  assert.deepEqual(
+    filterFor('push'),
+    ['main'],
+    'push is not filtered to main — CI will double-run',
+  );
+  assert.equal(
+    filterFor('pull_request'),
+    null,
+    'pull_request is filtered — a PR to another base gets no checks',
+  );
+  assert.match(doc, /push` stays filtered/, 'the doc no longer explains the asymmetry');
+});
+
 test('the doc and the pull_request filter agree about whether the class is open', () => {
   // The residual is only a residual while the trigger is filtered. When the
   // filter goes, this test is what tells whoever removed it that the doc now
