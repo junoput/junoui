@@ -63,6 +63,26 @@ jobs:
         # css var reference, and the committed token reference are correct.
         run: npm test
 
+      # The Rust target is GENERATED (dist/rust/juno_rules.rs) and carries its
+      # own #[test] bodies, emitted from the same case table the JS tests run.
+      # Without a toolchain here nothing ever compiled it, and that gap was not
+      # theoretical: a mutation making the Rust `wants_compact_nav` diverge from
+      # its JS twin — dropping the `or short` term, i.e. the landscape-phone
+      # hole — SURVIVED the entire JS suite. Node can check the table, the
+      # bounds as numbers and the generated-assertion count; it cannot check
+      # that a Rust body computes what the JS body computes. Only rustc can.
+      # See 20260901-075.
+      #
+      # Cheap on purpose: no cargo, no crate, no registry access, no cache — it
+      # is one `rustc --test` over one generated file with no dependencies. The
+      # action is pinned to a tag rather than floating, matching how the visual
+      # job pins its runner image.
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test (generated Rust rules)
+        # Refuses rather than skips when rustc is missing, so this step cannot
+        # quietly pass on a runner without one.
+        run: npm run test:rust
+
       - name: Package contents
         run: npm pack --dry-run
 
