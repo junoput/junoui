@@ -1,5 +1,190 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- 761bf5b: `junoui-doctor` reports controls that occupy space and cannot be seen or pressed, and the kit states what a green run does not mean.
+
+  `shown()` was `display !== 'none'` plus a non-empty rect — which is "occupies space", not "is visible". A control could be exactly 44 × 44, in the right place, and invisible. Three causes are now reported as their own finding, separate from a short target because they are a different question with a different fix: `visibility: hidden`/`collapse` and `opacity: 0` (on the element or any ancestor), and **being covered by something else** at its own centre point. Navigation presence uses the same test, so a dock buried under an overlay is no longer counted as navigation.
+
+  An overlay with `pointer-events: none` is deliberately **not** reported — it is not between the finger and the control, and flagging it would make the probe noisy on every app with a decorative scrim.
+
+  New `docs/appearance.md` lists, per check, what it asserts **and what it passes while the screen is wrong**. Every check in this kit is geometry, presence or text; none reads the picture, and a correctly-structured page that renders wrong passes all of them. That is not a defect in the checks — it is what a check of this kind is — but the kit's pitch invites the opposite reading, so it is now stated where a consumer will meet it, and pinned by a test in both places that make the admission.
+
+- 7b5c16b: `junoui-doctor` measures the **effective hit area**, not the border box (`20260902-014`).
+
+  `getBoundingClientRect` is not the hit area, and reading it was wrong in both directions.
+
+  **Noise:** `.juno-splitter` is a 1px painted hairline whose `::after` is a 44px target overlapping its neighbours — deliberate, since a 44px gap on desktop would be wrong. Pseudo-elements cannot be measured, so junoui's own doctor reported junoui's own component as a 1px tap target. An audit that cries wolf on a legitimate, common pattern gets muted.
+
+  **The dangerous mirror:** a control sized 44px whose real hit area is shrunk by something on top of it was reported **clean**.
+
+  The extent is now probed with `elementFromPoint`, outward from the centre, bounded by the floor. Where box and hit disagree the finding names both, because "box 44x44, hit 12x44" and "12x12" need different fixes.
+
+  **One opt-out, and it is never silent.** A control whose pointer input is routed by a shared handler on an ancestor cannot be audited per element — `junoui/range` is the case: at coincident positions one thumb is entirely under the other, and which one a tap grabs is decided by `pickThumb` from a handler on the host. `data-juno-hit="delegated"` declares that, and the doctor **prints how many controls used it on every run, including a clean one**. `.juno-range` sets it.
+
+- a87e51a: The rules a painted consumer cannot call now ship as Rust functions (`20260901-051`).
+
+  junoui is CSS and DOM. A consumer that **draws** its UI — canvas, egui, wgpu — got the token values from `juno_tokens.rs` and nothing else: a media query is not available to a render loop, `text-shadow` has no painter equivalent, and `min-block-size` is not something you set on a circle you are about to draw. So it re-derives. One consumer independently re-derived three rules this library already knew, in a single day.
+
+  New `dist/rust/juno_rules.rs` (exported as `junoui/rules`):
+
+  ```rust
+  wants_compact_nav(width, height, coarse) -> bool
+  tap_min(coarse) -> f32
+  ring_diameter_for_marks(marks, tap_px) -> f32
+  labels_that_clear(marks, ratio, radius_px, glyph_px) -> u32
+  halo_offsets(font_px, halo_width_px, reference_px) -> [(f32, f32); 4]
+  ```
+
+  Each rule is defined once in `scripts/rules.mjs`. `tools/pointer-first.mjs` re-exports it rather than restating it, the Rust is generated from it, and the Rust's `#[test]` bodies are generated from the same `CASES` table the JS tests run — so a case covers both targets or neither.
+
+  **One limit, stated because it would be easy to imply otherwise:** Node cannot check that a Rust body computes what its JS twin computes. `npm run test:rust` does, by running the generated tests, and it **refuses** rather than skips when no toolchain is present. junoui's CI has no Rust toolchain, so a divergent Rust body will not be caught there. Found by mutation, not assumed — that exact mutation survived the whole JS suite.
+
+- 84e186d: **Pointer-first responsiveness — conformance kit slice 3.**
+
+  `.juno-rail--responsive` keyed on `width <= 767.98px`. A landscape iPhone is **844×390 — wider than `md`** — so it was served the desktop rail on a device held in two hands. Width has never been the question.
+
+  junoui now states **two** conditions, because they answer different questions. Touch ergonomics is `(pointer: coarse)` with **no size term** — a finger is a finger on a kiosk too. Navigation shape is `(pointer: coarse) and ((width <= 767.98px) or (height <= 500px))`, and the height term is what separates a landscape phone (320–430px tall) from a tablet or a coarse-pointer kiosk (768px and up), both of which keep the rail.
+
+  New: `--juno-coarse` and `--juno-compact-nav` in `dist/css/juno-custom-media.css`, and `junoui/pointer` exporting the same strings plus `matchesCompactNav` / `onCompactNav` for an app choosing a _component_ rather than a rule. A listener, not a one-shot read — rotating a phone crosses this without a reload.
+
+  **New: `.juno-dock--responsive` and `.juno-pillbar--responsive`.** Pairing a responsive rail with `.juno-hide-from-md` on the dock — the previously documented pairing — leaves a hole: at 844×390 the rail hides _and_ the dock hides, and the app has no primary navigation at all. The reciprocals key on the inverse of the same condition, so exactly one half shows at every size and pointer type.
+
+  The generic `.juno-hide-below-md` / `.juno-hide-from-md` helpers stay width-only on purpose.
+
+  ## Migration — read this even though nothing you have will fail to compile
+
+  **A consumer pairing the old way loses navigation entirely on a landscape phone.** That is a breaking change in effect, even though the types still compile and no class was removed: `.juno-hide-from-md` still exists and still does what it says. The break is in the _pairing_, which is why nothing warns you.
+
+  At 844×390 the rail hides (coarse and short) and the dock also hides (844 ≥ md), and the screen has no primary navigation at all — no rail, no dock, no way to move between sections until the device is rotated.
+
+  Swap `.juno-hide-from-md` for `.juno-dock--responsive` (or `.juno-pillbar--responsive`) on any dock or pillbar that pairs with `.juno-rail--responsive`:
+
+  ```diff
+  -<nav class="juno-dock juno-dock--pill juno-hide-from-md">
+  +<nav class="juno-dock juno-dock--pill juno-dock--responsive">
+  ```
+
+  If you keep the old pairing it still works on portrait phones and on desktop, which is exactly what makes it easy to miss.
+
+- 5d33169: New component: `.juno-range` — dual-thumb range slider (X7, `20260829-027`).
+
+  `.juno-slider` is single-value, so a range today is two sliders side by side and nothing stops the low one passing the high one. This is a track with two thumbs, the span between them filled, and the two rules a two-thumb control has to get right.
+
+  **Which thumb does a tap grab?** Two 44px thumbs overlap as soon as their centres are within 44px, which is most of a short track — so this is a rule, not an accident of z-order. **Nearest centre between the thumbs, direction of travel outside them.** Pure nearest-centre ties exactly when the thumbs coincide, which is the case it most needs to answer; pure last-moved is wrong at a limit (both thumbs at max, last-moved is the upper, and the upper cannot move); "keeps the range valid" is under-determined while they are apart. The genuine tie — a tap exactly on two coincident thumbs — goes to `last` if the caller tracks it, else to whichever thumb is not pinned. The property, swept in the tests rather than argued: every tap resolves to a thumb that can actually move toward it, and the resulting pair is always valid.
+
+  **What if you drag one past the other?** It **clamps** — it does not swap and it does not push. Swapping changes which bound you are dragging mid-gesture, so `aria-valuenow` on the thumb under the finger silently starts meaning the other end and a screen-reader user who grabbed "Minimum" is told nothing. Pushing edits a value the user did not touch. Clamping is the only one where the thumb's identity is stable for the whole gesture and the emitted pair always satisfies `lo <= hi`. `minGap` stops them early for a range that must span something.
+
+  Each thumb's `aria-valuemin`/`aria-valuemax` is **the other thumb's position**, so the constraint is announced rather than merely enforced; `thumbBounds()` computes them. Two sliders in a `role="group"`, each with its own accessible name.
+
+  The overlap is in the **hit areas, not the paint**: each thumb is a tap-sized box with a small grip inside, so two fully-overlapping boxes still read as two thumbs.
+
+  `junoui/range` is stateless — `pickThumb`, `moveThumb`, `thumbBounds`, and a keyboard model where arrows, PageUp/PageDown and Home/End all run through `moveThumb`, so the keyboard cannot cross the thumbs either. The event carries the whole pair, so a caller cannot apply half of it.
+
+- 74e533c: Safe-area seam, published edge offsets, a pillbar budget, and `junoui-doctor` — conformance kit slices D through G (20260826-036).
+
+  **One seam for every inset.** `--juno-safe-top` / `-right` / `-bottom` / `-left` are declared once on `:root` as `env(safe-area-inset-*, 0px)`, and all 23 previously-direct `env()` calls now read through them. `html[data-juno-letterboxed]` zeroes `--juno-safe-bottom`, and **only** that one. In a letterboxed iOS standalone window the home indicator is outside the window entirely while iOS keeps reporting the bottom inset, so every primitive padding for it reserves room for something not in the view. The other three are not phantoms and are left alone: measured on an iPhone 16 Pro / iOS 18.7 the window is 812 of 874 points and sits at the top, so its top edge is _under_ the Dynamic Island — zeroing the top inset would put content under the Island in exactly the window the attribute exists for.
+
+  **Each floating primitive publishes its offset.** `--juno-pillbar-edge-offset` and `--juno-toast-edge-offset` are the numbers a consumer was previously re-deriving, wrongly — the three buckets (edge padding `max(base, inset)`, clearance `base + inset`, floating chrome) are not interchangeable, and the bucket a primitive belongs to is a property of the primitive.
+
+  **The pillbar publishes its horizontal budget**, the same way the dock does — but with its own arithmetic. A dock's items stretch and a pillbar's do not, so a consumer reusing the dock's formula is short by `(items - 1) * gap`.
+
+  **`npx junoui-doctor --url <your app>`** runs a consumer's own app against real device profiles and reports what it did not cover on every run. Playwright is an optional peer, not a dependency.
+
+  ## Migration — read this even though nothing you have will fail to compile
+
+  **A guard that reads junoui's shipped stylesheet and matches on `env(` will go red.** The insets are behaviourally unchanged — the same value is added or `max()`-ed in the same places — but the _term_ is now `var(--juno-safe-top)` rather than the `env()` call. If your guard asserts the call site, re-ground it on the rule: follow the seam one hop and assert the seam is itself an `env()` for that edge. nexora's `pillbarHeight.test.ts` is the worked example, and its consumer gate is what found this before the release rather than after.
+
+  **A consumer pairing the old way loses navigation entirely on a landscape phone.** That is a breaking change in effect, even though the types still compile and no class was removed. `.juno-rail--responsive` now hides on `(pointer: coarse) and ((width <= 767.98px) or (height <= 500px))`, and `.juno-dock--responsive` is its exact complement. A rail paired with the width-only `.juno-hide-from-md` is correct on a portrait phone and on desktop, and at 844×390 leaves _both_ halves hidden: the rail because the pointer is coarse and the viewport is short, the dock because 844 is wider than `md`. The break is in the _pairing_, which is why nothing warns you. `junoui-doctor` has a `phone-landscape` profile for exactly this, and it is the one finding it reports on a page that looks correct everywhere else.
+
+- 80e6f30: New component: `.juno-scrubber` — timeline / transport (X6, `20260829-026`).
+
+  A track with a playhead, a **loaded** range distinct from the **played** one, optional in/out marks, chapter ticks, and a preview slot the app fills. For media playback, telemetry and session replay, audio editing, animation timelines.
+
+  Not `.juno-slider`: a slider is a single-value form control whose value is a number. A scrubber has three ranges over one axis, announces a **time**, and its playhead is dragged rather than nudged.
+
+  **The announcement is the contract.** `role="slider"` announces `aria-valuenow`, so a screen reader says "87" for a position in a three-minute clip. `junoui/scrubber` exports `valueText(87, 212)` → `"1:27 of 3:32"`, and `formatTime` drops the hour below an hour and clamps negative or non-finite input to `0:00` — a screen reader will read `-1:-5` aloud.
+
+  **The hit area is why this exists as much as the ARIA is.** A 4px track is unhittable with a finger. The **host** carries `--juno-size-tap-min` on the block axis and the track is painted inside it, so the component never mentions a phone. The in/out marks are separate controls and carry the floor **on both axes** — that is `20260815-040` stated as a rule rather than repeated: pagination held the floor on one axis and shipped at 44×32.
+
+  The floor is on the host rather than a pseudo-element so that `getBoundingClientRect` measures what a finger hits. `.juno-splitter` puts its hit area on `::after`, which leaves its measured box a 1px hairline — filed as `20260902-014`, with the measurement.
+
+  `touch-action: none` overrides the generated touch layer's `manipulation`, which would leave the browser free to claim a horizontal pan so a scrub on a phone scrolls the page.
+
+  `junoui/scrubber` is stateless — arrows step, PageUp/PageDown page, Home/End reach the ends exactly, any other key is left alone — and dispatches `juno-scrubber-seek` rather than writing `aria-valuenow`, because whether a seek lands is a question only the player can answer.
+
+- 783f5de: **Splitter — the resize separator's affordance and ARIA contract, not its state machine.**
+
+  `layout.md` places drag-resizable panels outside junoui's line, and **it still does**: there is no pointer capture here, no width arithmetic, no persistence, no collapse policy. What ships is the half junoui already claims elsewhere — `.juno-gesture-surface`'s CSS without the recognizer, `.juno-pillbar`'s geometry props without the collapse policy.
+
+  **The hit area is the point, alongside the ARIA.** A 1px separator is a 1px target: fine for a carefully aimed mouse, a coin flip on a trackpad, unusable with a finger. So the element is tap-sized and the line is painted inside it — and the hit area _overlaps_ its neighbours rather than displacing them, because a consumer that laid out a 44px gap to hold the handle would have that gap on desktop too. `--juno-size-tap-min` promotes on a coarse pointer, so the handle widens on touch without the component knowing what a phone is.
+
+  **The keyboard model**, which is the part consumers omit: arrows resize along the separator's own axis (a _vertical_ separator divides panes side by side, so Left/Right move it — the axis names the separator, not the motion), Page keys move ten steps, Home/End reach the declared extremes, Enter asks for collapse. An arrow that does not apply is left alone, so a Down arrow on a vertical splitter still scrolls the page.
+
+  ```js
+  import { enhanceSplitter } from 'junoui/splitter';
+  enhanceSplitter(el, { step: 16 });
+  el.addEventListener('juno-splitter-move', (e) => setPanelWidth(e.detail.value));
+  ```
+
+  Stateless: it clamps a requested value into `[aria-valuemin, aria-valuemax]` and asks. It never writes `aria-valuenow` — whether a pane can actually be 320px wide is a layout question only the app can answer. Collapse is a separate event from a move to the minimum, because an app that restores the previous width needs to know which happened.
+
+  `layout.md` now states where the line falls for this case rather than leaving each consumer to assume it.
+
+### Patch Changes
+
+- a079d6f: Document the branch model, and guard it against the CI triggers (`20260901-057`).
+
+  junoui has exactly one long-lived branch, `main`. `develop` existed anyway, and it was a trap: a PR opened against it got **no checks at all** — an empty list, not a red one, which looks identical to green — and landed nowhere. It was hit for real, and only caught by dispatching the workflow by hand.
+
+  The evidence for deleting it rather than syncing it: **zero** commits of its own, ever; **zero** of 33 merged PRs targeted it; nothing in the repo depends on it; and it went from 16 commits behind to 68 in a few hours. An integration branch has no job here — releases run on push to `main`, and the staging a `develop` would provide is already provided by `gate:consumer`, which packs the release candidate and runs the consumer's suite before anything lands.
+
+  `docs/branching.md` states that, with the numbers, and `test/branching.test.mjs` keeps the documented model and the workflow triggers from disagreeing silently: any branch CI _names_ must be `main`, no other workflow may act on a branch the doc does not name, and the doc's stated residual must match whether the `pull_request` trigger is still filtered.
+
+- 9a3291a: `.juno-fold` gets a showcase entry, so it is inside the visual-regression suite (`20260826-006`).
+
+  It was the only component with no showcase presence at all — every other one gets a pixel diff on every change and this one got none. The section on `showcase/mobile.html` shows the canonical composition (`.juno-fold` on a `.juno-pillbar__item`) in both resting states side by side, which is what makes a static snapshot useful here: the defect this component actually shipped was a folded slot that could not reach zero, and a slot 44px wide instead of 0 moves the row it sits in.
+
+  The demo names `--juno-fold-gap`, because without it a folded slot still costs one gap and the row keeps a 2px residue — the case the fold's own docs warn about, and the one a demo is most likely to get wrong and teach.
+
+  `test/visual/fold-showcase.spec.mjs` asserts the numbers rather than the picture: the folded slot measures `0`, the present slot keeps the tap floor, and the two rows differ by exactly one item plus one gap. A pixel diff on a row shift can be argued down; `0.00` cannot — and Linux baselines are re-recorded by a separate manual workflow, so between an intended visual change and its re-recording there is a window in which the snapshot proves nothing. This runs in that window too.
+
+  **Sections can now declare their own baseline.** A `<section data-vr-shot="<id>">` is shot on its own (`{page}-{id}-{mode}.png`) and removed from the full-page shot, so adding a component no longer moves every baseline below it. That mattered immediately: without it this change reds all six `mobile-*` snapshots, and a suite where adding a component breaks unrelated components' pictures trains people to re-record without looking — which is how these baselines drifted for months before (see `ci.yml`, `20260815-011`).
+
+  `display: none` and not `visibility: hidden`: the section must leave layout, or the page is still taller and every baseline below it still moves. Measured on this branch — page 4086 with the section shown, **3835 hidden, and `main`'s own `mobile.html` is 3835**. Existing baselines are untouched; the only new files are two additive ones for the fold section itself.
+
+  **New and changed baselines are now different events, loudly.** Section shots live in a `section-` namespace, and `test/section-baselines.test.mjs` audits them in `npm test` — no browser, milliseconds — in both directions: a declared section with no baseline is reported as **NEW (recording it is safe, nothing is being overwritten)**, and a baseline whose section is gone is reported as an **orphan** (a green check over a component that no longer exists, which nothing checked before). A baseline that _changed_ remains a pixel-diff failure in the visual job, where a human has to look first. That distinction is the whole reason this suite drifted for months (`ci.yml`, `20260815-011`), so it is stated in the failure message itself rather than left to be known.
+
+- 6883188: The modal scroll port is now visible to the visual-regression suite (`20260815-027`).
+
+  `20260803-029` made `.juno-modal[open]` a flex column and `.juno-modal__body` the bounded scroll port. It was predicted to move the baseline and moved **zero pixels** — reconstructed as a reverse patch, across all 48 snapshots, at a zero-pixel budget. No tolerance could have fixed that: every showcase modal was short enough that a flex column and a block box lay out identically, and a body that never overflows never scrolls. There was nothing for a screenshot to see.
+
+  `showcase/overlays.html` gains `#ov-modal-tall`, a dialog whose body genuinely overflows, added to the overlay shot list as `modal-scrolling`. With it, reverting `20260803-029` now changes the picture and the numbers: the body stops being a port (1125 = 1125 instead of 1125 > 761), the dialog clips, and **the confirm button leaves the screen entirely**.
+
+  Its `__foot` is a **sibling** of `__body`, not inside it as the short fixtures have it. Measured: with the footer inside the scroll port it travels 407px out of view once the body is at its end — the "confirm button you cannot reach" shape. `.juno-modal[open]`'s column exists to support the pinned form, and a modal whose body can overflow should use it.
+
+  `test/visual/modal-scroll-port.spec.mjs` asserts the contract numerically rather than by pixels — the body overflows by a real margin, the body (not the dialog) is the scroll port, and head and foot hold position while the body scrolls.
+
+- 38284f6: `.juno-pagination__item` now holds the tap floor on **both** axes (20260815-040).
+
+  `min-inline-size` read `--juno-size-tap-min` and took the coarse-pointer promotion; `block-size` was a hard `--juno-space-32` and could not. So on a phone every pagination control was **44 × 32** — clearing WCAG 2.2 **2.5.8** Target Size (Minimum, 24px) and missing **2.5.5** Enhanced (44px), which every other junoui touch control meets.
+
+  The floor is now `min-block-size: max(var(--juno-space-32), var(--juno-size-tap-min))` — the larger of the component's own 32px design height and what the pointer needs. Reading the token alone would have _shrunk_ desktop pagination to 24px to fix a phone.
+
+  **Nothing changes on a fine pointer**: 32px before and after, measured. On a coarse pointer items go 44 × 32 → 44 × 44.
+
+  `docs/accessibility.md` and `docs/ios-pwa.md` both carried this as a documented exception to the blanket coarse-pointer promotion. It is no longer an exception, and both now say so.
+
+- 85ba3b1: CI compiles the generated Rust rules (`20260901-075`).
+
+  `dist/rust/juno_rules.rs` is generated and carries its own `#[test]` bodies, emitted from the same case table the JS tests run — but nothing ever compiled it. That gap was not theoretical: a mutation making the Rust `wants_compact_nav` diverge from its JS twin, dropping the `or short` term that is the landscape-phone hole, **survived the entire JS suite**. Node can check the table, the bounds as numbers and the generated-assertion count; it cannot check that a Rust body computes what the JS body computes.
+
+  The `build` job now runs `npm run test:rust` behind a toolchain action. Cheap by construction: no cargo, no crate, no registry access, no cache — one `rustc --test` over one generated file with no dependencies. The runner **refuses** rather than skips when `rustc` is absent, so the step cannot quietly pass on a runner without one.
+
+  `docs/painted-ui.md` said CI did not compile this file, and that had to change with it. The guard is now bidirectional — it ties the doc's claim to whether `ci.yml` actually runs the step, in both directions — because the previous version pinned the doc's _text_ and would have stayed green over a doc that had become false.
+
 ## 0.9.0
 
 ### Minor Changes
