@@ -8,10 +8,13 @@
 // check that the Rust body computes what the JS body computes. Only rustc can,
 // by running the generated #[test] bodies.
 //
-// junoui's CI has no Rust toolchain. Adding one touches .github and is the
-// operator's call (ticket filed). Until then this is run by hand and by any
-// consumer who wants the assurance, and `docs/painted-ui.md` says so rather
-// than letting "one table, two targets" read as more than it is.
+// CI runs this in the `build` job (20260901-075). Before that it had no Rust
+// toolchain and nothing ever compiled the generated file, which is how a Rust
+// body could diverge from its JS twin and survive the whole JS suite.
+//
+// Kept as a separate script rather than folded into `npm test` because it needs
+// a toolchain the Node suite does not, and a consumer without rustc should
+// still be able to run `npm test`.
 //
 // It REFUSES when rustc is absent rather than skipping. A guard that quietly
 // does nothing and a guard that passes are the same object.

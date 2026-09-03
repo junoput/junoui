@@ -133,11 +133,42 @@ test('the Rust half is verifiable, and the limit is stated where it is read', ()
   });
   assert.equal(bare.status, 2, 'the rust runner does not fail when rustc is absent');
   assert.match(bare.stderr, /refusal, not a skip/);
+  // BIDIRECTIONAL, and it was not before: this used to assert only that the doc
+  // SAID CI does not compile the file. That pins the doc's text, not reality —
+  // so when CI gained a Rust step the suite stayed green over a doc that had
+  // become false. Same shape as the branching guard, and the same fix: tie the
+  // claim to the workflow.
   const doc = readFileSync('docs/painted-ui.md', 'utf8');
-  assert.match(
-    doc,
-    /junoui's CI does not compile this file/,
-    'the doc no longer admits the Rust half is unchecked in CI',
+  const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
+  // Both halves. The step alone is not enough: GitHub's ubuntu-latest image
+  // happens to ship a Rust toolchain today, so `npm run test:rust` would pass
+  // without the action — by luck of the image, which is precisely the hazard
+  // this repo already burned on when a runner-image bump drifted every visual
+  // baseline (20260803-001). Pinning the toolchain makes the step deterministic
+  // instead of dependent on what the image happens to include. Mutation found
+  // this: dropping the action while keeping the step survived.
+  const toolchain = /uses: dtolnay\/rust-toolchain@([\w.-]+)/.exec(ci);
+  const ciCompiles = /run: npm run test:rust/.test(ci) && Boolean(toolchain);
+  if (toolchain) {
+    // A TAG, not the action's own branch. `@master` would float the action's
+    // CODE; `@stable` floats only the compiler version, which is intended here
+    // — the generated file has no dependencies and no MSRV to hold. Asserting
+    // an exact tag would block a legitimate move to a pinned Rust version, so
+    // the rule is the narrow one: not a branch.
+    assert.ok(
+      !['master', 'main'].includes(toolchain[1]),
+      `rust-toolchain is on branch "${toolchain[1]}" — the action's own code would float`,
+    );
+  }
+  const docSaysCompiles = /junoui's CI compiles this file/.test(doc);
+  const docSaysNot = /junoui's CI does not compile this file/.test(doc);
+  assert.ok(docSaysCompiles || docSaysNot, 'docs/painted-ui.md no longer states either way');
+  assert.equal(
+    docSaysCompiles,
+    ciCompiles,
+    ciCompiles
+      ? 'ci.yml runs test:rust, so docs/painted-ui.md must not still say CI does not compile it'
+      : 'ci.yml does not run test:rust, so the doc must not claim it does',
   );
   assert.match(doc, /Node cannot check that the Rust body computes/);
 });

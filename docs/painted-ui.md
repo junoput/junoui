@@ -115,12 +115,13 @@ are:
   six, because the cardinals are the set worth keeping. If your instrument wants
   a different fallback, the rule to copy is _derive it from the room the
   projection leaves_, not this function.
-- **junoui's CI does not compile this file.** The generated tests are real and
-  they pass under `npm run test:rust`, but the repo has no Rust toolchain in CI
-  — wiring one in touches `.github` and is the operator's call. Until then the
-  guard that runs on every build is the JS half plus the generated-assertion
-  count, and **a Rust body that diverges from its JS twin will not be caught by
-  junoui's CI.** Run `npm run test:rust` before trusting a change to these.
+- **junoui's CI compiles this file.** The `build` job runs `npm run test:rust`,
+  which is one `rustc --test` over the generated file — so a Rust body that
+  diverges from its JS twin fails a PR. That was not always true: until
+  `20260901-075` there was no toolchain in CI, and a mutation dropping the
+  `or short` term from the Rust `wants_compact_nav` survived the entire JS
+  suite. The runner **refuses** rather than skips when `rustc` is absent, so the
+  step cannot quietly pass on a runner without one.
 
 ---
 
