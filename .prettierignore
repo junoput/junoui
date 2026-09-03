@@ -5,3 +5,4 @@ package-lock.json
 docs/tokens-reference.md
 **/*.css
 **/*.html
+.claude
