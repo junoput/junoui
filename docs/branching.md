@@ -54,13 +54,24 @@ not merely that nothing is red. `gh pr checks <n>` saying
 Retargeting an existing PR does not appear to arm the trigger on its own; push a
 commit, or dispatch `ci` by hand, and verify.
 
-## The residual, stated rather than implied
+## The class is closed: a PR to any base gets checks
 
-Deleting `develop` closes the instance. It does not close the class: **any**
-branch used as a PR base other than `main` still gets zero checks, because the
-`pull_request` trigger is filtered. Removing that filter would make CI run on a
-PR to any base, so a mis-targeted PR would still be honestly red or green.
+`ci.yml`'s `pull_request` trigger is **unfiltered**, so opening a PR against any
+base runs the suite. A mis-targeted PR is honestly red or green instead of
+showing an empty check list — which is the failure that made this worth fixing,
+because an empty list and a green one look the same at a glance (`20260902-040`).
 
-That is a `.github` change and is the operator's call; it is filed rather than
-assumed. Until it lands, this document and `test/branching.test.mjs` are what
-keep the branch model and the CI triggers from disagreeing silently.
+`push` stays filtered to `main`, which is what stops the double-run a filter
+like that is usually for: a topic-branch push fires nothing, the PR covers it,
+and only the merge fires `push`. No SHA is built twice, and the release job is
+still gated on `push` to `refs/heads/main` so it cannot fire from a PR.
+
+**What is still true:** a branch with **no PR open** gets no CI until one exists.
+That is by design — `workflow_dispatch` covers the case where you want a run
+before opening a PR — but it is the reason the visual baselines once drifted for
+months without anyone seeing a red job (`20260815-011`).
+
+`test/branching.test.mjs` keeps this document and the CI triggers from
+disagreeing silently, in both directions: it fails if a workflow names a branch
+this document does not, and it fails if this section claims the class is open
+while the filter is gone.

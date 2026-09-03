@@ -1,14 +1,46 @@
 name: ci
 
 on:
+  # PUSH STAYS FILTERED, and that is what keeps this from double-running.
+  # A push to a topic branch fires nothing; the PR below covers it. Only the
+  # merge fires this, which is also what gates the release job.
   push:
     branches: [main]
+
+  # PULL_REQUEST IS DELIBERATELY UNFILTERED — a PR to ANY base gets checks.
+  #
+  # It used to be `branches: [main]`. That was never a decision: it arrived in
+  # the first commit of this file (60ff231, "add ci workflow") as GitHub's
+  # scaffold boilerplate, next to a `tags: ['v*']` that has since been deleted.
+  # No commit message, comment or ticket ever argued for it.
+  #
+  # It was, however, actively harmful. A PR opened against any other base got
+  # NO CHECKS AT ALL — an empty list, not a red one, which looks identical to
+  # green at a glance. That is not hypothetical: PR 28 was opened against
+  # `develop` on 2026-09-01, showed no checks, and its lint failure was only
+  # found because someone dispatched this workflow by hand. See 20260902-040.
+  #
+  # THE THING A FILTER LIKE THIS IS USUALLY FOR is avoiding duplicate runs: with
+  # an unfiltered `push` AND an unfiltered `pull_request`, every push to a PR
+  # branch fires both and every commit is built twice. The alternative chosen
+  # here is to keep the filter on `push` instead — `push: [main]` above — so:
+  #
+  #   push to a topic branch, no PR   nothing runs        (as before)
+  #   push to a topic branch with PR  pull_request, once
+  #   PR opened / retargeted          pull_request, once
+  #   merge to main                   push, once          (gates release)
+  #
+  # No SHA is built twice. Filtering the push side rather than the PR side gets
+  # the same economy and does not hide a PR's status.
+  #
+  # Fork PRs now run too, with GitHub's read-only token and no secrets. The
+  # release job is gated on `github.event_name == 'push'` and `refs/heads/main`,
+  # so it cannot fire from a PR of any origin.
   pull_request:
-    branches: [main]
-  # Manually runnable on any branch. Long-lived integration branches
-  # (`develop`, `ios/develop`) and their lanes otherwise get no CI at all until
-  # they reach a PR to main, which is how the visual baselines drifted for
-  # months without anyone seeing a red job. See 20260815-011.
+
+  # Manually runnable on any branch. A branch with no PR open still gets no CI
+  # until one exists, which is how the visual baselines drifted for months
+  # without anyone seeing a red job. See 20260815-011.
   workflow_dispatch:
 
 jobs:
