@@ -26,10 +26,10 @@ does not belong in this file:
 
 **Citation.** W3C WAI, [Understanding Success Criterion 1.3.2: Meaningful
 Sequence](https://www.w3.org/WAI/WCAG22/Understanding/meaningful-sequence.html)
-(WCAG 2.2, Level A): "the meaningful order of content shall be able to be
-programmatically determined" — the DOM order **is** the reading order for
-assistive tech and for keyboard traversal, whatever the visual order looks
-like.
+(WCAG 2.2, Level A): "When the sequence in which content is presented
+affects its meaning, a correct reading sequence can be programmatically
+determined" — the DOM order **is** the reading order for assistive tech and
+for keyboard traversal, whatever the visual order looks like.
 
 **Consequence.** junoui's composition primitives lay out children in source
 order and none of them sets the CSS `order` property or `grid-auto-flow:
@@ -63,11 +63,12 @@ truncation](https://m3.material.io/foundations/writing/text-truncation):
 truncated text must still leave the full content reachable somewhere, which
 in practice means truncation is a tool for the metadata around a value, not
 for the value itself — a truncated number or identifier is data loss, not a
-layout convenience. GNOME HIG's
+layout convenience. (GNOME HIG's
 [Typography](https://developer.gnome.org/hig/guidelines/typography.html)
-guidance points the same way: ellipsizing (`PANGO_ELLIPSIZE_END`) is a
-documented technique for labels that may overflow, never for the datum a
-label is attached to.
+page was checked as a possible second source for this principle and does
+**not** address truncation or ellipsization at all — it covers font family,
+weight and Unicode use only. It is not a citation for this principle; see
+[Citation provenance](#citation-provenance).)
 
 **Consequence.** junoui already draws this line and the split is checkable.
 Secondary/metadata text carries `text-overflow: ellipsis; white-space:
@@ -208,3 +209,29 @@ Every consequence above cites a class or custom property that exists in
 `--juno-measure`, `.juno-list__group`, `.juno-list__header`). None of the
 four principles needed a token junoui doesn't have, so there is nothing to
 file as a separate bug report from this pass.
+
+## Citation provenance
+
+Added in review of ticket 20260907-001, which asked for the same one-pass
+marking on this document as on its sibling: a citation with the right shape
+and the wrong specifics is a defect regardless of whether the claim it
+supports is true, so each source below is marked by how it was actually
+checked in this pass, not by how well-formed it looks. This document
+predates the marking convention — two real defects turned up doing it, both
+fixed here rather than left standing because the document had already
+landed.
+
+| #   | Source                                                      | Status                                   | Note                                                                                                                                                                                                                                                                                                                                                                                                  |
+| --- | ----------------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| §1  | WCAG 2.2 SC 1.3.2, Meaningful Sequence                      | **Fetched, corrected**                   | The quote on first publish — "the meaningful order of content shall be able to be programmatically determined" — is not the criterion text. The actual text, now quoted in §1, is "When the sequence in which content is presented affects its meaning, a correct reading sequence can be programmatically determined." The argument §1 makes from it is unchanged; the quote was wrong and is fixed. |
+| §3  | WCAG 2.2 SC 1.4.8, Visual Presentation                      | **Fetched, confirmed**                   | "Width is no more than 80 characters or glyphs (40 if CJK)" is on the page verbatim.                                                                                                                                                                                                                                                                                                                  |
+| §4  | Nielsen Norman Group, How Chunking Helps Content Processing | **Fetched, confirmed**                   | Both quotes in §4 — the 7-letters/28-letters example and the warning against reading Miller's law as an item-count cap — are on the page verbatim.                                                                                                                                                                                                                                                    |
+| §2  | Material Design 3, Text truncation                          | Recalled                                 | `m3.material.io` renders its content client-side; a fetch returns no body text, so the claim could not be re-confirmed against the live page in this pass. It is written without quotation marks for exactly this reason — it was a paraphrase from an earlier search summary before this pass and remains one now.                                                                                   |
+| §2  | GNOME HIG, Typography                                       | **Fetched — does not support the claim** | Checked directly in this pass. The page does not mention ellipsizing, truncation, or `PANGO_ELLIPSIZE_END`; the original citation was wrong to invoke it here. Removed from §2 as a citation; kept as a stated negative result instead, which is the more honest use of a source that turned out not to say what a document once claimed.                                                             |
+
+Two of five sources could not be independently re-fetched in this pass —
+`m3.material.io` serves its content through client-side rendering that this
+session's fetch tool cannot execute, the same limitation recorded against
+Apple's and KDE's HIG pages in `principles-structure.md`'s own provenance
+table. That citation remains **recalled**, not confirmed, stated plainly
+rather than upgraded on the strength of a well-formed paraphrase.
