@@ -66,6 +66,61 @@ test('JS token model has full palette × mode × role coverage', () => {
   assert.equal(CORE.bp['2xl'], '1536px');
 });
 
+// Count every $type:color leaf in a resolved DTCG tree (dist/json/tokens.json
+// — style-dictionary has already resolved DTCG's group-level $type
+// inheritance into a $type on each leaf, so this needs no inheritance logic
+// of its own). A leaf carries $value/$type/$description as plain strings, so
+// recursing into a leaf's own properties is harmless: none of them is an
+// object, so the recursive branch contributes 0 and the early return already
+// counted it once.
+function countColorTyped(node) {
+  if (!node || typeof node !== 'object') return 0;
+  if (node.$type === 'color') return 1;
+  return Object.values(node).reduce((sum, v) => sum + countColorTyped(v), 0);
+}
+
+test('android colors.xml carries every $type:color token, not just the themed tree', () => {
+  // The relationship, not a value: a classifier that keys on path instead of
+  // $type can agree with the dictionary by coincidence (it did, for 90
+  // tokens, until tokens/core/ink.json existed) and disagree silently the
+  // next time a color is declared outside color.*. Asserting "colors.xml has
+  // N rows" would pass for the wrong reason and rot the moment either side
+  // changes; asserting the two counts against each other fails whenever they
+  // diverge, whichever side moved.
+  const dictionary = JSON.parse(readFileSync('dist/json/tokens.json', 'utf8'));
+  const expected = countColorTyped(dictionary);
+  assert.ok(
+    expected > 90,
+    `sanity: expected far more than the 90 themed colors alone (got ${expected})`,
+  );
+
+  const xml = readFileSync('dist/android/colors.xml', 'utf8');
+  const actual = [...xml.matchAll(/<color name="/g)].length;
+
+  assert.equal(
+    actual,
+    expected,
+    `dist/android/colors.xml has ${actual} <color> rows but the dictionary declares ${expected} ` +
+      '$type:color tokens — some color-typed token is not reaching the Android emitter (or vice versa).',
+  );
+
+  // A named regression guard, not just a count: the specific defect this
+  // test exists for was tokens/core/ink.json — 5 canvas/vivid colors plus
+  // canvas.ink and canvas.halo, 7 in total — silently missing from Android
+  // while iOS, Flutter and Rust all carried them.
+  for (const name of [
+    'canvas_ink',
+    'canvas_halo',
+    'vivid_nominal',
+    'vivid_active',
+    'vivid_target',
+    'vivid_caution',
+    'vivid_warning',
+  ]) {
+    assert.ok(xml.includes(`<color name="${name}">`), `colors.xml missing ink color "${name}"`);
+  }
+});
+
 test('every var(--juno-*) used in src/css is defined in the token output', () => {
   const tokens = readFileSync('dist/css/juno-tokens.css', 'utf8');
   const defined = new Set([...tokens.matchAll(/--([\w-]+)\s*:/g)].map((m) => m[1]));

@@ -67,5 +67,8 @@ sets both.
 ## Native
 
 Every target carries these tokens — `INK_CANVAS_INK` / `INK_CANVAS_HALO` in
-Rust, `inkCanvasInk` in Swift and Dart. The halo mechanism is yours to apply:
-stroke the path twice, or draw text with an outline pass first.
+Rust, `inkCanvasInk` in Swift and Dart, `@color/canvas_ink` / `@color/canvas_halo`
+in Android's `colors.xml` (fixed in 20260906-056 — the Android emitter used to
+classify colors by path prefix, which silently excluded every color declared
+outside `color.*`, ink included). The halo mechanism is yours to apply: stroke
+the path twice, or draw text with an outline pass first.
