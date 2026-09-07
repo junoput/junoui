@@ -17,16 +17,36 @@ not shipped).
 don't trust the number written down elsewhere, including in this repo's own CLAUDE.md
 roadmap section. Re-run `ls src/css/components | wc -l` before trusting this number too.
 
-**Slot order — the number W5 is waiting on:** **23 of 52 have a fixed slot order,
-25 do not, 4 are ambiguous.**
+**Slot order — the number W5 is waiting on, reported both ways because they answer
+different questions:**
 
-- **Fixed (23)** — a non-CSS implementation would have to reproduce a specific part
-  sequence, either because the CSS structurally requires it (a sibling combinator, a native
-  HTML element order) or because normal-flow layout with no reordering mechanism makes DOM
-  order the visual order.
-- **Free (25)** — includes both the 13 components with no BEM parts at all
-  (0-part case, trivially free) and the 12 multi-part components where every part is
-  either independently positioned (absolute, pinned by its own class/custom property) or
+- Across all 52 files: **fixed 23 · n/a 13 · free 12 · ambiguous 4.** `n/a` (no
+  BEM parts at all) and `free` (has parts, but none depend on another's DOM
+  position) are kept as two distinct buckets here, not folded into one — a
+  component with nothing to order and a component that deliberately frees its
+  order are different findings, even though both answer "no" to "must a native
+  port reproduce a sequence?"
+- **The decision-relevant number is scoped to components that HAVE parts to
+  order** — a slot-order contract is meaningless for a component with no
+  slots. Of the **37 multi-part components** (52 minus the 15 with zero BEM
+  parts): **fixed 23 · free 10 · ambiguous 4 → 23 of 37 (62%) have a fixed
+  slot order.** Quoted against the raw 52 instead, the same fact reads as 23 of
+  52 (44%) and understates the exportable surface by roughly a third — use the
+  37 denominator when this number is going into a resequencing decision.
+
+- **Fixed (23 of 37 multi-part)** — a non-CSS implementation would have to reproduce a
+  specific part sequence, either because the CSS structurally requires it (a sibling
+  combinator, a native HTML element order) or because normal-flow layout with no
+  reordering mechanism makes DOM order the visual order.
+- **n/a (13 of 52)** — no BEM parts at all; there is no sequence to have an opinion
+  about. `avatar`, `badge`, `breadcrumb`, `button`, `checkbox`, `divider`,
+  `dock-responsive`, `fold-slot`, `icon`, `icon-loader`, `input`, `select`,
+  `skeleton`, `spark`, `splitter` — 15 components have zero BEM parts; two of
+  them (`fold-slot`, `icon`) were misclassified as `free` in an earlier pass of
+  this document and are `n/a` now, for the same reason as the other 13: the
+  same input (zero parts) gets one verdict, not two.
+- **Free (10 of 37 multi-part)** — has two or more parts, but every part is either
+  independently positioned (absolute, pinned by its own class/custom property) or
   explicitly documented as order-independent in the source.
 - **Ambiguous (4)** — `gizmo`, `loader`, `range`, `table`. Each mixes a fixed-order
   region with a free-order or data-driven region; see each row's reasoning below. These are
@@ -79,6 +99,13 @@ which is itself worth stating rather than assuming.
   query for `prefers-reduced-motion` or `pointer: coarse` still counts as a viewport media
   query here even when it isn't about breakpoints, since the column is about the mechanism
   used, not its purpose.
+- **Slot order for a zero-part component is `n/a`, never `free`.** A component with no BEM
+  parts has no sequence to have an opinion about — that is a different finding from a
+  multi-part component whose parts are deliberately order-independent, even though both
+  answer "no" to "must a native port reproduce a sequence?". `fold-slot` and `icon` were
+  `free` in an earlier pass of this document (reasoning that reached for `__opt`/`__chevron`
+  language that belongs to other components' rows); both are `n/a` now, matching the other
+  13 zero-part components.
 
 ## Per-component census
 
@@ -267,7 +294,7 @@ which is itself worth stating rather than assuming.
 - **Local custom properties** (2): `--juno-fold-gap`, `--juno-fold-size`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
-- **Slot order**: **free** — repeated single part type; order is the app’s data order, not a junoui-fixed sequence
+- **Slot order**: **n/a** — no BEM parts (`fold-slot` has no `__part` selector of its own)
 
 ### `gauge`
 
@@ -300,7 +327,7 @@ which is itself worth stating rather than assuming.
 - **Local custom properties** (1): `--juno-icon-size`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
-- **Slot order**: **free** — single optional part (`__chevron`), no sequence to fix
+- **Slot order**: **n/a** — no BEM parts (`__chevron` in the file header comment is `list`'s part, referenced there in a usage example — `icon.css` itself defines no `.juno-icon__*` selector)
 
 ### `icon-loader`
 
