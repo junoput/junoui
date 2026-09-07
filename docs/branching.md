@@ -75,3 +75,36 @@ months without anyone seeing a red job (`20260815-011`).
 disagreeing silently, in both directions: it fails if a workflow names a branch
 this document does not, and it fails if this section claims the class is open
 while the filter is gone.
+
+## `gh pr merge --delete-branch` does not delete the remote branch here
+
+**Confirmed twice in one session, on PRs 41 and 44.** In this repo a lane
+worktree almost always has the topic branch checked out, and that makes the
+command fail in a way that reads like success:
+
+```
+$ gh pr merge 44 --merge --delete-branch
+failed to delete local branch docs/principles-structure: failed to run git:
+  error: Cannot delete branch 'docs/principles-structure' checked out at
+  '/work/junoui.lanes/juno-w1a'
+```
+
+The PR **merges**. The **local** delete fails, and that is the only failure
+reported. The **remote** branch survives, unmentioned — so the output looks like
+a merge plus a tidy-up hiccup, when it is a merge plus a branch still on origin.
+
+That is how stale merged branches accumulate, and a stale branch that looks live
+is what lets someone later build on, or re-open a PR from, a dead one.
+
+**So after every merge, confirm on the remote rather than trusting the command:**
+
+```sh
+git ls-remote origin <branch>          # expect EMPTY
+git push origin --delete <branch>      # if it is not
+```
+
+Not an edge case for this repo: because every worker runs in a lane, the local
+delete fails on essentially every PR, so the remote delete needs doing by hand
+essentially every time. The general shape is a command that partially succeeded
+and reported the half that failed in a place nobody re-reads, while the summary
+line said done.
