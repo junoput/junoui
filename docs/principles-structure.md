@@ -138,10 +138,11 @@ with a left-aligned subtitle on the next" — both left-aligned, i.e. the same
 start, with the subtitle read as more detail about the same row, not a
 child row. GNOME HIG,
 [Boxed Lists](https://developer.gnome.org/hig/patterns/containers/boxed-lists.html)
-agrees from the toolkit side: action, switch and combo rows all pair a
-title with a subtitle differentiated by font size and weight, never by
-position — GNOME's own follow-on guidance is to "adjust the font size and
-weight to differentiate each element," not to indent it.
+agrees from the toolkit side: switch rows "include a title, subtitle, and a
+switch," action rows "include a title, subtitle, and a control" — title and
+subtitle in the same row, not parent and child — and where a row carries
+multiple text elements, GNOME's guidance is to "differentiate them using
+text size, weight and color," never by position.
 
 **Answer.** A note is descriptive content about its row — the same subject,
 more detail — not a nested child of it. By both cited sources, it starts
@@ -160,7 +161,7 @@ checkably:
 
 ```
 $ grep -n "pad-surface-inline" src/css/components/accordion.css
-36:  padding: var(--juno-pad-control-block) var(--juno-pad-surface-inline);   # __summary
+37:  padding: var(--juno-pad-control-block) var(--juno-pad-surface-inline);   # __summary
 70:  padding: var(--juno-space-12) var(--juno-pad-surface-inline) ...;        # __body
 ```
 
@@ -262,3 +263,30 @@ that exists in `src/css` today (`--juno-tree-indent`,
 `.juno-app-shell__topbar`/`__main`/`__body`, `.juno-tree__trail`, and the
 absence of any indent mechanism in `.juno-rail`/`.juno-dock`/
 `.juno-pillbar`/`.juno-navbar`). Nothing here needed a token junoui lacks.
+
+## Citation provenance
+
+Added in review of PR 44 (ticket 20260907-001): a citation with the right
+shape and the wrong specifics is a defect regardless of whether the claim it
+supports is true, so each source below is marked by how it was actually
+checked in this pass — fetched and confirmed against the live page, or
+recalled without a fresh fetch — rather than by how well-formed it looks.
+
+| #      | Source                                       | Status                 | Note                                                                                                                                                                                                                                                                                                    |
+| ------ | -------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| §2     | WAI-ARIA APG, Tree View Pattern              | **Fetched, confirmed** | The nesting quote is on the page verbatim, and the page confirms it says nothing about visual indentation, CSS, or pixels — the silence this principle leans on is real, not assumed.                                                                                                                   |
+| §3     | WAI-ARIA APG, Disclosure (Show/Hide) Pattern | **Fetched, confirmed** | The two-elements definition is on the page verbatim; confirmed the page states no DOM-nesting-depth requirement for the revealed content.                                                                                                                                                               |
+| §3     | GNOME HIG, Boxed Lists                       | **Fetched, corrected** | The row-type quotes are on the page. The differentiation quote was wrong on first publish ("adjust the font size and weight" was a paraphrase from an earlier search summary, not this page); the page's own wording is "differentiate them using text size, weight **and color**." Fixed in this pass. |
+| §1     | Apple HIG, Sidebars                          | Recalled               | `developer.apple.com`'s HIG pages render client-side; a fetch returns the page shell, not body text, so the quoted sentence could not be re-confirmed against the live page in this pass. Left as originally written; treat it as recalled, not verified today.                                         |
+| §3     | Apple HIG, Lists and tables                  | Recalled               | Same limitation as above — client-rendered page, fetch returns no body text.                                                                                                                                                                                                                            |
+| §1, §4 | KDE HIG, Context Drawer                      | Recalled               | Same limitation — `develop.kde.org`'s HIG pages did not return body text to a fetch either, despite the domain itself being reachable.                                                                                                                                                                  |
+| §3     | WCAG 2.2 SC 2.4.3, Focus Order               | **Fetched, confirmed** | Confirmed as SC 2.4.3 and the criterion text matches; this document only paraphrases it (no quotation marks were used), and the paraphrase holds against the fetched text.                                                                                                                              |
+
+Three of seven sources could not be independently re-fetched in this pass —
+not because the domains are unreachable (they answer normally), but because
+`developer.apple.com` and `develop.kde.org` serve their HIG content through
+client-side rendering that this session's fetch tool cannot execute; it gets
+the page shell, not the article. That is a tooling limit on this box, stated
+plainly rather than papered over — those three citations remain **recalled**,
+not confirmed, and should be read with that caveat until someone verifies
+them from a browser that can run their JavaScript.
