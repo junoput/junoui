@@ -103,8 +103,23 @@ git ls-remote origin <branch>          # expect EMPTY
 git push origin --delete <branch>      # if it is not
 ```
 
-Not an edge case for this repo: because every worker runs in a lane, the local
-delete fails on essentially every PR, so the remote delete needs doing by hand
-essentially every time. The general shape is a command that partially succeeded
-and reported the half that failed in a place nobody re-reads, while the summary
-line said done.
+**It depends on who opened the PR, and the first draft of this section got that
+wrong.** The local delete fails only when _some other worktree_ has the branch
+checked out:
+
+| PR from         | Branch held by                       | `--delete-branch`                  |
+| --------------- | ------------------------------------ | ---------------------------------- |
+| a worker's lane | that lane, still                     | **fails locally, remote survives** |
+| this checkout   | nobody after `gh` switches to `main` | works, both deleted                |
+
+So it fails on **worker** PRs — which is most of them, since every worker runs
+in a lane — and succeeds on one opened from `/work/junoui` directly. PRs 41 and
+44 were the former and failed; PR 45, which added this very section, was the
+latter and deleted cleanly. That is the counter-example, and it is recorded
+because the first version of this paragraph claimed the failure was universal on
+the strength of two observations that happened to share a cause.
+
+Checking costs one command either way, so check regardless of who opened it.
+
+The general shape is a command that partially succeeded and reported the half
+that failed in a place nobody re-reads, while the summary line said done.
