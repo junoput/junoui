@@ -20,7 +20,7 @@ roadmap section. Re-run `ls src/css/components | wc -l` before trusting this num
 **Slot order — the number W5 is waiting on, reported both ways because they answer
 different questions:**
 
-- Across all 52 files: **fixed 23 · n/a 13 · free 12 · ambiguous 4.** `n/a` (no
+- Across all 52 files: **fixed 23 · n/a 15 · free 10 · ambiguous 4.** `n/a` (no
   BEM parts at all) and `free` (has parts, but none depend on another's DOM
   position) are kept as two distinct buckets here, not folded into one — a
   component with nothing to order and a component that deliberately frees its
@@ -38,7 +38,7 @@ different questions:**
   specific part sequence, either because the CSS structurally requires it (a sibling
   combinator, a native HTML element order) or because normal-flow layout with no
   reordering mechanism makes DOM order the visual order.
-- **n/a (13 of 52)** — no BEM parts at all; there is no sequence to have an opinion
+- **n/a (15 of 52)** — no BEM parts at all; there is no sequence to have an opinion
   about. `avatar`, `badge`, `breadcrumb`, `button`, `checkbox`, `divider`,
   `dock-responsive`, `fold-slot`, `icon`, `icon-loader`, `input`, `select`,
   `skeleton`, `spark`, `splitter` — 15 components have zero BEM parts; two of
@@ -76,10 +76,27 @@ ticket (`:has()`, `@container`) plus a spread of slot-order verdicts:
 
 ## Vacuity floor
 
-The script asserts at least 45 component files parsed (52 found — floor met) and at
+The extraction asserts at least 45 component files parsed (52 found — floor met) and at
 least one `var(--juno-*)` token found in `button.css` (25 found — floor met, not vacuous).
 Every one of the 52 files below produced at least one measured field; none came back empty,
 which is itself worth stating rather than assuming.
+
+**A second, separate floor guards the prose above, not just the rows:**
+`scripts/check-inventory-elements.mjs` re-derives the fixed/n-a/free/ambiguous tally from
+the per-component rows and parses the specific numbers this headline states, then fails —
+naming the exact line — if any of them disagree. This exists because an earlier version of
+this document reclassified two components (see Method notes) and updated the per-component
+rows correctly while two headline sentences kept the pre-fix counts; a checker that only
+recomputes a tally and prints it, without comparing that tally against what the prose
+claims, would have called that a match. Run it after any edit to this document:
+
+```sh
+node scripts/check-inventory-elements.mjs
+```
+
+It was mutation-tested before being trusted: flipping `n/a 15` to `n/a 16` on line 23 turns
+it red, naming that line and the disagreement (`prose says na=16, rows say na=15`); reverting
+the digit turns it green again.
 
 ## Method notes
 
