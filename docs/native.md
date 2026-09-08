@@ -38,10 +38,23 @@ dist/ios/JunoTokens.swift
 label.textColor = JunoTokens.standardDarkNominal
 let pad: CGFloat = JunoTokens.space16
 let body: CGFloat = JunoTokens.fontSize14
+let fade: Double = JunoTokens.motionDurationBaseMs
+let z: Int = JunoTokens.zRaised
+label.alpha = JunoTokens.opacityDisabled
 ```
 
-- Colors are `UIColor` constants named `<palette><Mode><Role>` (camelCase).
-- Dimensions are `CGFloat` constants.
+**Scope, decided (20260908-083):** Swift carries every core token junoui
+has, in the form its value implies — colors as `UIColor`, lengths as
+`CGFloat`, durations as `Double` milliseconds (`…Ms` suffix), the z-index
+scale and font weights as `Int`, opacity/line-height/ratios as `Double`,
+and anything else (shadows, easing curves, font-family strings) as `String`
+verbatim, for you to interpret at your own boundary — the same contract
+[Rust](#rust) already has. This was not always true: an earlier build
+filtered core tokens to lengths only, so motion durations, the z-index
+scale, opacity, font weights, line-height and the canvas scrim never
+reached Swift. That was never a stated scope, just an emitter narrower
+than the token set it was meant to cover — fixed rather than left
+undocumented.
 
 ## Rust
 
