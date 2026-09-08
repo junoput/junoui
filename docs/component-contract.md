@@ -88,7 +88,7 @@ promised — `COMPONENTS` is sorted by name today, and a consumer that
 depends on iteration order rather than looking up by `name` is depending
 on something this file does not commit to.
 
-**Neither target promises `21 covered` as a number**, or any other count
+**Neither target promises a specific covered count as a number**, or any other count
 — those are today's content, read from `dist/json/component-contract.json`'s
 own `counts` at build time if a number is needed, never hardcoded by a
 consumer.
@@ -108,20 +108,34 @@ that apart from one that is.
 So a component is **covered** only when BOTH hold:
 
 1. Its file's leading doc comment has a `Usage:` example whose classes cover
-   **every** BEM part the CSS itself declares (not a partial example — see
-   `table`, excluded, whose example shows 6 of its ~26 declared parts).
+   **every** BEM part the CSS itself declares. Not a partial example — a
+   Usage/CSS disagreement is `usage-incomplete`, fixed one component at a
+   time in `20260908-050` (5 of the original 8 turned out to be exactly
+   that: a missing part, not a design decision).
 2. No explicit CSS reorder mechanism was found on the component's own
    rules: an `order:` declaration, an explicit `grid-row`/`grid-column`
-   placement, a reversed root `flex-direction`, or a position property
+   placement, a reversed root `flex-direction`, a position property
    (`top`/`left`/`inset*`/`transform`) driven by a custom property the
    component's **own Usage example sets inline, per instance** — the
    gizmo's `__mark` rotated by `--juno-gizmo-at`, the range's `__thumb`
-   offset by `--juno-range-lo`/`--juno-range-hi`, both set inline in their
-   own examples. A component-local custom property that is never
-   set inline (the stepper's `--juno-stepper-marker`, a fixed geometric
-   constant sizing a connector line) does not trigger this — see the
+   offset by `--juno-range-lo`/`--juno-range-hi`, the scrubber's
+   `__range`/`__head`/`__mark--in`/`__mark--out` offset by
+   `--juno-scrubber-in`/`-out`/`-played` — or a `:has()` rule conditioning
+   on a SIBLING part's state, the way `.juno-pillbar--collapsible:has(>
+.juno-pillbar__toggle[aria-expanded='false'])` reads `__toggle`'s state
+   rather than its position, which is exactly why the file's own comment
+   says `__toggle`/`__tray` order is free. A component-local custom
+   property that is never set inline (the stepper's
+   `--juno-stepper-marker`, a fixed geometric constant sizing a connector
+   line) does not trigger the position-property check — see the
    generator's own header comment for the false-exclusion this
    distinction fixed.
+3. It is not the one named, explicitly-commented exception
+   (`DATA_DRIVEN_PARTS` in the generator) for a component whose parts are
+   an open-ended, app/data-defined set no Usage example could canonically
+   show — `table`'s ~20 cell-content-type column classes, decided by a
+   human once and checked, not detected mechanically. See
+   `data-driven-parts`, described below.
 
 A component with an explicit sibling/child combinator between two of its
 own parts (`switch`: `__input:checked + __track`) gets that recorded as
@@ -134,18 +148,43 @@ by mutation: temporarily reversing switch's Usage example while leaving its
 `excluded`, and the test that reads `contract.covered.switch` fails loudly
 rather than silently reading a stale order. Restored before landing.
 
-**The result: 21 of 52 covered**, not 22. The full breakdown, generated —
-see `dist/json/component-contract.json`'s own `$comment` and `counts` for
-the current numbers, since this file is prose and that one rebuilds:
+**The result: 26 of 52 covered**, up from 21 as of `20260908-050` — the 5
+components whose Usage example was genuinely incomplete (a missing part,
+not a design decision). The full breakdown, generated — see
+`dist/json/component-contract.json`'s own `$comment` and `counts` for the
+current numbers, since this file is prose and that one rebuilds:
 
-| Exclusion reason       | Meaning                                                                                                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `zero-parts`           | no `__part` class at all — matches the census's `n/a` bucket exactly, by name, not just count (asserted in the test)                                                           |
-| `multi-namespace`      | file bundles ≥2 independent component prefixes (`drawer`: sheet + modal; `load-state`: fault + empty; `loader`: arc + beacon + bar)                                            |
-| `no-usage-example`     | no Usage example in the file's **leading** doc comment (`dock` documents three per-variant examples further down the file — no single canonical one to pick without judgement) |
-| `usage-incomplete`     | the Usage example doesn't show every CSS-declared part (`alert`, `card`, `canvas-ink`, `field`, `pillbar`, `scrubber`, `table`, `thumb`)                                       |
-| `reorder-mechanism`    | an explicit CSS reorder mechanism found (`navbar`'s explicit grid-column placement; `gizmo`/`range`/`slider`'s app-supplied position)                                          |
-| `combinator-disagrees` | (not currently triggered by any shipped file — proven reachable by the mutation test above)                                                                                    |
+| Exclusion reason       | Meaning                                                                                                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `zero-parts`           | no `__part` class at all — matches the census's `n/a` bucket exactly, by name, not just count (asserted in the test)                                                                                         |
+| `multi-namespace`      | file bundles ≥2 independent component prefixes (`drawer`: sheet + modal; `load-state`: fault + empty; `loader`: arc + beacon + bar)                                                                          |
+| `no-usage-example`     | no Usage example in the file's **leading** doc comment (`dock` documents three per-variant examples further down the file — no single canonical one to pick without judgement)                               |
+| `usage-incomplete`     | the Usage example doesn't show every CSS-declared part — 0 today; all 8 original instances were fixed or reclassified in `20260908-050`                                                                      |
+| `reorder-mechanism`    | an explicit CSS reorder mechanism found: `navbar`'s explicit grid-column placement; `gizmo`/`range`/`slider`/`scrubber`'s app-supplied position; `pillbar`'s `:has()` conditioning on a sibling part's state |
+| `combinator-disagrees` | (not currently triggered by any shipped file — proven reachable by the mutation test above)                                                                                                                  |
+| `data-driven-parts`    | one named exception (`table`) — see below                                                                                                                                                                    |
+
+### `table` is not `usage-incomplete` — it has no fixed schema
+
+`table`'s Usage example shows 6 parts; the CSS declares ~26. Padding the
+example to the full count would have been **writing documentation to move
+a number**: roughly 20 of the missing parts (`__num`, `__mono`, `__time`,
+`__trend`, `__meter`, …) are cell-content-type COLUMN classes an app picks
+per table, per column, from its own data schema — there is no fixed set of
+them a canonical example could show, which is exactly what got `table`
+its `ambiguous` verdict in `docs/inventory-elements.md` in the first
+place.
+
+Nothing in CSS syntax marks a class as "app-chosen per data schema" the
+way `order:` or `:has()` mark a reorder mechanism, so this is not
+detected — it is one named, explicitly-commented exception
+(`DATA_DRIVEN_PARTS` in `scripts/build-component-contract.mjs`), checked
+**before** the Usage-completeness test so `table` gets the honest reason
+instead of a symptom of it. If a future component turns out to have the
+same shape, its name belongs in that same explicit set — the alternative,
+a heuristic guessing at "many similarly-named short parts," would be an
+unprincipled threshold standing in for the same judgement call, with none
+of the traceability.
 
 **`navbar` is not a divergence — it found a real error in the census.**
 This generator excluded it for an explicit `grid-column` placement on
@@ -158,16 +197,29 @@ of `fixed`. Caught in review of this ticket and corrected in
 `fixed 22 of 37`, `free` gaining the one navbar left) — the census and
 this generator agree on `navbar` as of that fix.
 
-**Where this diverges from the census, on purpose:** `alert`, `card`,
-`dock`, `drawer`, `field`, `load-state`, `scrubber` are census
-`fixed` but excluded here — each for a stated, mechanical reason above, not
-a disagreement with the census's reasoning, a narrower standard of proof.
+**Where this diverges from the census, on purpose:** `dock`, `drawer`,
+`load-state`, `scrubber` are census `fixed` but excluded here — each for a
+stated, mechanical reason above, not a disagreement with the census's
+reasoning, a narrower standard of proof. (`alert`, `card` and `field` were
+in this list too until `20260908-050` completed their Usage examples —
+they were census-correct all along; this generator was the one that
+hadn't been given enough to prove it.)
+
 `chip`, `dot`, `gauge`, `popover`, `reload`, `segmented`, `tooltip` are
 census `free` but covered here — the census's `free` means "no CSS requires
 this exact order," which is a different (weaker) claim than this file
 makes ("this order works, and nothing found would render it wrong"); a
 free component's Usage-documented order is still a real, correct order,
-just not the _only_ one. `slider` is covered by neither this file nor the
+just not the _only_ one. `pillbar` is ALSO census `free`, but excluded
+here rather than covered: unlike the seven above, its file's own CSS
+contains actual mechanical evidence of the freedom (`:has()` conditioning
+on `__toggle`'s state), so this generator does not certify even a
+"works today" order for the two parts that evidence names — the census's
+`free` was right in both directions, and this generator can now tell the
+difference between "free, and I have no evidence either way" and "free,
+and I can see why."
+
+`slider` is covered by neither this file nor the
 census's 4 named-ambiguous rows, yet is excluded here for the identical
 mechanical reason as `gizmo`/`range` (a value-driven position) — a real,
 stated divergence from the hand census that the census's own five spot
