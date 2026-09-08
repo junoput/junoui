@@ -119,14 +119,59 @@ has three different correct answers among the components below, and
 conflating them is how a component that looks resize-aware in isolation
 turns out not to react to the one resize that matters.
 
-| Rung                                                             | What changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Mechanism                                     | Verified     |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- | ------------ |
-| 0 — full width                                                   | Baseline: `.juno-rail` full labels, `.juno-list`/`.juno-tree` rows show icon + label + support + value/count + chevron/trail in full.                                                                                                                                                                                                                                                                                                                                                                                                                        | — (base state)                                | —            |
-| 1 — row content starts to overflow                               | `.juno-list__label`, `.juno-list__support`, `.juno-tree__label` ellipsis via `text-overflow: ellipsis; white-space: nowrap`. This is **continuous**, not a breakpoint — it activates the instant a row's own content overflows its box, at any width, with no threshold to name.                                                                                                                                                                                                                                                                             | None — plain CSS text overflow, always active | Yes, see log |
-| 2 — a card-shaped block inside the sidebar runs out of row width | `.juno-card__row` flips `flex-direction: column` under `@container (max-width: 320px)`, scoped to the card's own `container-type: inline-size` — reacts to the sidebar's width, not the window's.                                                                                                                                                                                                                                                                                                                                                            | **Container query**                           | Yes, see log |
-| 3 — the rail runs out of room for icon + label                   | `.juno-rail` collapses to icon-only (same treatment as `.juno-rail--collapsed`) at a derived `@container (max-width: 57px)` threshold, or the app can still force it earlier with the class. **This used to be app-applied only, with no threshold junoui fired on its own — closed by [Gap 1](#gap-1-the-rail-collapses-on-a-modifier-class-nothing-ties-it-to-the-sidebars-own-width--closed-20260908-005).**                                                                                                                                              | **Container query**, derived threshold        | Yes, see log |
-| 4 — sidebar becomes a splitter-adjustable pane                   | `.juno-splitter` supplies the drag handle, hit area and ARIA contract only; **the app owns the width number and the arithmetic**, by the component's own stated design (`"junoui ships NO resize state machine here: no pointer capture, no width arithmetic... The app owns the number."`, `src/css/components/splitter.css:9-17`). Nothing here is a rung junoui fires; it is the mechanism an app uses to let a person set rung boundaries by hand.                                                                                                       | None — app-owned                              | Yes, see log |
-| 5 — the coarse-pointer, phone-shaped case                        | `.juno-rail--responsive` hides and (paired) `.juno-dock--responsive`/`.juno-pillbar--responsive` show, under the identical `(pointer: coarse) and ((width <= 767.98px) or (height <= 500px))` condition asserted equal in three places by `test/pointer-first.test.mjs`. **This is pointer- and viewport-driven, not the sidebar's own container width** — a wide sidebar on a narrow phone and a narrow sidebar on a wide desktop are different states this rung does not distinguish, by design (it answers "is this a phone," not "is this pane narrow"). | **Viewport media query, pointer-gated**       | Yes, see log |
+### Audit against 20260908-028, before changing anything
+
+Every rung below was re-verified against the current CSS, not carried over
+from the last edit of this table:
+
+| Rung                          | Status                             | Evidence                                                                                                                                                                                                             |
+| ----------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 — full width                | Exists (base state)                | No code needed.                                                                                                                                                                                                      |
+| 1 — row content overflows     | **Exists**                         | `list.css` (`__label`/`__support`) and `tree.css` (`__label`) both carry `text-overflow: ellipsis`.                                                                                                                  |
+| 2 — card row narrows          | **Exists**                         | `src/css/components/card.css:24`, `@container (max-width: 320px)`.                                                                                                                                                   |
+| — whole composition wraps     | **Exists, undocumented**           | `src/css/layout.css:55-100` — see the new rung below. Landed before this ticket; this table never named it.                                                                                                          |
+| 3 — rail auto-collapse        | **Exists**                         | `rail.css` — `container-type: inline-size` + `@container (max-width: 57px)` (20260908-005).                                                                                                                          |
+| 4 — splitter-adjustable pane  | Exists (app-owned)                 | `splitter.css:9-17`, unchanged.                                                                                                                                                                                      |
+| 5 — coarse-pointer phone swap | **Exists**                         | `rail.css:187` / `dock-responsive.css` / `pillbar.css:206`, asserted equal by `test/pointer-first.test.mjs`.                                                                                                         |
+| List/tree row fallback        | **Does not exist**                 | `grep -n "@container" src/css/components/{list,tree}.css` → no matches. Named as a gap since W3; left untouched — see below.                                                                                         |
+| Height pressure               | **No rung — has a recipe instead** | No `@container`/`@media` keys on block-size anywhere sidebar-specific. `.juno-scroller` already solves it; documented as a recipe below, not new CSS.                                                                |
+| Below the rail's own floor    | **Does not exist**                 | Nothing clamps `--juno-rail-width`/`--juno-sidebar-width` to the icon's own minimum. Requires `rail.css` — flagged for sequencing, not touched here (see [What I could not establish](#what-i-could-not-establish)). |
+
+Two things closed this table's gap between spec and CSS without touching
+`rail.css`: naming the whole-composition wrap as a rung (below), and the
+height-pressure recipe. The remaining two findings need coordination and
+are reported, not built, in this PR.
+
+| Rung                                                             | What changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Mechanism                                     | Verified                                                               |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------- |
+| 0 — full width                                                   | Baseline: `.juno-rail` full labels, `.juno-list`/`.juno-tree` rows show icon + label + support + value/count + chevron/trail in full.                                                                                                                                                                                                                                                                                                                                                                                                                                       | — (base state)                                | —                                                                      |
+| 1 — row content starts to overflow                               | `.juno-list__label`, `.juno-list__support`, `.juno-tree__label` ellipsis via `text-overflow: ellipsis; white-space: nowrap`. This is **continuous**, not a breakpoint — it activates the instant a row's own content overflows its box, at any width, with no threshold to name.                                                                                                                                                                                                                                                                                            | None — plain CSS text overflow, always active | Yes, see log                                                           |
+| 2 — a card-shaped block inside the sidebar runs out of row width | `.juno-card__row` flips `flex-direction: column` under `@container (max-width: 320px)`, scoped to the card's own `container-type: inline-size` — reacts to the sidebar's width, not the window's.                                                                                                                                                                                                                                                                                                                                                                           | **Container query**                           | Yes, see log                                                           |
+| 3 — the rail runs out of room for icon + label                   | `.juno-rail` collapses to icon-only (same treatment as `.juno-rail--collapsed`) at a derived `@container (max-width: 57px)` threshold, or the app can still force it earlier with the class. **This used to be app-applied only, with no threshold junoui fired on its own — closed by [Gap 1](#gap-1-the-rail-collapses-on-a-modifier-class-nothing-ties-it-to-the-sidebars-own-width--closed-20260908-005).**                                                                                                                                                             | **Container query**, derived threshold        | Yes, see log                                                           |
+| 4 — the whole composition stops fitting side by side             | `.juno-sidebar` (`flex-wrap: wrap`) stacks the aside above `.juno-sidebar__main` once the available width can no longer hold the aside's reserved `--juno-sidebar-width` alongside main's `min-inline-size: var(--juno-sidebar-content-min, 60%)`. **No breakpoint number exists for this rung at all** — an even stronger form of "assert the relationship, not the value": it is pure flex arithmetic, so there is nothing that could drift out of sync with a retuned token. Existed before this ticket (`src/css/layout.css:55-100`); this table simply never named it. | None — intrinsic flex-wrap, continuous        | Yes, see [`test/sidebar-wrap.test.mjs`](../test/sidebar-wrap.test.mjs) |
+| 5 — sidebar becomes a splitter-adjustable pane                   | `.juno-splitter` supplies the drag handle, hit area and ARIA contract only; **the app owns the width number and the arithmetic**, by the component's own stated design (`"junoui ships NO resize state machine here: no pointer capture, no width arithmetic... The app owns the number."`, `src/css/components/splitter.css:9-17`). Nothing here is a rung junoui fires; it is the mechanism an app uses to let a person set rung boundaries by hand.                                                                                                                      | None — app-owned                              | Yes, see log                                                           |
+| 6 — the coarse-pointer, phone-shaped case                        | `.juno-rail--responsive` hides and (paired) `.juno-dock--responsive`/`.juno-pillbar--responsive` show, under the identical `(pointer: coarse) and ((width <= 767.98px) or (height <= 500px))` condition asserted equal in three places by `test/pointer-first.test.mjs`. **This is pointer- and viewport-driven, not the sidebar's own container width** — a wide sidebar on a narrow phone and a narrow sidebar on a wide desktop are different states this rung does not distinguish, by design (it answers "is this a phone," not "is this pane narrow").                | **Viewport media query, pointer-gated**       | Yes, see log                                                           |
+
+### Height pressure — a recipe, not a missing rung
+
+Confirmed nothing sidebar-specific keys on block-size: no `@container`
+querying `block-size`/`height`, no `@media (height: ...)` outside rung 6's
+pointer-gated condition (which answers "is this a phone," not "does this
+pane have room"). A `.juno-rail` or a tall `.juno-list`/`.juno-tree` in a
+short viewport has no default vertical scroll — it can grow past its
+container.
+
+**Not treated as a missing rung**, because junoui already ships the
+primitive that answers it — `.juno-scroller` (`src/css/layout.css`, "bare
+scroll-container primitive... `--x`/`--y` pick a single scroll axis") — and
+per [CHARTER.md](./CHARTER.md)'s own test, whether a tall aside should
+scroll independently of `.juno-sidebar__main` or move together with it is a
+**layout decision the consumer makes**, not a quantity junoui can see: some
+products want a pinned nav with its own scroll, some want the whole panel
+to move together. Recipe: wrap the aside's content in
+`.juno-scroller.juno-scroller--y` when independent scroll is wanted. This
+was a documentation gap, closed by this paragraph — no CSS gap, no new
+class, no rung number.
 
 **Rungs junoui cannot currently express**, stated as gaps rather than
 rounded away:
@@ -146,8 +191,25 @@ rounded away:
   weigh: a `.juno-list__row`/`.juno-tree__row` contract that DOES respond
   to its own container width is buildable (the mechanism `.juno-card__row`
   already demonstrates generalizes directly) but does not exist yet.
+  **Not touched by 20260908-028**: not among the candidates that ticket
+  named, and it is a real design decision (what does a hidden value/trail
+  fall back to?), not a mechanical fix — left for the W5 resequencing
+  decision this note already deferred to.
 - ~~No rung ties `.juno-rail--collapsed` to a measured width at all~~ —
   **closed by 20260908-005**; see Gap 1 below.
+- **Below the rail's own collapsed floor, nothing clamps the width at
+  all.** Post-20260908-001, a rail composed in a sidebar aside renders at
+  exactly `--juno-sidebar-width` — so a splitter-driven consumer can drag
+  that number below what the rail's own icon needs (icon `1.25em` at
+  `--juno-font-size-12` ≈ 15px; the collapsed treatment already drops
+  padding to 0), and nothing stops it. The icon does not clip — it simply
+  overflows its box, unclipped, because `.juno-rail` sets no `overflow`.
+  **Genuinely derivable** (the icon's own size is a token junoui owns, the
+  same family `20260908-005` already used) but **requires editing
+  `rail.css`**, which `20260908-019` (W5) is working in this week —
+  flagged for sequencing rather than touched here, per this ticket's own
+  coordination note. See
+  [What I could not establish](#what-i-could-not-establish).
 
 ## 3. Interaction model, states, and focus order
 
@@ -395,6 +457,33 @@ believing:
    the same shape of gap as the other four and this document should not
    let a component's own honesty about its limits go uncounted just
    because it was already written down.
+6. **Below the rail's own collapsed floor, nothing clamps
+   `--juno-rail-width`/`--juno-sidebar-width`** (§2) — a splitter-driven
+   consumer can drag the sidebar narrower than the icon it renders, and
+   the icon overflows its box unclipped. Derivable from tokens junoui
+   already owns, same family as the 57px collapse threshold, but requires
+   editing `rail.css` — reported (20260908-028), not fixed, pending
+   sequencing against W5's work in the same file. See
+   [What I could not establish](#what-i-could-not-establish).
+
+## What I could not establish
+
+- **The below-the-floor width clamp** (Gap 6 above). The fix is derivable
+  and small, but it edits `rail.css`, which `20260908-019` (W5, the
+  component-contract generator) is working in this week. Flagged for
+  sequencing rather than built speculatively into a file with two lanes
+  open on it.
+- **A `.juno-list`/`.juno-tree` row fallback between rung 1 and rung 3.**
+  Named since W3, not among 20260908-028's candidates, and it is a design
+  decision (what a hidden trailing slot falls back to) rather than a
+  mechanical one — left for the W5 resequencing decision this document
+  already deferred it to.
+- **Whether the wrap-stack rung (new rung 4) is what geovista specifically
+  wants for its own sidebar.** This document specifies junoui's contract;
+  it does not audit geovista's consumption of it. The rung exists and is
+  now tested; whether geovista's own composition relies on it (or
+  overrides `--juno-sidebar-content-min` to opt out) is outside this
+  ticket's reach from here.
 
 ## Verification log of census rows relied on
 

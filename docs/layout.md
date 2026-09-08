@@ -239,8 +239,8 @@ and width came from the 280px container, not the surrounding page.
 - **Colour, weight, balance** of the readouts themselves — appearance,
   the operator's call, not this recipe's.
 - **The sidebar half of W6** (the resize ladder for `.juno-sidebar`) —
-  blocked behind `20260908-001` on a file-conflict basis, a separate
-  ticket once that lands.
+  landed as `20260908-028`; see
+  [docs/sidebar-behaviour.md §2](./sidebar-behaviour.md#2-the-resize-ladder).
 
 ## Gesture surfaces
 
