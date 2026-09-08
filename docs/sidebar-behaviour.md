@@ -124,18 +124,18 @@ turns out not to react to the one resize that matters.
 Every rung below was re-verified against the current CSS, not carried over
 from the last edit of this table:
 
-| Rung                          | Status                             | Evidence                                                                                                                                                                                                                                                                                  |
-| ----------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 — full width                | Exists (base state)                | No code needed.                                                                                                                                                                                                                                                                           |
-| 1 — row content overflows     | **Exists**                         | `list.css` (`__label`/`__support`) and `tree.css` (`__label`) both carry `text-overflow: ellipsis`.                                                                                                                                                                                       |
-| 2 — card row narrows          | **Exists**                         | `src/css/components/card.css:24`, `@container (max-width: 320px)`.                                                                                                                                                                                                                        |
-| — whole composition wraps     | **Exists, undocumented**           | `src/css/layout.css:55-100` — see the new rung below. Landed before this ticket; this table never named it.                                                                                                                                                                               |
-| 3 — rail auto-collapse        | **Exists**                         | `rail.css` — `container-type: inline-size` + `@container (max-width: 57px)` (20260908-005).                                                                                                                                                                                               |
-| 4 — splitter-adjustable pane  | Exists (app-owned)                 | `splitter.css:9-17`, unchanged.                                                                                                                                                                                                                                                           |
-| 5 — coarse-pointer phone swap | **Exists**                         | `rail.css:187` / `dock-responsive.css` / `pillbar.css:206`, asserted equal by `test/pointer-first.test.mjs`.                                                                                                                                                                              |
-| List/tree row fallback        | **Exists — partially**             | `list.css`/`tree.css` now carry `container-type: inline-size` + a derived `@container` rung each (20260908-034): chevron drops in list, the count badge drops in tree. `__value`/`__trail` (the protected/possibly-interactive elements) are untouched — see below for what's still open. |
-| Height pressure               | **No rung — has a recipe instead** | No `@container`/`@media` keys on block-size anywhere sidebar-specific. `.juno-scroller` already solves it; documented as a recipe below, not new CSS.                                                                                                                                     |
-| Below the rail's own floor    | **Does not exist**                 | Nothing clamps `--juno-rail-width`/`--juno-sidebar-width` to the icon's own minimum. Requires `rail.css` — flagged for sequencing, not touched here (see [What I could not establish](#what-i-could-not-establish)).                                                                      |
+| Rung                          | Status                             | Evidence                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 — full width                | Exists (base state)                | No code needed.                                                                                                                                                                                                                                                                                                                                                                          |
+| 1 — row content overflows     | **Exists**                         | `list.css` (`__label`/`__support`) and `tree.css` (`__label`) both carry `text-overflow: ellipsis`.                                                                                                                                                                                                                                                                                      |
+| 2 — card row narrows          | **Exists**                         | `src/css/components/card.css:24`, `@container (max-width: 320px)`.                                                                                                                                                                                                                                                                                                                       |
+| — whole composition wraps     | **Exists, undocumented**           | `src/css/layout.css:55-100` — see the new rung below. Landed before this ticket; this table never named it.                                                                                                                                                                                                                                                                              |
+| 3 — rail auto-collapse        | **Exists**                         | `rail.css` — `container-type: inline-size` + `@container (max-width: 57px)` (20260908-005).                                                                                                                                                                                                                                                                                              |
+| 4 — splitter-adjustable pane  | Exists (app-owned)                 | `splitter.css:9-17`, unchanged.                                                                                                                                                                                                                                                                                                                                                          |
+| 5 — coarse-pointer phone swap | **Exists**                         | `rail.css:187` / `dock-responsive.css` / `pillbar.css:206`, asserted equal by `test/pointer-first.test.mjs`.                                                                                                                                                                                                                                                                             |
+| List/tree row fallback        | **Exists — partially**             | `list.css`/`tree.css` now carry `container-type: inline-size` + a derived `@container` rung each (20260908-034): chevron drops in list, the count badge drops in tree. `__value`/`__trail` (the protected/possibly-interactive elements) are untouched — see below for what's still open.                                                                                                |
+| Height pressure               | **No rung — has a recipe instead** | No `@container`/`@media` keys on block-size anywhere sidebar-specific. `.juno-scroller` already solves it; documented as a recipe below, not new CSS.                                                                                                                                                                                                                                    |
+| Below the rail's own floor    | **Exists (20260908-036)**          | `rail.css` — `.juno-rail:not(.juno-rail--collapsed) { inline-size: max(var(--juno-rail-width), 57px) }`, the same 57px derivation as the auto-collapse threshold (`scripts/rail-collapse-derivation.mjs`, shared). One-sided (`max()`), so a larger consumer request still resolves unchanged; scoped off `.juno-rail--collapsed` so its own smaller, already-correct 56px is untouched. |
 
 Two things closed this table's gap between spec and CSS without touching
 `rail.css`: naming the whole-composition wrap as a rung (below), and the
@@ -200,19 +200,21 @@ rounded away:
   not solved further.
 - ~~No rung ties `.juno-rail--collapsed` to a measured width at all~~ —
   **closed by 20260908-005**; see Gap 1 below.
-- **Below the rail's own collapsed floor, nothing clamps the width at
-  all.** Post-20260908-001, a rail composed in a sidebar aside renders at
-  exactly `--juno-sidebar-width` — so a splitter-driven consumer can drag
-  that number below what the rail's own icon needs (icon `1.25em` at
-  `--juno-font-size-12` ≈ 15px; the collapsed treatment already drops
-  padding to 0), and nothing stops it. The icon does not clip — it simply
-  overflows its box, unclipped, because `.juno-rail` sets no `overflow`.
-  **Genuinely derivable** (the icon's own size is a token junoui owns, the
-  same family `20260908-005` already used) but **requires editing
-  `rail.css`**, which `20260908-019` (W5) is working in this week —
-  flagged for sequencing rather than touched here, per this ticket's own
-  coordination note. See
-  [What I could not establish](#what-i-could-not-establish).
+- ~~Below the rail's own collapsed floor, nothing clamps the width at
+  all~~ — **closed by 20260908-036**. `.juno-rail:not(.juno-rail--collapsed)`
+  now floors `inline-size` at `max(var(--juno-rail-width), 57px)` — the
+  same 57px derivation as the auto-collapse threshold, shared via
+  `scripts/rail-collapse-derivation.mjs` rather than re-derived. Because
+  the clamp reads `--juno-rail-width` at the point `.juno-rail` consumes
+  it, this also covers the Post-20260908-001 composed case (a rail
+  reading `--juno-sidebar-width` through the aside): whatever
+  `--juno-rail-width` ultimately resolves to, the rail's own box still
+  won't render narrower than 57px. **Not established**: whether the
+  ANCESTOR `.juno-sidebar__aside` flex item can still be squeezed
+  narrower than the rail's floor by ordinary flex-shrink (which would
+  clip the rail via the aside's own overflow, a different failure mode
+  from the icon overflowing unclipped) — that is a `layout.css` question,
+  outside `rail.css`'s file scope and this ticket's.
 
 ## 3. Interaction model, states, and focus order
 
@@ -463,22 +465,35 @@ believing:
    the same shape of gap as the other four and this document should not
    let a component's own honesty about its limits go uncounted just
    because it was already written down.
-6. **Below the rail's own collapsed floor, nothing clamps
-   `--juno-rail-width`/`--juno-sidebar-width`** (§2) — a splitter-driven
-   consumer can drag the sidebar narrower than the icon it renders, and
-   the icon overflows its box unclipped. Derivable from tokens junoui
-   already owns, same family as the 57px collapse threshold, but requires
-   editing `rail.css` — reported (20260908-028), not fixed, pending
-   sequencing against W5's work in the same file. See
+6. ~~Below the rail's own collapsed floor, nothing clamps
+   `--juno-rail-width`/`--juno-sidebar-width`~~ (§2) — **closed by
+   20260908-036**: `.juno-rail:not(.juno-rail--collapsed)` floors
+   `inline-size` at `max(var(--juno-rail-width), 57px)`, the same
+   derivation as the collapse threshold, reused via
+   `scripts/rail-collapse-derivation.mjs` rather than re-derived. One
+   open question this fix did not settle: see
    [What I could not establish](#what-i-could-not-establish).
 
 ## What I could not establish
 
-- **The below-the-floor width clamp** (Gap 6 above). The fix is derivable
-  and small, but it edits `rail.css`, which `20260908-019` (W5, the
-  component-contract generator) is working in this week. Flagged for
-  sequencing rather than built speculatively into a file with two lanes
-  open on it.
+- **A NEW, narrower gap this fix's own read of `layout.css` surfaced —
+  reported, not fixed, same as this document's own habit.**
+  `20260908-036`'s clamp guarantees `.juno-rail`'s own box wants at least
+  57px; it does not guarantee the ANCESTOR gets to honour that. Checked,
+  not assumed: `.juno-sidebar > .juno-sidebar__aside` (`layout.css:66-71`)
+  sets `flex-grow: 1` and `flex-basis: var(--juno-sidebar-width)` with no
+  `flex-shrink: 0` and no `min-inline-size` — so ordinary flex-shrink can
+  still squeeze the aside narrower than the rail's 57px floor when
+  `.juno-sidebar__main`'s own `flex-grow: 999` wins the contest for space.
+  A rail whose OWN inline-size still wants 57px, inside an aside rendered
+  narrower than that, either overflows the aside (no `overflow` set on
+  `.juno-sidebar__aside` either) or gets clipped by whatever ancestor
+  does have one — a different failure mode from "the icon overflows its
+  own unclipped box" this ticket closed, but the same root shape: a
+  measured value with nothing enforcing its floor. Fixing it means
+  `layout.css`, not `rail.css`, and is outside `20260908-036`'s stated
+  file scope — filed as `20260908-040` rather than folded in here
+  speculatively.
 - **A `.juno-list`/`.juno-tree` row fallback between rung 1 and rung 3.**
   Named since W3, not among 20260908-028's candidates, and it is a design
   decision (what a hidden trailing slot falls back to) rather than a
