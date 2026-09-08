@@ -55,10 +55,32 @@
 //   disagreement between the two is a build-time refusal, not a silent
 //   downgrade, because that is exactly the shape of drift 20260906-056 was.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { screamingSnake } from './token-names.mjs';
 
 const DIR = 'src/css/components';
 const OUT_JSON = 'dist/json/component-contract.json';
 const OUT_RUST = 'dist/rust/juno_component_contract.rs';
+
+// Same precedent as build-rules.mjs's `tok()`: read the VALUE out of the
+// already-emitted core token target instead of restating it, so drift shows
+// up as a build failure at the one place that can see it. Used only to prove
+// an indentStep's alias really points at a real core token — see
+// findIndentStep below and 20260908-080.
+//
+// Read LAZILY, on first actual use, not at module load: the directory-floor
+// test below (test/component-contract.test.mjs) runs this generator against
+// a genuinely empty scratch directory with no dist/rust/ at all, and expects
+// the files.length floor to be the failure it sees — not an unrelated ENOENT
+// from a file nothing in an empty directory ever needed.
+let coreTokensRust = null;
+function coreTokenExists(cssVarName) {
+  coreTokensRust ??= readFileSync('dist/rust/juno_tokens.rs', 'utf8');
+  // --juno-space-16 -> SPACE_16, the exact convention token-names.mjs uses
+  // for every other target (style-dictionary.config.mjs, build-rules.mjs).
+  const rest = cssVarName.replace(/^--juno-/, '');
+  const rustName = screamingSnake(rest.split('-'));
+  return new RegExp(`pub const ${rustName}:`).test(coreTokensRust);
+}
 
 const files = readdirSync(DIR)
   .filter((f) => f.endsWith('.css'))
@@ -269,10 +291,24 @@ function findTapFloor(blocks) {
   return [...set].sort();
 }
 
+// Returns { name, resolvesTo } — `name` is the component-local custom
+// property a consumer can override (the "overridable knob" 20260908-080's
+// discussion turns on); `resolvesTo` is the CORE token it aliases BY
+// DEFAULT, proven against dist/rust/juno_tokens.rs rather than assumed from
+// the declaration's shape, and null whenever that proof fails (a calc(), a
+// literal, or an alias to something that isn't a core token at all). A
+// consumer wanting a resolvable value uses `resolvesTo`; `name` on its own
+// (geovista's original finding) is not resolvable by anything but a browser.
 function findIndentStep(blocks) {
   for (const { body } of blocks) {
-    const m = /(--juno-[a-z0-9-]*indent[a-z0-9-]*)\s*:/.exec(body);
-    if (m) return m[1];
+    const m = /(--juno-[a-z0-9-]*indent[a-z0-9-]*)\s*:\s*([^;]+);/.exec(body);
+    if (m) {
+      const name = m[1];
+      const value = m[2].trim();
+      const alias = /^var\((--juno-[a-z0-9-]+)\)$/.exec(value);
+      const resolvesTo = alias && coreTokenExists(alias[1]) ? alias[1] : null;
+      return { name, resolvesTo };
+    }
   }
   return null;
 }
@@ -441,12 +477,17 @@ const coveredNames = Object.keys(covered).sort();
 const rustEntries = coveredNames
   .map((name) => {
     const c = covered[name];
+    const indentStep = c.indentStep ? `Some(${JSON.stringify(c.indentStep.name)})` : 'None';
+    const indentDefaultToken = c.indentStep?.resolvesTo
+      ? `Some(${JSON.stringify(c.indentStep.resolvesTo)})`
+      : 'None';
     return `    ComponentContract {
         name: "${name}",
         order: ${rustStrArr(c.order)},
         states: ${rustStrArr(c.states)},
         tap_floor: ${rustStrArr(c.tapFloor)},
-        indent_step: ${c.indentStep ? JSON.stringify(c.indentStep) : 'None'},
+        indent_step: ${indentStep},
+        indent_default_token: ${indentDefaultToken},
     },`;
   })
   .join('\n');
@@ -464,6 +505,17 @@ const rustSrc = `// junoui component contract — Rust. Generated; do not edit.
 /// One component's provable structural contract — the part sequence a
 /// non-CSS implementation must reproduce, its state hooks, and which tap
 /// floor token(s) it reads, if any.
+///
+/// \`indent_step\`, when present, is a CSS custom property name
+/// (e.g. "--juno-tree-indent") — an app can override it inline, so this
+/// alone does NOT tell you the indent's current or default VALUE, and a
+/// Rust consumer cannot resolve it directly (20260908-080). \`indent_default_token\`
+/// is the CORE token (from juno_tokens.rs) that property aliases BY
+/// DEFAULT, when the generator could prove that alias against
+/// juno_tokens.rs itself; it is None whenever the component's default is
+/// not a plain alias to a known core token, even if \`indent_step\` is
+/// Some. Neither field tells you the indent is a LENGTH and not, say, a
+/// percentage — read juno_tokens.rs's own type for that.
 #[derive(Clone, Copy, Debug)]
 pub struct ComponentContract {
     pub name: &'static str,
@@ -471,6 +523,7 @@ pub struct ComponentContract {
     pub states: &'static [&'static str],
     pub tap_floor: &'static [&'static str],
     pub indent_step: Option<&'static str>,
+    pub indent_default_token: Option<&'static str>,
 }
 
 pub const COMPONENTS: &[ComponentContract] = &[

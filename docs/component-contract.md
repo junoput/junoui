@@ -32,8 +32,73 @@ per covered component:
   on the component's own rules (`:checked`, `[aria-expanded='true']`, …).
 - **`tapFloor`** — which `--juno-size-tap-*` token(s) the component reads,
   if any.
-- **`indentStep`** — the component-local indent custom property, if the
-  component has one (only `tree`, today: `--juno-tree-indent`).
+- **`indentStep`** — `{ name, resolvesTo }` if the component has a
+  component-local indent custom property (only `tree`, today:
+  `--juno-tree-indent`), else `null`. `name` is the CSS custom property
+  itself; `resolvesTo` is the CORE token (from `juno_tokens.rs`) that
+  property aliases by default, or `null` when the generator could not
+  prove that. See "indentStep and indent_default_token" below.
+
+## indentStep and indent_default_token — the dangling-name question (20260908-080)
+
+geovista found that `indent_step` originally named only the CSS custom
+property (`--juno-tree-indent`), which a Rust consumer cannot resolve:
+`juno_tokens.rs` has no `tree` or `indent` entry at all, so the name is a
+dangling reference to anyone who isn't a browser. geovista's own
+`gv-ui/src/theme.rs` had already worked around this by hardcoding
+`tokens::SPACE_16` as the tree indent — matching `tree.css`'s
+`--juno-tree-indent: var(--juno-space-16)` only by coincidence, the same
+"two independent defaults for one composition" shape as `20260908-001`.
+
+geovista proposed three options: (1) name the resolved token directly and
+drop the alias, (2) emit resolved component-local constants like
+`TREE_INDENT` into `juno_tokens.rs`, or (3) document `indent_step` as a
+CSS identifier a consumer must resolve themselves. **Taken: a fourth
+option — record both**, as `indentStep.name` (the local alias,
+`--juno-tree-indent`) and `indentStep.resolvesTo` /
+`indent_default_token` (the core token it aliases by default,
+`--juno-space-16`).
+
+**Why not (1).** `--juno-tree-indent` is a real, intentional seam:
+`tree.css` declares it as its own custom property specifically so an app
+can override it per-instance (inline `style="--juno-tree-indent: 20px"`)
+without touching `--juno-space-16`, which every other spacing-driven
+component also reads. Naming only the resolved token would answer
+geovista's immediate need and silently discard that seam from the
+contract — a future reader would have no way to learn the override point
+exists at all.
+
+**Why not (2).** Emitting a resolved `TREE_INDENT` constant into
+`juno_tokens.rs` makes the _default_ resolvable but freezes it at build
+time, which is actively wrong for the same reason: the whole point of a
+component-local custom property is that an _instance_ can differ from the
+default without a rebuild. A Rust consumer reading `TREE_INDENT` would
+have a value that is quietly stale the moment any app overrides the
+property in markup.
+
+**Why not (3) alone.** Documenting `indent_step` as unresolvable is
+honest but leaves geovista's actual defect in place: `tokens::SPACE_16`
+in `gv-ui/src/theme.rs` would keep agreeing with `tree.css` by
+coincidence, with nothing anywhere asserting the two stay in sync.
+
+**The cost of recording both, stated plainly:** `indent_default_token`
+is proven against `dist/rust/juno_tokens.rs` at build time — the
+generator checks the alias resolves to a real `pub const` before
+emitting it, so it can never be a dangling name — but it is still only
+the _default_. **Neither field tells a consumer the indent's current,
+in-force value.** An app is free to override `--juno-tree-indent` inline,
+and nothing in this export can see that override; a native consumer
+using `indent_default_token` to seed its own default (the way
+`gv-ui/src/theme.rs` does today) is choosing a starting point, not
+reading a live value — the CSS custom property remains the only source
+of truth for what an actual DOM instance currently uses. And
+`indent_default_token` is `None` whenever a future component's
+indent-named property is declared as anything other than a plain
+`var(--juno-<core-token>)` alias (a `calc()`, a literal, a chain through
+another component-local property) — that is not a bug to work around,
+it means there genuinely is no single core token to point a native
+default at, and `indent_step` (still non-`null`) is the only fact this
+export can offer.
 
 ## The contract
 
@@ -53,8 +118,9 @@ whoever vendors it, not a warning.
   objects keyed by component name; `counts` is an object of numbers;
   `totalComponentFiles` is a number).
 - Each `covered.<name>` entry has `order` (array of strings), `states`
-  (array of strings), `tapFloor` (array of strings), `indentStep` (string
-  or `null`).
+  (array of strings), `tapFloor` (array of strings), `indentStep` (either
+  `null`, or an object with `name`: string and `resolvesTo`: string or
+  `null`).
 - Each `excluded.<name>` entry has `reason` (string) and `detail` (string).
   The STRUCTURE is promised; the SET of possible `reason` values is not
   closed — a new exclusion reason may be added in a minor release as this
@@ -80,9 +146,10 @@ whoever vendors it, not a warning.
   components).
 
 **Rust (`junoui/component-contract-rust`) — promised:** the `ComponentContract`
-struct's five field names and types (`name: &str`, `order: &[&str]`,
-`states: &[&str]`, `tap_floor: &[&str]`, `indent_step: Option<&str>`) and
-the `COMPONENTS: &[ComponentContract]` const's name and type. Field
+struct's six field names and types (`name: &str`, `order: &[&str]`,
+`states: &[&str]`, `tap_floor: &[&str]`, `indent_step: Option<&str>`,
+`indent_default_token: Option<&str>`) and the `COMPONENTS: &[ComponentContract]`
+const's name and type. Field
 ORDER within the struct and the ORDER of entries in `COMPONENTS` are not
 promised — `COMPONENTS` is sorted by name today, and a consumer that
 depends on iteration order rather than looking up by `name` is depending
