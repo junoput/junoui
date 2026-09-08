@@ -94,8 +94,11 @@ vs. `1`), so a wrapped `<button>` stays fully clickable.
 
 - A wrapper that stacks the ring and what it rings on one centred cell; with no
   explicit size the wrapper sizes to the larger of the two (normally the ring).
-- The ring color is the semantic role; a `.juno--loading`/`.juno--active`
-  ancestor tints it.
+- The ring color is `var(--juno-role)`, which this component defaults to
+  `--juno-active` (`icon-loader.css`). Any role class on an ancestor —
+  `.juno--nominal`, `.juno--active`, `.juno--target`, `.juno--caution`,
+  `.juno--warning`, `.juno--muted` — retints it, because a role class sets
+  `--juno-role` and the ring reads it.
 
 ## Usage
 
