@@ -58,9 +58,40 @@
   gap: var(--juno-sidebar-space, var(--juno-space-24));
 }
 
+/* --juno-sidebar-width is a REAL declaration here, not just a var() fallback
+   baked into flex-basis — so it is one value a descendant can actually
+   inherit, not a literal that would need re-typing wherever else 280px
+   needs to be known. A consumer's inline override (style="--juno-sidebar-
+   width: 320px") still wins over this class rule regardless of specificity,
+   exactly as it did when this was only a fallback. */
 .juno-sidebar > .juno-sidebar__aside {
+  --juno-sidebar-width: 280px;
+
   flex-grow: 1;
-  flex-basis: var(--juno-sidebar-width, 280px);
+  flex-basis: var(--juno-sidebar-width);
+}
+
+/* A .juno-rail composed as the sidebar's aside reads the aside's own
+   --juno-sidebar-width instead of keeping its own independent 180px default
+   — one variable with two consumers, not two variables that happen to
+   agree. Before this rule, a .juno-sidebar__aside reserved 280px of
+   flex-basis while the rail inside it painted itself at 180px: two
+   unrelated defaults for one composition, agreeing by coincidence and not
+   by construction (20260908-001, W3 gap 2). The `280px` fallback below is
+   defensive only, for a `.juno-sidebar__aside` used without its
+   `.juno-sidebar` parent (malformed markup) — in the documented
+   composition, --juno-sidebar-width is always the real inherited value
+   from the rule above, so the fallback here can never disagree with it;
+   there is nothing left for the two to drift apart on.
+
+   Excludes .juno-rail--collapsed on purpose, at higher specificity than a
+   composition rule would otherwise need: collapse is a deliberate, deeper
+   override (the rail shrinking to icon-only) and must keep winning over
+   whatever width the aside reserves, exactly as it already wins over a bare
+   .juno-rail's own 180px default. A rail used outside .juno-sidebar is
+   unaffected and keeps its own 180px default. */
+.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed) {
+  --juno-rail-width: var(--juno-sidebar-width, 280px);
 }
 
 .juno-sidebar > .juno-sidebar__main {
