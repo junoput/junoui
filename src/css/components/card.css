@@ -3,7 +3,9 @@
  *  Usage:
  *    <article class="juno-card">
  *      <header class="juno-card__head">…<span class="juno-badge …">…</span></header>
- *      <div class="juno-card__body">…</div>
+ *      <div class="juno-card__body">
+ *        <div class="juno-card__row"><span>CPU</span><span>89.3%</span></div>
+ *      </div>
  *    </article>
  *  Add a status accent edge: <article class="juno-card juno-card--accent juno--caution">
  *  Critical full-border:     <article class="juno-card juno-card--alert  juno--warning">

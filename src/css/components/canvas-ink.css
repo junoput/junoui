@@ -19,7 +19,10 @@
  *  app's surface, which is precisely the background it is NOT over.
  *  Usage:
  *    <figcaption class="juno-canvas-ink">Sector 7 · 1.2 km</figcaption>
- *    <svg class="juno-canvas-ink"><path class="juno-canvas-ink__stroke" …/></svg>
+ *    <svg class="juno-canvas-ink">
+ *      <path class="juno-canvas-ink__halo" d="…" />
+ *      <path class="juno-canvas-ink__stroke" d="…" />
+ *    </svg>
  *    <div class="juno-canvas-scrim">…chrome floating over the content…</div>
  * ════════════════════════════════════════════════════════════════════ */
 

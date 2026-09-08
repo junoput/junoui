@@ -106,6 +106,7 @@ test('every excluded component states why, from a fixed, spelled-out vocabulary'
     'usage-incomplete',
     'reorder-mechanism',
     'combinator-disagrees',
+    'data-driven-parts',
   ]);
   for (const [name, e] of Object.entries(contract.excluded)) {
     assert.ok(known.has(e.reason), `${name} excluded for an unrecognised reason: ${e.reason}`);
@@ -258,4 +259,96 @@ test('the generator REFUSES an empty component directory, at build time — not 
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }
+});
+
+// ── 20260908-050: the 8 usage-incomplete exclusions, decided one at a time —
+//    5 fixed (their Usage example now matches their CSS), 2 reclassified to
+//    reorder-mechanism (the fix would have been a false certification), 1
+//    (table) reclassified to a named, human-decided exception. Named per
+//    component rather than asserted as a bare count, because "coverage went
+//    up" is not the claim this ticket makes — "coverage is honest" is, and
+//    that has to be checked component by component.
+
+test('the 5 genuinely fixable usage-incomplete components are now covered', () => {
+  for (const name of ['alert', 'canvas-ink', 'card', 'field', 'thumb']) {
+    assert.ok(
+      contract.covered[name],
+      `${name} should be covered now — its Usage example was completed`,
+    );
+  }
+});
+
+test('pillbar stays excluded — completing its example did not certify a false order', () => {
+  // pillbar's own CSS comment says outright that toggle/tray order is free
+  // ("the bar reads it via :has(), so DOM order... is free"). Completing
+  // the Usage example was a documentation fix, not a coverage fix — this
+  // pins that it did NOT flip to covered, and specifically THAT it was the
+  // new :has()-sibling detection that caught it, not an accident of some
+  // other reason.
+  const e = contract.excluded.pillbar;
+  assert.ok(e, 'pillbar is not excluded at all — was a false order just certified?');
+  assert.equal(e.reason, 'reorder-mechanism');
+  assert.match(
+    e.detail,
+    /:has\(\)/,
+    'pillbar is excluded, but not for the :has() reason this test expects',
+  );
+});
+
+test('scrubber stays excluded — every part is positioned by an app-supplied value, not DOM order', () => {
+  const e = contract.excluded.scrubber;
+  assert.ok(e, 'scrubber is not excluded at all — was a false order just certified?');
+  assert.equal(e.reason, 'reorder-mechanism');
+});
+
+test('table is reclassified as data-driven-parts, not padded into usage-incomplete or covered', () => {
+  assert.ok(
+    !contract.covered.table,
+    'table should not be certified fixed — its column parts are app/data-defined',
+  );
+  const e = contract.excluded.table;
+  assert.ok(e, 'table is not excluded at all');
+  assert.equal(
+    e.reason,
+    'data-driven-parts',
+    'table is excluded for the wrong reason — check it was not left in usage-incomplete',
+  );
+});
+
+test('usage-incomplete is now empty — every prior instance was fixed or honestly reclassified', () => {
+  assert.equal(
+    contract.counts.byExclusionReason['usage-incomplete'] ?? 0,
+    0,
+    'a usage-incomplete component remains — 20260908-050 should have resolved all 8',
+  );
+});
+
+test(':has()-sibling detection is wired in, structurally', () => {
+  // A structural guard, not a mutation proof — this only checks the code
+  // path exists and pillbar's CSS still has the pattern it depends on. The
+  // actual proof that removing this detector lets pillbar wrongly become
+  // "covered" was done by hand (mutate reorderMechanisms, rebuild, confirm
+  // pillbar.covered, restore) — see the ticket 20260908-050 PR description
+  // for that run; it is not repeated here as an automated test because
+  // doing so would mean shipping a second, parallel copy of
+  // reorderMechanisms in the test file to mutate against, which is exactly
+  // the kind of second-copy risk this generator exists to avoid elsewhere.
+  assert.match(
+    generatorSrc,
+    /hasSiblingPart\.test\(selector\)/,
+    ':has()-sibling detection was removed from reorderMechanisms — pillbar would silently become "covered"',
+  );
+  assert.match(
+    generatorSrc,
+    /new RegExp\(`:has/,
+    'the :has() detection regex definition itself is gone',
+  );
+  // And the positive: pillbar's own CSS still has the exact pattern this
+  // detector depends on, so the assertion above is not vacuously true.
+  const pillbarCss = readFileSync('src/css/components/pillbar.css', 'utf8');
+  assert.match(
+    pillbarCss,
+    /:has\(>\s*\.juno-pillbar__toggle\[aria-expanded='false'\]\)/,
+    'pillbar.css no longer has the :has() rule this detector and this test both depend on',
+  );
 });

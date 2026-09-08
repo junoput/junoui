@@ -173,6 +173,7 @@ function inlineAssignedVars(usageText, root) {
 function reorderMechanisms(blocks, root, appSuppliedVars) {
   const found = [];
   const localPositionVar = new RegExp(`var\\((--juno-${root}-[\\w-]+)`);
+  const hasSiblingPart = new RegExp(`:has\\([^)]*\\.juno-${root}__[\\w-]+`);
   for (const { selector, body } of blocks) {
     if (/\border:\s*-?\d/.test(body)) found.push(`${selector} sets order:`);
     if (/\bgrid-(row|column):\s*\d/.test(body))
@@ -182,6 +183,20 @@ function reorderMechanisms(blocks, root, appSuppliedVars) {
     // this contract is about.
     if (selector === `.juno-${root}` && /flex-direction:\s*(row|column)-reverse/.test(body)) {
       found.push(`${selector} sets a reversed flex-direction`);
+    }
+    // :has() conditioning a rule on ANOTHER part's presence/attribute state
+    // (not position) is exactly how pillbar's collapsible toggle/tray stay
+    // functionally correct regardless of which one comes first in the DOM —
+    // the component's own comment says so outright ("the bar reads it via
+    // :has(), so DOM order of toggle vs. tray is free"). A selector is not
+    // obligated to spell that out for this to matter: :has() referencing a
+    // sibling part is itself evidence that the relationship between them is
+    // read by attribute/state, not by position, so this generator does not
+    // trust DOM order to be the whole story wherever it appears.
+    if (hasSiblingPart.test(selector)) {
+      found.push(
+        `${selector} conditions on a sibling part via :has() — order is read by state, not position`,
+      );
     }
     for (const m of body.matchAll(POSITION_PROP)) {
       const varMatch = localPositionVar.exec(m[0]);
@@ -293,6 +308,32 @@ for (const file of files) {
   const [root] = roots.keys();
   const parts = roots.get(root);
 
+  // ONE named, human-reasoned exception — not a mechanism, and not a second
+  // one is meant to appear here casually. table.css declares ~26 parts;
+  // roughly 20 of them (__num, __mono, __time, __trend, __meter, …) are
+  // cell-content-type COLUMN classes an app picks per column, per table,
+  // from its own data schema — there is no fixed set of them to show in one
+  // canonical example, and no CSS selector marks "these are data-driven" for
+  // a script to detect the way it can detect `order:` or `:has()`. That is
+  // exactly what got `table` docs/inventory-elements.md's `ambiguous`
+  // verdict, by a human reading the file, and this generator is not willing
+  // to re-derive that judgement mechanically or launder it into
+  // `usage-incomplete` by padding an example with two dozen parts nobody
+  // would ever use together — see 20260908-050. If a future component turns
+  // up with the same shape, its name belongs in this same explicit,
+  // commented set, not a silent heuristic guessing at "many similarly-named
+  // short parts" — an unprincipled threshold is worse than an honest,
+  // named, checked exception.
+  const DATA_DRIVEN_PARTS = new Set(['table']);
+  if (DATA_DRIVEN_PARTS.has(name)) {
+    exclude(
+      name,
+      'data-driven-parts',
+      "most of this component's parts are an open-ended, app/data-defined set (table's cell-content-type column classes) with no fixed schema a Usage example could canonically show — decided by a human, not detected, see the generator source for why",
+    );
+    continue;
+  }
+
   const usageText = extractUsageBlock(raw);
   if (!usageText) {
     exclude(
@@ -350,9 +391,11 @@ const REASON_MEANING = {
   'no-usage-example': "no Usage example in the file's leading doc comment to derive an order from",
   'usage-incomplete': "the Usage example doesn't show every part the CSS declares",
   'reorder-mechanism':
-    'an explicit CSS reorder mechanism (order, grid placement, or an app-supplied position) was found',
+    'an explicit CSS reorder mechanism (order, grid placement, an app-supplied position, or :has() conditioning on a sibling part) was found',
   'combinator-disagrees':
     'a sibling/child combinator contradicts the order the Usage example shows',
+  'data-driven-parts':
+    'most parts are an open-ended, app/data-defined set with no fixed schema — a named, human-decided exception, not a detected mechanism',
 };
 
 const total = files.length;

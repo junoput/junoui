@@ -9,7 +9,13 @@
  *      <input id="cs" class="juno-input juno-mono" type="text" />
  *      <span class="juno-field__help">Prefix + number</span>
  *    </div>
- *  Error: add aria-invalid="true" to the control and swap help → __error.
+ *  Error state — __error REPLACES __help, never both at once, alongside
+ *  aria-invalid="true" on the control:
+ *    <div class="juno-field">
+ *      <label class="juno-field__label" for="cs">Order ID</label>
+ *      <input id="cs" class="juno-input juno-mono" type="text" aria-invalid="true" />
+ *      <span class="juno-field__error">Must start with CS-</span>
+ *    </div>
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-field {

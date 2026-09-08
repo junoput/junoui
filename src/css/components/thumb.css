@@ -10,7 +10,9 @@
  *      <img src="…" alt="Sunset clip" onerror="this.remove()" />
  *    </figure>
  *    \3c !-- known-missing: ship no <img>; label the figure instead -->
- *    <figure class="juno-thumb juno-thumb--video" role="img" aria-label="Preview unavailable"></figure>
+ *    <figure class="juno-thumb juno-thumb--video" role="img" aria-label="Preview unavailable">
+ *      <span class="juno-thumb__label">Unavailable</span>
+ *    </figure>
  *  The onerror one-liner is the whole JS contract (optional, stateless):
  *  a broken image removes itself and the placeholder underneath shows.
  *  Aspect is locked by default (--juno-thumb-ratio, square) so a media wall's

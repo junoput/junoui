@@ -10,6 +10,9 @@
  *      <div class="juno-alert__body">
  *        <span class="juno-alert__title">Deploy blocked</span>
  *        <span class="juno-alert__text">Two checks are still failing.</span>
+ *        <div class="juno-alert__actions">
+ *          <button class="juno-btn juno-btn--sm">Retry</button>
+ *        </div>
  *      </div>
  *      <button class="juno-alert__close" aria-label="Dismiss">✕</button>
  *    </div>
