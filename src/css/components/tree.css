@@ -66,6 +66,7 @@
 }
 
 .juno-tree__row {
+  container-type: inline-size;
   display: flex;
   align-items: center;
   gap: var(--juno-space-8);
@@ -177,6 +178,40 @@
 
 .juno-tree__count + .juno-tree__trail {
   margin-inline-start: 0;
+}
+
+/* Rung: drop the count badge once the row is too narrow to give __label any
+   room at all (20260908-034, the tree half of the list rung above — same
+   reasoning, cited not re-argued: principles-density.md §2). __count is a
+   secondary numeric annotation, not the row's identity and not
+   interactive, so it is the tree's analogue of __chevron in .juno-list__row
+   — it can give its width back. __trail is NOT touched: the component's
+   own comment says it can hold "a switch, a menu trigger" — a live
+   control, which this document's own charter test forbids junoui from
+   auto-hiding (it would be a functionality loss, not a cosmetic one, and
+   junoui cannot see what trail contains). __label already ellipsis-
+   truncates continuously; this is the missing discrete step.
+
+   DERIVED, not chosen — every term is a token this row already reads:
+
+     2 x --juno-space-8    row's own inline padding (single value, both sides)  16px
+     1 x --juno-space-16   the caret's own inline-size                          16px
+     1.25em icon @ --juno-font-size-13 (13px x 1.25)                          16.25px
+     2 x --juno-space-8    the two gaps around caret/icon/label                  16px
+                                                                          ────────────
+                                                                              64.25px
+
+   test/list-row-rung.test.mjs recomputes this from the built token values
+   and asserts it against the CSS literal below.
+
+   SAME STATED LIMITATION as the list rung: __count's own width (arbitrary
+   digits) is excluded because no CSS token can predict it. This is a lower
+   bound — the true "label has no room" point, for a row that also carries
+   a __count, is reached at some wider width this rule cannot see. */
+@container (max-width: 64.25px) {
+  .juno-tree__count {
+    display: none;
+  }
 }
 
 /* ── reorder handle ────────────────────────────────────────────────────
