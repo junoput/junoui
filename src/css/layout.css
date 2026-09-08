@@ -94,6 +94,45 @@
   --juno-rail-width: var(--juno-sidebar-width, 280px);
 }
 
+/* Ancestor floor — 20260908-040, found closing 20260908-036. That ticket
+   clamped the RAIL's own inline-size to max(var(--juno-rail-width), 57px)
+   (rail.css), guaranteeing the rail's box always WANTS at least 57px. It
+   did not guarantee this ASIDE honours that: with flex-grow: 1 and no
+   min-inline-size, ordinary flex-shrink (main's flex-grow: 999 winning the
+   contest for space in a tight .juno-sidebar) can still render the aside
+   narrower than the rail composed inside it wants — the rail then
+   overflows the aside, or gets clipped by whatever ancestor does have
+   `overflow` set, since neither `.juno-sidebar__aside` nor `.juno-rail`
+   sets it.
+
+   SAME EXPRESSION as the rail's own clamp, not a second derivation: both
+   read --juno-sidebar-width (the one variable the composition rule above
+   already ties the rail's own width to) and the SAME 57px, sourced from
+   scripts/rail-collapse-derivation.mjs's DERIVED_FLOOR_COMFORTABLE via
+   test/aside-min-inline-size.test.mjs — never retyped a third time. Since
+   flex-basis on this element is ALSO var(--juno-sidebar-width), a
+   min-inline-size of the identical max() expression means: this aside
+   cannot shrink below what the rail inside it will actually try to
+   render at, in EITHER direction that number can be too small (ordinary
+   flex-shrink squeezing it below its own flex-basis, or an explicit
+   --juno-sidebar-width already authored below 57px by a splitter-driven
+   consumer).
+
+   EXCLUDES a collapsed rail on purpose, mirroring rail.css's own
+   :not(.juno-rail--collapsed) exclusion exactly: a collapsed rail reads
+   NONE of --juno-sidebar-width (the composition rule above excludes it
+   too) and wants only --juno-space-56 — forcing this aside to
+   max(--juno-sidebar-width, 57px) while collapsed would hold it open at
+   its pre-collapse width for no reason, defeating the point of
+   collapsing. Given its own, smaller, already-verified floor instead. */
+.juno-sidebar > .juno-sidebar__aside:has(> .juno-rail:not(.juno-rail--collapsed)) {
+  min-inline-size: max(var(--juno-sidebar-width), 57px);
+}
+
+.juno-sidebar > .juno-sidebar__aside:has(> .juno-rail--collapsed) {
+  min-inline-size: var(--juno-space-56);
+}
+
 .juno-sidebar > .juno-sidebar__main {
   flex-grow: 999;
   flex-basis: 0;

@@ -209,12 +209,10 @@ rounded away:
   it, this also covers the Post-20260908-001 composed case (a rail
   reading `--juno-sidebar-width` through the aside): whatever
   `--juno-rail-width` ultimately resolves to, the rail's own box still
-  won't render narrower than 57px. **Not established**: whether the
-  ANCESTOR `.juno-sidebar__aside` flex item can still be squeezed
-  narrower than the rail's floor by ordinary flex-shrink (which would
-  clip the rail via the aside's own overflow, a different failure mode
-  from the icon overflowing unclipped) — that is a `layout.css` question,
-  outside `rail.css`'s file scope and this ticket's.
+  won't render narrower than 57px. **The ancestor question this left open
+  is closed by 20260908-040**: `.juno-sidebar__aside` now floors at the
+  same `max(var(--juno-sidebar-width), 57px)` when it holds an uncollapsed
+  rail — see [What I could not establish](#what-i-could-not-establish).
 
 ## 3. Interaction model, states, and focus order
 
@@ -476,24 +474,14 @@ believing:
 
 ## What I could not establish
 
-- **A NEW, narrower gap this fix's own read of `layout.css` surfaced —
-  reported, not fixed, same as this document's own habit.**
-  `20260908-036`'s clamp guarantees `.juno-rail`'s own box wants at least
-  57px; it does not guarantee the ANCESTOR gets to honour that. Checked,
-  not assumed: `.juno-sidebar > .juno-sidebar__aside` (`layout.css:66-71`)
-  sets `flex-grow: 1` and `flex-basis: var(--juno-sidebar-width)` with no
-  `flex-shrink: 0` and no `min-inline-size` — so ordinary flex-shrink can
-  still squeeze the aside narrower than the rail's 57px floor when
-  `.juno-sidebar__main`'s own `flex-grow: 999` wins the contest for space.
-  A rail whose OWN inline-size still wants 57px, inside an aside rendered
-  narrower than that, either overflows the aside (no `overflow` set on
-  `.juno-sidebar__aside` either) or gets clipped by whatever ancestor
-  does have one — a different failure mode from "the icon overflows its
-  own unclipped box" this ticket closed, but the same root shape: a
-  measured value with nothing enforcing its floor. Fixing it means
-  `layout.css`, not `rail.css`, and is outside `20260908-036`'s stated
-  file scope — filed as `20260908-040` rather than folded in here
-  speculatively.
+- ~~A NEW, narrower gap this fix's own read of `layout.css` surfaced~~ —
+  **closed by 20260908-040**: `.juno-sidebar > .juno-sidebar__aside` now
+  floors at `max(var(--juno-sidebar-width), 57px)` when it holds an
+  uncollapsed rail (the identical expression `rail.css`'s own clamp uses,
+  both reading 57px from `scripts/rail-collapse-derivation.mjs`), and at
+  `var(--juno-space-56)` when the rail is collapsed — so this aside can no
+  longer be flex-shrunk narrower than whatever the rail inside it will
+  actually try to render at, in either state.
 - **A `.juno-list`/`.juno-tree` row fallback between rung 1 and rung 3.**
   Named since W3, not among 20260908-028's candidates, and it is a design
   decision (what a hidden trailing slot falls back to) rather than a
