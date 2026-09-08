@@ -415,7 +415,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **States/hooks** (3): `:hover`, `:focus-visible`, `:disabled`
 - **Tokens read** (24): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-11`, `--juno-font-size-12`, `--juno-font-size-13`, `--juno-font-tracking-label`, `--juno-font-weight-bold`, `--juno-label`, `--juno-muted`, `--juno-opacity-disabled`, `--juno-radius-8`, `--juno-s1`, `--juno-s2`, `--juno-size-tap-comfortable`, `--juno-space-12`, `--juno-space-16`, `--juno-space-2`, `--juno-space-20`, `--juno-space-8`
 - **Local custom properties** (1): `--juno-icon-size`
-- **Responsive mechanism**: neither
+- **Responsive mechanism**: container query — `container-type: inline-size` (`list.css:55`) + `@container (max-width: 88.25px)` (`:172`), the chevron-drop rung added by `20260908-034`
 - **Density-aware**: no
 - **Slot order**: **fixed** — flex, normal flow throughout (header, group, row internals)
 
@@ -514,7 +514,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **States/hooks** (3): `:hover`, `:focus-visible`, `[aria-current]`
 - **Tokens read** (26): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-12`, `--juno-font-size-13`, `--juno-font-tracking-label`, `--juno-font-tracking-wide`, `--juno-font-weight-bold`, `--juno-font-weight-semibold`, `--juno-gap-control`, `--juno-label`, `--juno-motion-duration-base`, `--juno-motion-ease-standard`, `--juno-rail-width`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`, `--juno-space-16`, `--juno-space-2`, `--juno-space-56`, `--juno-space-8`
 - **Local custom properties** (1): `--juno-rail-width`
-- **Responsive mechanism**: viewport media query
+- **Responsive mechanism**: both — `@container (max-width: 57px)` for the derived auto-collapse (`20260908-005`) plus the pointer-gated `@media` at `rail.css:187` for the rail/dock swap. Two different axes, not one mechanism
 - **Density-aware**: yes (`--juno-gap-control`)
 - **Slot order**: **fixed** — flex column, normal flow (brand before items)
 
@@ -734,7 +734,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **States/hooks** (8): `:hover`, `:focus-visible`, `:active`, `[aria-current]`, `[aria-expanded]`, `[aria-selected]`, `[data-juno-dragging]`, `[data-juno-drop]`
 - **Tokens read** (23): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-11`, `--juno-font-size-13`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-standard`, `--juno-muted`, `--juno-opacity-muted`, `--juno-radius-3`, `--juno-role`, `--juno-s2`, `--juno-s3`, `--juno-size-tap-comfortable`, `--juno-size-tap-min`, `--juno-space-10`, `--juno-space-16`, `--juno-space-4`, `--juno-space-8`, `--juno-tree-indent`
 - **Local custom properties** (1): `--juno-tree-indent`
-- **Responsive mechanism**: viewport media query
+- **Responsive mechanism**: both — `@container` for the chevron-drop rung (`20260908-034`) plus an `@media (pointer: coarse)` that sizes touch targets only, never layout
 - **Density-aware**: no
 - **Slot order**: **fixed** — flex row, normal flow (caret, icon, label, ..., count+trail enforced via `+` sibling combinator); `__group` nests after `__row`
 
