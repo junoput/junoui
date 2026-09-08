@@ -52,6 +52,7 @@
 }
 
 .juno-list__row {
+  container-type: inline-size;
   display: flex;
   align-items: center;
   gap: var(--juno-space-12);
@@ -132,4 +133,44 @@ button.juno-list__row:disabled {
   --juno-icon-size: var(--juno-space-16);
 
   color: var(--juno-muted);
+}
+
+/* Rung: drop the chevron once the row is too narrow to give __main (icon +
+   label + support) any room at all — the label starving while the chevron
+   keeps its full width is the operator's "text overflows" complaint at row
+   scale (20260908-034). __label/__support already ellipsis-truncate
+   CONTINUOUSLY (rung 1); this is the missing discrete step: __value is
+   NEVER touched (principles-density.md §2, "truncate the label before you
+   ever consider truncating the value" — cited, not re-argued), so the
+   chevron — pure decoration, zero information loss when hidden, the row's
+   href/onClick still carries the affordance — is the one thing that can
+   give its width back.
+
+   DERIVED, not chosen — every term is a token this row already reads:
+
+     2 x --juno-space-16   row's own inline padding                32px
+     1.25em icon @ --juno-font-size-13 (13px x 1.25)              16.25px
+     1 x --juno-icon-size on the chevron (--juno-space-16)          16px
+     2 x --juno-space-12   the two gaps around __main               24px
+                                                              ────────────
+                                                                  88.25px
+
+   test/list-row-rung.test.mjs recomputes this from the built token values
+   and asserts it against the CSS literal below.
+
+   STATED LIMITATION, not silently absorbed: this floor deliberately
+   excludes __value's own width, because __value holds arbitrary app
+   content (e.g. "1080p") that no CSS token can predict — the same reason
+   a container query cannot know a sibling's rendered text width at all.
+   It is a lower bound: below 88.25px main would be at zero even with an
+   EMPTY value, so the chevron must have already dropped by then. For a row
+   that also carries a __value, main is squeezed further, and the true
+   "label has no room" point is reached at some WIDER container width this
+   rule cannot see — genuinely undecidable from CSS alone without measuring
+   __value's rendered size, which no style feature in this container-query
+   condition can do. Reported here rather than approximated further. */
+@container (max-width: 88.25px) {
+  .juno-list__chevron {
+    display: none;
+  }
 }
