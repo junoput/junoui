@@ -47,6 +47,7 @@ export const MASKS = (pw) => [
   pw.locator('#clock'),
   pw.locator('[data-prog]'),
   pw.locator('[data-pct]'),
+  pw.locator('#build-identity'),
 ];
 
 // Freeze the two widgets the showcase animates from JS. They are masked, but a
@@ -72,6 +73,31 @@ export async function pinVolatile(pw) {
   });
 }
 
+// The showcase footer displays the running build's identity (junoui/identity
+// — commit short SHA, dirty flag, branch) via #build-identity. Real values,
+// so its rendered text is variable-width for two independent reasons: `+dirty`
+// appears and disappears, and branch names differ in length. A mask alone
+// would drift exactly as #clock's and [data-pct]'s did (see above) — the
+// element's own bounding box moves with its own text. So this element is
+// pinned AND masked, matching that pattern rather than reinventing a weaker
+// one: pin the rendered text to one fixed-width constant here, then still
+// mask it (MASKS above) as the belt to this fixture's suspenders.
+//
+// Unlike pinVolatile, this cannot intercept the VALUE before render —
+// IDENTITY is a real value baked into dist/js/identity.js at build time and
+// imported as a static ES module binding, not a runtime API call this file
+// can shadow with addInitScript. So it overwrites the rendered DOM text
+// after app.js has already run once, which is fine: a screenshot is the
+// FINAL state, not a filmstrip, and every caller pins before shooting.
+export const IDENTITY_LABEL_FIXTURE = 'build 0000000 · fixture/branch';
+
+export async function pinIdentityLabel(pw) {
+  await pw.evaluate((label) => {
+    const el = document.getElementById('build-identity');
+    if (el) el.textContent = label;
+  }, IDENTITY_LABEL_FIXTURE);
+}
+
 export async function visit(pw, page, mode) {
   await pinVolatile(pw);
   // seed the persisted theme before any script runs
@@ -85,6 +111,7 @@ export async function visit(pw, page, mode) {
   await pw.goto(`/showcase/${page}.html`, { waitUntil: 'networkidle' });
   // fonts must be in before we shoot, or metrics shift the layout
   await pw.evaluate(() => document.fonts.ready);
+  await pinIdentityLabel(pw);
 }
 
 /** Sections that carry their own baseline, keyed by page.

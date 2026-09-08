@@ -24,6 +24,14 @@ console.log(IDENTITY);
 Generated at build time into `dist/js/identity.js` by
 `scripts/build-identity.mjs`, wired into `npm run build`.
 
+## The contract
+
+`junoui/identity` is a published export: once it ships on `main`, removing or
+renaming a field is a breaking change under semver, exactly like removing a
+token or a component class. The five fields above —
+`gitAvailable`/`commit`/`branch`/`dirty`/`builtAt` — are the promise; nothing
+else about the shape (field order, whether more fields get added later) is.
+
 ## Reading the fields correctly — the part that gets got wrong
 
 `commit`, `branch` and `dirty` describe **the tree at build time**, never
@@ -35,6 +43,13 @@ that question needs a live `git` call in the tree you actually mean, not this
 constant. `builtAt` is a **build** timestamp for the same reason: not a
 publish timestamp, not an install timestamp — those can all be different
 moments for the same artefact.
+
+One consequence worth stating plainly: **`builtAt` makes this module
+non-reproducible by construction** — two builds of the exact same commit
+produce two different `dist/js/identity.js` files, differing only in this one
+field. That is correct for what it measures (when THIS build happened, not
+when the source last changed), not a bug to chase — do not file a
+reproducible-build issue against a timestamp doing its job.
 
 ## `gitAvailable: false` — the honest-absence case
 

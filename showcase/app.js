@@ -268,7 +268,7 @@ function renderChrome() {
   footer.innerHTML = `
     <span class="juno-mono juno-text-nominal" style="letter-spacing:.2em;">junoui</span>
     <span class="juno-text-muted" style="font-size:11px;">junoui · interactive demo · not shipped in the npm package</span>
-    <span class="juno-mono juno-text-muted" style="font-size:11px;" title="Build identity — see junoui/identity">${identityLabel()}</span>`;
+    <span id="build-identity" class="juno-mono juno-text-muted" style="font-size:11px;" title="Build identity — see junoui/identity">${identityLabel()}</span>`;
   document.body.append(pill, footer);
 }
 
