@@ -67,7 +67,9 @@
     "./rules": "./dist/rust/juno_rules.rs",
     "./scrubber": "./tools/scrubber.mjs",
     "./range": "./tools/range.mjs",
-    "./identity": "./dist/js/identity.js"
+    "./identity": "./dist/js/identity.js",
+    "./component-contract.json": "./dist/json/component-contract.json",
+    "./component-contract-rust": "./dist/rust/juno_component_contract.rs"
   },
   "files": [
     "dist",
@@ -85,7 +87,7 @@
     "build:css": "node scripts/bundle-css.mjs",
     "build:classes": "node scripts/build-classes.mjs",
     "build:identity": "node scripts/build-identity.mjs",
-    "build": "npm run build:tokens && npm run build:rules && npm run build:icons && npm run build:css && npm run build:classes && npm run build:identity",
+    "build": "npm run build:tokens && npm run build:rules && npm run build:component-contract && npm run build:icons && npm run build:css && npm run build:classes && npm run build:identity",
     "gen-docs": "node scripts/gen-docs.mjs",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
     "lint:css": "stylelint \"src/css/**/*.css\"",
@@ -103,6 +105,7 @@
     "version": "changeset version",
     "release": "npm run build && changeset publish",
     "build:rules": "node scripts/build-rules.mjs",
+    "build:component-contract": "node scripts/build-component-contract.mjs",
     "test:rust": "node scripts/test-rust.mjs"
   },
   "devDependencies": {
