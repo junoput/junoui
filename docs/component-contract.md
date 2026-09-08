@@ -35,7 +35,65 @@ per covered component:
 - **`indentStep`** — the component-local indent custom property, if the
   component has one (only `tree`, today: `--juno-tree-indent`).
 
-## What "covered" means, and why it is narrower than the census's fixed-23
+## The contract
+
+Same rule as any other published export: once a shape ships on `main`,
+removing or renaming a field is a breaking change under semver, exactly
+like removing a token or a component class (`docs/CHARTER.md`). This
+section says which parts of the shape are that promise and which are not
+— worth stating explicitly here because `junoui/component-contract-rust`
+is a compiled struct, not a JSON blob a consumer can shrug off a rename
+in: a field renamed here is a downstream `cargo build` failure for
+whoever vendors it, not a warning.
+
+**JSON (`junoui/component-contract.json`) — promised:**
+
+- Top-level keys `covered`, `excluded`, `counts`, `totalComponentFiles`
+  exist, with those names and those types (`covered`/`excluded` are
+  objects keyed by component name; `counts` is an object of numbers;
+  `totalComponentFiles` is a number).
+- Each `covered.<name>` entry has `order` (array of strings), `states`
+  (array of strings), `tapFloor` (array of strings), `indentStep` (string
+  or `null`).
+- Each `excluded.<name>` entry has `reason` (string) and `detail` (string).
+  The STRUCTURE is promised; the SET of possible `reason` values is not
+  closed — a new exclusion reason may be added in a minor release as this
+  generator's detection improves, the way a new token is a minor. An
+  existing reason will not be silently repurposed to mean something
+  different without a major.
+
+**JSON — NOT promised, and must not be parsed as if it were:**
+
+- `$comment` — a human-readable string. Its wording changes freely; never
+  match against it.
+- `covered.<name>.root` and `covered.<name>.combinatorEvidence` — internal
+  diagnostic fields from how the generator reached its answer, not part of
+  what a consumer should build logic on. They may change shape or be
+  removed without notice.
+- **Which specific components appear, and their exact field values** —
+  this is content, not shape. A component's `order` changing because its
+  CSS genuinely changed is the export doing its job, not a breaking
+  change; a component moving from `covered` to `excluded` (or the reverse)
+  as its CSS evolves is expected and correct, the same way a token's
+  VALUE is free to move in a minor while the token's NAME is not
+  (`docs/CHARTER.md`'s token-contract boundary, applied here to
+  components).
+
+**Rust (`junoui/component-contract-rust`) — promised:** the `ComponentContract`
+struct's five field names and types (`name: &str`, `order: &[&str]`,
+`states: &[&str]`, `tap_floor: &[&str]`, `indent_step: Option<&str>`) and
+the `COMPONENTS: &[ComponentContract]` const's name and type. Field
+ORDER within the struct and the ORDER of entries in `COMPONENTS` are not
+promised — `COMPONENTS` is sorted by name today, and a consumer that
+depends on iteration order rather than looking up by `name` is depending
+on something this file does not commit to.
+
+**Neither target promises `21 covered` as a number**, or any other count
+— those are today's content, read from `dist/json/component-contract.json`'s
+own `counts` at build time if a number is needed, never hardcoded by a
+consumer.
+
+## What "covered" means, and why it is narrower than the census's fixed-22
 
 `docs/inventory-elements.md` calls a component `fixed` when a human reading
 the file concludes DOM order is the only order — either a sibling
@@ -76,7 +134,7 @@ by mutation: temporarily reversing switch's Usage example while leaving its
 `excluded`, and the test that reads `contract.covered.switch` fails loudly
 rather than silently reading a stale order. Restored before landing.
 
-**The result: 21 of 52 covered**, not 23. The full breakdown, generated —
+**The result: 21 of 52 covered**, not 22. The full breakdown, generated —
 see `dist/json/component-contract.json`'s own `$comment` and `counts` for
 the current numbers, since this file is prose and that one rebuilds:
 
@@ -89,8 +147,19 @@ the current numbers, since this file is prose and that one rebuilds:
 | `reorder-mechanism`    | an explicit CSS reorder mechanism found (`navbar`'s explicit grid-column placement; `gizmo`/`range`/`slider`'s app-supplied position)                                          |
 | `combinator-disagrees` | (not currently triggered by any shipped file — proven reachable by the mutation test above)                                                                                    |
 
+**`navbar` is not a divergence — it found a real error in the census.**
+This generator excluded it for an explicit `grid-column` placement on
+`__title`/`__actions`; the census's row said `fixed`, reasoning "no
+`grid-template-areas` — auto-placement follows DOM order," which was
+false — those two parts place themselves on explicit tracks regardless of
+DOM order, an actual reordering mechanism by the census's own definition
+of `fixed`. Caught in review of this ticket and corrected in
+`docs/inventory-elements.md` (its `fixed 23 of 37` headline is now
+`fixed 22 of 37`, `free` gaining the one navbar left) — the census and
+this generator agree on `navbar` as of that fix.
+
 **Where this diverges from the census, on purpose:** `alert`, `card`,
-`dock`, `drawer`, `field`, `load-state`, `navbar`, `scrubber` are census
+`dock`, `drawer`, `field`, `load-state`, `scrubber` are census
 `fixed` but excluded here — each for a stated, mechanical reason above, not
 a disagreement with the census's reasoning, a narrower standard of proof.
 `chip`, `dot`, `gauge`, `popover`, `reload`, `segmented`, `tooltip` are

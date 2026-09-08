@@ -7,7 +7,7 @@ two disagree, the disagreement is recorded as its own finding rather than picked
 **W5 (`20260908-019`) turned the slot-order half of this census into a
 generated, assertable export** — [`docs/component-contract.md`](./component-contract.md),
 `dist/json/component-contract.json`. It covers 21 of the 52 files, narrower
-than this document's hand-read 23 `fixed`, because it certifies only what a
+than this document's hand-read 22 `fixed`, because it certifies only what a
 Usage example and the CSS's own selectors prove, never a judgement about an
 absence. The two documents are related, not identical — read that one for
 what a non-browser target can actually consume.
@@ -47,7 +47,7 @@ without documents noticing.
 **Slot order — the number W5 is waiting on, reported both ways because they answer
 different questions:**
 
-- Across all 52 files: **fixed 23 · n/a 15 · free 10 · ambiguous 4.** `n/a` (no
+- Across all 52 files: **fixed 22 · n/a 15 · free 11 · ambiguous 4.** `n/a` (no
   BEM parts at all) and `free` (has parts, but none depend on another's DOM
   position) are kept as two distinct buckets here, not folded into one — a
   component with nothing to order and a component that deliberately frees its
@@ -56,12 +56,15 @@ different questions:**
 - **The decision-relevant number is scoped to components that HAVE parts to
   order** — a slot-order contract is meaningless for a component with no
   slots. Of the **37 multi-part components** (52 minus the 15 with zero BEM
-  parts): **fixed 23 · free 10 · ambiguous 4 → 23 of 37 (62%) have a fixed
-  slot order.** Quoted against the raw 52 instead, the same fact reads as 23 of
-  52 (44%) and understates the exportable surface by roughly a third — use the
+  parts): **fixed 22 · free 11 · ambiguous 4 → 22 of 37 (59%) have a fixed
+  slot order.** Quoted against the raw 52 instead, the same fact reads as 22 of
+  52 (42%) and understates the exportable surface by roughly a third — use the
   37 denominator when this number is going into a resequencing decision.
+  Corrected 2026-09-08 from 23 of 37 (62%) — `navbar` moved `fixed` → `free`,
+  see its row; the number had been quoted upward and is flagged here rather
+  than left to slide.
 
-- **Fixed (23 of 37 multi-part)** — a non-CSS implementation would have to reproduce a
+- **Fixed (22 of 37 multi-part)** — a non-CSS implementation would have to reproduce a
   specific part sequence, either because the CSS structurally requires it (a sibling
   combinator, a native HTML element order) or because normal-flow layout with no
   reordering mechanism makes DOM order the visual order.
@@ -72,9 +75,14 @@ different questions:**
   them (`fold-slot`, `icon`) were misclassified as `free` in an earlier pass of
   this document and are `n/a` now, for the same reason as the other 13: the
   same input (zero parts) gets one verdict, not two.
-- **Free (10 of 37 multi-part)** — has two or more parts, but every part is either
+- **Free (11 of 37 multi-part)** — has two or more parts, but every part is either
   independently positioned (absolute, pinned by its own class/custom property) or
-  explicitly documented as order-independent in the source.
+  explicitly documented as order-independent in the source. `navbar` joined this
+  bucket 2026-09-08: its row previously said `fixed` on the reasoning "no
+  `grid-template-areas` — auto-placement follows DOM order", which was false —
+  `__title`/`__actions` place themselves on explicit `grid-column` tracks, so
+  DOM order is not what determines their position. Found in review of
+  `20260908-019`, by the generated contract disagreeing with this document.
 - **Ambiguous (4)** — `gizmo`, `loader`, `range`, `table`. Each mixes a fixed-order
   region with a free-order or data-driven region; see each row's reasoning below. These are
   real ambiguity, not rounding — do not fold them into either other bucket.
@@ -464,7 +472,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
 - **Density-aware**: no
-- **Slot order**: **fixed** — CSS Grid with 3 explicit `grid-template-columns` but no `grid-template-areas` — auto-placement follows DOM order
+- **Slot order**: **free** — `__title` (`navbar.css:78`) and `__actions` (`navbar.css:93`) each set an explicit `grid-column`, placing themselves on tracks 2 and 3 regardless of DOM order; reorder them in the markup and nothing moves. Corrected 2026-09-08 (review of `20260908-019`) — the row previously read `fixed`, reasoning "no `grid-template-areas` — auto-placement follows DOM order", which was false: an explicit `grid-column` on a part IS a reordering mechanism by this document's own definition of `fixed`.
 
 ### `pagination`
 

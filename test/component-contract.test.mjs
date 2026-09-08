@@ -6,8 +6,12 @@
 // census, never as a value this file restates.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, mkdirSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
 import { checkInventoryElements } from '../scripts/check-inventory-elements.mjs';
+
+const GENERATOR = join(process.cwd(), 'scripts/build-component-contract.mjs');
 
 const contract = JSON.parse(readFileSync('dist/json/component-contract.json', 'utf8'));
 const generatorSrc = readFileSync('scripts/build-component-contract.mjs', 'utf8');
@@ -226,4 +230,32 @@ test('coverage is meaningfully partial, in both directions — the vacuity floor
     contract.counts.covered < contract.totalComponentFiles,
     'every single component was certified fixed — this generator is supposed to be conservative',
   );
+});
+
+test('the generator REFUSES an empty component directory, at build time — not only in this test', () => {
+  // Measured, not hypothetical: moving src/css/components/ aside and running
+  // the generator produced `0 of 0 covered ({})`, exit 0 — a hollow but
+  // syntactically valid contract. `npm test` runs `npm run build` first and
+  // would have caught it via the floor above, but `npm run release` and
+  // `npm run prepare` run `npm run build` WITHOUT a `node --test` step in
+  // between — the release path is build, not test — so a published tarball
+  // could have carried an empty contract with nothing here to stop it. This
+  // spawns the real generator as a subprocess against a genuinely empty
+  // directory (not a mock, not a re-call of its own function) and asserts
+  // it exits non-zero naming the cause, the same shape test/rules.test.mjs
+  // uses to drive scripts/test-rust.mjs rather than trusting its own words.
+  const scratch = 'test/.scratch-empty-components';
+  rmSync(scratch, { recursive: true, force: true });
+  mkdirSync(join(scratch, 'src/css/components'), { recursive: true });
+  try {
+    const result = spawnSync(process.execPath, [GENERATOR], { cwd: scratch, encoding: 'utf8' });
+    assert.notEqual(
+      result.status,
+      0,
+      'the generator exited 0 against an empty component directory',
+    );
+    assert.match(result.stderr, /only 0 \.css files found/, 'the failure does not name the cause');
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
 });

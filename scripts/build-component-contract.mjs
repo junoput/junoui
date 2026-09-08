@@ -22,7 +22,8 @@
 //     exactly the coincidence that stopped being true for ink.
 //
 // WHAT COUNTS AS "FIXED", MECHANICALLY, AND WHY IT IS NARROWER THAN THE
-// CENSUS'S 23:
+// CENSUS'S 22 (23 until 2026-09-08 review found navbar's `fixed` row false —
+// an explicit grid-column placement, corrected to `free` in the census too):
 //   docs/inventory-elements.md calls a component "fixed" when a human reading
 //   the file concludes DOM order is the only order — either because a
 //   sibling combinator requires it, or because nothing in the file reorders
@@ -62,6 +63,23 @@ const OUT_RUST = 'dist/rust/juno_component_contract.rs';
 const files = readdirSync(DIR)
   .filter((f) => f.endsWith('.css'))
   .sort();
+
+// Vacuity floor, at BUILD time, not only in the test suite. Measured, not
+// hypothetical: moving src/css/components/ aside and running this file
+// produced `0 of 0 covered ({})`, exit 0 — a hollow but syntactically valid
+// contract, because an empty glob and an empty component directory look
+// identical to everything downstream of readdirSync. `npm test` catches
+// this (a test in test/component-contract.test.mjs floors the covered
+// count), but `npm run release` and `npm run prepare` run `npm run build`
+// WITHOUT `npm test` in between — the release path is build, not test — so
+// a published tarball could carry an empty component-contract.json with
+// nothing here going red. Same shape as build-rules.mjs's `tok()`: throw
+// where the value is read, not only where it is later checked.
+if (files.length < 45) {
+  throw new Error(
+    `build-component-contract: only ${files.length} .css files found in ${DIR} (floor is 45) — refusing to emit a contract from what looks like an empty or wrong directory`,
+  );
+}
 
 const stripComments = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '\n');
 const modBase = (part) => part.split('--')[0];
@@ -340,13 +358,25 @@ const REASON_MEANING = {
 const total = files.length;
 const coveredCount = Object.keys(covered).length;
 const excludedCount = Object.keys(excluded).length;
+
+// Second floor: the directory could be intact and full (passing the check
+// above) while every extraction still comes back empty — a broken regex, a
+// renamed doc-comment convention, anything that makes every file fall
+// through to `excluded` silently. `npm run build` must fail loudly on that
+// too, for the same release-path reason as the directory floor above.
+if (coveredCount < 10) {
+  throw new Error(
+    `build-component-contract: only ${coveredCount} of ${total} components covered (floor is 10) — the extraction may be broken, not the CSS`,
+  );
+}
+
 const reasonSummary = Object.entries(byReason)
   .sort((a, b) => b[1] - a[1])
   .map(([reason, n]) => `${reason} (${n}, ${REASON_MEANING[reason]})`)
   .join('; ');
 
 const contract = {
-  $comment: `junoui component contract — generated; do not edit. Covers ${coveredCount} of ${total} component files: a slot order is exported only when a Usage: example in the file's leading doc comment covers every declared BEM part, that order is cross-checked against any sibling/child combinator between those parts, and no explicit CSS reorder mechanism was found. The other ${excludedCount} are EXCLUDED, not silently omitted — every one has a reason in the \`excluded\` object below, drawn from this vocabulary: ${reasonSummary}. See scripts/build-component-contract.mjs for why this is narrower than docs/inventory-elements.md's hand-read fixed-23 (it does not certify "normal flow, nothing obviously reorders it" — only what a Usage example and the selectors themselves prove).`,
+  $comment: `junoui component contract — generated; do not edit. Covers ${coveredCount} of ${total} component files: a slot order is exported only when a Usage: example in the file's leading doc comment covers every declared BEM part, that order is cross-checked against any sibling/child combinator between those parts, and no explicit CSS reorder mechanism was found. The other ${excludedCount} are EXCLUDED, not silently omitted — every one has a reason in the \`excluded\` object below, drawn from this vocabulary: ${reasonSummary}. See scripts/build-component-contract.mjs for why this is narrower than docs/inventory-elements.md's hand-read fixed-22 (it does not certify "normal flow, nothing obviously reorders it" — only what a Usage example and the selectors themselves prove).`,
   totalComponentFiles: total,
   covered,
   excluded,
