@@ -12,10 +12,29 @@ not shipped).
 
 ## Headline count
 
-**52 component files**, not 51 — the ticket's count was written before `dot.css`,
-`gizmo.css`, `load-state.css`, `reload.css`, `swatch.css` and others landed; count them,
-don't trust the number written down elsewhere, including in this repo's own CLAUDE.md
-roadmap section. Re-run `ls src/css/components | wc -l` before trusting this number too.
+**52 component files**, not the 51 the ticket said. Re-run
+`ls src/css/components/*.css | wc -l` before trusting this number too.
+
+**The first version of this paragraph explained the discrepancy twice, and both
+explanations were wrong.** They are corrected here rather than deleted, because a
+paragraph telling readers not to trust written numbers is the worst possible place
+for an unchecked claim, and the correction is the point:
+
+- It said the ticket's count predated `dot.css`, `gizmo.css`, `load-state.css`,
+  `reload.css` and `swatch.css`. **All five were already present.** `git log
+--diff-filter=A` puts them at 2026-06-24, 2026-08-30, 2026-08-04, 2026-07-27 and
+  2026-08-30; the ticket was filed 2026-09-06, a week after the latest of them.
+- It said the stale number also appeared in this repo's `CLAUDE.md` roadmap
+  section. **`CLAUDE.md` states no component count at all** — there is no `51` in
+  it, and no integer anywhere in that section.
+
+The 51 was a miscount of a correct listing, not a number gone stale. Nothing had
+changed underneath it; someone counted wrong and then two plausible reasons were
+supplied for a discrepancy that had neither.
+
+The conclusion is unaffected and stands: **count them.** But the reason to count is
+that hand-counted numbers are wrong at a rate nobody expects — not that files land
+without documents noticing.
 
 **Slot order — the number W5 is waiting on, reported both ways because they answer
 different questions:**
@@ -94,9 +113,14 @@ claims, would have called that a match. Run it after any edit to this document:
 node scripts/check-inventory-elements.mjs
 ```
 
-It was mutation-tested before being trusted: flipping `n/a 15` to `n/a 16` on line 23 turns
-it red, naming that line and the disagreement (`prose says na=16, rows say na=15`); reverting
-the digit turns it green again.
+It was mutation-tested before being trusted: flipping `n/a 15` to `n/a 16` in the
+across-all-52 headline tally turns it red, naming the line and the disagreement
+(`prose says na=16, rows say na=15`); reverting the digit turns it green again.
+
+(That sentence used to cite a specific line number, which drifted the moment this
+document was edited above it. The checker reports the line it found; a document
+should not also hard-code one, for the same reason its numbers should not be
+hard-coded — the guard names the location, the prose names the property.)
 
 ## Method notes
 
