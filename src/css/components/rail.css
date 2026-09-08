@@ -18,6 +18,7 @@
   --juno-role: var(--juno-active);
   --juno-rail-width: 180px;
 
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--juno-space-2);
@@ -78,6 +79,18 @@
   outline-offset: calc(-1 * var(--juno-space-2));
 }
 
+/* Truncate, don't overflow — every other icon+label row in junoui
+   (.juno-list__label, .juno-dock__label, .juno-pillbar__label,
+   .juno-tree__label) already does this; the rail's own label never did,
+   so a long label just spilled past the rail's edge instead of degrading
+   gracefully. min-inline-size:0 is what lets a flex child shrink below its
+   content size at all — without it text-overflow has no room to act in. */
+.juno-rail__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Collapsed — icons only; labels leave the accessibility tree too, so
    give collapsed items a title or aria-label from the app. */
 .juno-rail--collapsed {
@@ -93,6 +106,63 @@
 .juno-rail--collapsed .juno-rail__brand {
   justify-content: center;
   padding-inline: 0;
+}
+
+/* Auto-collapse — the same icon-only treatment .juno-rail--collapsed
+   applies by hand, applied automatically once the rail's OWN measured
+   width can no longer fit it, via @container on .juno-rail itself
+   (container-type: inline-size, above). This is what closes 20260908-005:
+   before this rule, nothing decided WHEN to collapse — the class was
+   purely app-toggled, so two consumers of the same composition could pick
+   two different thresholds, or forget to wire one at all.
+
+   DERIVED, not chosen. .juno-rail__label already ellipsis-truncates
+   (immediately above this block), so there is no "minimum label width" to
+   guess — a label degrades gracefully to a single truncated glyph and then
+   to nothing. The only real floor is the point below which an item can no
+   longer fit its ICON at all once the label has truncated away to zero —
+   every term below is a token junoui already owns, not a picked number:
+
+     2 x --juno-space-16        item's own inline padding           32px
+     1 x --juno-border-width-2  item's border-inline-start           2px
+     1.25em icon size at --juno-font-size-12 (12px x 1.25)          15px
+     1 x --juno-gap-control, comfortable density (--juno-space-8)    8px
+                                                              ───────────
+                                                                     57px
+
+   test/rail-collapse-threshold.test.mjs recomputes this from the built
+   token values (dist/js/tokens.js) and asserts it against the 57px below
+   — this number is not allowed to just be typed in and trusted.
+
+   DENSITY: --juno-gap-control is the only term that changes under
+   [data-juno-density='compact'] (--juno-space-4 = 4px), so the exact
+   compact-density floor is 53px, not 57px — using 57px uniformly is a
+   deliberate, documented simplification: a compact-density rail collapses
+   up to 4px earlier than its own exact floor, never later, so it never
+   fails to collapse when it should. An exact per-density threshold would
+   need either a duplicated ruleset scoped by [data-juno-density='compact']
+   or CSS container STYLE queries (checking the inherited custom property
+   directly) — the latter not yet reliably supported across this project's
+   target browsers (see browserslist in package.json), so this was judged
+   not worth the added surface for a 4px difference. Reported here rather
+   than silently picked.
+
+   This is UNRELATED to .juno-rail--responsive's pointer-aware @media
+   below: that rule answers "is this a phone" (pointer type + viewport) and
+   swaps the whole rail for a dock/pillbar; this one answers "is the rail's
+   own box too narrow for its content" regardless of pointer, and only
+   changes the rail's internal layout. The two are not merged and do not
+   depend on each other. */
+@container (max-width: 57px) {
+  .juno-rail__label {
+    display: none;
+  }
+
+  .juno-rail__item,
+  .juno-rail__brand {
+    justify-content: center;
+    padding-inline: 0;
+  }
 }
 
 /* Responsive — the rail self-hides where phone navigation belongs, so you
