@@ -94,7 +94,12 @@ export const IDENTITY_LABEL_FIXTURE = 'build 0000000 · fixture/branch';
 export async function pinIdentityLabel(pw) {
   await pw.evaluate((label) => {
     const el = document.getElementById('build-identity');
-    if (el) el.textContent = label;
+    if (!el) {
+      throw new Error(
+        'pinIdentityLabel: #build-identity not found — the showcase id changed and the pin is silently no-oping',
+      );
+    }
+    el.textContent = label;
   }, IDENTITY_LABEL_FIXTURE);
 }
 
