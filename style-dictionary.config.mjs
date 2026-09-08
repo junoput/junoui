@@ -263,7 +263,22 @@ StyleDictionary.registerFormat({
   },
 });
 
-// iOS — Swift enum of UIColor + CGFloat constants.
+// iOS — Swift enum of UIColor + CGFloat/Double/Int/String constants.
+//
+// PARITY WITH RUST, DECIDED — 20260908-083. This format used to filter
+// coreTokens to /px$/ only, so anything not a colour or a length (motion
+// durations, the z-index scale, opacity, font weights, line-height, the
+// canvas scrim — 46 tokens, one-directional: everything Swift had, Rust
+// also had) never reached Swift at all. That was never a stated scope —
+// no comment here, no line in docs/native.md — and it is the SAME defect
+// class as 20260906-056 (an emitter narrower than the token set it was
+// meant to cover, correct when written and silently stale as tokens were
+// added). Decided here, in writing: Swift and Dart carry every core token
+// in the form its value implies, exactly like Rust (rust/juno-rust below)
+// — nothing about "runs on iOS" makes a duration, a z-index or an opacity
+// value less real than a length. `classify()` (scripts/token-names.mjs)
+// is the single source both this format and Rust bucket by, so a token
+// added anywhere reaches every target that reads coreTokens or none.
 StyleDictionary.registerFormat({
   name: 'ios/juno-swift',
   format: ({ dictionary }) => {
@@ -272,15 +287,47 @@ StyleDictionary.registerFormat({
       const id = camel(t.path.slice(1));
       return `    public static let ${id} = JunoColor.hex(0x${h})`;
     });
-    const inkLines = coreTokens(dictionary)
-      .filter((t) => classify(val(t)) === 'color')
-      .map(
-        (t) =>
-          `    public static let ${camel(t.path)} = JunoColor.hex(0x${toHex(String(val(t))).slice(1)})`,
-      );
-    const dimLines = coreTokens(dictionary)
-      .filter((t) => /px$/.test(String(val(t))))
-      .map((t) => `    public static let ${camel(t.path)}: CGFloat = ${parseFloat(val(t))}`);
+
+    const core = coreTokens(dictionary);
+    const emit = (kind, render) =>
+      core
+        .filter((t) => classify(val(t)) === kind)
+        .map((t) => render(t, val(t)))
+        .join('\n');
+
+    // Unthemed colours (ink.canvas.*, ink.vivid.*) — same reasoning as Rust's
+    // `inks`: no palette or mode, because the backing is arbitrary imagery.
+    const inkLines = emit(
+      'color',
+      (t, v) =>
+        `    public static let ${camel(t.path)} = JunoColor.hex(0x${toHex(String(v)).slice(1)})`,
+    );
+    const dimLines = emit(
+      'px',
+      (t, v) => `    public static let ${camel(t.path)}: CGFloat = ${parseFloat(v)}`,
+    );
+    // Ms suffix mirrors Rust's _MS: without it a duration and a bare count
+    // sharing a path would collide on one identifier.
+    const durationLines = emit(
+      'ms',
+      (t, v) => `    public static let ${camel(t.path)}Ms: Double = ${f32Literal(numeric(v))}`,
+    );
+    const intLines = emit(
+      'int',
+      (t, v) => `    public static let ${camel(t.path)}: Int = ${numeric(v)}`,
+    );
+    const floatLines = emit(
+      'float',
+      (t, v) => `    public static let ${camel(t.path)}: Double = ${f32Literal(numeric(v))}`,
+    );
+    // Verbatim, like Rust's &str bucket: a CSS shadow or cubic-bezier string
+    // is opaque here too — junoui does not reinterpret it per platform,
+    // the consumer parses it at their boundary, same contract as Rust's.
+    const textLines = emit(
+      'text',
+      (t, v) => `    public static let ${camel(t.path)}: String = ${JSON.stringify(String(v))}`,
+    );
+
     return `// junoui design tokens — Swift. Generated; do not edit.
 import UIKit
 
@@ -295,15 +342,25 @@ public enum JunoColor {
 public enum JunoTokens {
 ${colorLines.join('\n')}
 
-${inkLines.join('\n')}
+${inkLines}
 
-${dimLines.join('\n')}
+${dimLines}
+
+${durationLines}
+
+${intLines}
+
+${floatLines}
+
+${textLines}
 }
 `;
   },
 });
 
-// Flutter — Dart class of Color + double constants.
+// Flutter — Dart class of Color/double/int/String constants. Same parity
+// decision and same classify() bucketing as ios/juno-swift above — see that
+// format's comment for the reasoning (20260908-083).
 StyleDictionary.registerFormat({
   name: 'flutter/juno-dart',
   format: ({ dictionary }) => {
@@ -312,15 +369,36 @@ StyleDictionary.registerFormat({
       const id = camel(t.path.slice(1));
       return `  static const Color ${id} = Color(0xFF${h});`;
     });
-    const inkLines = coreTokens(dictionary)
-      .filter((t) => classify(val(t)) === 'color')
-      .map(
-        (t) =>
-          `  static const Color ${camel(t.path)} = Color(0xFF${toHex(String(val(t))).slice(1)});`,
-      );
-    const dimLines = coreTokens(dictionary)
-      .filter((t) => /px$/.test(String(val(t))))
-      .map((t) => `  static const double ${camel(t.path)} = ${parseFloat(val(t))};`);
+
+    const core = coreTokens(dictionary);
+    const emit = (kind, render) =>
+      core
+        .filter((t) => classify(val(t)) === kind)
+        .map((t) => render(t, val(t)))
+        .join('\n');
+
+    const inkLines = emit(
+      'color',
+      (t, v) => `  static const Color ${camel(t.path)} = Color(0xFF${toHex(String(v)).slice(1)});`,
+    );
+    const dimLines = emit(
+      'px',
+      (t, v) => `  static const double ${camel(t.path)} = ${parseFloat(v)};`,
+    );
+    const durationLines = emit(
+      'ms',
+      (t, v) => `  static const double ${camel(t.path)}Ms = ${f32Literal(numeric(v))};`,
+    );
+    const intLines = emit('int', (t, v) => `  static const int ${camel(t.path)} = ${numeric(v)};`);
+    const floatLines = emit(
+      'float',
+      (t, v) => `  static const double ${camel(t.path)} = ${f32Literal(numeric(v))};`,
+    );
+    const textLines = emit(
+      'text',
+      (t, v) => `  static const String ${camel(t.path)} = ${JSON.stringify(String(v))};`,
+    );
+
     return `// junoui design tokens — Dart / Flutter. Generated; do not edit.
 import 'dart:ui';
 
@@ -329,9 +407,17 @@ class JunoTokens {
 
 ${colorLines.join('\n')}
 
-${inkLines.join('\n')}
+${inkLines}
 
-${dimLines.join('\n')}
+${dimLines}
+
+${durationLines}
+
+${intLines}
+
+${floatLines}
+
+${textLines}
 }
 `;
   },
