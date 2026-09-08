@@ -66,7 +66,8 @@
     "./package.json": "./package.json",
     "./rules": "./dist/rust/juno_rules.rs",
     "./scrubber": "./tools/scrubber.mjs",
-    "./range": "./tools/range.mjs"
+    "./range": "./tools/range.mjs",
+    "./identity": "./dist/js/identity.js"
   },
   "files": [
     "dist",
@@ -83,7 +84,8 @@
     "build:icons": "node scripts/build-icons.mjs",
     "build:css": "node scripts/bundle-css.mjs",
     "build:classes": "node scripts/build-classes.mjs",
-    "build": "npm run build:tokens && npm run build:rules && npm run build:icons && npm run build:css && npm run build:classes",
+    "build:identity": "node scripts/build-identity.mjs",
+    "build": "npm run build:tokens && npm run build:rules && npm run build:icons && npm run build:css && npm run build:classes && npm run build:identity",
     "gen-docs": "node scripts/gen-docs.mjs",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
     "lint:css": "stylelint \"src/css/**/*.css\"",
