@@ -4,6 +4,14 @@ Read-only census of the 52 files in `src/css/components/` as they exist on this
 branch, measured from the CSS itself rather than from `docs/components/*.md`. Where the
 two disagree, the disagreement is recorded as its own finding rather than picked between.
 
+**W5 (`20260908-019`) turned the slot-order half of this census into a
+generated, assertable export** — [`docs/component-contract.md`](./component-contract.md),
+`dist/json/component-contract.json`. It covers 21 of the 52 files, narrower
+than this document's hand-read 23 `fixed`, because it certifies only what a
+Usage example and the CSS's own selectors prove, never a judgement about an
+absence. The two documents are related, not identical — read that one for
+what a non-browser target can actually consume.
+
 **This document makes no judgement.** It does not say whether any component is fit,
 well-designed, or suitable for anything — that is W2b (the geovista gap map), which this
 census exists to be checked against. It does not cover appearance (colour/weight/balance),
