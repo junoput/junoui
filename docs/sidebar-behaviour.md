@@ -265,31 +265,40 @@ composing rail-inside-sidebar should derive its collapse threshold from
 `--juno-rail-width` itself (so the numbers cannot independently drift) —
 which is only possible because of Gap 2 below being named, not fixed.
 
-#### Gap 2: `--juno-rail-width` and `--juno-sidebar-width` are two independently defaulted numbers, not one
+#### Gap 2: `--juno-rail-width` and `--juno-sidebar-width` are two independently defaulted numbers, not one — CLOSED (20260908-001)
 
 Found while verifying rail's row for this document, not inherited from the
 census (which does not cross-reference components against each other at
-all). `.juno-sidebar > .juno-sidebar__aside` reserves `flex-basis:
+all). `.juno-sidebar > .juno-sidebar__aside` reserved `flex-basis:
 var(--juno-sidebar-width, 280px)` (`src/css/layout.css:63`); `.juno-rail`
-separately sets its own `inline-size: var(--juno-rail-width, 180px)`
+separately set its own `inline-size: var(--juno-rail-width, 180px)`
 (`src/css/components/rail.css:19,24`). **A `.juno-rail` composed as the
 content of a `.juno-sidebar__aside` — exactly the composition this ticket
-specifies — has two unrelated default widths active at once: the aside
-reserves 280px of flex-basis, the rail paints itself at 180px.** Nothing
-connects them; each defaults independently and each can be overridden
-independently, so agreement today is coincidental in exactly the sense
-this document's own opening paragraph defines the complaint by. It is not
-visually catastrophic (100px of the aside's reserved space goes unused
-rather than something overflowing), but it is precisely "two elements that
-are linked in the composition and separate in code."
+specifies — had two unrelated default widths active at once: the aside
+reserved 280px of flex-basis, the rail painted itself at 180px.** Nothing
+connected them; each defaulted independently and each could be overridden
+independently, so agreement was coincidental in exactly the sense this
+document's own opening paragraph defines the complaint by.
 
-**How it could be asserted, once decided:** either `.juno-rail` should
-read `--juno-sidebar-width` when nested inside `.juno-sidebar__aside`
-(one variable, two consumers) or the two defaults should be made to
-literally match (280px in both places) with a test asserting they still
-do — the same shape of guard `test/pointer-first.test.mjs` already applies
-to the compact-nav condition. Deciding which is not this ticket's call
-(no CSS ships here); naming that it is currently neither, is.
+**Closed by ticket 20260908-001** (opened option A of the two named above —
+one variable, two consumers — over option B, matching the ticket's own
+reasoning: "when two things must agree, prefer removing the second thing
+over asserting the agreement"). `.juno-sidebar > .juno-sidebar__aside` now
+declares `--juno-sidebar-width: 280px` as a real value rather than only a
+`var()` fallback, and a new composition rule,
+`.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed) {
+--juno-rail-width: var(--juno-sidebar-width, 280px); }`, makes a rail
+composed inside a sidebar aside read that same variable — one number, not
+two, in the documented composition. The `:not(.juno-rail--collapsed)`
+exclusion keeps collapse (the deeper, deliberate override) winning
+regardless of composition. A bare `.juno-rail` outside `.juno-sidebar`
+keeps its own 180px default, unaffected. Asserted by
+`test/sidebar-rail-width.test.mjs`, which checks the relationship (the
+composed rule references `--juno-sidebar-width`, not a literal) rather
+than a specific pixel value, and was mutation-tested both ways: reverting
+the composed rule's value to a literal `180px`, and separately drifting
+just its defensive fallback to `320px` while leaving the aside at `280px`,
+each turned the relevant test red; restoring turned it green again.
 
 #### Gap 3: an id-matched control and the thing it controls can drift silently, and junoui has this pattern twice
 
@@ -356,10 +365,12 @@ believing:
    been generalized to the row types a sidebar actually uses most.
 2. **`.juno-rail--collapsed` has no width-driven trigger** (§4, Gap 1) —
    collapse is an app-toggled class with no container query behind it.
-3. **`--juno-rail-width` (180px) and `--juno-sidebar-width` (280px) are
+3. **`--juno-rail-width` (180px) and `--juno-sidebar-width` (280px) were
    two independently defaulted custom properties**, not one (§4, Gap 2) —
    discovered by cross-referencing `rail.css` against `layout.css` for
-   this document, not present in the census.
+   this document, not present in the census. **Closed by 20260908-001**: a
+   rail composed inside a sidebar aside now reads the aside's own
+   `--juno-sidebar-width`.
 4. **id-matched control/target pairs (`for`/`id`, `popovertarget`/`id`)
    are two hand-authored strings, not one value referenced twice** (§4,
    Gap 3) — a native-platform pattern junoui's own usage examples use
