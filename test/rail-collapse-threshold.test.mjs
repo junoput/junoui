@@ -14,10 +14,23 @@
 //
 // Plain text/regex parsing on the built bundle (test/README: "no deps"),
 // same approach as test/sidebar-rail-width.test.mjs — no postcss.
+//
+// The derivation itself lives in scripts/rail-collapse-derivation.mjs, not
+// here — 20260908-036 reuses the SAME computation for the width-clamp
+// floor, and importing one shared module is what makes "reuse" true rather
+// than asserted; a second copy in each test file would be exactly the
+// coincidental-agreement defect this programme keeps removing.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { CORE } from '../dist/js/tokens.js';
+import {
+  TERMS,
+  DERIVED_FLOOR_COMFORTABLE,
+  DERIVED_FLOOR_COMPACT,
+} from '../scripts/rail-collapse-derivation.mjs';
+
+const { ITEM_PADDING_INLINE, ITEM_BORDER_INLINE_START, ICON_SIZE, GAP_COMFORTABLE, GAP_COMPACT } =
+  TERMS;
 
 const css = readFileSync('dist/css/juno.css', 'utf8');
 
@@ -54,24 +67,6 @@ function atRuleBlockContaining(atRulePattern, mustContain, searchFrom = 0) {
   }
   return undefined;
 }
-
-function px(token) {
-  const value = token;
-  assert.match(value, /^[\d.]+px$/, `expected a plain px token, got "${value}"`);
-  return Number.parseFloat(value);
-}
-
-// ── the derivation itself, from real built tokens, not typed-in numbers ───
-const ITEM_PADDING_INLINE = 2 * px(CORE.space['16']); // both sides of .juno-rail__item
-const ITEM_BORDER_INLINE_START = px(CORE.border.width['2']);
-const ICON_SIZE = 1.25 * px(CORE.font.size['12']); // 1.25em at the item's own font-size
-const GAP_COMFORTABLE = px(CORE.space['8']); // --juno-gap-control, comfortable density
-const GAP_COMPACT = px(CORE.space['4']); // --juno-gap-control, compact density
-
-const DERIVED_FLOOR_COMFORTABLE =
-  ITEM_PADDING_INLINE + ITEM_BORDER_INLINE_START + ICON_SIZE + GAP_COMFORTABLE;
-const DERIVED_FLOOR_COMPACT =
-  ITEM_PADDING_INLINE + ITEM_BORDER_INLINE_START + ICON_SIZE + GAP_COMPACT;
 
 test('the derivation floor is a real number, not NaN from a token that moved', () => {
   // A vacuity floor for the derivation itself: if any CORE lookup above
@@ -185,5 +180,84 @@ test('the auto-collapse rule is unrelated to the pointer-first responsive @media
   assert.ok(
     media,
     'the pointer-first @media rule is gone — this test also guards that it stayed put',
+  );
+});
+
+// ── 20260908-036: the width clamp reuses the SAME derivation, not a second
+//    one — every assertion below is against DERIVED_FLOOR_COMFORTABLE,
+//    the identical constant the auto-collapse tests above check.
+
+test('the width clamp is a real rule, floors at the derived value, and bounds one direction only', () => {
+  const clamp = ruleBody('.juno-rail:not(.juno-rail--collapsed)');
+  assert.ok(clamp, 'the .juno-rail:not(.juno-rail--collapsed) rule is gone');
+  const inlineSize = clamp.match(/inline-size:\s*([^;]+);/)?.[1]?.trim();
+  assert.ok(inlineSize, 'the clamp rule sets no inline-size at all');
+  assert.match(
+    inlineSize,
+    /^max\(/,
+    `expected a one-sided floor via max(), got "${inlineSize}" — clamp() or min() would also bound the CONSUMER'S larger requests, which the ticket says must still resolve unchanged`,
+  );
+  assert.doesNotMatch(
+    inlineSize,
+    /\bclamp\(|\bmin\(/,
+    'the clamp expression also uses clamp()/min() — that would impose a ceiling this rule must not have',
+  );
+  assert.match(
+    inlineSize,
+    /var\(--juno-rail-width\)/,
+    'the clamp lost the consumer override entirely',
+  );
+
+  const floorText = inlineSize.match(/,\s*([\d.]+)px\)/)?.[1];
+  assert.ok(floorText, `could not find a "..., Npx)" floor in "${inlineSize}"`);
+  assert.equal(
+    Number(floorText),
+    DERIVED_FLOOR_COMFORTABLE,
+    `the clamp floor (${floorText}px) no longer matches the SAME derivation the auto-collapse threshold uses ` +
+      `(${DERIVED_FLOOR_COMFORTABLE}px) — reusing one derivation for both is the whole point; if they are meant ` +
+      'to differ now, say so in rail.css and update this test deliberately, not by drift',
+  );
+});
+
+test('a larger consumer request still resolves unchanged — the floor is one-sided', () => {
+  // CSS max() is a pure function of its arguments — max(240px, 57px) = 240px
+  // regardless of runtime layout — so this is checkable without a browser:
+  // assert the STRUCTURE (max, not clamp/min) rather than a rendered pixel.
+  // The real geometric claim (a consumer requesting 240px really measures
+  // 240px in a live layout) is exactly what test/visual/*.spec.mjs is for;
+  // this test only guards that the CSS keeps the right shape to make that
+  // true, which is what a source-level suite can actually check.
+  const clamp = ruleBody('.juno-rail:not(.juno-rail--collapsed)');
+  assert.ok(clamp);
+  assert.match(clamp, /max\(var\(--juno-rail-width\),\s*57px\)/);
+});
+
+test('the collapsed rail is NOT clamped — its own 56px stays 56px, not floored to 57px', () => {
+  // The floor rule is scoped to :not(.juno-rail--collapsed) specifically so
+  // it does not apply here. Assert the NEGATIVE directly: no rule matching
+  // ".juno-rail--collapsed" (in either selector position) sets inline-size
+  // at all — collapsed must fall through to the base .juno-rail rule's
+  // plain, unclamped `inline-size: var(--juno-rail-width)`.
+  const collapsedWidth = ruleBody('.juno-rail--collapsed');
+  assert.ok(collapsedWidth, 'the .juno-rail--collapsed rule is gone');
+  assert.match(
+    collapsedWidth,
+    /--juno-rail-width:\s*var\(--juno-space-56\)/,
+    'collapsed no longer sets its own 56px width — has the token changed on purpose?',
+  );
+  assert.doesNotMatch(
+    collapsedWidth,
+    /inline-size/,
+    'the .juno-rail--collapsed rule now sets inline-size directly — check it is not silently re-introducing the 57px floor for the collapsed state',
+  );
+});
+
+test('the base .juno-rail rule still has an unclamped fallback for the collapsed case', () => {
+  const base = ruleBody('.juno-rail');
+  assert.ok(base, 'the base .juno-rail rule is gone');
+  assert.match(
+    base,
+    /inline-size:\s*var\(--juno-rail-width\);/,
+    'the base rule no longer has a plain inline-size — the collapsed rail would have nothing to fall back to',
   );
 });

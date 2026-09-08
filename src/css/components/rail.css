@@ -97,6 +97,43 @@
   --juno-rail-width: var(--juno-space-56);
 }
 
+/* Width FLOOR — 20260908-036. --juno-rail-width is a documented consumer
+   knob (240px must still resolve to 240px); nothing stopped it resolving
+   BELOW the point an item's own icon fits, so a consumer asking for
+   `--juno-rail-width: 20px` got a 20px rail with an overflowing icon.
+   20260908-005's auto-collapse (@container below) answers a different
+   question — the rail running out of room ON ITS OWN inside a shrinking
+   ancestor — and does not stop an EXPLICIT custom-property value from
+   being too small in the first place.
+
+   ONE-SIDED, floor only, no ceiling: max() — not clamp() or min() — so a
+   larger request (240px) still resolves to exactly 240px, unclamped.
+
+   SAME NUMBER as the auto-collapse threshold, not a second derivation:
+   both come from scripts/rail-collapse-derivation.mjs, and
+   test/rail-collapse-threshold.test.mjs asserts BOTH literals below
+   against it. That is a deliberate choice between the two answers this
+   ticket named as defensible ("the same number, or one step below it") —
+   below 57px an item cannot fit its icon at ALL, in either the labeled or
+   the icon-only layout (icon 15px + border-inline-start 2px + the item's
+   own remaining inline padding once centered), so there is no width where
+   collapsing instead of clamping would help; the two mechanisms protect
+   the same boundary from two different directions (ambient shrink vs.
+   explicit consumer value) and share the number that boundary sits at.
+
+   SCOPED to `:not(.juno-rail--collapsed)` deliberately: collapsed
+   already targets a smaller, deliberately-chosen 56px
+   (`--juno-space-56`, one line up) via its own icon-only layout with
+   zero inline padding — a different, already-verified floor, not a bug
+   this ticket found. Clamping it to 57px here would make the collapsed
+   rail 1px WIDER than designed for no reason. If :not(.juno-rail--collapsed)
+   does not match, this rule simply does not apply and the base
+   `.juno-rail` rule's plain `inline-size: var(--juno-rail-width)` (top of
+   this file) is what collapsed uses instead — unclamped, as before. */
+.juno-rail:not(.juno-rail--collapsed) {
+  inline-size: max(var(--juno-rail-width), 57px);
+}
+
 .juno-rail--collapsed .juno-rail__label,
 .juno-rail--collapsed .juno-rail__brand .juno-rail__label {
   display: none;
