@@ -43,12 +43,25 @@
  *         aria-label="Playback position"
  *         aria-valuemin="0" aria-valuemax="212" aria-valuenow="87"
  *         aria-valuetext="1:27 of 3:32"
- *         style="--juno-scrubber-played:41%; --juno-scrubber-loaded:68%">
+ *         style="--juno-scrubber-played:41%; --juno-scrubber-loaded:68%;
+ *                --juno-scrubber-in:20%; --juno-scrubber-out:75%">
  *      <div class="juno-scrubber__track">
  *        <div class="juno-scrubber__loaded"></div>
  *        <div class="juno-scrubber__played"></div>
  *      </div>
+ *      \3c !-- each __tick's own inset-inline-start is app-set directly —
+ *           junoui owns no per-tick position token, unlike __played/__head -->
+ *      <div class="juno-scrubber__ticks">
+ *        <span class="juno-scrubber__tick" style="inset-inline-start: 30%"></span>
+ *        <span class="juno-scrubber__tick" style="inset-inline-start: 65%"></span>
+ *      </div>
+ *      \3c !-- the in..out selection: drawn over the track, under the playhead -->
+ *      <div class="juno-scrubber__range"></div>
+ *      <button class="juno-scrubber__mark juno-scrubber__mark--in" aria-label="In point"></button>
+ *      <button class="juno-scrubber__mark juno-scrubber__mark--out" aria-label="Out point"></button>
  *      <div class="juno-scrubber__head"></div>
+ *      \3c !-- app-filled: a thumbnail, a timestamp, a sparkline -->
+ *      <div class="juno-scrubber__preview">1:27</div>
  *    </div>
  * ════════════════════════════════════════════════════════════════════ */
 

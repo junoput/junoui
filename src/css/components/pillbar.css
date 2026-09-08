@@ -23,6 +23,26 @@
  *  decides how many __item fit, reading --juno-pillbar-item/-gap/-pad below),
  *  swap the last __item for .juno-pillbar__overflow anchoring a .juno-menu —
  *  see docs/components/pillbar.md#overflow-slot and menu.css.
+ *
+ *  Collapsible — the whole pill folds into one circular toggle; a tap
+ *  expands it back out. __toggle and __tray have NO fixed relative order:
+ *  the bar reads __toggle's aria-expanded via :has(), so a left-anchored
+ *  pill puts __toggle first and a right-anchored one puts __tray first —
+ *  either is correct, by design (see the block below `.juno-pillbar__tray`
+ *  for the full mechanism). The example below shows ONE valid arrangement,
+ *  not THE arrangement:
+ *    <nav class="juno-pillbar juno-pillbar--collapsible" aria-label="Tools">
+ *      <button class="juno-pillbar__toggle" aria-expanded="false" aria-label="Show toolbar">
+ *        <svg class="juno-icon" aria-hidden="true"><use href="…#juno-i-dots-three" /></svg>
+ *      </button>
+ *      <div class="juno-pillbar__tray">
+ *        <div>
+ *          <input class="juno-pillbar__input" type="search" aria-label="Filter" />
+ *          <span class="juno-pillbar__sep"></span>
+ *          <button class="juno-pillbar__item" aria-label="Sync">…</button>
+ *        </div>
+ *      </div>
+ *    </nav>
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-pillbar {
