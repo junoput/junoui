@@ -24,9 +24,26 @@ import {
 
 // ── value + name helpers ────────────────────────────────────────────────
 const val = (t) => t.original?.$value ?? t.$value ?? t.value;
-const isColorToken = (t) => t.path[0] === 'color';
-const coreTokens = (d) => d.allTokens.filter((t) => !isColorToken(t));
-const colorTokens = (d) => d.allTokens.filter((t) => isColorToken(t));
+
+// A token's own declared $type decides whether it is a color — never its
+// path. Two different questions read that differently, and one predicate
+// serving both is what dropped `ink.*` from Android: `isColorToken` used to
+// key on `path[0] === 'color'`, which happened to agree with $type for all
+// 90 tokens under `color.*` — by naming coincidence, not by construction —
+// and silently excluded every color declared outside that tree.
+//
+//   isColorValued — "does this token declare `$type: color`?" Every
+//     accredited color, themed or not. For platform emitters that must
+//     carry every color a native app can draw (Android's colors.xml).
+//   isThemedRole  — "is this one of the color.<palette>.<mode>.<role>
+//     tokens that switch with [data-juno-palette]/[data-juno-mode]?" ink is
+//     $type:color but deliberately never themed (there is no known surface
+//     to theme against — see tokens/core/ink.json / docs/canvas-ink.md), so
+//     the CSS/SCSS/JS theme machinery must keep using this narrower test.
+const isColorValued = (t) => (t.$type ?? t.type) === 'color';
+const isThemedRole = (t) => t.path[0] === 'color';
+const coreTokens = (d) => d.allTokens.filter((t) => !isThemedRole(t));
+const themedTokens = (d) => d.allTokens.filter((t) => isThemedRole(t));
 
 // CSS/SCSS variable name from token path: space.16 → juno-space-16
 const flatName = (t) => 'juno-' + t.path.join('-');
@@ -36,7 +53,7 @@ const flatName = (t) => 'juno-' + t.path.join('-');
 // ── group color tokens into { palette: { mode: { role: value } } } ──────
 function byTheme(d, transform = (x) => x) {
   const themes = {};
-  for (const t of colorTokens(d)) {
+  for (const t of themedTokens(d)) {
     const [, palette, mode, role] = t.path;
     ((themes[palette] ??= {})[mode] ??= {})[role] = transform(val(t));
   }
@@ -216,11 +233,16 @@ StyleDictionary.registerFormat({
   },
 });
 
-// Android — colors.xml (hex, every theme) + dimens.xml (core dimensions).
+// Android — colors.xml (hex, EVERY $type:color token, themed or not — see
+// isColorValued above) + dimens.xml (core dimensions). Unlike iOS/Flutter/
+// Rust, which reach `ink.*` with a second pass over coreTokens, Android's
+// output has no palette/mode/role grouping to preserve, so one predicate
+// covering both the themed tree and the unthemed ink pair is the whole fix.
 StyleDictionary.registerFormat({
   name: 'android/juno-colors',
   format: ({ dictionary }) => {
-    const rows = colorTokens(dictionary)
+    const rows = dictionary.allTokens
+      .filter(isColorValued)
       .map(
         (t) =>
           `  <color name="${t.path.slice(1).join('_').replace(/-/g, '_')}">${toHex(val(t))}</color>`,
@@ -245,7 +267,7 @@ StyleDictionary.registerFormat({
 StyleDictionary.registerFormat({
   name: 'ios/juno-swift',
   format: ({ dictionary }) => {
-    const colorLines = colorTokens(dictionary).map((t) => {
+    const colorLines = themedTokens(dictionary).map((t) => {
       const h = toHex(val(t)).slice(1);
       const id = camel(t.path.slice(1));
       return `    public static let ${id} = JunoColor.hex(0x${h})`;
@@ -285,7 +307,7 @@ ${dimLines.join('\n')}
 StyleDictionary.registerFormat({
   name: 'flutter/juno-dart',
   format: ({ dictionary }) => {
-    const colorLines = colorTokens(dictionary).map((t) => {
+    const colorLines = themedTokens(dictionary).map((t) => {
       const h = toHex(val(t)).slice(1);
       const id = camel(t.path.slice(1));
       return `  static const Color ${id} = Color(0xFF${h});`;
@@ -331,7 +353,7 @@ ${dimLines.join('\n')}
 StyleDictionary.registerFormat({
   name: 'rust/juno-rust',
   format: ({ dictionary }) => {
-    const colors = colorTokens(dictionary);
+    const colors = themedTokens(dictionary);
 
     // flat color consts, one per palette/mode/role
     const colorLines = colors.map((t) => {
