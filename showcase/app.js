@@ -12,6 +12,7 @@
 // ════════════════════════════════════════════════════════════════════════
 
 import { TOKENS } from '../dist/js/tokens.js';
+import { IDENTITY } from '../dist/js/identity.js';
 
 const html = document.documentElement;
 const ROLES = [
@@ -134,6 +135,14 @@ async function injectSprite() {
 }
 const icon = (name, cls = '') =>
   `<svg class="juno-icon ${cls}" aria-hidden="true"><use href="#juno-i-${name}" /></svg>`;
+
+// Answers "is my change live?" from the app itself (20260908-008) — the
+// same value a consumer would read from `junoui/identity`.
+function identityLabel() {
+  if (!IDENTITY.gitAvailable) return 'build: no git metadata';
+  const short = IDENTITY.commit.slice(0, 7);
+  return `build ${short}${IDENTITY.dirty ? '+dirty' : ''} · ${IDENTITY.branch}`;
+}
 
 // ── shared chrome (header + nav + footer) ────────────────────────────────
 function renderChrome() {
@@ -258,7 +267,8 @@ function renderChrome() {
   footer.className = 'demo-footer';
   footer.innerHTML = `
     <span class="juno-mono juno-text-nominal" style="letter-spacing:.2em;">junoui</span>
-    <span class="juno-text-muted" style="font-size:11px;">junoui · interactive demo · not shipped in the npm package</span>`;
+    <span class="juno-text-muted" style="font-size:11px;">junoui · interactive demo · not shipped in the npm package</span>
+    <span id="build-identity" class="juno-mono juno-text-muted" style="font-size:11px;" title="Build identity — see junoui/identity">${identityLabel()}</span>`;
   document.body.append(pill, footer);
 }
 

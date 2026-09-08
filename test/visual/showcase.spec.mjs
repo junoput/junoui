@@ -17,6 +17,7 @@ import {
   PHONE_PAGES,
   PHONE_VIEWPORT,
   openAndShoot,
+  pinIdentityLabel,
   pinVolatile,
   sectionShots,
   shoot,
@@ -84,6 +85,7 @@ for (const mode of MODES) {
     await pw.emulateMedia({ colorScheme: mode });
     await pw.goto('/showcase/index.html', { waitUntil: 'networkidle' });
     await pw.evaluate(() => document.fonts.ready);
+    await pinIdentityLabel(pw);
     expect(await pw.evaluate(() => document.documentElement.dataset.junoMode)).toBeUndefined();
 
     await expect(pw).toHaveScreenshot(`index-auto-${mode}.png`, {
