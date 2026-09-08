@@ -137,9 +137,17 @@ and a value column so the eye can scan them," and a `cluster` sizes each
 child to its own content, so nothing FORCES two tiles to agree on a width.
 
 That is true of `.juno-cluster` and it is not a defect in it — a cluster's
-job is to pack content-sized items, and measured against the same four
-readouts it wraps to **three rows of 2/1/1 items**, purely from width
-variance, with no column relationship between them at all:
+job is to pack content-sized items. **The relationship, not a value:** each
+wrapped line packs independently from its own content width, so nothing
+forces two lines to agree on how many items they hold or where those items'
+edges fall. Measured against the same four readouts, on CI's Linux/Chromium
+font stack at a 280px container, that produced three rows of 2/1/1 items —
+a real number, but one that depends on the fixture's glyphs and this
+container width, not a property of `.juno-cluster` itself the way the grid's
+equal-column relationship below is a property of `.juno-grid-auto--tiles`. A
+different font stack, a different container width, or different readout
+text will count different rows; the thing that stays true across all of
+them is that a cluster has no mechanism to make it otherwise:
 
 ```html
 <div class="juno-cluster">
@@ -164,23 +172,33 @@ independent lines that each pack their own content:
 Measured on that markup, 280px container, four readouts of widths that
 range from a 3-character value to a wrapping 44-character unit: **every
 tile is exactly 135px**, and column 2's tiles sit at `x:145` in row 1 AND
-row 2 — same relationship, not a coincidence of these particular values. The
-relationship holds because there is exactly one mechanism (grid track
-sizing) computing every tile's width from the same track list, the way
+row 2 — same relationship, not a coincidence of these particular values.
+Unlike the cluster's row counts above, these two numbers ARE portable
+across a font stack: `135px = (280px container − 10px gap) / 2 columns` is
+grid-track arithmetic on the container's own box, not on any glyph — it
+would measure the same on macOS, because none of the readouts' text width
+entered the calculation at all. That is the whole point of a shared-track
+column: content stopped being an input. The relationship holds because
+there is exactly one mechanism (grid track sizing) computing every tile's
+width from the same track list, the way
 `.juno-tree__group`'s indentation is one mechanism rather than a tracked
 number (`principles-structure.md` §2) — there is no second number that could
 disagree with it.
 
 **Baseline holds under mismatched content height too, with no CSS written
-for it.** The wrapping-unit tile stretches its row to 150px tall (grid's
-default `align-items: stretch`); its row-mate, whose own content is only
-119px tall, stretches to match — and because `.juno-readout` is
-`flex-direction: column` with default `justify-content: flex-start`, its
-label and value stay packed at the top of the now-taller box. Measured:
-both tiles in that row report the identical `label` and `value` `y`
-position, despite a 31px difference in tile height. Stretch changes how
-much empty space a short tile carries at its own foot; it does not move
-where that tile's own content starts.
+for it.** Give one tile a unit long enough to wrap onto a second line and
+its row stretches to fit (grid's default `align-items: stretch`); a
+row-mate whose own content needs less height stretches to match — and
+because `.juno-readout` is `flex-direction: column` with default
+`justify-content: flex-start`, its label and value stay packed at the top
+of the now-taller box. On CI's font stack that wrapping tile measured
+150px against a 119px natural row-mate — that pair of numbers is this
+fixture's text at this container width and is not the claim; the claim is
+that **both tiles in the row reported the identical `label` and `value`
+`y` position regardless of the height gap between them**, which held and
+is asserted as exactly that relationship in the spec, not as those two
+numbers. Stretch changes how much empty space a short tile carries at its
+own foot; it does not move where that tile's own content starts.
 
 ### Overflow — pick a rung on the ladder that already exists, per context
 
@@ -190,11 +208,14 @@ a bar pinned to a fixed height (a status strip under a topbar). junoui
 already ships two other rungs — reuse them rather than inventing a fourth:
 
 - **Scroll, stay one row** — `.juno-reel` (or bare `.juno-scroller--x`) if
-  wrapping would blow the bar's height budget. Measured: four readouts at
-  549px combined width inside a 280px container all sit on one row
-  (`y` identical for every tile) and the container reports
-  `scrollWidth (549) > clientWidth (280)` — it scrolls instead of wrapping,
-  each tile kept at its own natural content width.
+  wrapping would blow the bar's height budget. Measured: the same four
+  readouts, in a 280px container (the deliberate input), all sit on one row
+  (`y` identical for every tile) and the container's `scrollWidth` exceeds
+  its `clientWidth` — it scrolls instead of wrapping, each tile kept at its
+  own natural content width. The margin between those two numbers is this
+  fixture's combined text width on CI's font stack, not a portable value;
+  the relationship the spec asserts is `scrollWidth > clientWidth`, not a
+  specific pixel gap.
 - **Collapse behind a trigger** — `.juno-pillbar`'s
   [overflow-slot / tray pattern](./components/pillbar.md#overflow-slot) if
   the app wants "N visible, the rest behind a menu" rather than either wrap
