@@ -10,6 +10,7 @@ import { readFileSync, readdirSync, mkdirSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import { checkInventoryElements } from '../scripts/check-inventory-elements.mjs';
+import { screamingSnake } from '../scripts/token-names.mjs';
 
 const GENERATOR = join(process.cwd(), 'scripts/build-component-contract.mjs');
 
@@ -163,6 +164,90 @@ test('tree: exported order agrees with its own sibling-combinator constraint, re
     order.indexOf('count') < order.indexOf('trail'),
     "exported order puts trail before count, contradicting tree.css's own sibling combinator",
   );
+});
+
+// 20260908-080: geovista found indent_step names a CSS custom property
+// (--juno-tree-indent) a Rust consumer cannot resolve — juno_tokens.rs has
+// no `tree` or `indent` entry at all. Checking it surfaced a second, bigger
+// defect: the Rust struct declares `indent_step: Option<&'static str>` but
+// the generator emitted a bare &str, which does not compile
+// (error[E0308]) — see scripts/test-rust.mjs, which now compiles this file
+// and would have caught it. These tests are RELATIONSHIP tests, not
+// string-equality: they re-derive the expected values from tree.css and
+// juno_tokens.rs independently, so either side drifting fails the test,
+// not just the one this ticket found.
+test('tree: indentStep is re-derived from its own CSS declaration, not restated', () => {
+  assert.ok(contract.covered.tree, 'tree is no longer covered — check its exclusion reason');
+  const css = readFileSync('src/css/components/tree.css', 'utf8');
+  const decl = /(--juno-[a-z0-9-]*indent[a-z0-9-]*)\s*:\s*([^;]+);/.exec(css);
+  assert.ok(decl, 'tree.css no longer declares an indent-named custom property');
+  const [, name, value] = decl;
+  assert.equal(
+    contract.covered.tree.indentStep.name,
+    name,
+    'exported indentStep.name disagrees with what tree.css actually declares',
+  );
+  const alias = /^var\((--juno-[a-z0-9-]+)\)$/.exec(value.trim());
+  if (alias) {
+    // tree.css's declaration is an alias to a core token today — assert the
+    // export names THAT token, re-derived from the CSS, not a copy of the
+    // JSON's own claim.
+    assert.equal(
+      contract.covered.tree.indentStep.resolvesTo,
+      alias[1],
+      "exported resolvesTo disagrees with tree.css's own var() alias",
+    );
+  } else {
+    assert.equal(
+      contract.covered.tree.indentStep.resolvesTo,
+      null,
+      "tree.css's declaration is no longer a plain var() alias — resolvesTo must be null, not a stale guess",
+    );
+  }
+});
+
+test('indentStep.resolvesTo, wherever non-null, names a real entry in juno_tokens.rs — never a dangling reference', () => {
+  const tokensRs = readFileSync('dist/rust/juno_tokens.rs', 'utf8');
+  const withResolution = Object.entries(contract.covered).filter(
+    ([, c]) => c.indentStep?.resolvesTo,
+  );
+  assert.ok(
+    withResolution.length > 0,
+    'no covered component resolves an indentStep — this test would pass vacuously',
+  );
+  for (const [name, c] of withResolution) {
+    const rest = c.indentStep.resolvesTo.replace(/^--juno-/, '');
+    const rustConst = screamingSnake(rest.split('-'));
+    assert.match(
+      tokensRs,
+      new RegExp(`pub const ${rustConst}:`),
+      `${name}'s indentStep.resolvesTo (${c.indentStep.resolvesTo}) has no matching entry in juno_tokens.rs — this is the exact dangling-name shape 20260908-080 found`,
+    );
+  }
+});
+
+test('every indent_step / indent_default_token in the Rust target is Option-wrapped, never a bare &str', () => {
+  // The exact bug: `indent_step: "--juno-tree-indent",` against a struct
+  // field typed `Option<&'static str>` — compiles nowhere. This scans every
+  // occurrence of both fields, present or future, rather than pinning one
+  // component by name, so a NEW component gaining an indent step is covered
+  // without anyone remembering to update this test.
+  // Excludes the struct DEFINITION's `pub indent_step: Option<&'static str>,`
+  // (a type, not a value) — only the COMPONENTS array's per-entry values.
+  const fields = [...rust.matchAll(/^(?!\s*pub )\s*(indent_step|indent_default_token): (.+),$/gm)];
+  assert.ok(fields.length > 0, 'no indent_step/indent_default_token lines found — regex is stale');
+  for (const [, field, value] of fields) {
+    assert.match(
+      value,
+      /^(Some\(".*"\)|None)$/,
+      `${field}: ${value} is not Option-wrapped — this is 20260908-080's exact defect shape`,
+    );
+  }
+});
+
+test('the Rust struct declares both indent fields as Option<&str>', () => {
+  assert.match(rust, /pub indent_step: Option<&'static str>,/);
+  assert.match(rust, /pub indent_default_token: Option<&'static str>,/);
 });
 
 test('gizmo, range and slider are excluded for app-supplied positioning, never certified as fixed', () => {
