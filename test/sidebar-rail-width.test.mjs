@@ -8,34 +8,33 @@
 //
 // These assert the RELATIONSHIP survives a retune, not a specific pixel
 // value: "assert rail width === 280" would pass for the wrong reason and rot
-// the day the sidebar's default changes. Mutation-tested: see the ticket's
-// PR description for the red/green proof.
+// the day the sidebar's default changes. Mutation-tested: see the PR
+// description for the red/green proof.
+//
+// Plain text/regex parsing on the built bundle, matching the rest of this
+// suite (test/README: "no deps") — no postcss. Every rule this file checks
+// is a flat, single-line-selector block with no nesting, so a brace-matched
+// regex extracts its body exactly as reliably as an AST would.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import postcss from 'postcss';
 
 const css = readFileSync('dist/css/juno.css', 'utf8');
-const root = postcss.parse(css);
 
-function findRule(selector) {
-  let found;
-  root.walkRules(selector, (rule) => {
-    found = rule;
-  });
-  return found;
+function ruleBody(selector) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = css.match(new RegExp(`(?:^|\\n)${escaped}\\s*\\{([^}]*)\\}`));
+  return match ? match[1] : undefined;
 }
 
-function declValue(rule, prop) {
-  let value;
-  rule.walkDecls(prop, (decl) => {
-    value = decl.value;
-  });
-  return value;
+function declValue(body, prop) {
+  if (!body) return undefined;
+  const match = body.match(new RegExp(`${prop.replace(/-/g, '\\-')}:\\s*([^;]+);`));
+  return match ? match[1].trim() : undefined;
 }
 
 test('the sidebar aside declares --juno-sidebar-width as a real value, not only a var() fallback', () => {
-  const aside = findRule('.juno-sidebar > .juno-sidebar__aside');
+  const aside = ruleBody('.juno-sidebar > .juno-sidebar__aside');
   assert.ok(aside, 'the .juno-sidebar > .juno-sidebar__aside rule is gone');
   const declared = declValue(aside, '--juno-sidebar-width');
   assert.ok(
@@ -50,7 +49,7 @@ test('the sidebar aside declares --juno-sidebar-width as a real value, not only 
 });
 
 test("a rail composed inside a sidebar aside reads the aside's own width variable, not its own literal default", () => {
-  const composed = findRule('.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
+  const composed = ruleBody('.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
   assert.ok(
     composed,
     'the .juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed) composition rule is gone',
@@ -68,9 +67,11 @@ test('the composition rule excludes a collapsed rail, so collapse keeps winning'
   // reopened by the sidebar composition rule reserving the aside's full
   // width for it. If this selector ever drops the :not(), a collapsed rail
   // nested in a sidebar aside would silently re-expand to the aside's width.
-  const composed = findRule('.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
-  assert.ok(composed);
-  assert.equal(composed.selector, '.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
+  const composed = ruleBody('.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
+  assert.ok(
+    composed,
+    'a collapsed rail nested in a sidebar aside is no longer excluded from the composition rule',
+  );
 });
 
 test("the composition rule's defensive fallback cannot silently diverge from the aside's real default", () => {
@@ -79,10 +80,10 @@ test("the composition rule's defensive fallback cannot silently diverge from the
   // this fallback only matters for a .juno-sidebar__aside used without its
   // .juno-sidebar parent (malformed markup). Asserted anyway: even that edge
   // case should not silently reintroduce two different numbers.
-  const aside = findRule('.juno-sidebar > .juno-sidebar__aside');
+  const aside = ruleBody('.juno-sidebar > .juno-sidebar__aside');
   const asideDefault = Number(declValue(aside, '--juno-sidebar-width').match(/[\d.]+/)[0]);
 
-  const composed = findRule('.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
+  const composed = ruleBody('.juno-sidebar__aside > .juno-rail:not(.juno-rail--collapsed)');
   const composedValue = declValue(composed, '--juno-rail-width');
   const fallbackMatch = composedValue.match(/var\(--juno-sidebar-width,\s*([\d.]+)px\)/);
   assert.ok(
@@ -97,7 +98,7 @@ test("the composition rule's defensive fallback cannot silently diverge from the
 });
 
 test('a bare rail outside .juno-sidebar keeps its own 180px default, unaffected', () => {
-  const bare = findRule(/^\.juno-rail$/);
+  const bare = ruleBody('.juno-rail');
   assert.ok(bare, 'the base .juno-rail rule is gone');
   const value = declValue(bare, '--juno-rail-width');
   assert.equal(
