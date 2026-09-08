@@ -23,9 +23,13 @@ silently is not will catch someone.
   by the PR itself: `gate:consumer` packs the release candidate and runs the
   consumer's suite against it before anything lands.
 
-## `develop` was deleted, and this is why
+## `develop` is a trap, and it is STILL THERE
 
-It existed, and it was a trap:
+This section used to be headed _"`develop` was deleted, and this is why"_. It was
+not deleted — see the correction at the end of this section. The reasoning below
+stands; only the past tense was wrong.
+
+It exists, and it is a trap:
 
 |                                            |                                                      |
 | ------------------------------------------ | ---------------------------------------------------- |
@@ -44,6 +48,41 @@ near-miss on merging unverified code.
 > are **nexora's**, not junoui's. That repo is a multi-lane application and its
 > integration branches are real. Do not read those references as junoui having
 > one.
+
+### Correction, 2026-09-08: it was NOT deleted, and the heading was wrong
+
+The section above is written in the past tense as a completed fact. It is not
+one. Measured on 2026-09-08:
+
+```
+$ git ls-remote origin refs/heads/develop
+214095be...  refs/heads/develop          <- still there
+commits of its own:   0
+behind main:          123                <- the table above says 68
+```
+
+So the branch survives, still holds nothing, and has drifted from 68 commits
+behind to **123** — the trap growing exactly as this document predicted, while
+this document said it was gone.
+
+**That false claim is worse than the branch.** A reader who trusts the heading
+concludes `develop` cannot be targeted, and then meets it in a branch picker.
+The whole point of this page is that _a branch which looks like a valid target
+and silently is not will catch someone_; asserting a deletion that did not
+happen manufactures precisely that.
+
+**The likely cause is documented one section down.**
+`gh pr merge --delete-branch` fails the _local_ delete whenever a worktree holds
+the branch and **reports only that failure**, leaving the remote branch alive and
+unmentioned. That has happened twice on this repo in one day. A deletion recorded
+from the command's output rather than from `git ls-remote` is a deletion that may
+never have occurred — which is what this heading appears to be.
+
+Nothing in junoui depends on it: the only `develop` mentions in the tree are a
+comment in `ci.yml` and nexora's branches in `consumer-gate.mjs`, noted above.
+So removing it is safe whenever someone chooses to; it is left standing here
+rather than quietly deleted because it is shared repository state and not part of
+any ticket. **Verify with `git ls-remote`, not with the heading.**
 
 ## If you find yourself on another long-lived branch
 
