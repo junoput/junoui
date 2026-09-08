@@ -37,3 +37,12 @@ A tile showing one live value: small label, large mono value, unit.
 - Value stays `data` (neutral) when nominal; switch to a status role only when the
   reading itself is non-normal.
 - Always B612 Mono with tabular figures so digits don't shift as values update.
+
+## Composing many — the databar recipe
+
+`.juno-readout` is one tile with no opinion about a row of them. For N
+readouts that need to share column alignment, wrap, scroll, or fold under
+width pressure, see [layout.md § Recipe: a
+databar](../layout.md#recipe-a-databar-n-readouts-in-a-row) — measured, not
+assumed, and deliberately not a new `.juno-databar` class
+(`20260908-003`).

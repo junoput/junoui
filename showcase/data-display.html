@@ -180,6 +180,46 @@
           <span class="juno-mono juno-text-label">started 14:00–</span>
         </div>
       </div></article>
+
+      <!-- Databar recipe (20260908-003) — .juno-readout composed from existing
+           layout primitives, not a new component. Each strip below is
+           constrained to 320px so the wrap / scroll / column-alignment
+           difference is visible without resizing the window, and the
+           readouts deliberately have mismatched content width — a recipe
+           that only looks right with same-width values has not been shown
+           at all. See docs/layout.md#recipe-a-databar-n-readouts-in-a-row. -->
+      <div class="juno-eyebrow" style="margin-top:24px;margin-bottom:12px;">
+        Databar recipe — N readouts composed from existing primitives (no new class)
+      </div>
+      <div class="demo-grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;">
+        <div class="demo-specimen">
+          <span class="juno-label">.juno-grid-auto .juno-grid-auto--tiles — column alignment across rows</span>
+          <div class="juno-grid-auto juno-grid-auto--tiles" style="inline-size:320px;--juno-grid-min:110px;">
+            <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+            <div class="juno-readout juno--active"><span class="juno-readout__label">REQ/S</span><span class="juno-readout__value">248</span><span class="juno-readout__unit">rps</span></div>
+            <div class="juno-readout juno--caution"><span class="juno-readout__label">DISK USED</span><span class="juno-readout__value">2,650</span><span class="juno-readout__unit">GB</span></div>
+            <div class="juno-readout"><span class="juno-readout__label">UPTIME</span><span class="juno-readout__value">0.02</span><span class="juno-readout__unit">d</span></div>
+          </div>
+        </div>
+        <div class="demo-specimen">
+          <span class="juno-label">.juno-cluster — content-sized packing, no column relationship</span>
+          <div class="juno-cluster" style="inline-size:320px;">
+            <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+            <div class="juno-readout juno--active"><span class="juno-readout__label">REQ/S</span><span class="juno-readout__value">248</span><span class="juno-readout__unit">rps</span></div>
+            <div class="juno-readout juno--caution"><span class="juno-readout__label">DISK USED</span><span class="juno-readout__value">2,650</span><span class="juno-readout__unit">GB</span></div>
+            <div class="juno-readout"><span class="juno-readout__label">UPTIME</span><span class="juno-readout__value">0.02</span><span class="juno-readout__unit">d</span></div>
+          </div>
+        </div>
+        <div class="demo-specimen">
+          <span class="juno-label">.juno-reel — always one row, scrolls instead of wrapping</span>
+          <div class="juno-reel" style="inline-size:320px;">
+            <div class="juno-readout juno--nominal"><span class="juno-readout__label">CPU</span><span class="juno-readout__value">89.3</span><span class="juno-readout__unit">%</span></div>
+            <div class="juno-readout juno--active"><span class="juno-readout__label">REQ/S</span><span class="juno-readout__value">248</span><span class="juno-readout__unit">rps</span></div>
+            <div class="juno-readout juno--caution"><span class="juno-readout__label">DISK USED</span><span class="juno-readout__value">2,650</span><span class="juno-readout__unit">GB</span></div>
+            <div class="juno-readout"><span class="juno-readout__label">UPTIME</span><span class="juno-readout__value">0.02</span><span class="juno-readout__unit">d</span></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Cards -->
