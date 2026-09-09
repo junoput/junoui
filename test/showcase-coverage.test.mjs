@@ -46,15 +46,16 @@ const SHOWCASE_DIR = 'showcase';
  * shrink; an entry here is a declared gap rather than an invisible one.
  */
 const NOT_SHOWN = {
-  '.juno-splitter':
-    'no entry yet — a static separator that does not move is arguably worse ' +
-    'than none, so it needs the enhancer wired in the demo (20260909-057)',
-  '.juno-canvas-ink':
-    'no entry yet — an annotation layer needs something underneath it to ' +
-    'annotate, so the demo is a composition rather than one element (20260909-057)',
+  // The rail<->dock swap keys on a VIEWPORT media query — (pointer: coarse)
+  // and a width/height test. A media query cannot be scoped to a box, so this
+  // one genuinely cannot be demonstrated inside a page section the way every
+  // other entry is: the only way to show it is to resize the browser, which is
+  // what showcase/mobile.html and the device/ pages already ask you to do.
+  // Left declared rather than faked with a container query, which would
+  // demonstrate a mechanism the component does not use (20260909-057).
   '.juno-dock--responsive':
-    'the pointer-first rail<->dock swap is not demonstrated anywhere; showing ' +
-    'it needs two navs and a resizable frame (20260909-057)',
+    'keys on a viewport media query, so it cannot be shown inside a page ' +
+    'section — only by resizing the browser (20260909-057)',
 };
 
 /** Every showcase page, including showcase/device/. */

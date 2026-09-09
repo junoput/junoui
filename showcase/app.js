@@ -13,6 +13,7 @@
 
 import { TOKENS } from '../dist/js/tokens.js';
 import { IDENTITY } from '../dist/js/identity.js';
+import { enhanceSplitter } from '../tools/splitter.mjs';
 
 const html = document.documentElement;
 const ROLES = [
@@ -418,6 +419,59 @@ function initSliders() {
 //  clipped by an ancestor's overflow. Stateless enhancer — show on hover/focus
 //  of the trigger, hide on leave/blur; CSS owns the look (a no-JS consumer
 //  still gets the pure-CSS hover reveal, just clippable). ───────────────────
+// ── splitter (demo: junoui/splitter owns the KEYBOARD model, this page owns
+//  the width and the pointer drag — exactly the split the component documents,
+//  so this exercises the shipped enhancer rather than a copy of it) ─────────
+function initSplitters() {
+  document.querySelectorAll('.juno-splitter').forEach((el) => {
+    const pane = document.getElementById('demo-split-pane');
+    const out = document.getElementById('demo-split-val');
+    if (!pane) return;
+    const min = +el.getAttribute('aria-valuemin') || 0;
+    const max = +el.getAttribute('aria-valuemax') || 1000;
+    let collapsed = 0;
+
+    // The app owns the number: the enhancer only ASKS, because whether a pane
+    // can really be this wide is a layout question it cannot answer.
+    const apply = (v) => {
+      v = Math.max(min, Math.min(max, Math.round(v)));
+      el.setAttribute('aria-valuenow', v);
+      pane.style.inlineSize = v + 'px';
+      if (out) out.textContent = v;
+    };
+    apply(+el.getAttribute('aria-valuenow') || min);
+
+    enhanceSplitter(el, { step: 16 });
+    el.addEventListener('juno-splitter-move', (e) => {
+      collapsed = 0;
+      apply(e.detail.value);
+    });
+    el.addEventListener('juno-splitter-collapse', () => {
+      // Collapse is a different question from resize, which is why it is a
+      // separate event: restoring needs to know which one happened.
+      const now = +el.getAttribute('aria-valuenow') || min;
+      if (collapsed) (apply(collapsed), (collapsed = 0));
+      else ((collapsed = now), apply(min));
+    });
+
+    // Pointer drag is the app's, by design — the enhancer takes no capture.
+    el.addEventListener('pointerdown', (e) => {
+      el.setPointerCapture(e.pointerId);
+      el.setAttribute('data-juno-dragging', '');
+      const startX = e.clientX;
+      const startV = +el.getAttribute('aria-valuenow') || min;
+      const mv = (ev) => apply(startV + (ev.clientX - startX));
+      const up = () => {
+        el.removeAttribute('data-juno-dragging');
+        el.removeEventListener('pointermove', mv);
+        el.removeEventListener('pointerup', up);
+      };
+      el.addEventListener('pointermove', mv);
+      el.addEventListener('pointerup', up);
+    });
+  });
+}
+
 function initTooltips() {
   document.querySelectorAll('.juno-tooltip').forEach((wrap, i) => {
     const trigger = wrap.querySelector('button, [tabindex]');
@@ -777,6 +831,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncToggle
 html.dataset.junoDensity = loadPref(PREFS.density) ?? html.dataset.junoDensity ?? 'comfortable';
 html.dataset.junoText = loadPref(PREFS.text) ?? html.dataset.junoText ?? 'base';
 initSliders();
+initSplitters();
 initTooltips();
 initTables();
 initAlerts();
