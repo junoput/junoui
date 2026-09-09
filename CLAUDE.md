@@ -79,8 +79,12 @@ dist/          generated outputs (gitignored)
 ## Adding things
 
 - **Component:** new `src/css/components/<name>.css` (auto-bundled) → use tokens +
-  `--juno-role` → BEM names → `docs/components/<name>.md` + catalogue row + showcase
-  entry → add any local custom props to the test allowlist.
+  `--juno-role` → **internal padding from the density archetypes**
+  (`--juno-pad-surface-*` for surfaces, `--juno-pad-control-*` for controls; raw
+  `--juno-space-*` padding silently opts the component out of `data-juno-density`)
+  → BEM names → `docs/components/<name>.md` + catalogue row + showcase
+  entry → census row in `docs/inventory-elements.md` → add any local custom props
+  to the test allowlist.
 - **Token:** edit `tokens/**` → `npm run build` → `npm run gen-docs` → `npm test`.
 
 See `CONTRIBUTING.md` (humans) and `docs/accessibility.md` (ARIA contract per component).

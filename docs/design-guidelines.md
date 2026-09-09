@@ -116,7 +116,7 @@ apps. Exact values: [tokens-reference.md](./tokens-reference.md).
 ## Density
 
 One attribute on any ancestor swaps the internal padding of every component
-underneath it — no per-component class:
+underneath it **that reads the aliases below** — no per-component class:
 
 ```html
 <body data-juno-density="compact">
@@ -126,7 +126,19 @@ underneath it — no per-component class:
 
 Components read **semantic padding aliases** (`--juno-pad-control-*`,
 `--juno-pad-surface-*`, `--juno-gap-control`) instead of raw `--juno-space-*`;
-`data-juno-density` redefines that set. Density is deliberately **non-linear** —
+`data-juno-density` redefines that set.
+
+**This is the rule, not a description of every component.** A component that
+pads with raw `--juno-space-*` is simply not density-aware — it stays
+comfortable while everything around it compacts, and nothing reports that at
+runtime. Some are correctly excluded (inline chips like `badge` and `tooltip`
+have no density archetype), others have not been migrated. The per-component
+answer is the `Density-aware` column in
+[inventory-elements.md](./inventory-elements.md), which is checked against the
+stylesheets by `test/census-matches-css.test.mjs` rather than maintained by
+hand — so consult that rather than assuming coverage from this section.
+
+Density is deliberately **non-linear** —
 compact removes more block (vertical) than inline padding, so text never crowds its
 edges. Interactive controls keep their `min-height` (WCAG tap target); only padding
 shrinks. New components should use the aliases for internal padding to inherit
