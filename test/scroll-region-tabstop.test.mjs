@@ -29,6 +29,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const SHOWCASE = 'showcase';
+const DOCS = 'docs';
 const SCROLLERS =
   /<[a-z]+[^>]*class="[^"]*\b(juno-table-scroll|juno-reel|juno-scroller)\b[^"]*"[^>]*>/g;
 
@@ -58,6 +59,20 @@ const NO_TABSTOP_NEEDED = {
       'never overflows at 1280 or 390',
     ],
   ],
+  // Generic examples with placeholder content. Blanket-adding a tab stop here
+  // would teach "always add one", which the rule explicitly forbids — so these
+  // carry an HTML comment naming the CONDITION instead, immediately above the
+  // tag. Verified by eye: the comment is there in both cases.
+  'docs/layout.md': [
+    [
+      '<div\n  class="juno-scroller juno-scroller--x juno-scroller--bare"\n  style="--juno-scroller-snap: x proximity;"\n>',
+      'generic example; condition stated in the comment above it',
+    ],
+    [
+      '<div class="juno-reel" style="--juno-scroller-snap: inline proximity;">',
+      'generic example; condition stated in the comment above it',
+    ],
+  ],
   'showcase/device/table.html': [
     // scrolls at 390 but holds 8 focusable children
     ['<div class="juno-table-scroll" style="max-block-size:50dvh;">', 'holds 8 focusable children'],
@@ -66,17 +81,25 @@ const NO_TABSTOP_NEEDED = {
   ],
 };
 
-/** Every showcase page, walked rather than listed. */
+/**
+ * Every showcase page and every doc, walked rather than listed.
+ *
+ * DOCS ARE THE SHIPPED COPY. `showcase/` is not in package.json's `files`;
+ * `docs/` is. So a consumer receives the markup in docs/ and never sees the
+ * showcase — guarding only the showcase would guard the copy nobody gets,
+ * which is the defect this file exists to stop (20260909-091).
+ */
 function pages() {
   const out = [];
-  const walk = (dir) => {
+  const walk = (dir, ext) => {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       const p = join(dir, e.name);
-      if (e.isDirectory()) walk(p);
-      else if (e.name.endsWith('.html')) out.push(p);
+      if (e.isDirectory()) walk(p, ext);
+      else if (e.name.endsWith(ext)) out.push(p);
     }
   };
-  walk(SHOWCASE);
+  walk(SHOWCASE, '.html');
+  walk(DOCS, '.md');
   return out;
 }
 

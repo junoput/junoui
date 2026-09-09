@@ -98,7 +98,9 @@ for when NOT to add one.
 <!-- vertical list scroller with containment, no snap -->
 <div class="juno-scroller juno-scroller--y" tabindex="0" role="region" aria-label="Events">…</div>
 
-<!-- horizontal, scrollbar hidden, softer "proximity" snap, opt-in stops -->
+<!-- horizontal, scrollbar hidden, softer "proximity" snap, opt-in stops.
+     Add tabindex="0" + role="region" + a name if the snap children are not
+     focusable — see accessibility.md#scrollable-regions -->
 <div
   class="juno-scroller juno-scroller--x juno-scroller--bare"
   style="--juno-scroller-snap: x proximity;"
@@ -120,6 +122,9 @@ per instance instead of hardcoded — e.g. a "magnet" strip that wants
 `proximity` instead of a stepped `mandatory` feel:
 
 ```html
+<!-- same tab-stop question as any scroller: needed when the reel's children
+     are not focusable, which for a reel of readouts or static chips is the
+     usual case -->
 <div class="juno-reel" style="--juno-scroller-snap: inline proximity;">…</div>
 ```
 

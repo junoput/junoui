@@ -8,7 +8,7 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 ## Web
 
 ```html
-<div class="juno-table-scroll">
+<div class="juno-table-scroll" tabindex="0" role="region" aria-label="Fleet status">
   <table class="juno-table juno-table--zebra juno-table--sticky">
     <thead>
       <tr>
@@ -110,7 +110,13 @@ scrolls sideways too) or **stack**. Opt in with `.juno-table--stack`, give every
 `td` a `data-label` echoing its column header, and make the wrapper a container:
 
 ```html
-<div class="juno-table-scroll" style="container-type: inline-size">
+<div
+  class="juno-table-scroll"
+  style="container-type: inline-size"
+  tabindex="0"
+  role="region"
+  aria-label="Fleet status"
+>
   <table class="juno-table juno-table--stack">
     <tbody>
       <tr>
