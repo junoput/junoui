@@ -86,9 +86,17 @@ lets iOS pull-to-refresh/scroll-chain through an inner scroller into the
 page). Defaults: `overflow: auto` (both axes), `overscroll-behavior: contain`,
 no snap.
 
+**If the content inside has no focusable elements, the scroller needs a tab
+stop.** A region that scrolls and contains nothing to Tab to cannot be scrolled
+by a keyboard-only user, so the content past the fold is unreachable — a reel of
+readouts or static chips is exactly that case. Add `tabindex="0"` plus
+`role="region"` and a name; see
+[Scrollable regions](./accessibility.md#scrollable-regions) for the rule and
+for when NOT to add one.
+
 ```html
 <!-- vertical list scroller with containment, no snap -->
-<div class="juno-scroller juno-scroller--y">…</div>
+<div class="juno-scroller juno-scroller--y" tabindex="0" role="region" aria-label="Events">…</div>
 
 <!-- horizontal, scrollbar hidden, softer "proximity" snap, opt-in stops -->
 <div
