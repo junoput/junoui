@@ -1,0 +1,13 @@
+{
+  "brightness": {
+    "$type": "number",
+    "hover": {
+      "$value": 1.08,
+      "$description": "Luminance multiplier for a hovered interactive surface — lighten, do not recolor."
+    },
+    "press": {
+      "$value": 0.94,
+      "$description": "Luminance multiplier while an interactive surface is actively pressed."
+    }
+  }
+}

@@ -103,6 +103,7 @@ e.g. \`space.16\` → \`var(--juno-space-16)\`, \`@dimen/space_16\`, \`JunoToken
     z: 'Z-index',
     shadow: 'Elevation',
     opacity: 'Opacity',
+    brightness: 'Interaction brightness',
   };
   for (const key of Object.keys(groups)) {
     md += `### ${TITLES[key] ?? key}\n\n`;

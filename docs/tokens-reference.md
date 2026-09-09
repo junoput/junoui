@@ -105,6 +105,13 @@ Color encodes status, never decoration. Each role has exactly one meaning.
 | `bp.xl` | `1280px` | `var(--juno-bp-xl)` | `JunoTokens.bpXl` |
 | `bp.2xl` | `1536px` | `var(--juno-bp-2xl)` | `JunoTokens.bp2xl` |
 
+### Interaction brightness
+
+| Token | Value | CSS variable | Flutter / iOS |
+|---|---|---|---|
+| `brightness.hover` | `1.08` | `var(--juno-brightness-hover)` | `JunoTokens.brightnessHover` |
+| `brightness.press` | `0.94` | `var(--juno-brightness-press)` | `JunoTokens.brightnessPress` |
+
 ### Elevation
 
 | Token | Value | CSS variable | Flutter / iOS |
