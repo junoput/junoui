@@ -39,9 +39,9 @@ case, not to the global.
 different freetype, hundreds of pixels of text-rendering drift, and at a zero budget that is
 loud. After an **intentional** visual change:
 `gh workflow run visual-baselines.yml --ref <branch>`, then download the `linux-baselines`
-artifact and commit the PNGs. macOS baselines (`-darwin`) are still recorded locally with
-`npm run test:visual:update`. To iterate locally, record a throwaway local set first and
-diff against that.
+artifact and commit the PNGs. macOS baselines (`-darwin`) are recorded locally with
+`npm run test:visual:update` — but see below before doing so. To iterate locally, record a
+throwaway local set first and diff against that.
 
 **`-darwin` baselines are not gated by CI and should be assumed stale.** `ci.yml`'s
 `visual` job runs `ubuntu-24.04` only — nothing regenerates or checks the `-darwin`
