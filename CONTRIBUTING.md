@@ -43,6 +43,20 @@ artifact and commit the PNGs. macOS baselines (`-darwin`) are still recorded loc
 `npm run test:visual:update`. To iterate locally, record a throwaway local set first and
 diff against that.
 
+**`-darwin` baselines are not gated by CI and should be assumed stale.** `ci.yml`'s
+`visual` job runs `ubuntu-24.04` only — nothing regenerates or checks the `-darwin`
+set on any PR, so recording them is a step a contributor has to remember and do by
+hand, and most changes since 2026-07-13 did not (20260909-038). As of that ticket:
+64 Linux baselines exist, 32 `-darwin` ones do, and every snapshot added after that
+date (every overlay dialog, every coarse-pointer variant, every section-level shot)
+has **no** `-darwin` file at all — not stale, absent. If you run
+`npm run test:visual` on macOS, expect a wall of failures unrelated to your change;
+that is the known state, not a sign your change broke something. Do not spend time
+regenerating `-darwin` baselines as part of an unrelated PR — that would let one
+change's diff quietly include another's drift. Whether `-darwin` should be actively
+maintained (needs a macOS runner or a named local step) or removed is an open
+operator decision tracked on that ticket.
+
 ## Project layout
 
 ```

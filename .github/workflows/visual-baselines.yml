@@ -2,8 +2,15 @@ name: visual-baselines
 
 # Manually triggered: regenerates the Linux visual-regression baselines on the
 # same runner image CI uses, and uploads them as an artifact to download and
-# commit. Run after any intended visual change (macOS baselines are updated
-# locally with `npm run test:visual:update`).
+# commit. Run after any intended visual change.
+#
+# macOS (`-darwin`) baselines are NOT covered by this workflow or by any CI
+# job (ci.yml's `visual` job is ubuntu-24.04 only) — they are updated locally
+# with `npm run test:visual:update`, which nothing enforces anyone actually
+# do. As of 20260909-038 they are both stale (last regenerated 2026-07-13)
+# and incomplete (32 of 64 Linux baselines have no `-darwin` counterpart at
+# all). Do not assume a green `-darwin` set means anything; do not spend a PR
+# regenerating them unless that PR is specifically about darwin coverage.
 
 on: workflow_dispatch
 
