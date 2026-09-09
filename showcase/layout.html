@@ -274,6 +274,58 @@
       </article>
     </section>
 
+    <!-- Splitter -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">11</span>
+        <span class="juno-eyebrow">.juno-splitter — resize separator (drag, or focus it and use &larr; &rarr; Home End Enter)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <div id="demo-split" style="display:flex;height:200px;border:1px solid var(--juno-border);border-radius:var(--juno-radius-5);overflow:hidden;">
+          <div id="demo-split-pane" style="inline-size:280px;flex:none;padding:16px;background:var(--juno-s2);overflow:auto;">
+            <span class="juno-label">Panel</span>
+            <div class="juno-skeleton" style="--juno-skeleton-h:16px;margin-block-start:12px;"></div>
+            <div class="juno-skeleton" style="--juno-skeleton-h:16px;margin-block-start:8px;"></div>
+          </div>
+          <div class="juno-splitter" role="separator" tabindex="0" aria-orientation="vertical"
+               aria-label="Resize panel" aria-valuenow="280" aria-valuemin="180" aria-valuemax="520"></div>
+          <div style="flex:1;padding:16px;overflow:auto;">
+            <span class="juno-label">Canvas — panel is <span class="juno-mono" id="demo-split-val">280</span>px</span>
+            <p class="juno-text-muted" style="font-size:12px;margin-block-start:8px;">
+              junoui ships the affordance, the tap-sized hit area and the ARIA contract.
+              The keyboard model comes from <code class="juno-mono">junoui/splitter</code>;
+              this page owns the width, exactly as a consumer does.
+            </p>
+          </div>
+        </div>
+      </div></article>
+    </section>
+
+    <!-- Canvas ink -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">12</span>
+        <span class="juno-eyebrow">.juno-canvas-ink — marks over arbitrary imagery (ink + halo, legible at every luminance)</span>
+      </div>
+      <article class="juno-card"><div class="juno-card__body">
+        <figure style="margin:0;position:relative;border-radius:var(--juno-radius-5);overflow:hidden;">
+          <div style="height:180px;background:linear-gradient(90deg,#000 0%,#3a3a3a 25%,#808080 50%,#c8c8c8 75%,#fff 100%);"></div>
+          <svg viewBox="0 0 400 180" preserveAspectRatio="none" aria-hidden="true"
+               style="position:absolute;inset:0;inline-size:100%;block-size:100%;">
+            <path class="juno-canvas-ink__halo" d="M20 150 L120 60 L210 110 L300 40 L380 90" fill="none" />
+            <path class="juno-canvas-ink__stroke" d="M20 150 L120 60 L210 110 L300 40 L380 90" fill="none" />
+          </svg>
+          <figcaption class="juno-canvas-ink" style="position:absolute;inset-block-end:12px;inset-inline-start:12px;">Sector 7 &middot; 1.2 km</figcaption>
+          <figcaption class="juno-canvas-ink juno-canvas-ink--warning" style="position:absolute;inset-block-start:12px;inset-inline-end:12px;">Signal lost</figcaption>
+        </figure>
+        <p class="juno-text-muted" style="font-size:12px;margin-block-start:12px;">
+          The backing runs black &rarr; white on purpose. The worst case is the
+          <strong>middle</strong>, not the ends: there both halves of the pair are weakest at
+          once. Over a light backing the halo carries the contrast; over a dark one the ink does.
+        </p>
+      </div></article>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>
