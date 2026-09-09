@@ -57,6 +57,7 @@
     "./tree": "./tools/tree.mjs",
     "./gizmo": "./tools/gizmo.mjs",
     "./pointer": "./tools/pointer.mjs",
+    "./pointer-first": "./tools/pointer-first.mjs",
     "./doctor": "./tools/doctor.mjs",
     "./splitter": "./tools/splitter.mjs",
     "./testing": "./tools/testing.mjs",
