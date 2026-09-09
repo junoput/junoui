@@ -45,17 +45,7 @@ const SHOWCASE_DIR = 'showcase';
  * Components deliberately absent from the showcase, with the reason. Should
  * shrink; an entry here is a declared gap rather than an invisible one.
  */
-const NOT_SHOWN = {
-  '.juno-splitter':
-    'no entry yet — a static separator that does not move is arguably worse ' +
-    'than none, so it needs the enhancer wired in the demo (20260909-057)',
-  '.juno-canvas-ink':
-    'no entry yet — an annotation layer needs something underneath it to ' +
-    'annotate, so the demo is a composition rather than one element (20260909-057)',
-  '.juno-dock--responsive':
-    'the pointer-first rail<->dock swap is not demonstrated anywhere; showing ' +
-    'it needs two navs and a resizable frame (20260909-057)',
-};
+const NOT_SHOWN = {};
 
 /** Every showcase page, including showcase/device/. */
 function showcaseHtml() {

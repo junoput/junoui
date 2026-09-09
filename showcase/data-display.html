@@ -410,6 +410,39 @@
         </div>
       </div>
     </section>
+
+    <!-- Canvas ink -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">CI</span>
+        <span class="juno-eyebrow">.juno-canvas-ink — annotation over arbitrary imagery, not a themed colour</span>
+      </div>
+      <p class="juno-label" style="max-width:640px;margin-bottom:12px;">
+        Synthetic backdrop below, deliberately spanning both a light and a dark patch in one frame —
+        the way an orthophoto, a map or a camera feed does. See
+        <a href="../docs/components/canvas-ink.md">canvas-ink.md</a>: no single ink colour is legible
+        against both at once, which is why this is a halo + ink PAIR rather than a role colour.
+      </p>
+      <figure
+        style="position:relative;max-width:480px;aspect-ratio:16/9;margin:0;border-radius:var(--juno-radius-8);overflow:hidden;background:
+          radial-gradient(circle at 16% 28%, #eef3f7 0%, #eef3f7 17%, transparent 18%),
+          radial-gradient(circle at 72% 68%, #05070a 0%, #05070a 20%, transparent 21%),
+          linear-gradient(135deg, #c9c2ad 0%, #8a8f76 35%, #3c4432 60%, #171b14 100%);"
+      >
+        <svg viewBox="0 0 480 270" style="position:absolute;inset:0;width:100%;height:100%;" aria-hidden="true">
+          <path class="juno-canvas-ink__halo" d="M56,188 L176,138 L296,172 L424,108" />
+          <path class="juno-canvas-ink__stroke" d="M56,188 L176,138 L296,172 L424,108" />
+        </svg>
+        <figcaption class="juno-canvas-ink" style="position:absolute;inset-inline-start:16px;inset-block-start:12px;">Sector 7 · 1.2 km</figcaption>
+        <figcaption class="juno-canvas-ink juno-canvas-ink--warning" style="position:absolute;inset-inline-end:16px;inset-block-start:12px;">Signal lost</figcaption>
+        <div class="juno-canvas-scrim" style="position:absolute;inset-inline:0;inset-block-end:0;display:flex;align-items:center;gap:8px;padding:8px 12px;">
+          <button class="juno-btn juno-btn--sm juno-btn--ghost" aria-label="Play">
+            <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-play" /></svg>
+          </button>
+          <span class="juno-canvas-ink" style="font-size:11px;">04:12 / 12:48</span>
+        </div>
+      </figure>
+    </section>
   </main>
   <script type="module" src="./app.js"></script>
 </body>

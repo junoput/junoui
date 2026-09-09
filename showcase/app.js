@@ -13,6 +13,7 @@
 
 import { TOKENS } from '../dist/js/tokens.js';
 import { IDENTITY } from '../dist/js/identity.js';
+import { enhanceSplitter } from '../tools/splitter.mjs';
 
 const html = document.documentElement;
 const ROLES = [
@@ -414,6 +415,95 @@ function initSliders() {
   });
 }
 
+// ── splitter (demo: app owns pointer drag + width arithmetic; junoui ships
+//  the affordance, the hit area and the keyboard model via enhanceSplitter —
+//  stateless, so it only computes a requested value and asks) ─────────────
+function initSplitters() {
+  document.querySelectorAll('.juno-splitter').forEach((el) => {
+    const orientation = el.getAttribute('aria-orientation') ?? 'vertical';
+    const pane = el.previousElementSibling;
+    if (!pane) return;
+    const dim = orientation === 'horizontal' ? 'height' : 'width';
+    let collapsedFrom = null;
+
+    const apply = (v) => {
+      el.setAttribute('aria-valuenow', v);
+      pane.style[dim] = `${v}px`;
+    };
+
+    el.addEventListener('juno-splitter-move', (e) => apply(e.detail.value));
+    el.addEventListener('juno-splitter-collapse', () => {
+      const min = +el.getAttribute('aria-valuemin') || 0;
+      const now = +el.getAttribute('aria-valuenow') || min;
+      if (now > min) {
+        collapsedFrom = now;
+        apply(min);
+      } else {
+        apply(collapsedFrom ?? min);
+      }
+    });
+    enhanceSplitter(el);
+
+    // Pointer dragging — junoui ships none of this; see splitter.md's "What
+    // junoui does not do".
+    el.addEventListener('pointerdown', (down) => {
+      if (el.getAttribute('aria-disabled') === 'true') return;
+      el.setPointerCapture(down.pointerId);
+      el.setAttribute('data-juno-dragging', '');
+      const min = +el.getAttribute('aria-valuemin') || 0;
+      const max = +el.getAttribute('aria-valuemax') || Number.MAX_SAFE_INTEGER;
+      const startPos = orientation === 'horizontal' ? down.clientY : down.clientX;
+      const startVal = +el.getAttribute('aria-valuenow') || min;
+      const move = (ev) => {
+        const pos = orientation === 'horizontal' ? ev.clientY : ev.clientX;
+        apply(Math.min(max, Math.max(min, startVal + (pos - startPos))));
+      };
+      const up = () => {
+        el.removeAttribute('data-juno-dragging');
+        el.removeEventListener('pointermove', move);
+        el.removeEventListener('pointerup', up);
+      };
+      el.addEventListener('pointermove', move);
+      el.addEventListener('pointerup', up);
+    });
+
+    apply(+el.getAttribute('aria-valuenow') || 0);
+  });
+}
+
+// ── rail<->dock responsive swap (demo: a resizable frame tests the real
+//  width/height half of the rule; a preview toggle overrides display directly
+//  so the pointer half is visible without touch hardware — junoui ships only
+//  the media query, this demo-only override never touches it) ─────────────
+function initSwapDemo() {
+  const frame = document.getElementById('swap-frame');
+  const toggle = document.getElementById('swap-preview-toggle');
+  const rail = document.getElementById('swap-rail');
+  const dock = document.getElementById('swap-dock');
+  const dims = document.getElementById('swap-dims');
+  if (!frame || !toggle || !rail || !dock) return;
+
+  const setPreview = (coarse) => {
+    toggle.setAttribute('aria-pressed', String(coarse));
+    toggle.classList.toggle('juno--active', coarse);
+    toggle.classList.toggle('juno-btn--ghost', !coarse);
+    // Cleared entirely when off, so the real (pointer: coarse) rule — which
+    // also reads width/height — governs exactly as it would for a consumer.
+    rail.style.display = coarse ? 'none' : '';
+    dock.style.display = coarse ? 'flex' : '';
+  };
+  toggle.addEventListener('click', () =>
+    setPreview(toggle.getAttribute('aria-pressed') !== 'true'),
+  );
+
+  if (dims && 'ResizeObserver' in window) {
+    new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      dims.textContent = `${Math.round(width)} × ${Math.round(height)}`;
+    }).observe(frame);
+  }
+}
+
 // ── tooltips: promote each bubble to a top-layer hint popover so it can't be
 //  clipped by an ancestor's overflow. Stateless enhancer — show on hover/focus
 //  of the trigger, hide on leave/blur; CSS owns the look (a no-JS consumer
@@ -777,6 +867,8 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncToggle
 html.dataset.junoDensity = loadPref(PREFS.density) ?? html.dataset.junoDensity ?? 'comfortable';
 html.dataset.junoText = loadPref(PREFS.text) ?? html.dataset.junoText ?? 'base';
 initSliders();
+initSplitters();
+initSwapDemo();
 initTooltips();
 initTables();
 initAlerts();

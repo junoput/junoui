@@ -274,6 +274,86 @@
       </article>
     </section>
 
+    <!-- Rail <-> dock responsive swap -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">11</span>
+        <span class="juno-eyebrow">.juno-rail--responsive / .juno-dock--responsive — the swap is exhaustive: exactly one shows, ever</span>
+      </div>
+      <p class="juno-label" style="max-width:640px;margin-bottom:12px;">
+        Real rule: <code class="juno-mono">(pointer: coarse) and ((width &lt;= 767.98px) or (height &lt;= 500px))</code> —
+        see <a href="../docs/components/dock-responsive.md">dock-responsive.md</a>. Drag the frame's corner to test the
+        width/height half on real hardware (a touch device, or DevTools' device toolbar with touch emulation on). A
+        mouse never matches <code class="juno-mono">pointer: coarse</code>, so resizing alone will not flip it here —
+        use the preview toggle to see what each state looks like regardless of input device.
+      </p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <button
+          class="juno-btn juno-btn--sm juno-btn--ghost"
+          id="swap-preview-toggle"
+          type="button"
+          aria-pressed="false"
+        >
+          PREVIEW: COARSE POINTER (demo only)
+        </button>
+        <span class="juno-mono" id="swap-dims" style="font-size:11px;color:var(--juno-muted);">— × —</span>
+      </div>
+      <div
+        id="swap-frame"
+        style="resize:both;overflow:auto;min-width:260px;min-height:200px;max-width:100%;max-height:520px;width:420px;height:280px;border:var(--juno-border-width-1) solid var(--juno-border);border-radius:var(--juno-radius-8);"
+      >
+        <div style="display:flex;flex-direction:column;min-height:100%;">
+          <div style="display:flex;flex:1;min-height:0;">
+            <nav class="juno-rail juno-rail--responsive" id="swap-rail" aria-label="Primary">
+              <div class="juno-rail__brand"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-hexagon" /></svg><span class="juno-rail__label">JUNO</span></div>
+              <a class="juno-rail__item" href="#" aria-current="page" aria-label="Library"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-rail__label">Library</span></a>
+              <a class="juno-rail__item" href="#" aria-label="Albums"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-rail__label">Albums</span></a>
+              <a class="juno-rail__item" href="#" aria-label="Plugins"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-puzzle-piece" /></svg><span class="juno-rail__label">Plugins</span></a>
+            </nav>
+            <div style="flex:1;min-width:0;padding:16px;">
+              <span class="juno-label">Content outlet. Exactly one nav is visible at any moment — never both, never neither.</span>
+            </div>
+          </div>
+          <nav class="juno-dock juno-dock--responsive" id="swap-dock" aria-label="Primary">
+            <a class="juno-dock__item" href="#" aria-current="page"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-squares-four" /></svg><span class="juno-dock__label">Library</span></a>
+            <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-images" /></svg><span class="juno-dock__label">Albums</span></a>
+            <a class="juno-dock__item" href="#"><svg class="juno-icon" aria-hidden="true"><use href="#juno-i-puzzle-piece" /></svg><span class="juno-dock__label">Plugins</span></a>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!-- Splitter -->
+    <section class="demo-section">
+      <div class="demo-section__title">
+        <span class="juno-mono juno-text-nominal" style="font-size:11px;">12</span>
+        <span class="juno-eyebrow">.juno-splitter — resize separator (drag, or focus + ←/→, Home/End, Page Up/Down, Enter to collapse)</span>
+      </div>
+      <article class="juno-card" style="overflow:hidden;">
+        <div style="display:flex;height:220px;">
+          <div id="split-pane-a" style="width:220px;min-width:0;overflow:auto;background:var(--juno-s1);padding:16px;">
+            <span class="juno-eyebrow">PANE A</span>
+            <p class="juno-label">junoui ships the handle, its hit area and its ARIA contract — this demo owns the
+              pointer drag and the width arithmetic, per <a href="../docs/components/splitter.md">splitter.md</a>.</p>
+          </div>
+          <div
+            class="juno-splitter"
+            role="separator"
+            tabindex="0"
+            aria-orientation="vertical"
+            aria-label="Resize pane A"
+            aria-valuenow="220"
+            aria-valuemin="120"
+            aria-valuemax="440"
+          ></div>
+          <div style="flex:1;min-width:0;overflow:auto;padding:16px;">
+            <span class="juno-eyebrow">PANE B</span>
+            <p class="juno-label">Fluid — takes whatever pane A does not.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
   </main>
   <script type="module" src="./app.js"></script>
 </body>
