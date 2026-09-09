@@ -63,6 +63,7 @@ import { fileURLToPath } from 'node:url';
 
 import { baselineVerdict } from './gate-currency.mjs';
 import { stageLine, summarize } from './gate-verdict.mjs';
+import { publishedVerdict } from './gate-published.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const WORK = join(REPO, '.relgate');
@@ -246,35 +247,28 @@ head('preflight — this branch has taken back the last release');
     );
   }
 
-  const published = run(
-    'npm',
-    ['view', `${junouiPkg.name}@${junouiPkg.version}`, 'version'],
-    REPO,
-    {
-      capture: true,
-      allowFail: true,
-    },
-  );
-  if (published.code !== 0) {
-    record('this version is not already published', true, 'registry unreachable', {
-      skipped: true,
+  // `versions --json`, not `<pkg>@<version> version`. npm exits NON-ZERO with
+  // E404 when the version does not exist, which is this stage's SUCCESS
+  // condition — reading that as "unreachable" made PASS unreachable for every
+  // genuine release candidate (20260909-122). Asking for the list separates
+  // "absent" from "cannot tell" without parsing npm's error text.
+  const published = run('npm', ['view', junouiPkg.name, 'versions', '--json'], REPO, {
+    capture: true,
+    allowFail: true,
+  });
+  {
+    const v = publishedVerdict({
+      code: published.code,
+      out: published.out,
+      version: junouiPkg.version,
     });
-  } else {
-    const stale = published.out.trim() === junouiPkg.version;
     // --dev: you are checking a consumer build mid-development, not cutting a
-    // release. The unversioned-candidate condition is then expected and says
-    // nothing, so it reports without blocking. Without the flag it is fatal,
-    // because packing a version that is already on the registry means the
-    // candidate under test is not the artifact you would publish.
-    record(
-      'this version is not already published',
-      stale ? Boolean(opts.dev) : true,
-      stale
-        ? opts.dev
-          ? `${junouiPkg.version} is already published — fine under --dev, fatal for a release`
-          : `${junouiPkg.version} is already on the registry — run \`changeset version\` before packing (or pass --dev if you are not releasing)`
-        : '',
-    );
+    // release, so an already-published version is expected and says nothing.
+    if (!v.ok && opts.dev) {
+      record('this version is not already published', true, `${v.note} — --dev, not blocking`);
+    } else {
+      record('this version is not already published', v.ok, v.note, { skipped: v.skipped });
+    }
   }
 }
 
