@@ -70,6 +70,7 @@ const COVERED = {
   skeleton: 'Skeleton',
   slider: 'Slider',
   stepper: 'Stepper',
+  splitter: 'Splitter',
   switch: 'Switch',
   table: 'Table / data grid',
   tabs: 'Tabs',
@@ -90,7 +91,6 @@ const NO_ROW = {
   // The number is aria/role mentions in docs/components/<name>.md.
   range: 'own doc covers it (18)',
   scrubber: 'own doc covers it (18)',
-  splitter: 'own doc covers it (15)',
   gizmo: 'own doc covers it (13)',
   swatch: 'own doc covers it (11)',
   'icon-loader': 'own doc covers it (9) — arc carries role=status; may fold into a Loader row',
