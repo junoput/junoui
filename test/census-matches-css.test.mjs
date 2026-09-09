@@ -22,6 +22,28 @@
 // mechanically derivable from the stylesheet. The token lists, modifiers, BEM
 // parts and state hooks are NOT checked here and remain guarded by nothing but
 // the census author's script and five hand spot-checks.
+//
+// WHY THOSE COLUMNS ARE NOT CHECKED HERE, measured rather than assumed. A naive
+// extension was tried on 2026-09-08 and produced 28 mismatches, ALL of them the
+// checker's fault:
+//
+//   BEM parts — assuming a component's class prefix equals its filename is
+//   wrong. `toggle-button.css` declares `.juno-toggle-btn__*` (6 parts, exactly
+//   what the census says); `loader.css` is multi-namespace, declaring
+//   `.juno-arc__`, `.juno-bar__` and `.juno-beacon__` and none named for the
+//   file. That assumption reported 0 parts for 7 components that have them.
+//
+//   State hooks — a fixed pseudo-class list undercounts. `tree.css` also uses
+//   `:not()` and pseudo-elements, so a list of the obvious hooks reported 6
+//   where the census says 8. Every one of the 21 state mismatches ran the same
+//   direction, which is the signature of a lossy extractor rather than 21 bad
+//   rows.
+//
+// So checking those columns requires reimplementing the census's own extraction
+// rules, not a regex over a naming convention — and a naive attempt yields
+// confident false positives, which is worse than the gap. The two columns above
+// are checked precisely because they are binary presence tests (`@container` /
+// `@media`, and the seven density hooks) with no naming assumptions in them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
