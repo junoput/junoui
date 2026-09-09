@@ -70,12 +70,25 @@ on whether it visibly shifts consumer UI — see the [versioning policy](#versio
 1. Create `src/css/components/<name>.css`. It's auto-included by the bundler.
 2. Reference tokens via `var(--juno-*)`. Color a component through the shared
    `--juno-role` property so one `.juno--<role>` class recolors it.
-3. Use **logical properties** (`margin-inline`, `inset`, …) for RTL.
-4. Use BEM-ish names: `.juno-<block>`, `__element`, `--modifier`.
-5. Document it: `docs/components/<name>.md` (anatomy + states + ARIA contract) and add
+3. **Internal padding comes from the density archetypes, not raw `--juno-space-*`**:
+   `--juno-pad-control-block`/`-inline` for interactive controls,
+   `--juno-pad-surface-block`/`-inline` for surfaces (anything with its own
+   background and padding), `--juno-gap-control` / `--juno-gap-content` for gaps.
+   A component that spends raw `--juno-space-*` on its own padding does not
+   respond to `data-juno-density` at all — it stays comfortable while the rest of
+   the UI compacts. Inline chips (`badge`, `tooltip`) legitimately take neither;
+   say so in the component doc rather than leaving it implied. Apply an archetype
+   to **both axes or neither**: compact removes more block padding than inline, so
+   a half-migration inverts that contract.
+4. Use **logical properties** (`margin-inline`, `inset`, …) for RTL.
+5. Use BEM-ish names: `.juno-<block>`, `__element`, `--modifier`.
+6. Document it: `docs/components/<name>.md` (anatomy + states + ARIA contract) and add
    a row to `docs/components/README.md`.
-6. Add it to `showcase/index.html`.
-7. `npm run lint` and `npm test`.
+7. Add it to `showcase/index.html`.
+8. Add a row to `docs/inventory-elements.md`. `test/census-matches-css.test.mjs`
+   checks the `Responsive mechanism` and `Density-aware` columns against your
+   stylesheet, so a wrong answer there fails `npm test`.
+9. `npm run lint` and `npm test`.
 
 ## Conventions
 
