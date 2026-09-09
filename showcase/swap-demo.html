@@ -34,9 +34,23 @@
      a plain inline style can never outrank that. This selector is MORE
      specific (id + attribute + class), so it wins WITHOUT touching the
      shipped rule, and it does nothing until <html> carries
-     data-force-coarse — which only the button below ever sets. */
-  html[data-force-coarse] .juno-rail--responsive { display: none !important; }
-  html[data-force-coarse] .juno-dock--responsive { display: flex !important; }
+     data-force-coarse — which only the button below ever sets.
+
+     PR 84 REVIEW CAUGHT A REAL BUG HERE: the first version forced the nav
+     unconditionally on data-force-coarse alone, dropping the size half of
+     the rule entirely. The real rule is a CONJUNCTION —
+     (pointer: coarse) AND (narrow OR short) — so at a roomy frame size a
+     real coarse pointer still shows the rail (rail.css's own comment:
+     giving a kiosk phone navigation is "the mirror of the bug being
+     fixed"), and the toggle has to respect that or it demonstrates a state
+     that cannot occur on real hardware. So the override is wrapped in the
+     SAME size test as the shipped rule — it substitutes only the pointer
+     half, and only inside the size window where the real rule would also
+     apply. */
+  @media (width <= 767.98px), (height <= 500px) {
+    html[data-force-coarse] .juno-rail--responsive { display: none !important; }
+    html[data-force-coarse] .juno-dock--responsive { display: flex !important; }
+  }
 </style>
 </head>
 <body>
