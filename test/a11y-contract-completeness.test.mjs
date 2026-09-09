@@ -45,6 +45,7 @@ const COVERED = {
   breadcrumb: 'Breadcrumb',
   button: 'Button',
   card: 'Card',
+  'canvas-ink': 'Canvas ink',
   checkbox: 'Checkbox / radio',
   chip: 'Chip / tag',
   divider: 'Divider',
@@ -65,7 +66,10 @@ const COVERED = {
   pillbar: 'Pillbar',
   popover: 'Popover',
   rail: 'Rail / dock',
+  range: 'Range (two-thumb)',
+  readout: 'Readout',
   reload: 'Reload',
+  scrubber: 'Scrubber (media)',
   select: 'Input / select / textarea',
   skeleton: 'Skeleton',
   slider: 'Slider',
@@ -89,8 +93,6 @@ const COVERED = {
 const NO_ROW = {
   // Contract exists in the component's own doc; not yet indexed in the table.
   // The number is aria/role mentions in docs/components/<name>.md.
-  range: 'own doc covers it (18)',
-  scrubber: 'own doc covers it (18)',
   gizmo: 'own doc covers it (13)',
   swatch: 'own doc covers it (11)',
   'icon-loader': 'own doc covers it (9) — arc carries role=status; may fold into a Loader row',
@@ -103,9 +105,6 @@ const NO_ROW = {
   // non-interactive surfaces — but the table states that explicitly for other
   // components ("No ARIA to add", "no role needed"), so silence is not the
   // same as a stated absence.
-  readout: 'no ARIA mentioned in its own doc either; a data tile may need none, but say so',
-  'canvas-ink':
-    'no ARIA mentioned in its own doc either; a paint surface may need none, but say so',
 };
 
 /** First-column labels of the ARIA contract table. */
