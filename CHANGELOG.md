@@ -1,5 +1,102 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- 4329248: **`readout` now compacts with every other surface.** `.juno-readout` reads the
+  density archetype (`--juno-pad-surface-block`/`-inline`) instead of raw
+  `--juno-space-*`. It was the only padded surface still spending raw tokens, so
+  `[data-juno-density="compact"]` compacted every surface in the library except
+  this one.
+
+  Its block padding moves **20px → 16px** at comfortable density. That is the
+  visible shift, and it is why this is a `minor` rather than a `patch` under the
+  pre-1.0 mapping: the versioning policy calls "change what an existing class
+  does" breaking, and says to up-rank when unsure because a surprise visual shift
+  is worse than a higher version number. The inline axis does not move —
+  `--juno-space-16` already _was_ what `--juno-pad-surface-inline` resolves to at
+  comfortable, so the two agreed by coincidence and now agree by construction.
+
+  **New tokens** `--juno-brightness-hover` (1.08) and `--juno-brightness-press`
+  (0.94), reaching every platform output. These were literals inside `button.css`
+  — the library's entire interaction-feedback vocabulary, readable by nothing
+  else. Same values in and out, so nothing shifts; additive on its own, which is a
+  `patch` pre-1.0.
+
+  **Shipped documentation fixes.** `docs/` is part of the published package, so
+  these reached consumers:
+
+  - `docs/components/rail.md` told you to pair `.juno-rail--responsive` with a
+    dock carrying `.juno-hide-from-md`. Following it leaves a **landscape phone
+    (844×390) with no primary navigation at all** — the rail hides because the
+    pointer is coarse and the viewport is short, and the dock hides because it
+    measures width alone. `docs/layout.md` already forbade that pairing; the two
+    documents disagreed and `rail.md` is the one a component author opens. Now
+    points at `.juno-dock--responsive` / `.juno-pillbar--responsive`.
+  - `docs/components/dock-responsive.md` is new — the variant had no
+    documentation anywhere, only a CSS comment.
+  - `docs/accessibility.md`'s per-component ARIA contract table covered 38 of 52
+    components. It now covers all 52. `tree` was absent while a filename search
+    reported it present, because the only occurrence of the word in that document
+    is "the hidden one leaves the tree via `display:none`" — the _accessibility
+    tree_.
+  - `docs/components/README.md` was missing seven components, and
+    `docs/design-guidelines.md` claimed density "swaps the internal padding of
+    every component underneath it", which was true of the components that read the
+    aliases and false of six others.
+
+### Patch Changes
+
+- 5cf122f: Documentation: `docs/components/README.md`'s Class column now lists six public
+  block classes it had omitted — `.juno-avatar-group`, `.juno-choice`,
+  `.juno-state`, `.juno-popover-anchor`, `.juno-table-scroll`,
+  `.juno-toast-stack`. Each is defined by its component's stylesheet and usable
+  by consumers; none was listed in the catalogue a consumer reads. No CSS
+  changes and no behaviour changes — the classes already shipped.
+- e740202: Documentation: the scroll-container examples in `docs/components/table.md` now
+  show `tabindex="0"` + `role="region"` + a name, matching the rule the same file
+  states. `docs/layout.md`'s generic scroller and reel examples carry a comment
+  naming the condition instead, because blanket-adding a tab stop to a
+  placeholder example would teach "always add one" — which the rule forbids.
+  No CSS changes.
+- 09f1210: Packaging: `@junoput01/junoui/pointer-first` now has an `exports` entry. The
+  file already shipped (`tools/` is in `files`) and `docs/painted-ui.md`
+  advertised the specifier, but with an `exports` map present an unlisted subpath
+  is blocked — so importing it threw `ERR_PACKAGE_PATH_NOT_EXPORTED`. Additive:
+  no existing export changes.
+- e15d764: State the iOS/PWA plug-and-play claim, and bound it (`20260805-020`).
+
+  The four areas in that promise — safe areas, tap targets, momentum scroll, standalone chrome — were mostly already shipping. What was missing was a statement of **what the claim covers and what it does not**, and any check that the promise matches the build.
+
+  `docs/plug-and-play.md` is three lists: what you get by loading the stylesheet, what you must supply, and what junoui explicitly does not do. Every row of the first list points at a token in the shipped build or a test that exists, not at a sentence.
+
+  The bounding lists are the substance. **What you must supply** leads with `viewport-fit=cover`, because every safe-area inset reads 0 without it — so the entire first table silently does nothing if it is missing. **What junoui does not do** keeps four boundaries that were each learned expensively: it does not test WebKit, it cannot see what you paint, it does not reach UI drawn into a canvas, and it does not make a consuming app conformant by composition.
+
+  `test/plug-and-play.test.mjs` holds the document to that: every promised mechanism is asserted against `dist/css/juno.css`, every cited guard must exist, and each of the four boundaries and the not-automated device pass must still be there.
+
+- 9de4ba6: Accessibility: the showcase's `device/media.html` reel was keyboard-unreachable
+  — it scrolls 350px horizontally at phone width with no focusable children — and
+  now carries a tab stop and a name, like the six fixed alongside it. No CSS
+  changes; the showcase is not part of the published package, but the omission it
+  demonstrated was.
+- de1b0e3: Accessibility contract: `docs/accessibility.md` gains a **Scrollable regions**
+  section stating, once, that a region which scrolls and contains nothing
+  focusable needs `tabindex="0"` + `role="region"` + a name (WCAG 2.1.1), and
+  naming every junoui class that creates one — `.juno-table-scroll`,
+  `.juno-scroller`, `.juno-reel`, `.juno-app-shell__main`, `.juno-modal__body`.
+  `docs/layout.md` carries the same note where the scroller primitives are
+  documented. The rule keys on the region having no focusable content of its own,
+  not on whether it currently overflows, which is viewport-dependent. No CSS
+  changes.
+- 758fb8b: Accessibility contract: `docs/accessibility.md` and `docs/components/table.md`
+  now state that a `.juno-table-scroll` viewport needs `tabindex="0"` plus
+  `role="region"` and a name. It scrolls, and a table of static cells contains
+  nothing focusable, so without a tab stop a keyboard-only user cannot reach the
+  rows below the fold (WCAG 2.1.1). The requirement is keyed on the region having
+  no focusable content of its own — not on whether it currently overflows, which
+  depends on the viewport. No CSS changes.
+
 ## 0.10.0
 
 ### Minor Changes
