@@ -27,7 +27,11 @@ A tile showing one live value: small label, large mono value, unit.
 
 ## Anatomy (any platform)
 
-- Tile `s2`, padding `space.20`/`space.16`, radius `radius.5`.
+- Tile `s2`, radius `radius.5`, padding from the **density surface archetype**
+  (`--juno-pad-surface-block`/`--juno-pad-surface-inline`) — `space.16`/`space.16`
+  at comfortable, `space.10`/`space.12` at compact. A readout compacts with
+  every other surface rather than staying fixed; native ports should read
+  their platform's equivalent rather than hardcoding the comfortable pair.
 - Label: `font.size.10`, uppercase, tracking `wider`, color `label`.
 - Value: **B612 Mono 700**, `font.size.38`, `tabular-nums`, color = role (default `data`).
 - Unit: `font.size.11`, color `label`.
