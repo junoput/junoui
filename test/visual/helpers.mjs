@@ -9,6 +9,7 @@
 // collide on one baseline file. Coarse snapshots therefore carry a `-coarse`
 // segment in their name.
 import { expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 // below md the showcase chrome swaps to the junoui mobile kit (navbar +
 // pillbar) — snapshot a couple of pages at a phone viewport too
@@ -89,6 +90,60 @@ export async function pinVolatile(pw) {
 // can shadow with addInitScript. So it overwrites the rendered DOM text
 // after app.js has already run once, which is fine: a screenshot is the
 // FINAL state, not a filmstrip, and every caller pins before shooting.
+// WHICH SERVER ANSWERED. `playwright.config.mjs` sets
+// `reuseExistingServer: !process.env.CI`, so outside CI Playwright binds to
+// whatever already holds port 8137 and never checks what it serves. On
+// 2026-09-09 that was a `scripts/serve.mjs` started NINE DAYS earlier from a
+// different worktree by a debugging one-liner; every local run had been
+// snapshotting that checkout's showcase. The symptom was every page failing on
+// a missing `#build-identity`, which reads as a code defect on main — and
+// reverting the working tree changed nothing, because the working tree was
+// never being served.
+//
+// CI is immune (it sets CI, so the flag is false and a fresh server starts),
+// which is exactly why this could persist: the green that would have
+// contradicted it comes from a different machine.
+//
+// So: assert the server is serving THIS checkout before believing anything a
+// screenshot says. The probe is the build identity, because it is the one
+// artefact that differs per checkout by construction.
+let servingChecked = false;
+
+export async function assertServingThisCheckout(pw) {
+  if (servingChecked) return;
+  servingChecked = true;
+
+  const res = await pw.request.get('/dist/js/identity.js');
+  if (!res.ok()) {
+    throw new Error(
+      `assertServingThisCheckout: GET /dist/js/identity.js -> ${res.status()}. ` +
+        'The server on 8137 is not serving this checkout (or it was never built). ' +
+        'reuseExistingServer is on outside CI, so a server already on that port is ' +
+        'reused whatever worktree it was started from.',
+    );
+  }
+  // Compare against the file ON DISK, read HERE rather than imported at module
+  // load. The webServer command is `npm run showcase`, which BUILDS before it
+  // serves — so a static `import { IDENTITY }` captures the pre-build value and
+  // then disagrees with the freshly regenerated file it is supposed to match.
+  // The check would fail on a perfectly healthy run, which is what the first
+  // version of it did: the instrument was racing the thing it measures.
+  //
+  // Byte-comparing the file removes the race and needs no parsing. Serving THIS
+  // checkout makes them the same file; serving another worktree makes them
+  // differ, which is exactly the discrimination wanted.
+  const served = (await res.text()).trim();
+  const local = readFileSync('dist/js/identity.js', 'utf8').trim();
+  if (served !== local) {
+    throw new Error(
+      'assertServingThisCheckout: the server on 8137 is serving a DIFFERENT ' +
+        'checkout than this one — its dist/js/identity.js does not match ours. ' +
+        'reuseExistingServer binds to whatever already holds the port, whatever ' +
+        'worktree started it. Stop that server, or run with CI=1 to force a fresh one.',
+    );
+  }
+}
+
 export const IDENTITY_LABEL_FIXTURE = 'build 0000000 · fixture/branch';
 
 export async function pinIdentityLabel(pw) {
@@ -96,7 +151,11 @@ export async function pinIdentityLabel(pw) {
     const el = document.getElementById('build-identity');
     if (!el) {
       throw new Error(
-        'pinIdentityLabel: #build-identity not found — the showcase id changed and the pin is silently no-oping',
+        'pinIdentityLabel: #build-identity not found. Before assuming the showcase ' +
+          'id changed: playwright.config.mjs sets reuseExistingServer outside CI, so a ' +
+          'server already listening on 8137 is REUSED whatever it is serving — including ' +
+          'one started long ago from a different worktree. assertServingThisCheckout() ' +
+          'above should have caught that first; if it did not, check what is on 8137.',
       );
     }
     el.textContent = label;
@@ -104,6 +163,7 @@ export async function pinIdentityLabel(pw) {
 }
 
 export async function visit(pw, page, mode) {
+  await assertServingThisCheckout(pw);
   await pinVolatile(pw);
   // seed the persisted theme before any script runs
   await pw.addInitScript((m) => {
