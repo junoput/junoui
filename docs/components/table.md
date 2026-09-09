@@ -28,16 +28,16 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 </div>
 ```
 
-| Class                      | Effect                                                                  |
-| -------------------------- | ----------------------------------------------------------------------- |
-| `.juno-table-scroll`       | Overflow-scrolling viewport (`max-block-size: 480px`) + thin scrollbar. |
-| `.juno-table`              | The `<table>`: header `s2`, mono numerics, `border` row rules.          |
-| `.juno-table--sticky`      | Header holds (`position: sticky`) while the body scrolls.               |
-| `.juno-table--zebra`       | Stripes even body rows (`s2` dark / `s1` light).                        |
-| `.juno-table--compact`     | Tighter row padding (per-table; independent of global density).         |
-| `.juno-table--stack`       | Phone mode: rows become label/value cards below 480px (see below).      |
-| `th[aria-sort]`            | Marks a sortable column; `ascending` / `descending` draw the arrow.     |
-| `tr[aria-selected="true"]` | Active rail (left) + cyan row wash.                                     |
+| Class                      | Effect                                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.juno-table-scroll`       | Overflow-scrolling viewport (`max-block-size: 480px`) + thin scrollbar. **Give it `tabindex="0"` + `role="region"` + a name** — see below. |
+| `.juno-table`              | The `<table>`: header `s2`, mono numerics, `border` row rules.                                                                             |
+| `.juno-table--sticky`      | Header holds (`position: sticky`) while the body scrolls.                                                                                  |
+| `.juno-table--zebra`       | Stripes even body rows (`s2` dark / `s1` light).                                                                                           |
+| `.juno-table--compact`     | Tighter row padding (per-table; independent of global density).                                                                            |
+| `.juno-table--stack`       | Phone mode: rows become label/value cards below 480px (see below).                                                                         |
+| `th[aria-sort]`            | Marks a sortable column; `ascending` / `descending` draw the arrow.                                                                        |
+| `tr[aria-selected="true"]` | Active rail (left) + cyan row wash.                                                                                                        |
 
 ### Cell flavors
 
@@ -65,6 +65,45 @@ contract**; the app owns sort, selection, inline-edit, pagination, and filtering
 All three cap at `--juno-cell-max` (default 240px).
 
 ### Stacked mode (phone widths)
+
+## The scroll viewport needs a tab stop
+
+```html
+<div class="juno-table-scroll" tabindex="0" role="region" aria-label="Fleet status">
+  <table class="juno-table">
+    …
+  </table>
+</div>
+```
+
+`.juno-table-scroll` scrolls, and a table of static cells contains **nothing
+focusable**. Without a tab stop, the rows below the fold are unreachable for a
+keyboard-only user — there is no element to Tab to that would scroll them into
+view (WCAG 2.1.1 Keyboard).
+
+`tabindex="0"` alone is not enough: a focusable `<div>` with no role announces
+as nothing when a screen reader lands on it, so it needs `role="region"` and a
+name. Use `aria-labelledby` pointing at the table's caption or the heading
+above it when there is one; `aria-label` otherwise.
+
+**Key it on focusable content, not on whether it currently overflows** —
+because whether it overflows depends on the viewport, so there is no static
+answer. Measured on junoui's own showcase:
+
+| Scroller              | 1280x900      | 390x844          |
+| --------------------- | ------------- | ---------------- |
+| index, data grid      | no overflow   | 115px horizontal |
+| device/table, stacked | no overflow   | 425px vertical   |
+| device/diagnostics    | 5 of 7 scroll | all 7 scroll     |
+
+The same markup needs the tab stop on a phone and does not need it on a
+desktop. A rule that says "add it when it scrolls" cannot be applied by
+looking at the page.
+
+**This is not a rule about overflow.** It applies to a region with no focusable
+content of its own. A modal body, a scrollable tab strip and a menu already
+contain tab stops, and adding another would put a redundant, unlabelled stop in
+front of content the user can already reach.
 
 Wide tables don't shrink — they either scroll (the default: `.juno-table-scroll`
 scrolls sideways too) or **stack**. Opt in with `.juno-table--stack`, give every
