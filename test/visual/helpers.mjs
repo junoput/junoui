@@ -9,7 +9,7 @@
 // collide on one baseline file. Coarse snapshots therefore carry a `-coarse`
 // segment in their name.
 import { expect } from '@playwright/test';
-import { IDENTITY } from '../../dist/js/identity.js';
+import { readFileSync } from 'node:fs';
 
 // below md the showcase chrome swaps to the junoui mobile kit (navbar +
 // pillbar) — snapshot a couple of pages at a phone viewport too
@@ -118,16 +118,28 @@ export async function assertServingThisCheckout(pw) {
     throw new Error(
       `assertServingThisCheckout: GET /dist/js/identity.js -> ${res.status()}. ` +
         'The server on 8137 is not serving this checkout (or it was never built). ' +
-        'reuseExistingServer is on outside CI, so a stale server from another ' +
-        'worktree is reused silently.',
+        'reuseExistingServer is on outside CI, so a server already on that port is ' +
+        'reused whatever worktree it was started from.',
     );
   }
-  const served = await res.text();
-  if (!served.includes(IDENTITY.commit)) {
+  // Compare against the file ON DISK, read HERE rather than imported at module
+  // load. The webServer command is `npm run showcase`, which BUILDS before it
+  // serves — so a static `import { IDENTITY }` captures the pre-build value and
+  // then disagrees with the freshly regenerated file it is supposed to match.
+  // The check would fail on a perfectly healthy run, which is what the first
+  // version of it did: the instrument was racing the thing it measures.
+  //
+  // Byte-comparing the file removes the race and needs no parsing. Serving THIS
+  // checkout makes them the same file; serving another worktree makes them
+  // differ, which is exactly the discrimination wanted.
+  const served = (await res.text()).trim();
+  const local = readFileSync('dist/js/identity.js', 'utf8').trim();
+  if (served !== local) {
     throw new Error(
-      `assertServingThisCheckout: the server on 8137 reports a different build than ` +
-        `this checkout (expected commit ${IDENTITY.commit}). A server started from ` +
-        'another worktree is being reused — stop it, or run with CI=1 to force a fresh one.',
+      'assertServingThisCheckout: the server on 8137 is serving a DIFFERENT ' +
+        'checkout than this one — its dist/js/identity.js does not match ours. ' +
+        'reuseExistingServer binds to whatever already holds the port, whatever ' +
+        'worktree started it. Stop that server, or run with CI=1 to force a fresh one.',
     );
   }
 }
