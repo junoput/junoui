@@ -67,5 +67,12 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Icon loader (rings any control)  | `.juno-icon-loader`                         | [icon-loader.md](./icon-loader.md)     |
 | Navbar (stack top bar)           | `.juno-navbar`                              | [navbar.md](./navbar.md)               |
 | List (grouped rows)              | `.juno-list`                                | [list.md](./list.md)                   |
+| Tree / outliner                  | `.juno-tree`                                | [tree.md](./tree.md)                   |
+| Splitter (resize separator)      | `.juno-splitter`                            | [splitter.md](./splitter.md)           |
+| Range (dual-thumb slider)        | `.juno-range`                               | [range.md](./range.md)                 |
+| Scrubber (timeline / transport)  | `.juno-scrubber`                            | [scrubber.md](./scrubber.md)           |
+| Colour swatch & palette          | `.juno-swatch` / `.juno-palette`            | [swatch.md](./swatch.md)               |
+| Viewport orientation gizmo       | `.juno-gizmo`                               | [gizmo.md](./gizmo.md)                 |
+| Canvas ink (annotation layer)    | `.juno-canvas-ink`                          | [canvas-ink.md](./canvas-ink.md)       |
 
 Always pair a status color with a text label — color is never the only signal.
