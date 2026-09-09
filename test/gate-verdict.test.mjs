@@ -99,8 +99,14 @@ test('record() carries a skipped flag through to the results it stores', () => {
   assert.match(GATE_SRC, /const r = \{ name, ok, note, skipped \};/);
 });
 
-test('both real skip sites pass { skipped: true } — neither was missed', () => {
-  const skipSites = [...GATE_SRC.matchAll(/\{\s*skipped: true,?\s*\}/g)];
+test('both real skip sites pass a skipped option — neither was missed', () => {
+  // Counts the OPTION, not the literal `true`. It asserted `{ skipped: true }`
+  // twice when written; 20260909-122 then rewrote the published-version stage
+  // to compute its outcome, so that site now passes `{ skipped: v.skipped }`
+  // and only one literal remains. The population check is what matters — every
+  // stage that can skip must carry the flag — and keying it on the literal
+  // would have made a correct refactor look like a missed site.
+  const skipSites = [...GATE_SRC.matchAll(/\{\s*skipped:\s*[^}]+\}/g)];
   assert.equal(skipSites.length, 2, 'expected exactly the two documented skip call sites');
 });
 

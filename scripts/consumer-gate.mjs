@@ -270,6 +270,7 @@ head('preflight — this branch has taken back the last release');
       record('this version is not already published', v.ok, v.note, { skipped: v.skipped });
     }
   }
+}
 
 head(opts.build ? 'build the candidate' : 'build the candidate (skipped)');
 if (opts.build) run('npm', ['run', 'build'], REPO);
