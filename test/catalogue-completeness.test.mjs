@@ -47,9 +47,8 @@ const DOC_ALIAS = {
  * an entry here is a declared gap rather than an invisible one.
  */
 const NO_DOC = {
-  'dock-responsive':
-    'the reciprocal of .juno-rail--responsive — a pairing variant of dock, ' +
-    'documented nowhere, not even inside dock.md (20260909-055)',
+  // Empty: every stylesheet has a doc. Keep the mechanism — a new one must
+  // be documented or listed here with a reason.
 };
 
 const catalogue = readFileSync(CATALOGUE, 'utf8');

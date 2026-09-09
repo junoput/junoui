@@ -21,17 +21,17 @@ On phone widths the shell swaps the rail for a [dock](./dock.md) (bottom nav).
 </nav>
 ```
 
-| Class / prop             | Effect                                                                                                                                         |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.juno-rail`             | `s1` column, 180px, 1px `border` seam on the inline-end edge. Also a size container (`container-type: inline-size`) — see auto-collapse below. |
-| `.juno-rail__brand`      | Mono uppercase brand block.                                                                                                                    |
-| `.juno-rail__item`       | Icon + label row; hover `s2`.                                                                                                                  |
-| `.juno-rail__label`      | The text — ellipsis-truncates, and hides (visually and in the a11y tree) when collapsed, manually or automatically.                            |
-| `[aria-current]`         | Active item: `s3` fill + 2px role edge. Attribute, not a class.                                                                                |
-| `.juno-rail--collapsed`  | Icons-only, `space.56` wide; width transition. App-toggled — see auto-collapse below for the width-driven case.                                |
-| `.juno-rail--responsive` | Self-hides below `md`; pair with a `.juno-dock` / `.juno-pillbar` carrying `.juno-hide-from-md`.                                               |
-| `--juno-rail-width`      | Override the expanded width.                                                                                                                   |
-| `.juno--<role>`          | Active-edge color (default `active`).                                                                                                          |
+| Class / prop             | Effect                                                                                                                                                                                                                                        |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.juno-rail`             | `s1` column, 180px, 1px `border` seam on the inline-end edge. Also a size container (`container-type: inline-size`) — see auto-collapse below.                                                                                                |
+| `.juno-rail__brand`      | Mono uppercase brand block.                                                                                                                                                                                                                   |
+| `.juno-rail__item`       | Icon + label row; hover `s2`.                                                                                                                                                                                                                 |
+| `.juno-rail__label`      | The text — ellipsis-truncates, and hides (visually and in the a11y tree) when collapsed, manually or automatically.                                                                                                                           |
+| `[aria-current]`         | Active item: `s3` fill + 2px role edge. Attribute, not a class.                                                                                                                                                                               |
+| `.juno-rail--collapsed`  | Icons-only, `space.56` wide; width transition. App-toggled — see auto-collapse below for the width-driven case.                                                                                                                               |
+| `.juno-rail--responsive` | Self-hides where navigation should be a bottom bar (coarse pointer, narrow **or short**); pair with `.juno-dock--responsive` / `.juno-pillbar--responsive`, never with `.juno-hide-from-md` — see [dock-responsive.md](./dock-responsive.md). |
+| `--juno-rail-width`      | Override the expanded width.                                                                                                                                                                                                                  |
+| `.juno--<role>`          | Active-edge color (default `active`).                                                                                                                                                                                                         |
 
 ### Auto-collapse (20260908-005)
 
