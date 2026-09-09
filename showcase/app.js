@@ -472,9 +472,11 @@ function initSplitters() {
 }
 
 // ── rail<->dock responsive swap (demo: a resizable frame tests the real
-//  width/height half of the rule; a preview toggle overrides display directly
-//  so the pointer half is visible without touch hardware — junoui ships only
-//  the media query, this demo-only override never touches it) ─────────────
+//  width/height half of the rule; a preview toggle sets a demo-only
+//  attribute a page-local <style> reads — junoui's own rules use
+//  !important, so a plain inline style could never win against the real
+//  match; a MORE SPECIFIC selector can, and it does nothing until this
+//  attribute is set) ─────────────────────────────────────────────────────
 function initSwapDemo() {
   const frame = document.getElementById('swap-frame');
   const toggle = document.getElementById('swap-preview-toggle');
@@ -487,10 +489,10 @@ function initSwapDemo() {
     toggle.setAttribute('aria-pressed', String(coarse));
     toggle.classList.toggle('juno--active', coarse);
     toggle.classList.toggle('juno-btn--ghost', !coarse);
-    // Cleared entirely when off, so the real (pointer: coarse) rule — which
+    // Removed entirely when off, so the real (pointer: coarse) rule — which
     // also reads width/height — governs exactly as it would for a consumer.
-    rail.style.display = coarse ? 'none' : '';
-    dock.style.display = coarse ? 'flex' : '';
+    if (coarse) frame.setAttribute('data-force-coarse', '');
+    else frame.removeAttribute('data-force-coarse');
   };
   toggle.addEventListener('click', () =>
     setPreview(toggle.getAttribute('aria-pressed') !== 'true'),

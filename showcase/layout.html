@@ -298,6 +298,17 @@
         </button>
         <span class="juno-mono" id="swap-dims" style="font-size:11px;color:var(--juno-muted);">— × —</span>
       </div>
+      <style>
+        /* Demo-only preview override. junoui's own rules use a single-class
+           selector with !important (rail.css / dock-responsive.css) so a
+           fine pointer's real match always wins — a plain inline style
+           cannot outrank that. This selector is deliberately MORE specific
+           (id + attribute + class) so it wins over the shipped rule without
+           touching it; it does nothing until #swap-frame carries
+           data-force-coarse, which only the preview button ever sets. */
+        #swap-frame[data-force-coarse] .juno-rail--responsive { display: none !important; }
+        #swap-frame[data-force-coarse] .juno-dock--responsive { display: flex !important; }
+      </style>
       <div
         id="swap-frame"
         style="resize:both;overflow:auto;min-width:260px;min-height:200px;max-width:100%;max-height:520px;width:420px;height:280px;border:var(--juno-border-width-1) solid var(--juno-border);border-radius:var(--juno-radius-8);"
