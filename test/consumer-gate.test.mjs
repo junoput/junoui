@@ -94,8 +94,28 @@ test('the fetch uses explicit refspecs', () => {
   assert.match(src, /\+refs\/heads\/\$\{b\}:refs\/remotes\/origin\/\$\{b\}/);
 });
 
-test('the default baseline is develop, and the default ref is a lane of it', () => {
+test('the default consumer ref is pinned, and changing it is a deliberate act', () => {
+  // This asserted `ios/develop` until 2026-09-09. That branch is GONE from
+  // nexora's origin, so the gate could not clone its consumer at all and the
+  // whole pre-release gate was inoperable (20260909-114). Repointed to
+  // `develop` after measuring that ios/develop had ZERO commits develop
+  // lacks and IS an ancestor of it — a strict subset, so nothing was lost.
+  //
+  // The test is kept pinning-shaped ON PURPOSE. What the gate clones defines
+  // what "verified" means for every release, so it should not be possible to
+  // change it without a red test and a sentence explaining why. This failing
+  // is the mechanism working, not an obstacle to route around.
   const src = readFileSync('scripts/consumer-gate.mjs', 'utf8');
-  assert.match(src, /ref: 'ios\/develop'/);
+  assert.match(src, /ref: 'develop'/);
   assert.match(src, /baseline: 'develop'/);
+});
+
+test('with ref === baseline the currency check reports not-applicable, not a pass', () => {
+  // develop contains develop for arithmetic reasons. Reporting that as a
+  // currency PASS would be a check that cannot fail wearing the words of one
+  // that can — which is what this whole file exists to prevent elsewhere.
+  const v = baselineVerdict({ ancestorCode: 0, ref: 'develop', baseline: 'develop' });
+  assert.equal(v.ok, true);
+  assert.match(v.detail, /not applicable/);
+  assert.doesNotMatch(v.detail, /carries all of/);
 });

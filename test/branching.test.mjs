@@ -127,10 +127,16 @@ test('the doc states the residual that survives the fix', () => {
 });
 
 test('the doc distinguishes nexora’s develop from junoui having one', () => {
-  // scripts/consumer-gate.mjs mentions `develop` and `ios/develop` a dozen
-  // times. They are the CONSUMER's branches. Without this note the next reader
-  // greps, finds them, and concludes junoui has a develop after all.
-  assert.match(doc, /are \*\*nexora's\*\*, not junoui's/);
+  // scripts/consumer-gate.mjs mentions `develop` a dozen times. They are the
+  // CONSUMER's branches. Without this note the next reader greps, finds them,
+  // and concludes junoui has a develop after all.
+  //
+  // Matches either grammatical number on purpose. The doc said "are" while the
+  // gate named two branches; it says "is" since 20260909-114 repointed the gate
+  // off the vanished `ios/develop`. What this pins is the CLAIM — those refs
+  // belong to the consumer — not the number of them, which is free to change
+  // when the gate's target does.
+  assert.match(doc, /(is|are) \*\*nexora's\*\*, not junoui's/);
 });
 
 test('no other workflow acts on a branch the model does not name', () => {
