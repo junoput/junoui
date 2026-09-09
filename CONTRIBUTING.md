@@ -142,6 +142,23 @@ Versioning + changelog are automated with [Changesets](https://github.com/change
    than links, and why it is a local step rather than a CI job. Record the junoui and
    consumer SHAs it prints on the release ticket.
 
+   **The Version PR itself will show no checks — that is expected, not a fault.**
+   It is opened by the Actions bot, so its workflow runs sit at `action_required`
+   until someone approves them, and `gh pr checks` reports
+   _"no checks reported"_ with a merge state of `UNSTABLE`. The consumer gate
+   above is the substantive check: it exercises the packed candidate inside a
+   real consumer, which is a stronger question than junoui's own CI answers.
+
+   If you want that PR's `build` + `visual` anyway, run them yourself:
+
+   ```sh
+   gh workflow run ci.yml --ref changeset-release/main
+   ```
+
+   **This cannot publish.** The `release` job is gated on a push to `main`
+   (`github.event_name == 'push'`), so a `workflow_dispatch` runs build and
+   visual and skips release.
+
 4. Merge that PR. With no changesets left, the next `release` run publishes to npm
    (`npm run release` → build + `changeset publish`, with npm provenance via OIDC).
 
