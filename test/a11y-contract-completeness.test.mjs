@@ -74,6 +74,7 @@ const COVERED = {
   table: 'Table / data grid',
   tabs: 'Tabs',
   toast: 'Toast',
+  tree: 'Tree',
   'toggle-button': 'Toggle button',
   tooltip: 'Tooltip',
 };
@@ -87,7 +88,6 @@ const COVERED = {
 const NO_ROW = {
   // Contract exists in the component's own doc; not yet indexed in the table.
   // The number is aria/role mentions in docs/components/<name>.md.
-  tree: 'own doc covers it (21 mentions) — the largest gap: role=tree/treeitem, aria-expanded, roving tabindex',
   range: 'own doc covers it (18)',
   scrubber: 'own doc covers it (18)',
   splitter: 'own doc covers it (15)',
