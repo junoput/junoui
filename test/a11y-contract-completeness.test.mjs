@@ -82,6 +82,14 @@ const COVERED = {
   tree: 'Tree',
   'toggle-button': 'Toggle button',
   tooltip: 'Tooltip',
+  'fold-slot': 'Fold slot',
+  gauge: 'Gauge',
+  gizmo: 'Gizmo',
+  'icon-loader': 'Icon loader',
+  segmented: 'Segmented control',
+  spark: 'Spark (sparkline)',
+  swatch: 'Swatch',
+  thumb: 'Thumbnail',
 };
 
 /**
@@ -91,20 +99,8 @@ const COVERED = {
  * decision someone can see and object to (20260909-050).
  */
 const NO_ROW = {
-  // Contract exists in the component's own doc; not yet indexed in the table.
-  // The number is aria/role mentions in docs/components/<name>.md.
-  gizmo: 'own doc covers it (13)',
-  swatch: 'own doc covers it (11)',
-  'icon-loader': 'own doc covers it (9) — arc carries role=status; may fold into a Loader row',
-  segmented: 'own doc covers it (7)',
-  gauge: 'own doc covers it (6)',
-  thumb: 'own doc covers it (4)',
-  'fold-slot': 'own doc covers it (3)',
-  spark: 'own doc covers it (2)',
-  // No ARIA contract stated anywhere. Plausibly correct — both are
-  // non-interactive surfaces — but the table states that explicitly for other
-  // components ("No ARIA to add", "no role needed"), so silence is not the
-  // same as a stated absence.
+  // Empty: every component now has a row. Keep the mechanism — a NEW
+  // component must be given a row or listed here with a reason.
 };
 
 /** First-column labels of the ARIA contract table. */
