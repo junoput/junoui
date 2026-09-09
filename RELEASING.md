@@ -7,7 +7,7 @@ npm run gate:consumer
 ```
 
 It packs the release candidate, installs that tarball into a throwaway checkout of a
-real consumer (the nexora web client, `ios/develop`), and runs that consumer's
+real consumer (the nexora web client, `develop`), and runs that consumer's
 typecheck, test suite and production build against it. **If it exits non-zero the
 release is blocked** — see [Pass/fail](#passfail).
 
@@ -43,7 +43,7 @@ Neither defect is visible from inside this repo. Both are one consumer build awa
 | 2   | stage a pack source                               | a **copy** of the tree under `.relgate/pack-src` — the working tree is never mutated                       |
 | 3   | `npm pack --ignore-scripts`                       | produces the exact artefact a consumer receives                                                            |
 | 4   | preflight                                         | every target in the `exports` map is actually **inside the tarball** — the `0.4.0` defect, stated directly |
-| 5   | shallow clone the consumer                        | `nexora` `ios/develop`, into `.relgate/nexora`                                                             |
+| 5   | shallow clone the consumer                        | `nexora` `develop`, into `.relgate/nexora`                                                                 |
 | 6   | `npm ci`, then install the tarball                | the consumer's real dependency tree, with junoui replaced by the candidate                                 |
 | 7   | `npx tsc --noEmit` · `npm test` · `npm run build` | the candidate compiles, passes the consumer's guards, and builds a production bundle                       |
 
@@ -96,6 +96,25 @@ The script exits non-zero if any stage fails, and prints
 `GATE RED — n of m stages failed. This release is blocked.` A gate that reports and
 proceeds is a log line, not a gate: fix the candidate, or drop the change from the
 release, then run it again.
+
+## The consumer it proves against
+
+`develop`, since 2026-09-09. It was `ios/develop` until that branch vanished
+from nexora's origin, which made the gate **inoperable** rather than weaker —
+stage 6 died on `Remote branch ios/develop not found` and no release could be
+gated at all (`20260909-114`).
+
+Repointing was measured, not assumed: `ios/develop` still exists locally, has
+**zero** commits `develop` does not have, and **is an ancestor** of
+`origin/develop`. A strict subset, so cloning it would prove nothing this does
+not.
+
+**What was lost is worth stating.** junoui integration used to be proven
+through the ios lane, and that lane no longer exists in any form — no branch on
+origin, no worktree on it, no agent. When the ios block is staffed again this
+gate should test that lane **in addition to** `develop`, not instead of it.
+Losing the lane is why this changed; it is not a finding that the lane stopped
+mattering.
 
 ## Where it runs, and why not in CI
 
@@ -151,7 +170,7 @@ release run.
 ## Options
 
 ```
---ref <branch>       consumer branch to check against   (default: ios/develop)
+--ref <branch>       consumer branch to check against   (default: develop)
 --repo <url>         consumer repository                (default: git@github.com:junoput/nexora.git)
 --subdir <path>      package dir inside the consumer    (default: web)
 --as <name>          dependency name to install under   (default: junoui)

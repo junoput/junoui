@@ -44,10 +44,11 @@ empty check list, and the failure was only found because the workflow was
 dispatched by hand. The branch contributed nothing and cost a round trip plus a
 near-miss on merging unverified code.
 
-> The `develop` and `ios/develop` branches named in `scripts/consumer-gate.mjs`
-> are **nexora's**, not junoui's. That repo is a multi-lane application and its
-> integration branches are real. Do not read those references as junoui having
-> one.
+> `develop` in `scripts/consumer-gate.mjs` is **nexora's**, not junoui's. That
+> repo is a multi-lane application and its integration branches are real. Do not
+> read that reference as junoui having one. (It named `ios/develop` too until
+> 2026-09-09, when that branch vanished from nexora's origin and the gate was
+> repointed — see `20260909-114` and RELEASING.md.)
 
 ### Correction, 2026-09-08: it was NOT deleted, and the heading was wrong
 

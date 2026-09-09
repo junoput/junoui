@@ -70,9 +70,27 @@ const CONSUMER = join(WORK, 'nexora');
 
 const DEFAULTS = {
   repo: 'git@github.com:junoput/nexora.git',
-  ref: 'ios/develop',
+  // WAS `ios/develop` until 2026-09-09, and the change is not a preference.
+  // That branch is GONE from nexora's origin, so the gate could not clone its
+  // consumer at all — stage 6 died with "Remote branch ios/develop not found"
+  // and the whole pre-release gate was inoperable (20260909-114).
+  //
+  // Repointing is safe rather than a downgrade, measured before changing it:
+  // ios/develop still exists locally at e09bf36, has ZERO commits `develop`
+  // does not have, and IS an ancestor of origin/develop. So `develop` is a
+  // strict superset — cloning the old ref would prove nothing this does not.
+  //
+  // WHAT WAS LOST, recorded so nobody has to reconstruct it: junoui
+  // integration used to be proven through the ios lane, and that lane no
+  // longer exists in any form — no branch on origin, no worktree on it, no
+  // agent. WHEN THE IOS BLOCK IS STAFFED AGAIN, THIS GATE SHOULD TEST THAT
+  // LANE IN ADDITION TO `develop`, NOT INSTEAD OF IT. Losing the lane is why
+  // this changed; it is not a decision that the lane stopped mattering.
+  ref: 'develop',
   // The branch `ref` is a lane OF. A lane far behind this is a consumer
-  // snapshot, not the consumer — see the currency check below.
+  // snapshot, not the consumer — see the currency check below. With `ref`
+  // and `baseline` equal there is no lane, so that check has nothing to
+  // compare and says so rather than reporting a tautology as a pass.
   baseline: 'develop',
   // The consumer's package directory — where package.json / node_modules live.
   subdir: 'web',

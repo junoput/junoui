@@ -21,6 +21,13 @@
  * @param behind commits the lane is missing, or null if unknown.
  */
 export function baselineVerdict({ ancestorCode, behind = null, ref, baseline }) {
+  // No lane to be stale. `develop` contains `develop` for arithmetic reasons,
+  // so reporting that as a currency PASS would be a check that cannot fail
+  // wearing the words of one that can — the exact shape this function exists
+  // to remove elsewhere. Say it is not applicable instead (20260909-114).
+  if (ref === baseline) {
+    return { ok: true, detail: `not applicable — the consumer IS ${baseline}, there is no lane` };
+  }
   if (ancestorCode === 0) return { ok: true, detail: `${ref} carries all of ${baseline}` };
   if (ancestorCode === 1) {
     return {
