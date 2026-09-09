@@ -534,10 +534,10 @@ hard-coded — the guard names the location, the prose names the property.)
 - **BEM parts** (3): `__label`, `__unit`, `__value`
 - **Modifiers** (1): `--alert`
 - **States/hooks** (0): _none_
-- **Tokens read** (17): `--juno-border-width-1`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-lineHeight-none`, `--juno-font-size-10`, `--juno-font-size-11`, `--juno-font-size-38`, `--juno-font-tracking-wider`, `--juno-font-weight-bold`, `--juno-label`, `--juno-radius-5`, `--juno-role`, `--juno-s2`, `--juno-space-16`, `--juno-space-20`, `--juno-space-4`, `--juno-space-8`
+- **Tokens read** (17): `--juno-border-width-1`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-lineHeight-none`, `--juno-font-size-10`, `--juno-font-size-11`, `--juno-font-size-38`, `--juno-font-tracking-wider`, `--juno-font-weight-bold`, `--juno-label`, `--juno-pad-surface-block`, `--juno-pad-surface-inline`, `--juno-radius-5`, `--juno-role`, `--juno-s2`, `--juno-space-4`, `--juno-space-8`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
-- **Density-aware**: no
+- **Density-aware**: yes (`--juno-pad-surface-block`, `--juno-pad-surface-inline`)
 - **Slot order**: **fixed** — flex, normal flow (label -> value -> unit), matches usage example
 
 ### `reload`

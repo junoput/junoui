@@ -16,7 +16,19 @@
   flex-direction: column;
   background: var(--juno-s2);
   border-radius: var(--juno-radius-5);
-  padding: var(--juno-space-20) var(--juno-space-16);
+
+  /* A readout is a padded surface, so it takes the surface archetype the
+     other six surfaces take (accordion, alert, card, drawer, modal,
+     popover) rather than raw --juno-space-*. Its inline padding was
+     already --juno-space-16, which is exactly what
+     --juno-pad-surface-inline resolves to at comfortable density: two
+     values that agreed by coincidence and were tied to nothing. Reading
+     the archetype makes that agreement a construction.
+
+     BOTH AXES OR NEITHER. density.css's contract is that compact removes
+     more block padding than inline; densifying only the inline axis (the
+     zero-risk half) would invert that, so the block axis moves too. */
+  padding: var(--juno-pad-surface-block) var(--juno-pad-surface-inline);
 }
 
 .juno-readout--alert { border: var(--juno-border-width-1) solid var(--juno-role); }
