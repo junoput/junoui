@@ -45,18 +45,7 @@ const SHOWCASE_DIR = 'showcase';
  * Components deliberately absent from the showcase, with the reason. Should
  * shrink; an entry here is a declared gap rather than an invisible one.
  */
-const NOT_SHOWN = {
-  // The rail<->dock swap keys on a VIEWPORT media query — (pointer: coarse)
-  // and a width/height test. A media query cannot be scoped to a box, so this
-  // one genuinely cannot be demonstrated inside a page section the way every
-  // other entry is: the only way to show it is to resize the browser, which is
-  // what showcase/mobile.html and the device/ pages already ask you to do.
-  // Left declared rather than faked with a container query, which would
-  // demonstrate a mechanism the component does not use (20260909-057).
-  '.juno-dock--responsive':
-    'keys on a viewport media query, so it cannot be shown inside a page ' +
-    'section — only by resizing the browser (20260909-057)',
-};
+const NOT_SHOWN = {};
 
 /** Every showcase page, including showcase/device/. */
 function showcaseHtml() {
