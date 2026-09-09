@@ -62,6 +62,7 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { baselineVerdict } from './gate-currency.mjs';
+import { stageLine, summarize } from './gate-verdict.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const WORK = join(REPO, '.relgate');
@@ -135,11 +136,11 @@ function head(title) {
   stageNo++;
   console.log(`\n\x1b[1m── ${stageNo}. ${title}\x1b[0m`);
 }
-function record(name, ok, note = '') {
-  results.push({ name, ok, note });
-  console.log(
-    `${ok ? '\x1b[32m   PASS\x1b[0m' : '\x1b[31m   FAIL\x1b[0m'}  ${name}${note ? ` — ${note}` : ''}`,
-  );
+function record(name, ok, note = '', { skipped = false } = {}) {
+  const r = { name, ok, note, skipped };
+  results.push(r);
+  const color = skipped ? '\x1b[33m' : ok ? '\x1b[32m' : '\x1b[31m';
+  console.log(`   ${color}${stageLine(r)}\x1b[0m`);
 }
 function die(msg) {
   console.error(`\n\x1b[31mconsumer-gate: ${msg}\x1b[0m`);
@@ -229,7 +230,9 @@ head('preflight — this branch has taken back the last release');
 {
   const fetched = run('git', ['fetch', '--quiet', 'origin', 'main'], REPO, { allowFail: true });
   if (fetched.code !== 0) {
-    record('origin/main is an ancestor of HEAD', true, 'skipped — could not fetch origin/main');
+    record('origin/main is an ancestor of HEAD', true, 'could not fetch origin/main', {
+      skipped: true,
+    });
   } else {
     const contains = run('git', ['merge-base', '--is-ancestor', 'origin/main', 'HEAD'], REPO, {
       allowFail: true,
@@ -253,7 +256,9 @@ head('preflight — this branch has taken back the last release');
     },
   );
   if (published.code !== 0) {
-    record('this version is not already published', true, 'skipped — registry unreachable');
+    record('this version is not already published', true, 'registry unreachable', {
+      skipped: true,
+    });
   } else {
     const stale = published.out.trim() === junouiPkg.version;
     // --dev: you are checking a consumer build mid-development, not cutting a
@@ -460,19 +465,26 @@ if (!opts.keep) {
   rmSync(tgz, { force: true });
 }
 
-const failed = results.filter((r) => !r.ok);
+const { failed, skipped, red, line } = summarize(results);
 console.log('\n\x1b[1m── verdict\x1b[0m');
 console.log(`   junoui   ${junouiPkg.name}@${junouiPkg.version}  ${junouiSha}`);
 console.log(`   nexora   ${opts.ref}  ${consumerSha}`);
-for (const r of results)
-  console.log(`   ${r.ok ? '\x1b[32mPASS\x1b[0m' : '\x1b[31mFAIL\x1b[0m'}  ${r.name}`);
+for (const r of results) {
+  const color = r.skipped ? '\x1b[33m' : r.ok ? '\x1b[32m' : '\x1b[31m';
+  // Full stageLine, note included — the verdict block used to print only
+  // PASS/FAIL and drop the note, so a skipped stage's own caveat never
+  // reached the block a reader actually pastes onto the release ticket
+  // (20260909-116).
+  console.log(`   ${color}${stageLine(r)}\x1b[0m`);
+}
 
-if (failed.length) {
-  console.log(
-    `\n\x1b[31m   GATE RED — ${failed.length} of ${results.length} stages failed. This release is blocked.\x1b[0m`,
-  );
+if (red) {
+  console.log(`\n\x1b[31m   ${line}\x1b[0m`);
   console.log('   A red consumer gate stops the release; it is not a note on it.');
   process.exit(1);
 }
-console.log(`\n\x1b[32m   GATE GREEN — ${results.length} stages passed.\x1b[0m`);
+console.log(`\n${skipped.length ? '\x1b[33m' : '\x1b[32m'}   ${line}\x1b[0m`);
+if (skipped.length) {
+  console.log('   A gate that could not answer every question has not proven the release safe.');
+}
 console.log('   Paste the two SHAs above onto the release ticket.');
