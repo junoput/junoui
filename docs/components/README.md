@@ -73,7 +73,7 @@ Role classes: `.juno--nominal` `.juno--active` `.juno--target` `.juno--caution`
 | Scrubber (timeline / transport)  | `.juno-scrubber`                            | [scrubber.md](./scrubber.md)               |
 | Colour swatch & palette          | `.juno-swatch` / `.juno-palette`            | [swatch.md](./swatch.md)                   |
 | Viewport orientation gizmo       | `.juno-gizmo`                               | [gizmo.md](./gizmo.md)                     |
-| Canvas ink (annotation layer)    | `.juno-canvas-ink`                          | [canvas-ink.md](./canvas-ink.md)           |
+| Canvas ink (annotation layer)    | `.juno-canvas-ink` `.juno-canvas-scrim`     | [canvas-ink.md](./canvas-ink.md)           |
 | Dock / pillbar responsive pair   | `.juno-dock--responsive`                    | [dock-responsive.md](./dock-responsive.md) |
 
 Always pair a status color with a text label — color is never the only signal.

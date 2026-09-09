@@ -317,11 +317,27 @@
           </svg>
           <figcaption class="juno-canvas-ink" style="position:absolute;inset-block-end:12px;inset-inline-start:12px;">Sector 7 &middot; 1.2 km</figcaption>
           <figcaption class="juno-canvas-ink juno-canvas-ink--warning" style="position:absolute;inset-block-start:12px;inset-inline-end:12px;">Signal lost</figcaption>
+          <div class="juno-canvas-scrim" style="position:absolute;inset-inline:0;inset-block-end:0;display:flex;align-items:center;gap:8px;padding:8px 12px;">
+            <button class="juno-btn juno-btn--sm juno-btn--ghost" aria-label="Play">
+              <svg class="juno-icon" aria-hidden="true"><use href="#juno-i-play" /></svg>
+            </button>
+            <span class="juno-canvas-ink" style="font-size:11px;">04:12 / 12:48</span>
+          </div>
         </figure>
         <p class="juno-text-muted" style="font-size:12px;margin-block-start:12px;">
           The backing runs black &rarr; white on purpose. The worst case is the
           <strong>middle</strong>, not the ends: there both halves of the pair are weakest at
           once. Over a light backing the halo carries the contrast; over a dark one the ink does.
+        </p>
+        <p class="juno-text-muted" style="font-size:12px;margin-block-start:8px;">
+          The bar along the bottom is <code class="juno-mono">.juno-canvas-scrim</code> &mdash; chrome
+          floating over live content. It is deliberately <em>not</em>
+          <code class="juno-mono">--juno-opacity-scrim</code>: that value suppresses a modal's
+          background, and here the background is the thing being annotated, so greying it out would
+          defeat the purpose. Under
+          <code class="juno-mono">prefers-reduced-transparency</code> it drops the blur for the
+          opaque surface, because a translucent bar over moving content is the case where that
+          preference matters most.
         </p>
       </div></article>
     </section>

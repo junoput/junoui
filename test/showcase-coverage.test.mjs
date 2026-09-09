@@ -24,7 +24,8 @@
 // it, rather than a fourth copy that agrees today.
 //
 // A cell may name more than one class (`swatch` is `.juno-swatch` /
-// `.juno-palette`); any one of them appearing is enough.
+// `.juno-palette`); EVERY one of them must appear, because each is a
+// separate piece of public surface a consumer can reach for.
 //
 // AND THE PROBE DROPS THE LEADING DOT. The catalogue writes the CSS SELECTOR
 // (`.juno-badge`); markup carries the CLASS (`class="juno-badge"`). Searching
@@ -105,7 +106,13 @@ test('every probe class is a real class, not an empty match', () => {
 test('every component appears in the showcase, or is declared as absent', () => {
   const missing = [];
   for (const [label, classes] of ROWS) {
-    if (classes.some((c) => MARKUP.includes(c.slice(1)))) continue;
+    // EVERY listed class, not any. A cell naming two classes describes two
+    // pieces of public surface, and passing on the first one leaves the rest
+    // invisible to this guard: `.juno-canvas-scrim` is declared in
+    // canvas-ink.css, documented in that component's class table, and was
+    // shown nowhere — while this test passed, because `.juno-canvas-ink` was
+    // present (20260909-076).
+    if (classes.every((c) => MARKUP.includes(c.slice(1)))) continue;
     if (classes.some((c) => c in NOT_SHOWN)) continue;
     missing.push(`${label} (${classes.join(' / ')})`);
   }
