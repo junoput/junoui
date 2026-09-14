@@ -16,9 +16,18 @@
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-toast-stack {
+  /* This stack's offset from the edge, declared once on the STACK — [floating
+     chrome] bucket, additive by default — and consumed here, not on `.juno-toast`.
+     Custom properties inherit downward, and the stack is the toast's ancestor,
+     not the reverse; declaring it on the child left it undefined here, so
+     `inset-block-end` fell back to `auto` (the static position — the TOP of the
+     page) on every phone-width viewport. See docs/safe-area.md, 20260914-071.
+     Restate it to sit flush above the home indicator. */
+  --juno-toast-edge-offset: calc(var(--juno-space-24) + var(--juno-safe-bottom));
+
   position: fixed;
   z-index: var(--juno-z-alert);
-  inset-block-end: var(--juno-space-24);
+  inset-block-end: var(--juno-toast-edge-offset);
   inset-inline-end: var(--juno-space-24);
   display: flex;
   flex-direction: column;
@@ -32,10 +41,6 @@
 .juno-toast-stack--start { inset-inline: var(--juno-space-24) auto; }
 
 .juno-toast {
-  /* This stack's offset from the edge, declared once — [floating chrome]
-     bucket, additive by default. Restate it to sit flush above the home
-     indicator; see docs/safe-area.md. */
-  --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
   --juno-role: var(--juno-active);
 
   pointer-events: auto;
@@ -94,11 +99,13 @@
    clear of the home indicator; toasts slide up instead of sideways. */
 @media (width <= 639.98px) {
   .juno-toast-stack {
-    inset-inline: var(--juno-space-12);
+    /* Smaller base gap at phone width; still additive over safe-bottom. Unit-
+       bearing env() fallback: inside calc() a unitless `0` is a <number>, which
+       invalidates the sum and drops the whole declaration (the stack would then
+       sit flush at 0 on any device without a safe area). */
+    --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
 
-    /* unit-bearing env() fallback: inside calc() a unitless `0` is a <number>,
-       which invalidates the sum and drops the whole declaration (the stack
-       would then sit flush at 0 on any device without a safe area). */
+    inset-inline: var(--juno-space-12);
     inset-block-end: var(--juno-toast-edge-offset);
     inline-size: auto;
   }
