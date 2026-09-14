@@ -195,13 +195,13 @@ however many items are present. A consumer deciding **how many to render** — a
 whether they still hold a tap target — reads that budget from junoui rather than
 re-deriving it from the numbers in `dock.css`:
 
-| Custom property             | What it is                                                                                                            |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `--juno-dock-items`         | The item budget. **You set it** to what you render; junoui does not enforce it, it derives from it.                   |
-| `--juno-dock-item-inline`   | The width one item gets. A prediction of what the flex layout produces — asserted against the measured box in CI.     |
-| `--juno-dock-fit-inline`    | The narrowest viewport at which every item still holds `--juno-size-tap-comfortable`. Below it, drop an item.         |
-| `--juno-dock-chrome-inline` | The bar's total inline chrome (margin + padding + border, both sides). `0` on the full-bleed bar, `34px` on the pill. |
-| `--juno-dock-avail`         | The width the budget divides. Defaults to `100vw`; override it when the bar is not viewport-wide.                     |
+| Custom property             | What it is                                                                                                                                                                                                                                                                   |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--juno-dock-items`         | The item budget. **You set it** to what you render; junoui does not enforce it, it derives from it.                                                                                                                                                                          |
+| `--juno-dock-item-inline`   | The width one item gets. A prediction of what the flex layout produces — asserted against the measured box in CI.                                                                                                                                                            |
+| `--juno-dock-fit-inline`    | The narrowest viewport at which every item still holds `--juno-size-tap-comfortable`. Below it, drop an item.                                                                                                                                                                |
+| `--juno-dock-chrome-inline` | The bar's total inline chrome (margin + padding + border, both sides). `0` on the full-bleed bar, `34px` on the pill.                                                                                                                                                        |
+| `--juno-dock-avail`         | The width the budget divides. Defaults to the **safe** viewport width, `calc(100vw - safe-left - safe-right)` — `100vw` spans under a landscape sensor housing, so a plain `100vw` budget overstates the room by both insets. Override it when the bar is not viewport-wide. |
 
 ```css
 /* five destinations need 254px; below that, render four */
@@ -215,6 +215,34 @@ re-deriving it from the numbers in `dock.css`:
 The margin, padding and border terms are declared **once** and consumed by both
 the variant's own box and the sum above, so the budget cannot disagree with the
 bar it describes — the same construction as `--juno-dock-edge-offset`.
+
+### The floating variants' edge offsets
+
+`--pill` and `--float` are `position: fixed`, so they sit against the viewport
+whatever they are nested in, and all three of their edge gaps shed the
+corresponding safe-area inset:
+
+| Custom property                        | Default                                    |
+| -------------------------------------- | ------------------------------------------ |
+| `--juno-dock-edge-offset`              | `calc(var(--juno-space-16) + safe-bottom)` |
+| `--juno-dock-edge-offset-inline-start` | `calc(var(--juno-space-12) + safe-left)`   |
+| `--juno-dock-edge-offset-inline-end`   | `calc(var(--juno-space-12) + safe-right)`  |
+
+The inline axis takes **two** properties rather than one because the two insets
+are independent: a notch is on the left in one orientation and on the right when
+the device is turned around, so one value cannot serve both edges. Restate any of
+them to change the gap; junoui's default is additive (a floating element sits
+_off_ the edge, so its gap and the inset stack), and a design that wants the bar
+flush against the housing writes `max()` here instead.
+
+These do **not** feed `--juno-dock-chrome-inline`, which sums the design terms
+only. That is correct rather than an omission: `--juno-dock-avail` already sheds
+both insets, so the budget's arithmetic and the bar's painted box agree without
+counting an inset twice.
+
+The full-bleed base bar is **not** covered by this. It is in-flow, so whether it
+needs the inset depends on what it is nested in — `.juno-app-shell` already
+applies the same two — and that is an open question rather than a default.
 
 **There is deliberately no scale floor.** "What scale keeps a 44px target?" is
 `44px / --juno-dock-item-inline`, a ratio of two lengths, and CSS cannot divide
