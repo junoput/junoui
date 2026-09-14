@@ -1,5 +1,424 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- 4329248: **`readout` now compacts with every other surface.** `.juno-readout` reads the
+  density archetype (`--juno-pad-surface-block`/`-inline`) instead of raw
+  `--juno-space-*`. It was the only padded surface still spending raw tokens, so
+  `[data-juno-density="compact"]` compacted every surface in the library except
+  this one.
+
+  Its block padding moves **20px → 16px** at comfortable density. That is the
+  visible shift, and it is why this is a `minor` rather than a `patch` under the
+  pre-1.0 mapping: the versioning policy calls "change what an existing class
+  does" breaking, and says to up-rank when unsure because a surprise visual shift
+  is worse than a higher version number. The inline axis does not move —
+  `--juno-space-16` already _was_ what `--juno-pad-surface-inline` resolves to at
+  comfortable, so the two agreed by coincidence and now agree by construction.
+
+  **New tokens** `--juno-brightness-hover` (1.08) and `--juno-brightness-press`
+  (0.94), reaching every platform output. These were literals inside `button.css`
+  — the library's entire interaction-feedback vocabulary, readable by nothing
+  else. Same values in and out, so nothing shifts; additive on its own, which is a
+  `patch` pre-1.0.
+
+  **Shipped documentation fixes.** `docs/` is part of the published package, so
+  these reached consumers:
+
+  - `docs/components/rail.md` told you to pair `.juno-rail--responsive` with a
+    dock carrying `.juno-hide-from-md`. Following it leaves a **landscape phone
+    (844×390) with no primary navigation at all** — the rail hides because the
+    pointer is coarse and the viewport is short, and the dock hides because it
+    measures width alone. `docs/layout.md` already forbade that pairing; the two
+    documents disagreed and `rail.md` is the one a component author opens. Now
+    points at `.juno-dock--responsive` / `.juno-pillbar--responsive`.
+  - `docs/components/dock-responsive.md` is new — the variant had no
+    documentation anywhere, only a CSS comment.
+  - `docs/accessibility.md`'s per-component ARIA contract table covered 38 of 52
+    components. It now covers all 52. `tree` was absent while a filename search
+    reported it present, because the only occurrence of the word in that document
+    is "the hidden one leaves the tree via `display:none`" — the _accessibility
+    tree_.
+  - `docs/components/README.md` was missing seven components, and
+    `docs/design-guidelines.md` claimed density "swaps the internal padding of
+    every component underneath it", which was true of the components that read the
+    aliases and false of six others.
+
+### Patch Changes
+
+- 9752c66: Docs: `docs/safe-area.md` now records that the anchored surfaces
+  (`.juno-popover`, `.juno-menu`, `.juno-tooltip__bubble`) are **absent from the
+  bucket table on purpose, and that this is not the same as being safe**. They read
+  no `--juno-safe-*` token, so their absence would otherwise read as "handled".
+
+  Measured: at 844x390 with 59px insets, an edge-anchored popover or menu ends at
+  x=840 against a housing spanning 785..844 — a fifth of the panel unreadable. No
+  component-level fix exists, because CSS anchor positioning resolves overflow
+  against the **viewport**, which spans under the housing. Two candidate fixes and
+  why each fails are recorded with the gap.
+
+  No CSS changes.
+
+- 44703ee: `.juno-bar__fill` used `left: 0`, so a determinate progress bar filled from the physical
+  left edge whatever the document direction — measured identical in `dir="ltr"` and
+  `dir="rtl"` (0..120 of a 0..400 bar at 30%), meaning progress ran backwards for every RTL
+  reader. It now uses `inset-inline-start`, including inside the `juno-bar-slide` keyframes
+  that drive the indeterminate segment, so both variants travel with the reading direction.
+  `.juno-beacon__hub`'s centring was converted in the same pass and is unchanged in effect —
+  symmetric either way.
+
+  Consumers rendering LTR see no difference. RTL consumers see the bar fill from the correct
+  edge; if you had compensated for this with your own override, remove it.
+
+- 5cf122f: Documentation: `docs/components/README.md`'s Class column now lists six public
+  block classes it had omitted — `.juno-avatar-group`, `.juno-choice`,
+  `.juno-state`, `.juno-popover-anchor`, `.juno-table-scroll`,
+  `.juno-toast-stack`. Each is defined by its component's stylesheet and usable
+  by consumers; none was listed in the catalogue a consumer reads. No CSS
+  changes and no behaviour changes — the classes already shipped.
+- ca6e1e1: Docs: `docs/inventory-elements.md`'s `Local custom properties` column is
+  re-derived — twelve rows moved — and its Method note now records the exclusion
+  rule it actually needs.
+
+  Seven shared names (`--juno-control-edge`, `--juno-control-edge-strong`,
+  `--juno-control-surface` and the four `--juno-knob-*`) are added to the excluded
+  set: all are declared centrally in `base.css`, whose own comment already calls the
+  knob group "the knob + track-rim of the lever controls (switch / slider)". They
+  account for 13 of the 22 rows the unamended rule would move.
+
+  The note also records **two counter-cases** proving no single mechanical rule is
+  right — `--juno-icon-size` has one canonical declarer with another component
+  merely configuring a nested child, while `--juno-arc-size` is two components
+  declaring the same name for unrelated purposes — and that usage must be read with
+  comments stripped, since `--juno-dock-clearance` appears in `dock.css` only inside
+  a doc comment.
+
+  No CSS changes.
+
+- 67820dc: Docs: `docs/inventory-elements.md`'s `States/hooks` column is corrected in eight
+  of 52 rows and is now verified against `src/css` on every CI run.
+
+  The census says of itself "measured from the CSS itself", and its `checkbox` row
+  read `:disabled, :has(), :checked` while `checkbox.css` had styled
+  `:indeterminate` since 2026-06-29 — making this the fifth place that state was
+  invisible. Also corrected: `popover` and `stepper` claimed **no** states at all
+  (`:popover-open`; `[data-state]`, which is stepper's primary documented
+  mechanism), `table` and `tooltip` said `:focus` where the CSS has
+  `:focus-within`, and `menu`, `tooltip`, `breadcrumb` and `navbar` each omitted a
+  hook.
+
+  The document now also states **which of its columns are checked** — three are, and
+  `Tokens read` and `Local custom properties` are a snapshot from 2026-09-06 that
+  nothing has compared to the CSS since.
+
+- 680654c: Docs: `docs/inventory-elements.md`'s `Tokens read` column gains the stated method
+  it never had, three corrected rows, and a CI guard — the last of the census's five
+  columns to be checked against `src/css`.
+
+  The column had **no Method-notes bullet at all** while every other column had one,
+  which is why it drifted unnoticed. The rule, now written down: every `--juno-*`
+  name inside a `var(...)` call in the file's live CSS, comments stripped, with no
+  ownership filter and no cross-cutting exclusion — unlike `Local custom
+properties`, which stays hand-derived because deciding what belongs in it means
+  deciding who owns a name.
+
+  `button`, `dock` and `toast` were undercounting by 2, 4 and 6 names, all from
+  changes that landed the same day and updated the sibling column while leaving this
+  one.
+
+- f0d1d0e: `docs/inventory-elements.md` now says that a wrapper component's zero in the States/hooks
+  column is delegation rather than a coverage gap. `select` and `field` declare no states
+  because both wrap a native control carrying `.juno-input`, whose file declares `:disabled`,
+  `:focus-visible`, `[aria-invalid='true']` and `:placeholder-shown`. That zero had been read
+  as a missing-states gap five times; a new test pins the delegation so the zero stays
+  truthful rather than merely true. Docs only — no CSS, token or behaviour change.
+- 693a6bd: Docs: `docs/components/checkbox.md` now records the behaviour a consumer trips on
+  with `:indeterminate` — **script assignment never clears it, a user click always
+  does.** Measured: `el.checked = true` and `el.checked = false` both leave
+  `indeterminate` **true**, while a real click sets it **false** before your
+  `change` handler runs.
+
+  So the state survives every assignment you make and not the one thing you did not
+  do. A "select all" that writes `indeterminate` only when the partial set changes
+  silently loses the dash the first time somebody clicks the box — re-derive it from
+  the child set on every change rather than tracking it.
+
+  Also states the label consequence: the dash is the only visual cue and the state
+  announces as **mixed**, so the label has to read correctly in all three states.
+
+- a66a1cd: **Shipped documentation fix.** `.juno-checkbox:indeterminate` has been styled
+  since 2026-06-29 — border/glow matching `:checked`, core drawn as a flat dash
+  instead of the full square — and no document mentioned it. Worse than a
+  missing row: `docs/accessibility.md`'s ARIA contract said "State is native
+  `checked`", actively telling a consumer there were only two states.
+
+  That state cannot be set from markup — `el.indeterminate = true` in JS is the
+  only way, there is no HTML attribute — so a consumer following the old
+  contract would write `<input type="checkbox" indeterminate>`, get nothing,
+  and have no reason to look further. It also announces as **mixed**, a third
+  value the contract never named.
+
+  `docs/components/checkbox.md`'s class table and Usage section now cover the
+  state and the one-line JS that sets it; `docs/accessibility.md`'s checkbox row
+  now says it announces as mixed and cannot be expressed in markup. No CSS
+  changed — the styling was already correct and shipped.
+
+- fb6d8aa: `density.css`'s header claimed that compact "removes more block (vertical) padding than
+  inline". That is false in absolute pixels for the control archetype, which sheds 8px of
+  inline against 6px of block — the reverse of what the file says, in the same file that
+  says it. Both archetypes do satisfy the claim proportionally (control −60%/−40%, surface
+  −37.5%/−25%), so the wording is now "proportionally more" and carries the four numbers.
+  No values changed. A new test pins the relationship rather than the numbers, including
+  the asymmetry that made the old wording wrong.
+- 68a58ec: Docs: `docs/components/icon-loader.md`'s "40px circular icon button" example used
+  `.juno-btn--icon`, a modifier that exists nowhere in the CSS — `button.css`
+  declares `--dense`, `--ghost` and `--sm`. Now uses `--ghost`, matching the repo's
+  own precedent for an icon-only button. `docs/` ships, so a consumer copying that
+  example got a plain button where the caption promised a variant.
+
+  Adds a test requiring every `__part` and `--modifier` named in a doc example to
+  exist in the CSS. Bare BEM blocks are deliberately exempt: `.juno-tabs` is a
+  wrapper whose parts carry every rule, and requiring it to exist would push a
+  meaningless declaration into the stylesheet.
+
+- 79c4c8e: Docs: fixes a dead anchor in `docs/components/icon-loader.md`, which pointed at
+  `./loader.md#arc` while the heading is `## Arc — circular ring`
+  (`arc--circular-ring`). `docs/` ships, so that link resolved inside consumers'
+  `node_modules` and went nowhere.
+
+  Adds a test covering all 282 relative links and 73 anchors in the shipped docs,
+  which nothing checked before.
+
+- e740202: Documentation: the scroll-container examples in `docs/components/table.md` now
+  show `tabindex="0"` + `role="region"` + a name, matching the rule the same file
+  states. `docs/layout.md`'s generic scroller and reel examples carry a comment
+  naming the condition instead, because blanket-adding a tab stop to a
+  placeholder example would teach "always add one" — which the rule forbids.
+  No CSS changes.
+- bdb8ec3: Fix: `.juno-dock--fixed` now takes both horizontal safe-area insets as
+  `padding-inline`. It is `position: fixed; inset-inline: 0`, so no ancestor's
+  padding reaches it — measured inside a `.juno-app-shell` that had already padded
+  by both insets, at 844x390 with 59px insets, the bar still spanned `0..844` with
+  its first item's leading edge at 0.
+
+  **Padding, not margin**, unlike the `--pill`/`--float` fix that preceded it: this
+  bar is full-bleed by design, so its background keeps spanning edge to edge and
+  only the content moves in. Its box is unchanged.
+
+  Inert without insets. Also splits the `docs/safe-area.md` row that grouped
+  `--fixed` with the in-flow base bar and said the inset depends on the container,
+  which is false for a viewport-fixed element.
+
+- 119cb74: Fix: the dock's floating variants (`--pill`, `--float`) now shed the horizontal
+  safe-area insets as well as the bottom one. Their `margin` shorthand paired a
+  safe-area-aware block term with a flat `--juno-space-12` inline term, so at
+  844x390 with 59px insets the bar painted from x=12 with its first item's leading
+  edge at 17 — 42px under a housing ending at 59.
+
+  Adds two custom properties, `--juno-dock-edge-offset-inline-start` and
+  `--juno-dock-edge-offset-inline-end`, mirroring `--juno-dock-edge-offset` on the
+  inline axis. Two rather than one because the horizontal insets are independent:
+  a notch is on the left in one orientation and the right when the device is turned
+  around.
+
+  Additive and inert without insets: with `env()` at 0 both resolve to the same
+  `--juno-space-12` the variants used before. The full-bleed base bar is
+  deliberately unchanged — it is in-flow, so whether it needs the inset depends on
+  its nesting.
+
+- 7f63c37: Fix: `--juno-dock-avail` now defaults to the **safe** viewport width,
+  `calc(100vw - safe-left - safe-right)`, instead of raw `100vw`. It feeds
+  `--juno-dock-item-inline`, the published figure a consumer uses to decide how
+  many items fit — and `100vw` spans under the sensor housing in landscape, so that
+  figure was larger than the room that exists. Measured at 844x390 with 59px
+  insets, 5 items: 168.8px published against 145.2px available.
+
+  Changes nothing where the insets are zero, which is every display without them.
+
+  Note the bar itself still paints full-bleed under the housing at the viewport
+  root — that half is a separate decision, because the dock is the edge-padding
+  bucket and `.juno-app-shell` already pads by the same two insets, so padding the
+  bar unconditionally would double-pad it when nested.
+
+- 09f1210: Packaging: `@junoput01/junoui/pointer-first` now has an `exports` entry. The
+  file already shipped (`tools/` is in `files`) and `docs/painted-ui.md`
+  advertised the specifier, but with an `exports` map present an unlisted subpath
+  is blocked — so importing it threw `ERR_PACKAGE_PATH_NOT_EXPORTED`. Additive:
+  no existing export changes.
+- f57d142: Docs: `README.md`'s repository map now marks which directories the npm package
+  publishes, and lists the three it omitted — `tools/` (the enhancers, each with its
+  own exports entry), `src/fonts/`, and `test/`. It showed `scripts/`, which does
+  **not** ship, while hiding `tools/`, which does — the same inversion behind the
+  `pointer-first` export that resolved in the repo and threw for every consumer.
+
+  `package.json`'s `files` is named as the authority rather than copied, so the
+  reminder cannot drift into a second list that must agree.
+
+- a734d9b: New `.juno-empty--unknown` modifier: the load-state vocabulary had no way to say
+  _"not determined yet"_. `.juno-empty` is documented as terminal — the load
+  resolved and found nothing — so consumers with a measurement to report had to
+  use it for "nobody has looked", which says the opposite. Additive: no existing
+  class or token changes. The distinction is carried by the icon's border style
+  (solid = settled, dashed = not settled) rather than by colour, per
+  `docs/accessibility.md`.
+- ce677e7: `.juno-pagination__item` read its inline tap floor as
+  `var(--juno-size-tap-min, var(--juno-space-32))`. `--juno-size-tap-min` is declared at
+  `:root` in every build, so that fallback could never fire — it read as a 32px floor and
+  was dead code. Rendering is unchanged (measured both ways: `1` is 26x32 and a chevron
+  24x32 on a fine pointer, 44x44 on a coarse one, either form); the line now reads the
+  token plainly and says so. Whether the inline floor should be 32px is an appearance
+  question and is still open.
+
+  A new test pins the class: of the 36 `--juno-*` names junoui reads through a `var()`
+  fallback, 35 are consumer knobs that are genuinely undefined by default, and no
+  declared token may wear that idiom again.
+
+- fabe608: Comment-only correction in `pillbar.css`: the width cap's comment named the wrong
+  safe-area bucket. `src/css` ships and the bundler keeps comments, so the shipped
+  `dist/css/juno.css` changes — no rule, selector, token or value does.
+- de048b2: Fix: the corner pillbar's width cap now sheds the horizontal safe-area insets.
+  `max-inline-size` was `calc(100% - 2 * edge)`, and for the `position: fixed`
+  corner variants `100%` is the viewport — which spans under the sensor housing in
+  landscape. The variants already shed the inset when POSITIONING themselves, so
+  the pill's anchored edge landed correctly and it grew off-screen in the other
+  direction: measured at 844x390 with 59px insets, the pill's left edge sat at
+  **-39px**. Found by nexora, which carries an override for it.
+
+  Visible only on a notched device held sideways; `env()` is 0 everywhere else, so
+  this changes nothing on any display without insets.
+
+- e15d764: State the iOS/PWA plug-and-play claim, and bound it (`20260805-020`).
+
+  The four areas in that promise — safe areas, tap targets, momentum scroll, standalone chrome — were mostly already shipping. What was missing was a statement of **what the claim covers and what it does not**, and any check that the promise matches the build.
+
+  `docs/plug-and-play.md` is three lists: what you get by loading the stylesheet, what you must supply, and what junoui explicitly does not do. Every row of the first list points at a token in the shipped build or a test that exists, not at a sentence.
+
+  The bounding lists are the substance. **What you must supply** leads with `viewport-fit=cover`, because every safe-area inset reads 0 without it — so the entire first table silently does nothing if it is missing. **What junoui does not do** keeps four boundaries that were each learned expensively: it does not test WebKit, it cannot see what you paint, it does not reach UI drawn into a canvas, and it does not make a consuming app conformant by composition.
+
+  `test/plug-and-play.test.mjs` holds the document to that: every promised mechanism is asserted against `dist/css/juno.css`, every cited guard must exist, and each of the four boundaries and the not-automated device pass must still be there.
+
+- 2f1eff4: **Fixed a shipped export that threw for every real consumer.** `@junoput01/junoui/pointer-first`
+  resolved fine inside this repo and threw `ERR_MODULE_NOT_FOUND` the moment it
+  was imported from an actual `npm install` — `tools/pointer-first.mjs` re-exported
+  from `scripts/rules.mjs`, and `scripts/` is not in `package.json` `files`. The
+  file resolves locally because this repo happens to have a `scripts/` directory
+  too; a consumer's `node_modules` copy does not.
+
+  Caught by a new import guard (`test/exports-import.test.mjs`) that imports
+  every JS/JSON export target from a real packed-and-extracted tarball rather
+  than from the repo tree — the same class of gap `test/exports-map.test.mjs`
+  already covers for an export's own target (the 0.4.0 defect), extended one hop
+  to the target's own imports. `test/exports-map.test.mjs`'s existing checks
+  could not have caught this: the file itself exists, ships, and is listed in
+  the exports map correctly. Only what it imports was broken.
+
+  Fixed by moving the shared rule table into `tools/rules.mjs` — the same
+  directory as its only shipped consumer, so there is no package boundary left
+  to cross. No behavior change: the values and functions are unchanged, only
+  their file's address.
+
+- 80ac803: **`docs/components/popover.md` documents how to observe the panel's resolved
+  placement after a fallback flip.** It previously said the panel "flips to stay
+  on-screen" without saying that following the flip needs script — a consumer
+  can read the resolved placement via `getComputedStyle(panel).positionArea` to
+  flip an arrow to match, but there is no CSS selector for it; this is JS-only,
+  same shape as the tooltip's top-layer mode.
+
+  Advises comparing against a baseline reading rather than a hardcoded string:
+  Chromium serializes the authored logical `block-end span-inline-start` back as
+  a physical value, not the logical spelling that was written, so a consumer
+  matching a literal never matches. Also notes the resolved value names the
+  area, not which fallback fired (two crowding conditions can read back
+  identically), and that this was only measured in Chromium — other engines may
+  serialize differently or not support the property at all. Docs only, no CSS
+  behaviour change.
+
+- 3b0cec3: **`docs/safe-area.md` now names which env() bucket each component uses.** It
+  previously documented the arithmetic (edge padding / clearance / floating
+  chrome) without saying which component reads which, so a consumer had to read
+  the CSS to find out — filed after nexora took the additive form for
+  `.juno-dock--pill` assuming it was the only option (20260909-126, override A).
+
+  Also documents a fourth shape the original three buckets did not cover:
+  **available-space cap**, a term subtracted from how much room exists rather
+  than a distance from an edge — the pillbar's `max-inline-size` uses it
+  alongside its floating-chrome offset, and restating one does nothing to the
+  other. Docs only, no CSS behaviour change.
+
+- 9de4ba6: Accessibility: the showcase's `device/media.html` reel was keyboard-unreachable
+  — it scrolls 350px horizontally at phone width with no focusable children — and
+  now carries a tab stop and a name, like the six fixed alongside it. No CSS
+  changes; the showcase is not part of the published package, but the omission it
+  demonstrated was.
+- de1b0e3: Accessibility contract: `docs/accessibility.md` gains a **Scrollable regions**
+  section stating, once, that a region which scrolls and contains nothing
+  focusable needs `tabindex="0"` + `role="region"` + a name (WCAG 2.1.1), and
+  naming every junoui class that creates one — `.juno-table-scroll`,
+  `.juno-scroller`, `.juno-reel`, `.juno-app-shell__main`, `.juno-modal__body`.
+  `docs/layout.md` carries the same note where the scroller primitives are
+  documented. The rule keys on the region having no focusable content of its own,
+  not on whether it currently overflows, which is viewport-dependent. No CSS
+  changes.
+- 758fb8b: Accessibility contract: `docs/accessibility.md` and `docs/components/table.md`
+  now state that a `.juno-table-scroll` viewport needs `tabindex="0"` plus
+  `role="region"` and a name. It scrolls, and a table of static cells contains
+  nothing focusable, so without a tab stop a keyboard-only user cannot reach the
+  rows below the fold (WCAG 2.1.1). The requirement is keyed on the region having
+  no focusable content of its own — not on whether it currently overflows, which
+  depends on the viewport. No CSS changes.
+- d3ef2ca: **Fixed: the toast stack rendered at the top of the screen on every phone-width
+  viewport.** `--juno-toast-edge-offset` was declared on `.juno-toast` (a child
+  of `.juno-toast-stack`) but consumed on the stack itself. Custom properties
+  inherit downward, not upward, so the property was undefined where it was read,
+  `inset-block-end` was invalid at computed-value time, and a `position: fixed`
+  box fell back to its static position — the top of the page — below 640px. Now
+  declared and consumed on `.juno-toast-stack`.
+
+  **Fixed: the toast stack ignored the horizontal safe-area inset above 640px.**
+  The corner placement's default `inset-inline-end` was a flat `--juno-space-24`
+  with no inset term, so a landscape phone (≥640px wide, where the horizontal
+  inset is largest) rendered the stack running under the sensor housing.
+  `.juno-toast-stack` now sheds `--juno-safe-right` there too, additive
+  [floating chrome], same as `--juno-toast-edge-offset` sheds `--juno-safe-bottom`.
+
+  **Fixed: the `--top` and `--start` corner placements were still on flat
+  tokens.** Both used a bare `--juno-space-24` (or `-12` in the narrow branch)
+  with no safe-area term at all. `--top` was the worse case: in portrait the
+  top edge sits exactly where the Dynamic Island is, and this doc's own
+  letterbox guidance says the top inset is real and must not be zeroed. Both
+  now shed the relevant inset, additive.
+
+  `docs/safe-area.md`'s toast row corrected to match: it previously named the
+  token's definition without noting it was declared on the wrong element, and
+  was silent on the horizontal axis.
+
+- f6229e0: Docs: `docs/safe-area.md` now carries the tooltip's measurements. The
+  anchored-surfaces section previously said `.juno-tooltip__bubble` was
+  **unmeasured** in its top-layer mode — it now records all four placements
+  crossing into the housing (`--right` 25px, `--left` 59px, default and `--bottom`
+  6px each), and the structural reason the tooltip is the weakest of the three:
+  its base rule declares `position-try-fallbacks: flip-block` only and no placement
+  modifier adds `flip-inline`, so unlike the popover and menu it never _attempts_ a
+  horizontal correction.
+
+  No CSS changes.
+
+- 1f05b86: `.juno-tooltip__bubble[popover]` declared `position-try-fallbacks: flip-block` on the base
+  rule every placement modifier inherits, so `--right` and `--left` — the two placements whose
+  whole job is inline — had no inline correction available. A `--right` bubble on a trigger 4px
+  from the right edge was clamped flush to the viewport and covered the trigger that summoned
+  it (measured: bubble 777..844, trigger 820..840, at 844px wide). Now `flip-block, flip-inline`,
+  as `popover.css` and `menu.css` have always declared. A centred trigger is unaffected, pinned
+  by a control.
+
+  It is not a safe-area fix, though it clears the 59px housing in `docs/safe-area.md`'s fixture:
+  the flipped position is identical at 59px, 80px and 100px insets, so it clears that one by
+  nine pixels of coincidence and crosses a wider housing. The doc and its pinned-defect test
+  were updated to measure the inline placements at 80px, where the coincidence does not save
+  them.
+
 ## 0.10.0
 
 ### Minor Changes
