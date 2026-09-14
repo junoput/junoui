@@ -159,6 +159,31 @@ function cssHooks(css) {
   return [...out].sort();
 }
 
+/** The token names a census row claims. */
+function parseTokens(text) {
+  if (text.trim() === '_none_') return [];
+  return [...text.matchAll(/(--juno-[A-Za-z0-9-]+)/g)].map((m) => m[1]).sort();
+}
+
+/**
+ * Every `--juno-*` name a stylesheet reads through `var()`, comments stripped.
+ *
+ * `[A-Za-z0-9-]`, NOT `[a-z0-9-]`. The token set contains camelCase names —
+ * `--juno-font-lineHeight-relaxed` — and a lowercase-only class truncates them
+ * at the capital letter, silently merging two distinct names into one stem. That
+ * cost a wrong count while this ticket was being scoped: `alert` was reported as
+ * 19 against a census row of 20, and the census was right (20260914-104).
+ */
+function cssTokens(css) {
+  return [
+    ...new Set(
+      [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/var\((--juno-[A-Za-z0-9-]+)/g)].map(
+        (m) => m[1],
+      ),
+    ),
+  ].sort();
+}
+
 /** Every `### \`name\`` block that has a matching stylesheet. */
 function rows() {
   const out = [];
@@ -169,12 +194,14 @@ function rows() {
     const resp = /\*\*Responsive mechanism\*\*:\s*([^\n—]+)/.exec(block);
     const dens = /\*\*Density-aware\*\*:\s*(\w+)/.exec(block);
     const hooks = /\*\*States\/hooks\*\*\s*\(\d+\):\s*([^\n]*)/.exec(block);
+    const toks = /\*\*Tokens read\*\*\s*\(\d+\):\s*([^\n]*)/.exec(block);
     out.push({
       name,
       css: readFileSync(file, 'utf8'),
       claimedResponsive: resp ? resp[1].trim().replace(/`/g, '') : null,
       claimedDensity: dens ? dens[1] : null,
       claimedHooks: hooks ? parseHooks(hooks[1]) : null,
+      claimedTokens: toks ? parseTokens(toks[1]) : null,
     });
   }
   return out;
@@ -275,5 +302,82 @@ test('every States/hooks row lists what its stylesheet actually carries', () => 
       'the last place a reader checks and the fifth place a state is invisible. ' +
       'If a hook is genuinely not a state, add it to NOT_A_STATE with the reason ' +
       'rather than editing the row to match.',
+  );
+});
+
+// ── Tokens read, added 2026-09-14 (20260914-104) ────────────────────────────
+//
+// The LAST of the census's five columns to be guarded, and the one that turned
+// out to need no judgement at all. `Local custom properties` stays hand-derived
+// because deciding what belongs in it means deciding who OWNS a name, and two
+// counter-cases showed no mechanical rule is right. This column only has to
+// answer what a file's own text SAYS, and a file's own text is not in dispute:
+// no allowlist, no ownership filter, no cross-cutting exclusions, no chain of
+// definitions to walk.
+//
+// It had no stated method at all until today — every other column had one — and
+// it drifted in exactly the places that would be expected: three rows, all
+// undercounts, all from changes that landed hours earlier and updated the
+// sibling column while leaving this one.
+//
+// A counter-case was looked for specifically rather than assumed absent: a token
+// mentioned only in a comment (a real requirement, handled by stripping, and not
+// an ownership question); a token in an `@media`/`@supports`/`@container style()`
+// prelude (zero occurrences in this codebase, named here as a future blind spot);
+// and an indirect read through another property's definition (the proposed
+// example dissolved on inspection — `--juno-dock-avail` is declared in
+// `dock.css` itself — and the method never has to answer it, because it asks
+// what the file's text contains rather than what it transitively depends on).
+
+test('every row claims a Tokens read field (vacuity floor for the check below)', () => {
+  const missing = ROWS.filter((r) => r.claimedTokens === null).map((r) => r.name);
+  assert.deepEqual(missing, [], 'a census row has no Tokens read field to check');
+});
+
+test('the token extractor finds tokens where the census says there are some (calibration)', () => {
+  // Same guard as the hooks calibration above, and for the same reason: an
+  // extractor that silently matched nothing would report every row as wrong in
+  // one direction, which is a confident uniform false answer rather than a
+  // visible failure.
+  const withTokens = ROWS.filter((r) => r.claimedTokens.length > 0);
+  assert.ok(withTokens.length >= 40, `only ${withTokens.length} rows claim any token`);
+  const foundNothing = withTokens.filter((r) => cssTokens(r.css).length === 0).map((r) => r.name);
+  assert.deepEqual(
+    foundNothing,
+    [],
+    'the extractor found no var() reads in a stylesheet the census says has some — ' +
+      'suspect the extractor before the census',
+  );
+});
+
+test('the token extractor keeps camelCase names whole', () => {
+  // The specific bug that produced a wrong count while this was being scoped.
+  // Without this, a character class narrowed back to [a-z0-9-] passes every row
+  // by truncating the same names the census would also have to truncate.
+  const sample = cssTokens('a{font:var(--juno-font-lineHeight-relaxed) var(--juno-s1)}');
+  assert.deepEqual(sample, ['--juno-font-lineHeight-relaxed', '--juno-s1']);
+});
+
+test('every Tokens read row lists what its stylesheet actually reads', () => {
+  const wrong = [];
+  for (const r of ROWS) {
+    const actual = cssTokens(r.css);
+    const missing = actual.filter((a) => !r.claimedTokens.includes(a));
+    const extra = r.claimedTokens.filter((c) => !actual.includes(c));
+    if (missing.length || extra.length) {
+      wrong.push(
+        `${r.name}: ${missing.length ? `reads ${missing.join(' ')} and the row does not list it` : ''}` +
+          `${missing.length && extra.length ? '; ' : ''}` +
+          `${extra.length ? `the row lists ${extra.join(' ')} and the CSS does not read it` : ''}`,
+      );
+    }
+  }
+  assert.deepEqual(
+    wrong,
+    [],
+    'a Tokens read row disagrees with its stylesheet. The rule is every --juno-* ' +
+      'name inside a var() call in the live CSS, comments stripped, with no ' +
+      'exclusions — see the Method notes. A name only DECLARED and never read ' +
+      'back belongs in Local custom properties instead.',
   );
 });

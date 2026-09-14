@@ -21,11 +21,11 @@ not equally true of all of them.** Three are verified on every CI run against
 | Responsive mechanism    | a CI test reading the stylesheet                                                                                                            |
 | Density-aware           | a CI test reading the stylesheet                                                                                                            |
 | States/hooks            | a CI test reading the stylesheet, since 2026-09-14                                                                                          |
-| Tokens read             | **nothing** — derived once at authoring time                                                                                                |
+| Tokens read             | a CI test reading the stylesheet, since 2026-09-14                                                                                          |
 | Local custom properties | **nothing**, deliberately — see the Method notes: two counter-cases show no single mechanical rule is right. Re-derived by hand 2026-09-14. |
 
-`Tokens read` was produced on 2026-09-06 and no instrument has compared it to the CSS
-since. `Local custom properties` was re-derived by hand on 2026-09-14
+`Tokens read` had no stated method at all until 2026-09-14 and nothing had compared
+it to the CSS since 2026-09-06; it now has both (`20260914-104`). `Local custom properties` was re-derived by hand on 2026-09-14
 (`20260914-099`) — twelve rows moved — and is still not machine-checked, because
 establishing what belongs in it needed reading two components rather than counting. `test/inventory-elements.test.mjs` and
 `scripts/check-inventory-elements.mjs` sound like they would; both re-parse **this
@@ -193,6 +193,14 @@ hard-coded — the guard names the location, the prose names the property.)
   names above are safe because no counter-case exists for them, and that was established
   by reading rather than by counting.** This column is therefore NOT machine-checked —
   see the table at the top.
+- **Tokens read** is every `--juno-*` name appearing inside a `var(...)` call in the
+  file's live CSS, comments stripped, **full stop** — no ownership filter and no
+  cross-cutting exclusion, unlike Local custom properties. A name a file both declares
+  and reads appears in **both** columns (`dock`'s `--juno-dock-avail`); a name only
+  declared and never read back via `var()` in the same file appears in Local **only**
+  (`dock`'s `--juno-icon-size`, set as an override on a nested child). Added 2026-09-14
+  (`20260914-104`) — until then the column had no stated method at all, which is why it
+  drifted unnoticed while every other column had one.
 - **Usage is read from the CSS with comments stripped.** `--juno-dock-clearance` appears
   twice in `dock.css` and both are inside a doc comment showing a consumer how to pad
   their own scroller; `dock.css` neither reads nor declares it. A substring search over
@@ -275,7 +283,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **BEM parts** (0): _none_
 - **Modifiers** (3): `--dense`, `--ghost`, `--sm`
 - **States/hooks** (3): `:hover`, `:active`, `:disabled`
-- **Tokens read** (25): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-11`, `--juno-font-size-13`, `--juno-font-tracking-caps`, `--juno-font-tracking-wide`, `--juno-font-weight-bold`, `--juno-font-weight-semibold`, `--juno-gap-control`, `--juno-label`, `--juno-muted`, `--juno-pad-control-block`, `--juno-pad-control-inline`, `--juno-radius-3`, `--juno-radius-4`, `--juno-role`, `--juno-s0`, `--juno-s2`, `--juno-size-tap-min`, `--juno-space-10`, `--juno-space-24`, `--juno-space-4`
+- **Tokens read** (27): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-brightness-hover`, `--juno-brightness-press`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-11`, `--juno-font-size-13`, `--juno-font-tracking-caps`, `--juno-font-tracking-wide`, `--juno-font-weight-bold`, `--juno-font-weight-semibold`, `--juno-gap-control`, `--juno-label`, `--juno-muted`, `--juno-pad-control-block`, `--juno-pad-control-inline`, `--juno-radius-3`, `--juno-radius-4`, `--juno-role`, `--juno-s0`, `--juno-s2`, `--juno-size-tap-min`, `--juno-space-10`, `--juno-space-24`, `--juno-space-4`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: viewport media query
 - **Density-aware**: yes (`--juno-gap-control`, `--juno-pad-control-block`, `--juno-pad-control-inline`)
@@ -341,7 +349,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **BEM parts** (5): `__bubble`, `__item`, `__knob`, `__label`, `__tray`
 - **Modifiers** (5): `--collapsible`, `--fixed`, `--float`, `--icon`, `--pill`
 - **States/hooks** (4): `:hover`, `:focus-visible`, `[aria-current]`, `[data-juno-collapsed]`
-- **Tokens read** (41): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-dock-avail`, `--juno-dock-border-inline`, `--juno-dock-chrome-inline`, `--juno-dock-collapsed-size`, `--juno-dock-edge-gap`, `--juno-dock-edge-offset`, `--juno-dock-fold`, `--juno-dock-fold-scale`, `--juno-dock-fold-shrink`, `--juno-dock-fold-slide`, `--juno-dock-fold-smoothing`, `--juno-dock-fold-split`, `--juno-dock-items`, `--juno-dock-margin-inline`, `--juno-dock-pad-inline`, `--juno-dock-scale`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-tracking-label`, `--juno-font-weight-semibold`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-standard`, `--juno-motion-scale`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`, `--juno-safe-bottom`, `--juno-shadow-2`, `--juno-size-tap-comfortable`, `--juno-space-12`, `--juno-space-2`, `--juno-space-32`, `--juno-space-4`, `--juno-z-raised`
+- **Tokens read** (45): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-dock-avail`, `--juno-dock-border-inline`, `--juno-dock-chrome-inline`, `--juno-dock-collapsed-size`, `--juno-dock-edge-gap`, `--juno-dock-edge-offset`, `--juno-dock-edge-offset-inline-end`, `--juno-dock-edge-offset-inline-start`, `--juno-dock-fold`, `--juno-dock-fold-scale`, `--juno-dock-fold-shrink`, `--juno-dock-fold-slide`, `--juno-dock-fold-smoothing`, `--juno-dock-fold-split`, `--juno-dock-items`, `--juno-dock-margin-inline`, `--juno-dock-pad-inline`, `--juno-dock-scale`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-tracking-label`, `--juno-font-weight-semibold`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-standard`, `--juno-motion-scale`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`, `--juno-safe-bottom`, `--juno-safe-left`, `--juno-safe-right`, `--juno-shadow-2`, `--juno-size-tap-comfortable`, `--juno-space-12`, `--juno-space-2`, `--juno-space-32`, `--juno-space-4`, `--juno-z-raised`
 - **Local custom properties** (23): `--juno-dock-avail`, `--juno-dock-border-inline`, `--juno-dock-chrome-inline`, `--juno-dock-collapsed-size`, `--juno-dock-edge-gap`, `--juno-dock-edge-offset`, `--juno-dock-edge-offset-inline-end`, `--juno-dock-edge-offset-inline-start`, `--juno-dock-fit-inline`, `--juno-dock-fold`, `--juno-dock-fold-scale`, `--juno-dock-fold-shrink`, `--juno-dock-fold-slide`, `--juno-dock-fold-smoothing`, `--juno-dock-fold-split`, `--juno-dock-item-inline`, `--juno-dock-items`, `--juno-dock-margin-inline`, `--juno-dock-pad-inline`, `--juno-dock-scale`, `--juno-icon-loader-ring`, `--juno-icon-loader-ring-width`, `--juno-icon-size`
 - **Responsive mechanism**: viewport media query
 - **Density-aware**: no
@@ -748,7 +756,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **BEM parts** (3): `__close`, `__icon`, `__text`
 - **Modifiers** (3): `--leaving`, `--start`, `--top`
 - **States/hooks** (1): `:hover`
-- **Tokens read** (22): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-3`, `--juno-data`, `--juno-font-lineHeight-none`, `--juno-font-size-13`, `--juno-font-size-16`, `--juno-motion-duration-quick`, `--juno-motion-ease-decel`, `--juno-muted`, `--juno-radius-5`, `--juno-role`, `--juno-s2`, `--juno-safe-bottom`, `--juno-shadow-2`, `--juno-space-12`, `--juno-space-16`, `--juno-space-24`, `--juno-space-32`, `--juno-toast-edge-offset`, `--juno-z-alert`
+- **Tokens read** (28): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-3`, `--juno-data`, `--juno-font-lineHeight-none`, `--juno-font-size-13`, `--juno-font-size-16`, `--juno-motion-duration-quick`, `--juno-motion-ease-decel`, `--juno-muted`, `--juno-radius-5`, `--juno-role`, `--juno-s2`, `--juno-safe-bottom`, `--juno-safe-left`, `--juno-safe-right`, `--juno-safe-top`, `--juno-shadow-2`, `--juno-space-12`, `--juno-space-16`, `--juno-space-24`, `--juno-space-32`, `--juno-toast-edge-offset`, `--juno-toast-edge-offset-inline-end`, `--juno-toast-edge-offset-inline-start`, `--juno-toast-edge-offset-top`, `--juno-z-alert`
 - **Local custom properties** (4): `--juno-toast-edge-offset`, `--juno-toast-edge-offset-inline-end`, `--juno-toast-edge-offset-inline-start`, `--juno-toast-edge-offset-top`
 - **Responsive mechanism**: viewport media query
 - **Density-aware**: no
