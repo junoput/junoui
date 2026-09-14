@@ -68,17 +68,28 @@ hoisted)`) — read that rather than assuming a number here. In particular
 
 ## Layout
 
+**`*` marks what the npm tarball publishes** — `package.json`'s `files` is the
+authority; this column is a reminder, not a second copy of it.
+
 ```
-tokens/        DTCG source of truth (core/ + color/)
-src/css/       base.css · utilities.css · layout.css · density.css · components/*.css
-scripts/       color.mjs · bundle-css.mjs · gen-docs.mjs
-style-dictionary.config.mjs   token build (custom per-platform formats)
-test/          node:test suite (no deps)
-docs/          guides + generated tokens-reference.md
-showcase/      interactive demo (not in the npm tarball; deployed to GitHub
-               Pages from main via .github/workflows/pages.yml)
-design/        original Claude Design canvas sources (reference)
-dist/          generated outputs (gitignored)
+  tokens/        DTCG source of truth (core/ + color/)
+* src/css/       base.css · utilities.css · layout.css · density.css · components/*.css
+* src/icons/     the icon sprite sources (built into dist/icons/juno-icons.svg)
+* src/fonts/     the four self-hosted B612 woff2 faces + LICENSE
+* tools/         the optional stateless enhancers, and rules.mjs — a real
+                 JavaScript surface with its own exports entries. Anything here
+                 may only import from tools/ or dist/: scripts/ does NOT ship,
+                 and a re-export across that line throws for every consumer
+                 while resolving fine in this repo (20260914-111).
+  scripts/       build + gate tooling. NOT published. color.mjs · bundle-css.mjs ·
+                 gen-docs.mjs · build-rules.mjs · consumer-gate.mjs · …
+  style-dictionary.config.mjs   token build (custom per-platform formats)
+  test/          node:test suite (no deps)
+* docs/          guides + generated tokens-reference.md
+  showcase/      interactive demo (not in the npm tarball; deployed to GitHub
+                 Pages from main via .github/workflows/pages.yml)
+  design/        original Claude Design canvas sources (reference)
+* dist/          generated outputs (gitignored in the repo, published in the tarball)
 ```
 
 ## Adding things
