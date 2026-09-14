@@ -1,6 +1,6 @@
 # Icon loader
 
-A control ringed by the spinning [arc](./loader.md#arc) while its section
+A control ringed by the spinning [arc](./loader.md#arc--circular-ring) while its section
 loads — the "this section is loading" affordance for a [rail](./rail.md),
 [dock](./dock.md), or [pillbar](./pillbar.md) item. What it wraps stays static
 on top; the arc rings it and takes no pointer events, so the item still clicks
