@@ -201,6 +201,18 @@ hard-coded — the guard names the location, the prose names the property.)
   (`dock`'s `--juno-icon-size`, set as an override on a nested child). Added 2026-09-14
   (`20260914-104`) — until then the column had no stated method at all, which is why it
   drifted unnoticed while every other column had one.
+- **A WRAPPER'S ZERO IS NOT A COVERAGE GAP, and it has been read as one five times.**
+  The column counts what a FILE declares. `select` and `field` are wrappers around a
+  native control that carries `.juno-input`, so their states live in `input.css`
+  (`:disabled`, `:focus-visible`, `[aria-invalid='true']`, `:placeholder-shown`) and both
+  rows correctly read `0`. `select.css`'s own usage block shows
+  `<select class="juno-input">` inside `.juno-select`, and `docs/components/field.md`
+  says it in one line: _"Pure layout + the validation/required cue — it owns no state."_
+  A gap list built by scanning this column for zeroes reported both as missing form-control
+  states (`20260909-131`); they are not missing, they are delegated, and every one of the
+  five false entries understated what junoui ships — the expensive direction, because it
+  causes duplicate builds. `test/wrapper-state-delegation.test.mjs` pins the delegation so
+  the zero stays truthful rather than merely true.
 - **Usage is read from the CSS with comments stripped.** `--juno-dock-clearance` appears
   twice in `dock.css` and both are inside a doc comment showing a consumer how to pad
   their own scroller; `dock.css` neither reads nor declares it. A substring search over
