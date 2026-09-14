@@ -70,7 +70,29 @@
   --juno-dock-chrome-inline: calc(
     2 * (var(--juno-dock-margin-inline) + var(--juno-dock-pad-inline) + var(--juno-dock-border-inline))
   );
-  --juno-dock-avail: 100vw;
+
+  /* SAFE width, not viewport width. `100vw` spans under the sensor housing in
+     landscape, so the budget this feeds overstated the room by both horizontal
+     insets — measured at 844x390 with 59px insets, 5 items: published 168.8px
+     per item against 145.2px actually available, and the outermost item's first
+     59px painted under the housing.
+
+     Correct in BOTH nestings, which is why this half is separable from the
+     rendering half. At the viewport root the bar spans 100vw and the insets are
+     the part of it nobody can see; inside a `.juno-app-shell`, which already
+     pads by the same two insets (layout.css), the bar is physically narrower by
+     exactly the same amount. Either way the room for items is
+     `100vw - left - right`.
+
+     The RENDERING half is NOT fixed here and cannot be by adding padding: this
+     is the edge-padding bucket, where the inset replaces the gap, so padding the
+     bar unconditionally double-pads it inside an app-shell that already did.
+     20260914-066 carries that as a decision.
+
+     Not one of docs/safe-area.md's three buckets — a term subtracted from
+     AVAILABLE SPACE rather than a distance from an edge. Same shape as the
+     pillbar's width cap (20260914-059); raised on 20260914-060. */
+  --juno-dock-avail: calc(100vw - var(--juno-safe-left) - var(--juno-safe-right));
   --juno-dock-item-inline: calc(
     (var(--juno-dock-avail) - var(--juno-dock-chrome-inline)) / var(--juno-dock-items)
   );
