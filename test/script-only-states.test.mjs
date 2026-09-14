@@ -33,6 +33,21 @@ const CHECKBOX_DOC = readFileSync('docs/components/checkbox.md', 'utf8');
 const A11Y = readFileSync('docs/accessibility.md', 'utf8');
 
 /**
+ * One ROW of the ARIA contract table, never the whole file.
+ *
+ * Searching the file is the false-presence trap, and the first version of this
+ * test walked straight into it: `accessibility.md` already contains the word
+ * "indeterminate" in an unrelated row — `Loader (indeterminate)` — so a
+ * whole-file match stayed GREEN with the checkbox's own sentence deleted.
+ * Caught by mutating the doc rather than by reading the test.
+ */
+function a11yRow(label) {
+  const row = A11Y.split('\n').find((l) => l.startsWith(`| ${label}`));
+  assert.ok(row, `accessibility.md has no contract row starting "| ${label}"`);
+  return row;
+}
+
+/**
  * States that cannot be set from markup, and therefore have to be documented or
  * they are undiscoverable. Each entry names where the documentation must live.
  */
@@ -40,13 +55,14 @@ const SCRIPT_ONLY = [
   {
     state: ':indeterminate',
     css: 'checkbox.css',
+    row: 'Checkbox / radio',
     docs: [
+      ['docs/components/checkbox.md', () => CHECKBOX_DOC, /\.indeterminate = true/],
       [
-        'docs/components/checkbox.md',
-        CHECKBOX_DOC,
-        /el\.indeterminate = true|\.indeterminate = true/,
+        'docs/accessibility.md (the Checkbox row only)',
+        () => a11yRow('Checkbox / radio'),
+        /indeterminate/,
       ],
-      ['docs/accessibility.md', A11Y, /indeterminate/],
     ],
     announces: /mixed/,
   },
@@ -144,7 +160,7 @@ test('the stylesheets were really read (vacuity floor)', () => {
   assert.ok(all.has('indeterminate'), 'the checkbox no longer styles :indeterminate at all');
 });
 
-for (const { state, css, docs, announces } of SCRIPT_ONLY) {
+for (const { state, css, row, docs, announces } of SCRIPT_ONLY) {
   test(`${state} is still styled in ${css} (the premise this test rests on)`, () => {
     // If the CSS goes away, the documentation requirement goes with it — and the
     // failure should say so rather than reporting a missing doc for a state that
@@ -153,10 +169,10 @@ for (const { state, css, docs, announces } of SCRIPT_ONLY) {
     assert.ok(files?.has(css), `${state} is no longer styled in ${css} — remove this entry too`);
   });
 
-  for (const [name, text, pattern] of docs) {
+  for (const [name, read, pattern] of docs) {
     test(`${state} is documented in ${name}`, () => {
       assert.match(
-        text,
+        read(),
         pattern,
         `${state} is styled in ${css} and cannot be set from markup, so a consumer ` +
           `who is not told about it cannot discover it — no attribute exposes it, ` +
@@ -169,7 +185,11 @@ for (const { state, css, docs, announces } of SCRIPT_ONLY) {
     // The failure this guards is a doc that mentions the state without saying
     // what a screen reader reports — which is the part a consumer cannot infer,
     // since it is a third value rather than a shade of the other two.
-    assert.match(A11Y, announces, `accessibility.md does not say what ${state} announces as`);
+    assert.match(
+      a11yRow(row),
+      announces,
+      `the accessibility.md row for "${row}" does not say what ${state} announces as`,
+    );
   });
 }
 
