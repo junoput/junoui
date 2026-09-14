@@ -156,7 +156,7 @@ StyleDictionary.registerFormat({
 });
 
 StyleDictionary.registerFormat({
-  name: 'scss/aero',
+  name: 'scss/juno',
   format: ({ dictionary }) => {
     const head = '// junoui design tokens — SCSS variables. Generated; do not edit.\n\n';
     return (
@@ -180,7 +180,7 @@ function nestedCore(d) {
   return root;
 }
 StyleDictionary.registerFormat({
-  name: 'js/aero',
+  name: 'js/juno',
   format: ({ dictionary }) => {
     const TOKENS = byTheme(dictionary);
     const CORE = nestedCore(dictionary);
@@ -613,13 +613,13 @@ const sd = new StyleDictionary({
     scss: {
       transforms: [],
       buildPath: 'dist/scss/',
-      files: [{ destination: '_juno-tokens.scss', format: 'scss/aero' }],
+      files: [{ destination: '_juno-tokens.scss', format: 'scss/juno' }],
     },
     js: {
       transforms: [],
       buildPath: 'dist/js/',
       files: [
-        { destination: 'tokens.js', format: 'js/aero' },
+        { destination: 'tokens.js', format: 'js/juno' },
         { destination: 'tokens.d.ts', format: 'ts/juno-dts' },
       ],
     },
