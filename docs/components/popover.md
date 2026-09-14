@@ -33,6 +33,14 @@ and ESC are all the platform's job — **zero JS**.
   on-screen via `position-try-fallbacks`.
 - Enter: rise + fade, `motion.duration.quick` / `ease.decel`, animated open↔closed with
   `@starting-style` + `transition-behavior: allow-discrete`.
+- **Following the flip needs script; junoui ships the CSS, not an enhancer.**
+  `getComputedStyle(panel).positionArea` reflects the RESOLVED area after a fallback
+  fires (e.g. `end span-inline-start` becomes `end span-inline-end` once crowded), so a
+  consumer that wants to flip an arrow to match can read it — same shape as the
+  [tooltip](./tooltip.md)'s top-layer mode. Two limits: the resolved value names the
+  _area_, not _which_ fallback produced it, so two different crowding conditions can
+  read back identically; and there is no CSS selector for the resolved area at all —
+  this is JS-only, there is no `:where(...)`-style hook to style against.
 
 ## Usage
 
