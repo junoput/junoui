@@ -5,12 +5,13 @@ name: visual-baselines
 # commit. Run after any intended visual change.
 #
 # macOS (`-darwin`) baselines are NOT covered by this workflow or by any CI
-# job (ci.yml's `visual` job is ubuntu-24.04 only) — they are updated locally
-# with `npm run test:visual:update`, which nothing enforces anyone actually
-# do. As of 20260909-038 they are both stale (last regenerated 2026-07-13)
-# and incomplete (32 of 64 Linux baselines have no `-darwin` counterpart at
-# all). Do not assume a green `-darwin` set means anything; do not spend a PR
-# regenerating them unless that PR is specifically about darwin coverage.
+# job (ci.yml's `visual` job is ubuntu-24.04 only). Whether they are worth
+# maintaining at all is an open decision (20260909-038) — do not assume a
+# green `-darwin` set means anything, and do not spend a PR regenerating them
+# unless that PR is specifically about darwin coverage. Counts, dates and the
+# full picture live in ONE place, CONTRIBUTING.md's Visual regression
+# section (also linked from playwright.config.mjs) — read that rather than
+# this parenthesis, which exists only to point there.
 
 on: workflow_dispatch
 
