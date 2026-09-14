@@ -16,6 +16,24 @@
 import { defineConfig, devices } from '@playwright/test';
 import { PHONE_VIEWPORT } from './test/visual/helpers.mjs';
 
+// A local run's own failure count is not evidence of a regression, and that
+// has cost real investigation time on this exact suite twice in one day
+// (20260914-156) — once for the documented freetype drift below (real,
+// expected, 64-3387 px), once for a devbox-only rendering failure far
+// outside that range that turned out to be this box's own font/library
+// staging, not junoui. The fact was already written here and in
+// CONTRIBUTING.md; neither is read before the numbers are. Printed once,
+// at config load, rather than left for the next reader to re-derive.
+if (!process.env.CI) {
+  console.log(
+    '\n[test:visual] Running outside CI: a red result here is NOT evidence of a ' +
+      'regression by itself. This dev box is not a valid check env for text\n' +
+      "rendering — see the pixel-budget comment below and CONTRIBUTING.md's " +
+      "Visual regression section before investigating a local failure. CI's\n" +
+      'own run (ubuntu-24.04, pinned) is authoritative.\n',
+  );
+}
+
 export default defineConfig({
   testDir: './test/visual',
   // platform-scoped: font rendering differs across OSes, so darwin and linux
