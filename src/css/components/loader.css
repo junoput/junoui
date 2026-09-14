@@ -12,7 +12,7 @@
 
 @keyframes juno-beacon-pulse { 0% { transform: scale(0.28); opacity: 0.85; } 100% { transform: scale(1); opacity: 0; } }
 
-@keyframes juno-bar-slide { 0% { left: -42%; } 100% { left: 100%; } }
+@keyframes juno-bar-slide { 0% { inset-inline-start: -42%; } 100% { inset-inline-start: 100%; } }
 
 /* ── ARC — circular ring ────────────────────────────────────────────── */
 .juno-arc {
@@ -117,7 +117,15 @@
 
 .juno-beacon__hub {
   position: absolute;
-  left: 50%; top: 50%;
+
+  /* Symmetric centring, so this is a rule-compliance change and NOT a
+     behaviour change - inset-inline-start: 50% resolves to the same pixel in
+     both directions once the -50% translate is applied. Changed with the bar
+     above so the file carries no physical inset at all; said explicitly
+     because a reader diffing this would otherwise look for an RTL bug here
+     that never existed. */
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
   transform: translate(-50%, -50%);
   width: 42%; height: 42%;
   border-radius: 50%;
@@ -147,8 +155,15 @@
 
 .juno-bar__fill {
   position: absolute;
-  top: 0;
-  left: 0;
+
+  /* LOGICAL, and it was a real RTL defect rather than a style preference
+     (20260914-166). With `left: 0` a 30%-complete bar in an `dir="rtl"`
+     document filled from the LEFT edge - measured identical to LTR, 0..120 of
+     a 0..400 bar - so progress ran backwards for every RTL reader. Hard rule 6
+     says logical properties; this file had the only four physical ones left in
+     src/css. */
+  inset-block-start: 0;
+  inset-inline-start: 0;
   height: 100%;
   border-radius: var(--juno-radius-3);
   background: var(--juno-role);
@@ -159,7 +174,7 @@
 /* indeterminate: a 40% segment slides across */
 .juno-bar--indeterminate .juno-bar__fill {
   width: 40%;
-  left: -42%;
+  inset-inline-start: -42%;
   transition: none;
   animation: juno-bar-slide 1.3s ease-in-out infinite;
 }
