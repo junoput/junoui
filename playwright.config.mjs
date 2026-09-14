@@ -46,6 +46,10 @@ export default defineConfig({
   // `test:visual:update` locally on darwin would and would not fix — is in
   // CONTRIBUTING.md's Visual regression section; read that before trusting a
   // green OR a red `-darwin` result.
+  // Prints the paragraph above at the top of every NON-CI run, because the
+  // paragraph above is only read by someone who already suspects the answer
+  // (20260914-156). It asserts nothing.
+  globalSetup: './test/visual/global-setup.mjs',
   snapshotPathTemplate: '{testDir}/__screenshots__/{arg}-{platform}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
