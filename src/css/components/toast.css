@@ -16,10 +16,23 @@
  * ════════════════════════════════════════════════════════════════════ */
 
 .juno-toast-stack {
+  /* This stack's offset from the edge, declared once on the STACK — [floating
+     chrome] bucket, additive by default — and consumed here, not on `.juno-toast`.
+     Custom properties inherit downward, and the stack is the toast's ancestor,
+     not the reverse; declaring it on the child left it undefined here, so
+     `inset-block-end` fell back to `auto` (the static position — the TOP of the
+     page) on every phone-width viewport. See docs/safe-area.md, 20260914-071.
+     Restate any of the four to sit flush above the home indicator / sensor
+     housing on that edge. */
+  --juno-toast-edge-offset: calc(var(--juno-space-24) + var(--juno-safe-bottom));
+  --juno-toast-edge-offset-top: calc(var(--juno-space-24) + var(--juno-safe-top));
+  --juno-toast-edge-offset-inline-end: calc(var(--juno-space-24) + var(--juno-safe-right));
+  --juno-toast-edge-offset-inline-start: calc(var(--juno-space-24) + var(--juno-safe-left));
+
   position: fixed;
   z-index: var(--juno-z-alert);
-  inset-block-end: var(--juno-space-24);
-  inset-inline-end: var(--juno-space-24);
+  inset-block-end: var(--juno-toast-edge-offset);
+  inset-inline-end: var(--juno-toast-edge-offset-inline-end);
   display: flex;
   flex-direction: column;
   gap: var(--juno-space-12);
@@ -27,15 +40,14 @@
   pointer-events: none;
 }
 
-/* placements */
-.juno-toast-stack--top { inset-block: var(--juno-space-24) auto; }
-.juno-toast-stack--start { inset-inline: var(--juno-space-24) auto; }
+/* placements. --top is the one that matters most: in portrait the top edge is
+   exactly where the Dynamic Island sits, and base.css's own letterbox rule
+   says the top inset is real and zeroing it would be actively harmful — so
+   this axis gets no flat fallback. */
+.juno-toast-stack--top { inset-block: var(--juno-toast-edge-offset-top) auto; }
+.juno-toast-stack--start { inset-inline: var(--juno-toast-edge-offset-inline-start) auto; }
 
 .juno-toast {
-  /* This stack's offset from the edge, declared once — [floating chrome]
-     bucket, additive by default. Restate it to sit flush above the home
-     indicator; see docs/safe-area.md. */
-  --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
   --juno-role: var(--juno-active);
 
   pointer-events: auto;
@@ -94,16 +106,25 @@
    clear of the home indicator; toasts slide up instead of sideways. */
 @media (width <= 639.98px) {
   .juno-toast-stack {
-    inset-inline: var(--juno-space-12);
+    /* Smaller base gap at phone width; still additive over safe-bottom. Unit-
+       bearing env() fallback: inside calc() a unitless `0` is a <number>, which
+       invalidates the sum and drops the whole declaration (the stack would then
+       sit flush at 0 on any device without a safe area). */
+    --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
+    --juno-toast-edge-offset-top: calc(var(--juno-space-12) + var(--juno-safe-top));
 
-    /* unit-bearing env() fallback: inside calc() a unitless `0` is a <number>,
-       which invalidates the sum and drops the whole declaration (the stack
-       would then sit flush at 0 on any device without a safe area). */
+    /* Flat, not shed — deliberately. This branch is width<=639.98px; a
+       landscape phone is 844px wide and never reaches it, so in practice this
+       is portrait-only, where left/right insets are 0 (see "Only the bottom,
+       and that is deliberate" above). True today; if the breakpoint ever
+       moves down far enough to admit a landscape width, this needs the same
+       inline-start/-end treatment the default branch has. */
+    inset-inline: var(--juno-space-12);
     inset-block-end: var(--juno-toast-edge-offset);
     inline-size: auto;
   }
 
-  .juno-toast-stack--top { inset-block: var(--juno-space-12) auto; }
+  .juno-toast-stack--top { inset-block: var(--juno-toast-edge-offset-top) auto; }
 
   @starting-style {
     .juno-toast { transform: translateY(var(--juno-space-16)); }
