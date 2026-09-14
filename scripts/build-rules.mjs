@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Emit dist/rust/juno_rules.rs from scripts/rules.mjs.
+// Emit dist/rust/juno_rules.rs from tools/rules.mjs.
 //
 // The rules a painted consumer cannot call, as pure Rust functions — AND their
 // tests, generated from the same CASES table the JS tests run. That is the
@@ -7,7 +7,7 @@
 // there is no way to cover one target and miss the other. A second copy that
 // agrees today is exactly what this file exists to prevent.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { CASES } from './rules.mjs';
+import { CASES } from '../tools/rules.mjs';
 
 const OUT = 'dist/rust/juno_rules.rs';
 
@@ -46,7 +46,7 @@ const src = `// junoui rules — Rust. Generated; do not edit.
 // (20260901-051).
 //
 // These are those rules, as functions. Each has a JS twin in
-// scripts/rules.mjs, and the tests at the bottom are GENERATED FROM THE SAME
+// tools/rules.mjs, and the tests at the bottom are GENERATED FROM THE SAME
 // CASE TABLE the JS tests run — two implementations checked against one set of
 // numbers rather than against each other.
 //
@@ -140,7 +140,7 @@ pub const INK_CANVAS_HALO_WIDTH: f32 = ${tok('INK_CANVAS_HALO_WIDTH')};
 pub const INK_CANVAS_HALO_REFERENCE_PX: f32 = 16.0;
 
 // ════════════════════════════════════════════════════════════════════════
-//  Generated from scripts/rules.mjs CASES — the same table the JS tests run.
+//  Generated from tools/rules.mjs CASES — the same table the JS tests run.
 //  Do not add a case here; add it there and both targets get it.
 //
 //  generated-assertions: ${assertionCount}
