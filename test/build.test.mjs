@@ -5,6 +5,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import postcss from 'postcss';
 import { TOKENS, CORE, getTokens } from '../dist/js/tokens.js';
 import { buildReference, REFERENCE_PATH } from '../scripts/gen-docs.mjs';
+import { toHex } from '../scripts/color.mjs';
 
 const PALETTES = ['standard', 'colorblind', 'soft'];
 const MODES = ['dark', 'light'];
@@ -108,16 +109,29 @@ test('android colors.xml carries every $type:color token, not just the themed tr
   // test exists for was tokens/core/ink.json — 5 canvas/vivid colors plus
   // canvas.ink and canvas.halo, 7 in total — silently missing from Android
   // while iOS, Flutter and Rust all carried them.
-  for (const name of [
-    'canvas_ink',
-    'canvas_halo',
-    'vivid_nominal',
-    'vivid_active',
-    'vivid_target',
-    'vivid_caution',
-    'vivid_warning',
-  ]) {
-    assert.ok(xml.includes(`<color name="${name}">`), `colors.xml missing ink color "${name}"`);
+  //
+  // Bound to the VALUE, not just the tag's presence. `xml.includes(tag)`
+  // confirms the row exists; the row-count check above it guards how many
+  // rows there are, not what any one of them says — an empty or wrong-hex
+  // row for "canvas_ink" would satisfy both and ship a broken colour to
+  // Android (20260914-096).
+  const inkSource = {
+    canvas_ink: CORE.ink.canvas.ink,
+    canvas_halo: CORE.ink.canvas.halo,
+    vivid_nominal: CORE.ink.vivid.nominal,
+    vivid_active: CORE.ink.vivid.active,
+    vivid_target: CORE.ink.vivid.target,
+    vivid_caution: CORE.ink.vivid.caution,
+    vivid_warning: CORE.ink.vivid.warning,
+  };
+  for (const [name, sourceValue] of Object.entries(inkSource)) {
+    const row = new RegExp(`<color name="${name}">(#[0-9A-Fa-f]{6})</color>`).exec(xml);
+    assert.ok(row, `colors.xml missing ink color "${name}"`);
+    assert.equal(
+      row[1].toUpperCase(),
+      toHex(sourceValue),
+      `colors.xml's "${name}" does not carry the token's own colour`,
+    );
   }
 });
 
