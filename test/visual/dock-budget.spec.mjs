@@ -117,11 +117,18 @@ test('--juno-dock-fit-inline is the width at which the items exactly hold the ta
   }
 });
 
-test('the base bar spends no inline chrome, so its items get the whole viewport', async ({
+test('the base bar spends no inline chrome, so its items get the whole safe width', async ({
   page: pw,
 }) => {
   // The full-bleed variant carries a top-edge border only. A budget that
   // charged it the pill's 34px would under-report every item by 6.8px.
+  //
+  // "safe width" rather than "viewport", since 20260914-066: `--juno-dock-avail`
+  // now sheds the horizontal insets. This case runs with no insets — real
+  // `env()` is 0 in headless chromium and nothing here sets them — so the two
+  // readings coincide and the numbers below are unchanged. The inset term has
+  // its own spec, dock-safe-budget.spec.mjs; the rename is so this test's NAME
+  // does not assert something broader than it measures.
   await pw.setViewportSize({ width: 390, height: 800 });
   await pw.setContent(page(5, ''));
   const m = await measure(pw);
