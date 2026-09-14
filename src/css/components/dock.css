@@ -203,7 +203,8 @@
   inset-inline: 0;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
-  margin: 0 var(--juno-dock-margin-inline) var(--juno-dock-edge-offset);
+  margin-block: 0 var(--juno-dock-edge-offset);
+  margin-inline: var(--juno-dock-edge-offset-inline-start) var(--juno-dock-edge-offset-inline-end);
   padding: var(--juno-dock-pad-inline);
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);
   -webkit-backdrop-filter: blur(12px);
@@ -311,7 +312,8 @@
   inset-inline: 0;
   inset-block-end: 0;
   z-index: var(--juno-z-raised);
-  margin: 0 var(--juno-dock-margin-inline) var(--juno-dock-edge-offset);
+  margin-block: 0 var(--juno-dock-edge-offset);
+  margin-inline: var(--juno-dock-edge-offset-inline-start) var(--juno-dock-edge-offset-inline-end);
   padding: var(--juno-dock-pad-inline);
   overflow: hidden;
   background: color-mix(in srgb, var(--juno-s1) 88%, transparent);

@@ -64,6 +64,30 @@
      reconcile them because one side added the inset and the other maxed it. */
   --juno-dock-edge-offset: calc(var(--juno-space-16) + var(--juno-safe-bottom));
 
+  /* The same construction on the inline axis, for the same reason
+     (20260914-067). Before these, `--pill` and `--float` wrote a flat
+     `--juno-space-12` inline margin while their BLOCK margin used the offset
+     above — so one declaration shed its inset and the other did not, and at
+     844x390 with 59px insets the bar painted from x=12 with its first item's
+     leading edge at 17, against a housing ending at 59.
+
+     TWO properties, not one, and that is the difference from the block axis.
+     There is only one block edge that carries an inset; on the inline axis the
+     two insets are independent — a notch is on the left in one orientation and
+     the right when the device is turned around — so a single value cannot
+     serve both edges.
+
+     Applies to the FIXED variants only, which is why it is unconditional. They
+     are `position: fixed; inset-inline: 0`, so they sit against the viewport
+     whatever they are nested in; the in-flow base bar has a nesting question
+     and is deliberately untouched (20260914-066).
+
+     Unaffected by `data-juno-letterboxed` below, by that rule's own reasoning:
+     it zeroes only the bottom inset, because left and right are real in
+     landscape rather than phantoms. */
+  --juno-dock-edge-offset-inline-start: calc(var(--juno-space-12) + var(--juno-safe-left));
+  --juno-dock-edge-offset-inline-end: calc(var(--juno-space-12) + var(--juno-safe-right));
+
   /* Gap between the bar's top edge and the last row of content. Zero is a
      legitimate setting: a translucent bar that content is MEANT to scroll under
      wants overlap, not breathing room. */
