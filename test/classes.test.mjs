@@ -196,18 +196,37 @@ test('the other juno namespaces are shipped too', () => {
   // 24 reports were of this kind.
   assert.ok(manifest.keyframes.includes('juno-blink'));
   assert.ok(manifest.icons.includes('juno-i'), 'the `#juno-i-${name}` template artifact');
-  // `.some()` was satisfied by ONE real icon id surviving — it could not see
-  // whether the other 79 (of 80, per dist/icons/juno-icons.svg) did too.
-  // Independently re-derived from the SVG itself, the same way
-  // build-classes.mjs's own iconIds() would read it, and compared as a set.
+  // `.some((i) => i.startsWith('juno-i-'))` was satisfied by ONE real icon id
+  // surviving of 80 — it could not see whether the other 79 did too.
+  //
+  // Not fixed by re-deriving the expected set through iconIds() itself: that
+  // function is what a regex-tightening defect would live in, so calling it
+  // again here to build the "expected" set would make both sides agree by
+  // construction — the same shape as this ticket's own toast/ARIA-row
+  // findings, one level deeper. The count below comes from a SEPARATE,
+  // differently-shaped regex written independently in this test, and the
+  // names below are hardcoded from the real sprite rather than re-derived.
   const svg = readFileSync('dist/icons/juno-icons.svg', 'utf8');
-  const realIds = [...iconIds(svg)].filter((i) => i !== 'juno-i').sort();
-  assert.ok(realIds.length > 0, 'dist/icons/juno-icons.svg has no <symbol> ids to compare against');
-  assert.deepEqual(
-    manifest.icons.filter((i) => i.startsWith('juno-i-')).sort(),
-    realIds,
-    'manifest.icons does not carry every real icon id in the SVG',
+  const symbolCount = [...svg.matchAll(/<symbol\b/g)].length;
+  assert.ok(
+    symbolCount > 0,
+    'dist/icons/juno-icons.svg has no <symbol> elements to compare against',
   );
+  assert.equal(
+    manifest.icons.filter((i) => i.startsWith('juno-i-')).length,
+    symbolCount,
+    `manifest.icons has ${manifest.icons.filter((i) => i.startsWith('juno-i-')).length} icon ids ` +
+      `but the sprite declares ${symbolCount} <symbol> elements — some were dropped`,
+  );
+  // Named, hyphenated (multi-word) ids — the specific shape a regex that
+  // stopped accepting `-` mid-id would drop while single-word ids like
+  // `juno-i-link` kept passing.
+  for (const name of ['juno-i-squares-four', 'juno-i-caret-up', 'juno-i-arrow-clockwise']) {
+    assert.ok(
+      manifest.icons.includes(name),
+      `manifest.icons is missing the hyphenated id "${name}"`,
+    );
+  }
   // a COMPONENT-LOCAL custom property, not just the global scale: reading only
   // juno-tokens.css missed these and reported three of them
   assert.ok(manifest.tokens.includes('juno-pillbar-gap'));
