@@ -107,18 +107,19 @@ consumer took the additive form for `.juno-dock--pill` assuming it was the
 only option, then had to read the source to find `--juno-dock-edge-offset`
 and learn there was a choice at all — 20260909-126.)
 
-| Component                                         | Bucket                    | Where                                                                                                                                                                                                   |
-| ------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.juno-app-shell` (left/right)                    | edge padding              | `layout.css` — shell sits full-bleed; the inset _is_ the gap.                                                                                                                                           |
-| `.juno-app-shell__topbar` (top)                   | edge padding              | `layout.css` — in-flow bar, flush at the top edge.                                                                                                                                                      |
-| `.juno-navbar` (top)                              | edge padding              | `navbar.css` — same shape as the topbar above.                                                                                                                                                          |
-| `.juno-dock` base/`--fixed`/`--icon` (bottom)     | edge padding              | `dock.css` — full-bleed, in-flow, sticky; not floating.                                                                                                                                                 |
-| `.juno-dock--pill` / `--float` (bottom)           | floating chrome, additive | `dock.css` — via `--juno-dock-edge-offset`; the bar sits _off_ the edge, so its own margin and the inset stack.                                                                                         |
-| `.juno-modal` sheet footer (bottom)               | clearance                 | `modal.css:185` — reserves room so the footer's actions clear the home indicator. Scoped `:not(.juno-drawer)`.                                                                                          |
-| `.juno-modal.juno-drawer--bottom` footer (bottom) | clearance                 | `drawer.css:108` — its own declaration, same bucket and arithmetic as the modal row above. The two agree today with no mechanism keeping them that way — see the note below.                            |
-| `.juno-toast` (bottom)                            | floating chrome, additive | `toast.css` — via `--juno-toast-edge-offset`.                                                                                                                                                           |
-| `.juno-pillbar` (edge, corners)                   | floating chrome, additive | `pillbar.css` — via `--juno-pillbar-edge-offset`, and the same additive form on each corner variant's block/inline insets.                                                                              |
-| `.juno-pillbar` (width)                           | available-space cap       | `pillbar.css` — `max-inline-size` sheds both horizontal insets separately from the offset above. Restating `--juno-pillbar-edge-offset` changes where the pill sits, not how wide it is allowed to get. |
+| Component                                         | Bucket                    | Where                                                                                                                                                                                                                                                        |
+| ------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.juno-app-shell` (left/right)                    | edge padding              | `layout.css` — shell sits full-bleed; the inset _is_ the gap.                                                                                                                                                                                                |
+| `.juno-app-shell__topbar` (top)                   | edge padding              | `layout.css` — in-flow bar, flush at the top edge.                                                                                                                                                                                                           |
+| `.juno-navbar` (top)                              | edge padding              | `navbar.css` — same shape as the topbar above.                                                                                                                                                                                                               |
+| `.juno-dock` base/`--fixed`/`--icon` (bottom)     | edge padding              | `dock.css` — full-bleed, in-flow, sticky; not floating. See the open question below — this is correct only where its container already absorbed the horizontal inset.                                                                                        |
+| `.juno-dock` (item budget, width)                 | available-space cap       | `dock.css` — `--juno-dock-avail: calc(100vw - var(--juno-safe-left) - var(--juno-safe-right))`, same shape as the pillbar's width cap above.                                                                                                                 |
+| `.juno-dock--pill` / `--float` (bottom + inline)  | floating chrome, additive | `dock.css` / `base.css` — `--juno-dock-edge-offset` (bottom) plus two independent horizontal properties, `--juno-dock-edge-offset-inline-start`/`-inline-end`, because a notch is on the left in one orientation and the right when the device turns around. |
+| `.juno-modal` sheet footer (bottom)               | clearance                 | `modal.css:185` — reserves room so the footer's actions clear the home indicator. Scoped `:not(.juno-drawer)`.                                                                                                                                               |
+| `.juno-modal.juno-drawer--bottom` footer (bottom) | clearance                 | `drawer.css:108` — its own declaration, same bucket and arithmetic as the modal row above. The two agree today with no mechanism keeping them that way — see the note below.                                                                                 |
+| `.juno-toast` (bottom)                            | floating chrome, additive | `toast.css` — via `--juno-toast-edge-offset`.                                                                                                                                                                                                                |
+| `.juno-pillbar` (edge, corners)                   | floating chrome, additive | `pillbar.css` — via `--juno-pillbar-edge-offset`, and the same additive form on each corner variant's block/inline insets.                                                                                                                                   |
+| `.juno-pillbar` (width)                           | available-space cap       | `pillbar.css` — `max-inline-size` sheds both horizontal insets separately from the offset above. Restating `--juno-pillbar-edge-offset` changes where the pill sits, not how wide it is allowed to get.                                                      |
 
 **The dock is the one component that uses both buckets, on purpose, for
 different variants.** The base bar is in-flow and full-bleed — the inset
@@ -147,9 +148,18 @@ offset — the documented way to take the `max()` form — gets a repositioned
 pill that can still overflow, because the cap is a separate declaration this
 table's earlier "restate one token" advice does not reach.
 
-**A third available-space instance exists and is not yet fixed.**
-`dock.css`'s `--juno-dock-avail: 100vw` has the same shape as the pillbar's
-old defect — it spans under the housing on both sides rather than shedding
-the horizontal insets — and is tracked open as `20260914-066`, not fixed by
-this change. Once it lands, this table's dock rows gain an available-space
-entry matching the pillbar's.
+**What is genuinely still open is not the dock's budget or its floating
+variants — both now shed the horizontal insets, same as the pillbar.** It is
+the in-flow **base** bar's own padding, held on the operator as
+`20260914-068`. Measured at 844×390 with 59px insets: the base bar renders
+correctly (75..769) inside `.juno-app-shell`, because the shell already pads
+for the inset — and wrong (0..844, under both housings) at the viewport root,
+where nothing has. Edge padding is the right bucket either way; what's
+undecided is how an in-flow component learns whether its container already
+paid the inset, so it doesn't pay it twice. The two candidates are a
+descendant selector (`.juno-app-shell .juno-dock { padding-inline: 0 }`) or a
+second safe-area variable pair distinguishing in-flow from viewport-fixed —
+both work, and the ticket's own hold note says the second is more expensive
+to reverse. This table's dock rows describe the bar as it behaves today,
+unchanged since before this fix — not a promise about which way `20260914-068`
+resolves.
