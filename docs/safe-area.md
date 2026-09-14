@@ -90,3 +90,35 @@ Before these tokens the form was written separately at each site, so a consumer
 that changed one silently disagreed with the other — measured at 16px of dead
 band at inset 0 and 24px at inset 34, with no value of the bar's height able to
 reconcile them, because one side added the inset and the other took its max.
+
+## Which bucket each component uses
+
+The three buckets above are not a taxonomy you apply — every component that
+reads a `--juno-safe-*` token already picked one. This table says which, so a
+consumer overriding a component's offset knows what arithmetic it is
+replacing instead of reverse-engineering it from the CSS. (Filed after a
+consumer took the additive form for `.juno-dock--pill` assuming it was the
+only option, then had to read the source to find `--juno-dock-edge-offset`
+and learn there was a choice at all — 20260909-126.)
+
+| Component                                     | Bucket                    | Where                                                                                                                                 |
+| --------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `.juno-app-shell` (left/right)                | edge padding              | `layout.css` — shell sits full-bleed; the inset _is_ the gap.                                                                         |
+| `.juno-app-shell__topbar` (top)               | edge padding              | `layout.css` — in-flow bar, flush at the top edge.                                                                                    |
+| `.juno-navbar` (top)                          | edge padding              | `navbar.css` — same shape as the topbar above.                                                                                        |
+| `.juno-dock` base/`--fixed`/`--icon` (bottom) | edge padding              | `dock.css` — full-bleed, in-flow, sticky; not floating.                                                                               |
+| `.juno-dock--pill` / `--float` (bottom)       | floating chrome, additive | `dock.css` — via `--juno-dock-edge-offset`; the bar sits _off_ the edge, so its own margin and the inset stack.                       |
+| `.juno-modal` sheet footer (bottom)           | clearance                 | `modal.css` — reserves room so the footer's actions clear the home indicator; shared by `.juno-drawer`, which composes `.juno-modal`. |
+| `.juno-toast` (bottom)                        | floating chrome, additive | `toast.css` — via `--juno-toast-edge-offset`.                                                                                         |
+| `.juno-pillbar` (edge, corners)               | floating chrome, additive | `pillbar.css` — via `--juno-pillbar-edge-offset`, and the same additive form on each corner variant's block/inline insets.            |
+
+**The dock is the one component that uses both buckets, on purpose, for
+different variants.** The base bar is in-flow and full-bleed — the inset
+_replaces_ the design gap, so it's edge padding, same as the app shell. The
+`--pill`/`--float` variants float off the edge — their own margin and the
+inset are two separate distances that both have to be accounted for, so
+they're additive floating chrome. Restating `--juno-dock-edge-offset` (as
+shown above) only changes the floating variants; the base bar has no
+equivalent token to restate because `max()` was never a live choice for it —
+there's no design gap for the inset to replace, `padding-block-end` already
+_is_ the inset.
