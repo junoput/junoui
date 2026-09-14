@@ -44,6 +44,40 @@
 // confident false positives, which is worse than the gap. The two columns above
 // are checked precisely because they are binary presence tests (`@container` /
 // `@media`, and the seven density hooks) with no naming assumptions in them.
+//
+// ── State hooks, added 2026-09-14 (20260914-091) ────────────────────────────
+//
+// The paragraph above is now half out of date and the half that changed is
+// worth reading, because the reason the first attempt failed was not that the
+// column is underivable.
+//
+// The 2026-09-08 attempt undercounted with a FIXED LIST of pseudo-classes, so
+// anything not on the list vanished and all 21 mismatches ran the same
+// direction — the signature of a lossy extractor. This one inverts that: it
+// takes EVERY pseudo-class and attribute selector it finds and then removes a
+// DECLARED, REASONED exclusion set. A hook nobody anticipated is therefore
+// reported rather than dropped, which is the direction an extractor should
+// fail in.
+//
+// WHY IT WAS WORTH DOING. The census's checkbox row read
+// `:disabled, :has(), :checked` while `checkbox.css` had styled
+// `:indeterminate` since 2026-06-29 — the FIFTH place that state was
+// invisible, after the component doc, the ARIA contract, every showcase page
+// and every visual baseline. A census that says of itself "measured from the
+// CSS itself" was the last of the five a reader could have checked.
+//
+// CALIBRATED BEFORE BEING TRUSTED: run against the 44 rows the census already
+// gets right, it reports nothing. Two independent derivations — juno-w1a's and
+// mine, written separately — produced the same eight differing rows, and each
+// was then verified by hand against the stylesheet. That is a different
+// instrument agreeing, not the same regex run twice.
+//
+// WHAT IT STILL DOES NOT CHECK, so this is not read as more coverage than it
+// is: `Tokens read` and `Local custom properties` remain unguarded. Three
+// methods gave three different answers for `dock`'s local count (18, 19, 21)
+// because the census's own declared-vs-read definition needs pinning down
+// first. Writing any of those numbers into a shipped document today would be
+// the defect this ticket is about, committed while fixing it. Still open.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -62,6 +96,69 @@ const DENSITY_HOOKS = [
   '[data-juno-density]',
 ];
 
+/**
+ * Pseudo-classes that are NOT a component state, with the reason each is out.
+ *
+ * A DECLARED exclusion set rather than a fixed inclusion list, and that is the
+ * whole difference from the 2026-09-08 attempt: anything unanticipated is
+ * REPORTED, not silently dropped.
+ */
+const NOT_A_STATE = new Set([
+  // logical combinators — what they wrap is the hook, and it is counted
+  // separately. `:not([aria-expanded])` in tree.css and
+  // `:not(.juno-btn--dense)` in button.css are an attribute and a class.
+  // `:has()` is NOT here: the census counts it, and rightly — reacting to your
+  // own content is a state.
+  'not',
+  'is',
+  'where',
+  // document scoping, not a component state — table.css's
+  // `:root[data-juno-mode='light']`, whose attribute IS counted.
+  'root',
+  // DOM position, not interaction — table.css's zebra striping.
+  'first-child',
+  'last-child',
+  'only-child',
+  'nth-child',
+  'nth-of-type',
+  'first-of-type',
+  'last-of-type',
+]);
+
+/** The hooks a census row claims, normalised for comparison. */
+function parseHooks(text) {
+  if (text.trim() === '_none_') return [];
+  return text
+    .split(',')
+    .map((t) => t.trim().replace(/`/g, '').replace(/\(\)$/, ''))
+    .filter(Boolean)
+    .sort();
+}
+
+/**
+ * The hooks a stylesheet actually carries.
+ *
+ * Selector spans only: `([^{}]+)\{` captures every run of text ending at an
+ * opening brace, which is a selector or an at-rule prelude and never a
+ * declaration body (those end in `}`). That handles nested `@media`/`@container`
+ * without tracking depth, and is a regex rather than a CSS parser deliberately —
+ * this file's own header records why a homemade parser is the wrong trade here.
+ *
+ * `(?<!:):` excludes pseudo-ELEMENTS, which are never a state.
+ */
+function cssHooks(css) {
+  const out = new Set();
+  for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{/g)) {
+    const sel = m[1];
+    if (sel.trim().startsWith('@')) continue;
+    for (const p of sel.matchAll(/(?<!:):([a-z-]+)/g)) {
+      if (!NOT_A_STATE.has(p[1])) out.add(':' + p[1]);
+    }
+    for (const a of sel.matchAll(/\[([a-zA-Z-]+)[\]=~|^$*]/g)) out.add('[' + a[1] + ']');
+  }
+  return [...out].sort();
+}
+
 /** Every `### \`name\`` block that has a matching stylesheet. */
 function rows() {
   const out = [];
@@ -71,11 +168,13 @@ function rows() {
     if (!existsSync(file)) continue;
     const resp = /\*\*Responsive mechanism\*\*:\s*([^\n—]+)/.exec(block);
     const dens = /\*\*Density-aware\*\*:\s*(\w+)/.exec(block);
+    const hooks = /\*\*States\/hooks\*\*\s*\(\d+\):\s*([^\n]*)/.exec(block);
     out.push({
       name,
       css: readFileSync(file, 'utf8'),
       claimedResponsive: resp ? resp[1].trim().replace(/`/g, '') : null,
       claimedDensity: dens ? dens[1] : null,
+      claimedHooks: hooks ? parseHooks(hooks[1]) : null,
     });
   }
   return out;
@@ -128,4 +227,53 @@ test('every Density-aware row states what its stylesheet actually contains', () 
     }
   }
   assert.deepEqual(wrong, []);
+});
+
+test('every row claims a States/hooks field (vacuity floor for the check below)', () => {
+  // A row whose field stopped parsing would compare `null` and be skipped
+  // silently, which is the shape this suite exists to refuse.
+  const missing = ROWS.filter((r) => r.claimedHooks === null).map((r) => r.name);
+  assert.deepEqual(missing, [], 'a census row has no States/hooks field to check');
+});
+
+test('the extractor finds hooks where the census says there are hooks (calibration)', () => {
+  // Before believing any MISMATCH, confirm the extractor works on the rows that
+  // already agree. A regex that matched nothing would report every row as
+  // "census claims hooks, CSS has none" — a confident, uniform, wrong answer,
+  // and every mismatch running the same direction is exactly the signature the
+  // 2026-09-08 attempt produced.
+  const withHooks = ROWS.filter((r) => r.claimedHooks.length > 0);
+  assert.ok(withHooks.length >= 30, `only ${withHooks.length} rows claim any hook`);
+  const foundNothing = withHooks.filter((r) => cssHooks(r.css).length === 0).map((r) => r.name);
+  assert.deepEqual(
+    foundNothing,
+    [],
+    'the extractor found no hooks in a stylesheet the census says has some — ' +
+      'suspect the extractor before the census',
+  );
+});
+
+test('every States/hooks row lists what its stylesheet actually carries', () => {
+  const wrong = [];
+  for (const r of ROWS) {
+    const actual = cssHooks(r.css);
+    const missing = actual.filter((a) => !r.claimedHooks.includes(a));
+    const extra = r.claimedHooks.filter((c) => !actual.includes(c));
+    if (missing.length || extra.length) {
+      wrong.push(
+        `${r.name}: ${missing.length ? `CSS has ${missing.join(' ')} and the row does not` : ''}` +
+          `${missing.length && extra.length ? '; ' : ''}` +
+          `${extra.length ? `the row claims ${extra.join(' ')} and the CSS does not` : ''}`,
+      );
+    }
+  }
+  assert.deepEqual(
+    wrong,
+    [],
+    'a States/hooks row disagrees with its stylesheet. The census says of itself ' +
+      '"measured from the CSS itself" — that has to keep being true, or it becomes ' +
+      'the last place a reader checks and the fifth place a state is invisible. ' +
+      'If a hook is genuinely not a state, add it to NOT_A_STATE with the reason ' +
+      'rather than editing the row to match.',
+  );
 });
