@@ -191,9 +191,11 @@ test('every PART or MODIFIER a doc example names exists in the CSS', () => {
   assert.deepEqual(
     missing,
     [],
-    'a shipped doc example names a part or modifier the CSS does not declare. ' +
-      'Either the example is wrong or the class was renamed; check the component ' +
-      'stylesheet for the real name rather than adding the class to match the doc.',
+    'a doc example or showcase page names a part or modifier the CSS does not ' +
+      'declare. In docs/ that ships to consumers; in showcase/ it is the reference ' +
+      'implementation people copy. Either the markup is wrong or the class was ' +
+      'renamed — check the component stylesheet for the real name rather than ' +
+      'adding the class to match the markup.',
   );
 });
 
