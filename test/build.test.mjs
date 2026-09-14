@@ -195,6 +195,11 @@ test('every var(--juno-*) used in src/css is defined in the token output', () =>
     'juno-dock-h',
     'juno-dock-clearance-scale',
     'juno-dock-edge-offset',
+    // Two, not one: the horizontal insets are independent — a notch is on the
+    // left in one orientation and the right when the device is turned around —
+    // so a single value cannot serve both edges (20260914-067).
+    'juno-dock-edge-offset-inline-start',
+    'juno-dock-edge-offset-inline-end',
     'juno-safe-top',
     'juno-safe-right',
     'juno-safe-bottom',

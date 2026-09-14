@@ -216,6 +216,34 @@ The margin, padding and border terms are declared **once** and consumed by both
 the variant's own box and the sum above, so the budget cannot disagree with the
 bar it describes — the same construction as `--juno-dock-edge-offset`.
 
+### The floating variants' edge offsets
+
+`--pill` and `--float` are `position: fixed`, so they sit against the viewport
+whatever they are nested in, and all three of their edge gaps shed the
+corresponding safe-area inset:
+
+| Custom property                        | Default                                    |
+| -------------------------------------- | ------------------------------------------ |
+| `--juno-dock-edge-offset`              | `calc(var(--juno-space-16) + safe-bottom)` |
+| `--juno-dock-edge-offset-inline-start` | `calc(var(--juno-space-12) + safe-left)`   |
+| `--juno-dock-edge-offset-inline-end`   | `calc(var(--juno-space-12) + safe-right)`  |
+
+The inline axis takes **two** properties rather than one because the two insets
+are independent: a notch is on the left in one orientation and on the right when
+the device is turned around, so one value cannot serve both edges. Restate any of
+them to change the gap; junoui's default is additive (a floating element sits
+_off_ the edge, so its gap and the inset stack), and a design that wants the bar
+flush against the housing writes `max()` here instead.
+
+These do **not** feed `--juno-dock-chrome-inline`, which sums the design terms
+only. That is correct rather than an omission: `--juno-dock-avail` already sheds
+both insets, so the budget's arithmetic and the bar's painted box agree without
+counting an inset twice.
+
+The full-bleed base bar is **not** covered by this. It is in-flow, so whether it
+needs the inset depends on what it is nested in — `.juno-app-shell` already
+applies the same two — and that is an open question rather than a default.
+
 **There is deliberately no scale floor.** "What scale keeps a 44px target?" is
 `44px / --juno-dock-item-inline`, a ratio of two lengths, and CSS cannot divide
 by a length. A consumer that must scale rather than drop compares those two
