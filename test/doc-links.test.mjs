@@ -102,6 +102,66 @@ test('every relative link in the shipped docs points at a file that exists', () 
   assert.deepEqual(broken, [], 'a shipped doc links to a file that does not exist');
 });
 
+/**
+ * Every `.juno-*` class the stylesheets declare.
+ *
+ * Reads all of `src/css` rather than only `components/`, because a class can be
+ * declared in `utilities.css` or `layout.css` and used in a component's doc.
+ */
+function definedClasses() {
+  let css = '';
+  for (const d of ['src/css', 'src/css/components']) {
+    for (const f of readdirSync(d)) if (f.endsWith('.css')) css += readFileSync(join(d, f), 'utf8');
+  }
+  return new Set([...css.matchAll(/\.(juno-[a-zA-Z0-9_-]+)/g)].map((m) => m[1]));
+}
+
+/** Every `juno-` class named inside an ```html block in the shipped docs. */
+function classesInExamples() {
+  const out = [];
+  for (const f of FILES) {
+    for (const block of readFileSync(f, 'utf8').matchAll(/```html\n([\s\S]*?)```/g)) {
+      for (const attr of block[1].matchAll(/class="([^"]+)"/g)) {
+        for (const c of attr[1].split(/\s+/)) if (c.startsWith('juno-')) out.push({ file: f, c });
+      }
+    }
+  }
+  return out;
+}
+
+test('the doc examples were really read (vacuity floor)', () => {
+  const used = classesInExamples();
+  assert.ok(used.length >= 100, `only ${used.length} juno- classes found in doc examples`);
+  assert.ok(definedClasses().size >= 300, 'the stylesheets parsed suspiciously few classes');
+});
+
+test('every PART or MODIFIER a doc example names exists in the CSS', () => {
+  // `docs/` ships, so a consumer copies these out of node_modules. A modifier
+  // that does not exist is worse than a dead link: the markup is valid, the
+  // element renders, and only the appearance is silently not what the caption
+  // promises. Found that way — `icon-loader.md` offered `.juno-btn--icon` under
+  // a "40px circular icon button" caption, and it existed nowhere but that line
+  // (20260914-108).
+  //
+  // A BARE BLOCK IS DELIBERATELY EXEMPT, and that exemption is the difference
+  // between one finding and one finding plus a false positive. `tabs.md` uses
+  // `class="juno-tabs"` while `tabs.css` declares only `__list`, `__tab` and
+  // `__panel` — the block is a wrapper whose parts carry every rule. Requiring
+  // it to exist would push a meaningless declaration into the stylesheet to
+  // satisfy a test.
+  const defined = definedClasses();
+  const missing = classesInExamples()
+    .filter(({ c }) => /--|__/.test(c) && !defined.has(c))
+    .map(({ file, c }) => `${file}: ${c}`);
+  assert.deepEqual(
+    missing,
+    [],
+    'a shipped doc example names a part or modifier the CSS does not declare. ' +
+      'Either the example is wrong or the class was renamed; check the component ' +
+      'stylesheet for the real name rather than adding the class to match the doc.',
+  );
+});
+
 test('every anchor in the shipped docs points at a heading that exists', () => {
   const broken = [];
   let checked = 0;
