@@ -16,16 +16,18 @@ what a non-browser target can actually consume.
 not equally true of all of them.** Three are verified on every CI run against
 `src/css` by `test/census-matches-css.test.mjs`:
 
-| column                  | guarded by                                         |
-| ----------------------- | -------------------------------------------------- |
-| Responsive mechanism    | a CI test reading the stylesheet                   |
-| Density-aware           | a CI test reading the stylesheet                   |
-| States/hooks            | a CI test reading the stylesheet, since 2026-09-14 |
-| Tokens read             | **nothing** — derived once at authoring time       |
-| Local custom properties | **nothing** — derived once at authoring time       |
+| column                  | guarded by                                                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Responsive mechanism    | a CI test reading the stylesheet                                                                                                            |
+| Density-aware           | a CI test reading the stylesheet                                                                                                            |
+| States/hooks            | a CI test reading the stylesheet, since 2026-09-14                                                                                          |
+| Tokens read             | **nothing** — derived once at authoring time                                                                                                |
+| Local custom properties | **nothing**, deliberately — see the Method notes: two counter-cases show no single mechanical rule is right. Re-derived by hand 2026-09-14. |
 
-The last two were produced on 2026-09-06 and no instrument has compared them to
-the CSS since. `test/inventory-elements.test.mjs` and
+`Tokens read` was produced on 2026-09-06 and no instrument has compared it to the CSS
+since. `Local custom properties` was re-derived by hand on 2026-09-14
+(`20260914-099`) — twelve rows moved — and is still not machine-checked, because
+establishing what belongs in it needed reading two components rather than counting. `test/inventory-elements.test.mjs` and
 `scripts/check-inventory-elements.mjs` sound like they would; both re-parse **this
 document's own rows** and check its prose against that tally, so they verify the
 census against itself. Treat those two columns as a snapshot with a date on it.
@@ -170,9 +172,31 @@ hard-coded — the guard names the location, the prose names the property.)
   (`thumb`) and counted once, with the modifier listed separately in the Modifiers column.
 - **Local custom properties** are filtered against the exact allowlist in
   `test/build.test.mjs`'s "every var() is defined" test — the authoritative list of
-  runtime/component-local props — with the shared cross-cutting ones (`--juno-role`,
-  `--juno-motion*`, `--juno-safe-*`, `--juno-touch-action`, and the seven density-layer vars)
-  excluded, since those are not one component's own configuration surface.
+  runtime/component-local props — with the shared cross-cutting ones excluded, since
+  those are not one component's own configuration surface. The excluded set is
+  `--juno-role`, `--juno-motion*`, `--juno-safe-*`, `--juno-touch-action`, the seven
+  density-layer vars, and — added 2026-09-14 (`20260914-099`) — the three `--juno-control-*`
+  and four `--juno-knob-*` names, all declared centrally in `base.css`, whose own comment
+  already calls the knob set "the knob + track-rim of the lever controls (switch / slider)".
+  Those seven were missed by the original pass and account for 13 of the 22 rows the
+  unamended rule would move.
+- **And the exclusion rule does NOT generalise — two counter-cases, both checked by
+  reading the files.** "Used by two or more components" reproduces every name already
+  excluded and is why the seven above were added. Applied uniformly it is wrong twice
+  over. `--juno-icon-size` and `--juno-icon-loader-ring(-width)` have ONE canonical
+  declarer (`icon.css` defines the base and its `--sm`/`--lg`/`--xl` variants;
+  `icon-loader.css` documents the ring as its own primary knob) and `dock.css` merely
+  sets them on a nested child — so they belong in icon's and icon-loader's rows and not
+  in dock's, which counting cannot tell you. `--juno-arc-size`/`--juno-arc-width` are the
+  opposite: `loader.css` and `icon-loader.css` each declare the same name for their own
+  unrelated purpose, so both rows should keep it. **There is no single rule; the seven
+  names above are safe because no counter-case exists for them, and that was established
+  by reading rather than by counting.** This column is therefore NOT machine-checked —
+  see the table at the top.
+- **Usage is read from the CSS with comments stripped.** `--juno-dock-clearance` appears
+  twice in `dock.css` and both are inside a doc comment showing a consumer how to pad
+  their own scroller; `dock.css` neither reads nor declares it. A substring search over
+  the raw file counts it and is wrong.
 - **Density** is "yes" if the file reads one of the seven `src/css/density.css` variables
   (`--juno-pad-control-*`, `--juno-pad-surface-*`, `--juno-gap-control`, `--juno-gap-content`,
   `--juno-tile-min`) or matches `[data-juno-density]` directly.
@@ -197,7 +221,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (0): _none_
 - **States/hooks** (2): `:hover`, `[open]`
 - **Tokens read** (21): `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-lineHeight-relaxed`, `--juno-font-size-13`, `--juno-font-weight-medium`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-standard`, `--juno-muted`, `--juno-pad-control-block`, `--juno-pad-surface-block`, `--juno-pad-surface-inline`, `--juno-radius-5`, `--juno-s0`, `--juno-s1`, `--juno-s2`, `--juno-space-12`, `--juno-space-8`
-- **Local custom properties** (0): _none_
+- **Local custom properties** (2): `--juno-sheet-h`, `--juno-sheet-max`
 - **Responsive mechanism**: neither
 - **Density-aware**: yes (`--juno-pad-control-block`, `--juno-pad-surface-block`, `--juno-pad-surface-inline`)
 - **Slot order**: **fixed** — native `<details>`/`<summary>` element order
@@ -208,7 +232,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (1): `--solid`
 - **States/hooks** (1): `:hover`
 - **Tokens read** (20): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-3`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-lineHeight-none`, `--juno-font-lineHeight-relaxed`, `--juno-font-size-13`, `--juno-font-size-16`, `--juno-font-weight-semibold`, `--juno-label`, `--juno-muted`, `--juno-pad-surface-block`, `--juno-pad-surface-inline`, `--juno-radius-5`, `--juno-role`, `--juno-s0`, `--juno-space-12`, `--juno-space-2`, `--juno-space-8`
-- **Local custom properties** (0): _none_
+- **Local custom properties** (1): `--juno-shimmer-dur`
 - **Responsive mechanism**: neither
 - **Density-aware**: yes (`--juno-pad-surface-block`, `--juno-pad-surface-inline`)
 - **Slot order**: **fixed** — flex row, normal flow (icon, body, close)
@@ -230,7 +254,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (3): `--micro`, `--outline`, `--soft`
 - **States/hooks** (0): _none_
 - **Tokens read** (17): `--juno-border-width-1`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-size-11`, `--juno-font-tracking-caps`, `--juno-font-tracking-normal`, `--juno-font-weight-bold`, `--juno-font-weight-semibold`, `--juno-muted`, `--juno-radius-2`, `--juno-radius-3`, `--juno-role`, `--juno-s0`, `--juno-space-10`, `--juno-space-2`, `--juno-space-4`
-- **Local custom properties** (0): _none_
+- **Local custom properties** (2): `--juno-cell-max`, `--juno-table-fill`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **n/a** — no BEM parts
@@ -318,7 +342,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (5): `--collapsible`, `--fixed`, `--float`, `--icon`, `--pill`
 - **States/hooks** (4): `:hover`, `:focus-visible`, `[aria-current]`, `[data-juno-collapsed]`
 - **Tokens read** (41): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-dock-avail`, `--juno-dock-border-inline`, `--juno-dock-chrome-inline`, `--juno-dock-collapsed-size`, `--juno-dock-edge-gap`, `--juno-dock-edge-offset`, `--juno-dock-fold`, `--juno-dock-fold-scale`, `--juno-dock-fold-shrink`, `--juno-dock-fold-slide`, `--juno-dock-fold-smoothing`, `--juno-dock-fold-split`, `--juno-dock-items`, `--juno-dock-margin-inline`, `--juno-dock-pad-inline`, `--juno-dock-scale`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-tracking-label`, `--juno-font-weight-semibold`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-standard`, `--juno-motion-scale`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`, `--juno-safe-bottom`, `--juno-shadow-2`, `--juno-size-tap-comfortable`, `--juno-space-12`, `--juno-space-2`, `--juno-space-32`, `--juno-space-4`, `--juno-z-raised`
-- **Local custom properties** (19): `--juno-dock-avail`, `--juno-dock-border-inline`, `--juno-dock-chrome-inline`, `--juno-dock-collapsed-size`, `--juno-dock-edge-gap`, `--juno-dock-fit-inline`, `--juno-dock-fold-scale`, `--juno-dock-fold-shrink`, `--juno-dock-fold-slide`, `--juno-dock-fold-smoothing`, `--juno-dock-fold-split`, `--juno-dock-item-inline`, `--juno-dock-items`, `--juno-dock-margin-inline`, `--juno-dock-pad-inline`, `--juno-dock-scale`, `--juno-icon-loader-ring`, `--juno-icon-loader-ring-width`, `--juno-icon-size`
+- **Local custom properties** (23): `--juno-dock-avail`, `--juno-dock-border-inline`, `--juno-dock-chrome-inline`, `--juno-dock-collapsed-size`, `--juno-dock-edge-gap`, `--juno-dock-edge-offset`, `--juno-dock-edge-offset-inline-end`, `--juno-dock-edge-offset-inline-start`, `--juno-dock-fit-inline`, `--juno-dock-fold`, `--juno-dock-fold-scale`, `--juno-dock-fold-shrink`, `--juno-dock-fold-slide`, `--juno-dock-fold-smoothing`, `--juno-dock-fold-split`, `--juno-dock-item-inline`, `--juno-dock-items`, `--juno-dock-margin-inline`, `--juno-dock-pad-inline`, `--juno-dock-scale`, `--juno-icon-loader-ring`, `--juno-icon-loader-ring-width`, `--juno-icon-size`
 - **Responsive mechanism**: viewport media query
 - **Density-aware**: no
 - **Slot order**: **fixed** — flex row of nav items in document order; `__bubble`/`__label` are alternates within one item, not a cross-item sequence
@@ -384,7 +408,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (2): `--lg`, `--sm`
 - **States/hooks** (0): _none_
 - **Tokens read** (17): `--juno-active`, `--juno-border`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-size-11`, `--juno-font-size-13`, `--juno-font-size-20`, `--juno-font-tracking-caps`, `--juno-font-weight-bold`, `--juno-gauge-size`, `--juno-gauge-value`, `--juno-gauge-width`, `--juno-label`, `--juno-motion-duration-base`, `--juno-motion-ease-standard`, `--juno-role`
-- **Local custom properties** (2): `--juno-gauge-size`, `--juno-gauge-width`
+- **Local custom properties** (3): `--juno-gauge-size`, `--juno-gauge-value`, `--juno-gauge-width`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **free** — `__value` is absolutely centered inside the ring; `__label` is typically a separate external sibling with no positional dependency
@@ -395,7 +419,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (0): _none_
 - **States/hooks** (3): `:hover`, `:focus-visible`, `[aria-current]`
 - **Tokens read** (28): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-11`, `--juno-font-tracking-label`, `--juno-font-weight-bold`, `--juno-gizmo-at`, `--juno-gizmo-heading`, `--juno-gizmo-marks`, `--juno-gizmo-pitch`, `--juno-gizmo-pitch-max`, `--juno-gizmo-pitch-min`, `--juno-gizmo-size`, `--juno-label`, `--juno-motion-duration-base`, `--juno-motion-ease-standard`, `--juno-motion-scale`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`, `--juno-size-tap-min`, `--juno-space-2`, `--juno-space-4`, `--juno-space-8`
-- **Local custom properties** (6): `--juno-gizmo-heading`, `--juno-gizmo-marks`, `--juno-gizmo-pitch`, `--juno-gizmo-pitch-max`, `--juno-gizmo-pitch-min`, `--juno-gizmo-size`
+- **Local custom properties** (7): `--juno-gizmo-at`, `--juno-gizmo-heading`, `--juno-gizmo-marks`, `--juno-gizmo-pitch`, `--juno-gizmo-pitch-max`, `--juno-gizmo-pitch-min`, `--juno-gizmo-size`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **ambiguous** — `__readout` is fixed before the dial (normal flow), but `__needle`/`__mark`/`__center`/`__arc-hand` are each absolutely positioned by their own custom-property angle, independent of DOM order
@@ -417,7 +441,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (0): _none_
 - **States/hooks** (0): _none_
 - **Tokens read** (3): `--juno-active`, `--juno-icon-loader-ring`, `--juno-icon-loader-ring-width`
-- **Local custom properties** (2): `--juno-arc-size`, `--juno-arc-width`
+- **Local custom properties** (4): `--juno-arc-size`, `--juno-arc-width`, `--juno-icon-loader-ring`, `--juno-icon-loader-ring-width`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **n/a** — no BEM parts
@@ -461,7 +485,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (3): `--determinate`, `--indeterminate`, `--smooth`
 - **States/hooks** (0): _none_
 - **Tokens read** (17): `--juno-active`, `--juno-arc-size`, `--juno-arc-width`, `--juno-beacon-fill-stop`, `--juno-beacon-size`, `--juno-border`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-size-13`, `--juno-font-weight-bold`, `--juno-motion-duration-quick`, `--juno-progress`, `--juno-radius-3`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`
-- **Local custom properties** (4): `--juno-arc-size`, `--juno-arc-width`, `--juno-beacon-fill-stop`, `--juno-beacon-size`
+- **Local custom properties** (5): `--juno-arc-size`, `--juno-arc-width`, `--juno-beacon-fill-stop`, `--juno-beacon-size`, `--juno-progress`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **ambiguous** — `.juno-arc__label` is normal-flow text but `.juno-beacon`’s core/track/fill/hub are absolutely-stacked layers with no explicit z-index override, so paint order rides on DOM order without being documented as load-bearing
@@ -582,7 +606,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (2): `--in`, `--out`
 - **States/hooks** (2): `:focus-visible`, `[aria-disabled]`
 - **Tokens read** (21): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-control-edge-strong`, `--juno-muted`, `--juno-opacity-disabled`, `--juno-radius-4`, `--juno-role`, `--juno-s0`, `--juno-scrubber-head`, `--juno-scrubber-in`, `--juno-scrubber-loaded`, `--juno-scrubber-mark`, `--juno-scrubber-out`, `--juno-scrubber-played`, `--juno-scrubber-preview-at`, `--juno-scrubber-track`, `--juno-size-tap-min`, `--juno-space-12`, `--juno-space-2`, `--juno-space-4`
-- **Local custom properties** (7): `--juno-scrubber-head`, `--juno-scrubber-in`, `--juno-scrubber-loaded`, `--juno-scrubber-mark`, `--juno-scrubber-out`, `--juno-scrubber-played`, `--juno-scrubber-track`
+- **Local custom properties** (8): `--juno-scrubber-head`, `--juno-scrubber-in`, `--juno-scrubber-loaded`, `--juno-scrubber-mark`, `--juno-scrubber-out`, `--juno-scrubber-played`, `--juno-scrubber-preview-at`, `--juno-scrubber-track`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **fixed** — all parts are absolutely positioned, but no z-index overrides exist — correct layering (loaded under played, marks over track) depends on the documented DOM order to paint correctly
@@ -670,7 +694,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (5): `--button`, `--circle`, `--lg`, `--none`, `--sm`
 - **States/hooks** (3): `:focus-visible`, `[aria-checked]`, `[aria-selected]`
 - **Tokens read** (15): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-muted`, `--juno-palette-columns`, `--juno-radius-3`, `--juno-s1`, `--juno-size-tap-comfortable`, `--juno-size-tap-min`, `--juno-space-16`, `--juno-space-4`, `--juno-space-8`, `--juno-swatch-color`, `--juno-swatch-size`, `--juno-warning`
-- **Local custom properties** (2): `--juno-swatch-color`, `--juno-swatch-size`
+- **Local custom properties** (3): `--juno-palette-columns`, `--juno-swatch-color`, `--juno-swatch-size`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **fixed** — `__check` nests inside each `__option`; simple normal-flow 2-part pattern
@@ -714,7 +738,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (7): `--bottom-end`, `--bottom-start`, `--flush`, `--selected`, `--top-end`, `--top-start`, `--video`
 - **States/hooks** (0): _none_
 - **Tokens read** (15): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-tracking-caps`, `--juno-font-weight-bold`, `--juno-muted`, `--juno-radius-3`, `--juno-s2`, `--juno-space-32`, `--juno-space-4`, `--juno-thumb-glyph`, `--juno-thumb-ratio`
-- **Local custom properties** (1): `--juno-thumb-glyph`
+- **Local custom properties** (2): `--juno-thumb-glyph`, `--juno-thumb-ratio`
 - **Responsive mechanism**: neither
 - **Density-aware**: no
 - **Slot order**: **free** — each `__corner--*` variant self-positions via its own modifier class at explicit `z-index: 1`; `__label` is a separate absolute overlay — no part depends on another’s DOM position
@@ -725,7 +749,7 @@ hard-coded — the guard names the location, the prose names the property.)
 - **Modifiers** (3): `--leaving`, `--start`, `--top`
 - **States/hooks** (1): `:hover`
 - **Tokens read** (22): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-3`, `--juno-data`, `--juno-font-lineHeight-none`, `--juno-font-size-13`, `--juno-font-size-16`, `--juno-motion-duration-quick`, `--juno-motion-ease-decel`, `--juno-muted`, `--juno-radius-5`, `--juno-role`, `--juno-s2`, `--juno-safe-bottom`, `--juno-shadow-2`, `--juno-space-12`, `--juno-space-16`, `--juno-space-24`, `--juno-space-32`, `--juno-toast-edge-offset`, `--juno-z-alert`
-- **Local custom properties** (1): `--juno-toast-edge-offset`
+- **Local custom properties** (4): `--juno-toast-edge-offset`, `--juno-toast-edge-offset-inline-end`, `--juno-toast-edge-offset-inline-start`, `--juno-toast-edge-offset-top`
 - **Responsive mechanism**: viewport media query
 - **Density-aware**: no
 - **Slot order**: **fixed** — flex row, normal flow (icon, text, close), matches usage
