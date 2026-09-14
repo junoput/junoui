@@ -2,15 +2,21 @@
 
 Notches, home indicators, rounded corners. Every inset in junoui reads through
 one seam, and **which arithmetic you use is not a style choice** — there are
-three cases and they give different answers.
+four shapes and they give different answers.
 
-## The three buckets
+## The buckets
 
-| Bucket              | Rule                                                             | Because                                                                                                                                                                                                    |
-| ------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **edge padding**    | `max(base, inset)`                                               | The content is already inside the box. The inset _replaces_ the gap you wanted; adding them double-pads.                                                                                                   |
-| **clearance**       | `base + inset`                                                   | Room reserved so content can scroll clear of floating chrome. The chrome's own offset already contains the inset, so the reservation must contain it too or it lands short by exactly the inset.           |
-| **floating chrome** | `base + inset` _or_ `max(base, inset)` — **the consumer's call** | A floating element sits _off_ the edge, so its gap and the inset stack. But a design that wants the bar flush above the home indicator wants `max()`. junoui defaults to additive and lets you restate it. |
+The first three all answer "how far from the edge should this sit". The
+fourth answers a different question — "how much room is there between the two
+housings" — and belongs here for the same reason: get the arithmetic wrong and
+it is invisible at inset 0, which is where it ships.
+
+| Bucket                  | Rule                                                             | Because                                                                                                                                                                                                                                                     |
+| ----------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **edge padding**        | `max(base, inset)`                                               | The content is already inside the box. The inset _replaces_ the gap you wanted; adding them double-pads.                                                                                                                                                    |
+| **clearance**           | `base + inset`                                                   | Room reserved so content can scroll clear of floating chrome. The chrome's own offset already contains the inset, so the reservation must contain it too or it lands short by exactly the inset.                                                            |
+| **floating chrome**     | `base + inset` _or_ `max(base, inset)` — **the consumer's call** | A floating element sits _off_ the edge, so its gap and the inset stack. But a design that wants the bar flush above the home indicator wants `max()`. junoui defaults to additive and lets you restate it.                                                  |
+| **available-space cap** | `100% - 2 * edge - inset-start - inset-end`                      | Not a distance from an edge at all — a term _subtracted_ from how much room exists, so a width cap does not run its content under the housing on either side. Restating a component's edge-offset token does nothing to this; it is a separate declaration. |
 
 Getting this wrong is not subtle at the extremes and is invisible at inset 0,
 which is where it gets shipped. A consumer that took the additive form for a
@@ -90,3 +96,70 @@ Before these tokens the form was written separately at each site, so a consumer
 that changed one silently disagreed with the other — measured at 16px of dead
 band at inset 0 and 24px at inset 34, with no value of the bar's height able to
 reconcile them, because one side added the inset and the other took its max.
+
+## Which bucket each component uses
+
+The buckets above are not a taxonomy you apply — every component that
+reads a `--juno-safe-*` token already picked one. This table says which, so a
+consumer overriding a component's offset knows what arithmetic it is
+replacing instead of reverse-engineering it from the CSS. (Filed after a
+consumer took the additive form for `.juno-dock--pill` assuming it was the
+only option, then had to read the source to find `--juno-dock-edge-offset`
+and learn there was a choice at all — 20260909-126.)
+
+| Component                                         | Bucket                    | Where                                                                                                                                                                                                                                                        |
+| ------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.juno-app-shell` (left/right)                    | edge padding              | `layout.css` — shell sits full-bleed; the inset _is_ the gap.                                                                                                                                                                                                |
+| `.juno-app-shell__topbar` (top)                   | edge padding              | `layout.css` — in-flow bar, flush at the top edge.                                                                                                                                                                                                           |
+| `.juno-navbar` (top)                              | edge padding              | `navbar.css` — same shape as the topbar above.                                                                                                                                                                                                               |
+| `.juno-dock` base/`--fixed`/`--icon` (bottom)     | edge padding              | `dock.css` — full-bleed, in-flow, sticky; not floating. See the open question below — this is correct only where its container already absorbed the horizontal inset.                                                                                        |
+| `.juno-dock` (item budget, width)                 | available-space cap       | `dock.css` — `--juno-dock-avail: calc(100vw - var(--juno-safe-left) - var(--juno-safe-right))`, same shape as the pillbar's width cap above.                                                                                                                 |
+| `.juno-dock--pill` / `--float` (bottom + inline)  | floating chrome, additive | `dock.css` / `base.css` — `--juno-dock-edge-offset` (bottom) plus two independent horizontal properties, `--juno-dock-edge-offset-inline-start`/`-inline-end`, because a notch is on the left in one orientation and the right when the device turns around. |
+| `.juno-modal` sheet footer (bottom)               | clearance                 | `modal.css:185` — reserves room so the footer's actions clear the home indicator. Scoped `:not(.juno-drawer)`.                                                                                                                                               |
+| `.juno-modal.juno-drawer--bottom` footer (bottom) | clearance                 | `drawer.css:108` — its own declaration, same bucket and arithmetic as the modal row above. The two agree today with no mechanism keeping them that way — see the note below.                                                                                 |
+| `.juno-toast` (bottom)                            | floating chrome, additive | `toast.css` — via `--juno-toast-edge-offset`.                                                                                                                                                                                                                |
+| `.juno-pillbar` (edge, corners)                   | floating chrome, additive | `pillbar.css` — via `--juno-pillbar-edge-offset`, and the same additive form on each corner variant's block/inline insets.                                                                                                                                   |
+| `.juno-pillbar` (width)                           | available-space cap       | `pillbar.css` — `max-inline-size` sheds both horizontal insets separately from the offset above. Restating `--juno-pillbar-edge-offset` changes where the pill sits, not how wide it is allowed to get.                                                      |
+
+**The dock is the one component that uses both buckets, on purpose, for
+different variants.** The base bar is in-flow and full-bleed — the inset
+_replaces_ the design gap, so it's edge padding, same as the app shell. The
+`--pill`/`--float` variants float off the edge — their own margin and the
+inset are two separate distances that both have to be accounted for, so
+they're additive floating chrome. Restating `--juno-dock-edge-offset` (as
+shown above) only changes the floating variants; the base bar has no
+equivalent token to restate because `max()` was never a live choice for it —
+there's no design gap for the inset to replace, `padding-block-end` already
+_is_ the inset.
+
+**The modal and drawer rows compute the same thing from two separate
+declarations, not one shared rule.** `modal.css`'s clearance is scoped
+`:not(.juno-drawer)`; `drawer.css` carries its own `.juno-modal.juno-drawer--bottom`
+rule with the identical arithmetic. They agree today because someone kept them
+in sync by hand, not because one reads from the other — a consumer changing
+the modal site on the strength of this table would see no effect in a bottom
+drawer, and nothing would say why. If you're touching either, check both.
+
+**The pillbar's two rows are not optional to read together.** Its edge-offset
+(floating chrome, additive) says how far the pill sits from the corner; its
+width cap (available-space, subtractive) says how wide it's allowed to get
+before it runs under the sensor housing. A consumer who restates only the
+offset — the documented way to take the `max()` form — gets a repositioned
+pill that can still overflow, because the cap is a separate declaration this
+table's earlier "restate one token" advice does not reach.
+
+**What is genuinely still open is not the dock's budget or its floating
+variants — both now shed the horizontal insets, same as the pillbar.** It is
+the in-flow **base** bar's own padding, held on the operator as
+`20260914-068`. Measured at 844×390 with 59px insets: the base bar renders
+correctly (75..769) inside `.juno-app-shell`, because the shell already pads
+for the inset — and wrong (0..844, under both housings) at the viewport root,
+where nothing has. Edge padding is the right bucket either way; what's
+undecided is how an in-flow component learns whether its container already
+paid the inset, so it doesn't pay it twice. The two candidates are a
+descendant selector (`.juno-app-shell .juno-dock { padding-inline: 0 }`) or a
+second safe-area variable pair distinguishing in-flow from viewport-fixed —
+both work, and the ticket's own hold note says the second is more expensive
+to reverse. This table's dock rows describe the bar as it behaves today,
+unchanged since before this fix — not a promise about which way `20260914-068`
+resolves.
