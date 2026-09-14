@@ -22,13 +22,14 @@
      not the reverse; declaring it on the child left it undefined here, so
      `inset-block-end` fell back to `auto` (the static position — the TOP of the
      page) on every phone-width viewport. See docs/safe-area.md, 20260914-071.
-     Restate it to sit flush above the home indicator. */
+     Restate either to sit flush above the home indicator / sensor housing. */
   --juno-toast-edge-offset: calc(var(--juno-space-24) + var(--juno-safe-bottom));
+  --juno-toast-edge-offset-inline-end: calc(var(--juno-space-24) + var(--juno-safe-right));
 
   position: fixed;
   z-index: var(--juno-z-alert);
   inset-block-end: var(--juno-toast-edge-offset);
-  inset-inline-end: var(--juno-space-24);
+  inset-inline-end: var(--juno-toast-edge-offset-inline-end);
   display: flex;
   flex-direction: column;
   gap: var(--juno-space-12);
