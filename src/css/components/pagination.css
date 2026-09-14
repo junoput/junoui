@@ -24,7 +24,24 @@
 .juno-pagination__item {
   display: inline-grid;
   place-content: center;
-  min-inline-size: var(--juno-size-tap-min, var(--juno-space-32));
+
+  /* A BARE READ, AND THE FALLBACK IT REPLACES WAS UNREACHABLE (20260914-139).
+     This was `var(--juno-size-tap-min, var(--juno-space-32))`, which reads as a
+     floor of 32 and is not one: a var() fallback fires only when the property is
+     UNDEFINED, never when its value is merely smaller. --juno-size-tap-min is
+     declared at :root in every build, so the 32 could never be reached and the
+     inline axis has always floored at 24px on a fine pointer — the exact thing
+     the comment below warns against, three lines under the line doing it.
+     Measured both ways: the fallback form and this one render identically
+     (fine 26x32 for `1`, 24x32 for a chevron; coarse 44x44), because the
+     fallback was dead either way. Whether the floor SHOULD be 32 here is an
+     appearance decision and is still open on 20260914-139 — it is not settled
+     by deleting dead code, and the two must not be confused.
+     `declared-token-fallback.test.mjs` pins why this line was the odd one out:
+     of 36 distinct names junoui reads with a fallback, 35 are consumer knobs
+     that are genuinely undefined by default and this was the only declared
+     token wearing the knob idiom. */
+  min-inline-size: var(--juno-size-tap-min);
 
   /* A FLOOR on both axes, not a fixed height. `block-size: var(--juno-space-32)`
      was a hard 32px, so the coarse-pointer promotion in base.css — which raises
