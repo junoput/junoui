@@ -196,7 +196,18 @@ test('the other juno namespaces are shipped too', () => {
   // 24 reports were of this kind.
   assert.ok(manifest.keyframes.includes('juno-blink'));
   assert.ok(manifest.icons.includes('juno-i'), 'the `#juno-i-${name}` template artifact');
-  assert.ok(manifest.icons.some((i) => i.startsWith('juno-i-')));
+  // `.some()` was satisfied by ONE real icon id surviving — it could not see
+  // whether the other 79 (of 80, per dist/icons/juno-icons.svg) did too.
+  // Independently re-derived from the SVG itself, the same way
+  // build-classes.mjs's own iconIds() would read it, and compared as a set.
+  const svg = readFileSync('dist/icons/juno-icons.svg', 'utf8');
+  const realIds = [...iconIds(svg)].filter((i) => i !== 'juno-i').sort();
+  assert.ok(realIds.length > 0, 'dist/icons/juno-icons.svg has no <symbol> ids to compare against');
+  assert.deepEqual(
+    manifest.icons.filter((i) => i.startsWith('juno-i-')).sort(),
+    realIds,
+    'manifest.icons does not carry every real icon id in the SVG',
+  );
   // a COMPONENT-LOCAL custom property, not just the global scale: reading only
   // juno-tokens.css missed these and reported three of them
   assert.ok(manifest.tokens.includes('juno-pillbar-gap'));
