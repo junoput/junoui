@@ -114,9 +114,16 @@
      (20260909-126 override C, 20260914-059). It takes a notched device held
      sideways to see, which is why a consumer found it and we did not.
 
-     safe-area.md bucket: MINIMUM-style on neither axis — this is the third
-     bucket, a term SUBTRACTED from available space rather than added to a
-     gap. */
+     BUCKET: none of the three in docs/safe-area.md, and the first draft of
+     this comment said "the third bucket", which is wrong — the third bucket
+     there is FLOATING CHROME. All three buckets answer "how far from the edge
+     should this sit"; a cap answers "how much room is there BETWEEN the two
+     housings", which is a different question and has a different arithmetic
+     (a term subtracted from available space, not added to or maxed with a
+     gap). The pillbar uses two shapes at once: floating-chrome additive for
+     its offsets, and this subtractive one for its width. Raised on
+     20260914-060 so the doc's table can say so; the dock's `--juno-dock-avail`
+     is the other instance (20260914-066). */
   max-inline-size: calc(
     100% - 2 * var(--juno-pillbar-edge) - var(--juno-safe-left) - var(--juno-safe-right)
   );
