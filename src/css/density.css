@@ -7,8 +7,19 @@
  *      <body data-juno-density="compact">   →  dense, data-heavy layout
  *      <body>                               →  comfortable (default)
  *
- *  Density is intentionally NON-linear: compact removes more block
- *  (vertical) padding than inline, so text never crowds its edges.
+ *  Density is intentionally NON-linear: compact removes PROPORTIONALLY more
+ *  block (vertical) padding than inline, so text never crowds its edges.
+ *
+ *      surface   block 16 -> 10  (-37.5%)   inline 16 -> 12  (-25%)
+ *      control   block 10 ->  4  (-60%)     inline 20 -> 12  (-40%)
+ *
+ *  PROPORTIONALLY is load-bearing and was missing until 20260914-143. Read
+ *  as absolute pixels the sentence is FALSE for the control archetype, which
+ *  sheds 8px of inline against 6px of block — the reverse of what it says,
+ *  in the same file that says it. Both archetypes satisfy the ratio form,
+ *  neither is being changed, and `density-contract.test.mjs` pins the
+ *  relationship rather than the numbers so a future value cannot quietly
+ *  invert it again.
  *  Interactive controls keep their min-height (WCAG tap target) — only
  *  padding shrinks. Add a new archetype only when a component needs one.
  * ════════════════════════════════════════════════════════════════════ */
