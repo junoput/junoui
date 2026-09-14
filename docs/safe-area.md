@@ -155,6 +155,49 @@ offset — the documented way to take the `max()` form — gets a repositioned
 pill that can still overflow, because the cap is a separate declaration this
 table's earlier "restate one token" advice does not reach.
 
+**THE ANCHORED SURFACES ARE ABSENT FROM THIS TABLE ON PURPOSE, AND THAT IS NOT
+THE SAME AS BEING SAFE.** `.juno-popover`, `.juno-menu` and
+`.juno-tooltip__bubble` read no `--juno-safe-*` token, so they fall outside the
+sentence this table opens with — and a reader asking "does junoui keep overlays
+out of the housing?" would take their absence for a yes. It is not.
+
+Measured at 844×390 with 59px insets, trigger 4px from the right edge, opened
+through its `popovertarget` (which is the panel's implicit anchor — that is why
+neither stylesheet declares an `anchor-name`):
+
+|                 | panel's right edge |
+| --------------- | ------------------ |
+| `.juno-popover` | **840**            |
+| `.juno-menu`    | **840**            |
+
+The right housing spans 785..844, so 55px of each panel — a fifth of a popover —
+is physically unreadable. `.juno-tooltip__bubble` shares the construction and has
+**not** been measured in its anchored mode; unmeasured, not fine.
+
+**Nothing in the component can fix it, and that is the point of recording it
+here.** Both panels declare `position-try-fallbacks`, which is exactly the right
+tool for _this would overflow, put it somewhere else_ — and it worked: 840 is
+inside the viewport's 844. **CSS anchor positioning resolves overflow against the
+viewport, and the viewport spans under the housing.** There is no `env()` term in
+that computation and no way to introduce one. Two candidate fixes were built and
+both failed, each in a way worth knowing before trying it again:
+
+- an inline `margin` equal to the insets **does** pull an overflowing panel into
+  the safe area — and moves every non-overflowing panel by the same 59px, because
+  it is an ordinary margin. Measured: a centred popover goes 211..491 → 152..432
+  with nothing overflowing.
+- a custom `@position-try` block as a last resort is **never reached**. The chain
+  advances only on viewport overflow, `flip-inline` already produced a
+  viewport-fitting placement, and the search stops there. Confirmed reachable in
+  principle by a control — as the sole fallback against a genuinely overflowing
+  default it fires exactly as written — so this is a real null and not an
+  unsupported feature.
+
+Tracked as `20260914-072`, deliberately with no recommendation. Until it has one,
+an overlay anchored near a screen edge on a notched device is a known gap, and a
+consumer who needs one there should position it themselves rather than assume
+this table covers it.
+
 **What is genuinely still open is not the dock's budget or its floating
 variants — both now shed the horizontal insets, same as the pillbar.** It is
 the in-flow **base** bar's own padding, held on the operator as
