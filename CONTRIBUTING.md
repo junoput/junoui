@@ -59,13 +59,26 @@ operator decision tracked on that ticket.
 
 ## Project layout
 
+**`*` marks what the npm tarball publishes.** `package.json`'s `files` is the
+authority; this column is a reminder, not a second copy of it.
+
 ```
-tokens/        DTCG source of truth (color + core). Edit values HERE.
-src/css/       authored CSS (base, utilities, layout, components/*)
-scripts/       build helpers (style dictionary config is in repo root)
-dist/          generated — never edit, never commit (gitignored)
-docs/          guides + generated tokens-reference.md
-showcase/      demo (repo-only, not published)
+  tokens/        DTCG source of truth (color + core). Edit values HERE.
+* src/css/       authored CSS (base, utilities, layout, components/*)
+* src/icons/     icon sprite sources (built into dist/icons/juno-icons.svg)
+* src/fonts/     the four self-hosted B612 woff2 faces + LICENSE
+* tools/         the optional stateless enhancers, and rules.mjs — a real
+                 JavaScript surface with its own exports entries. Anything here
+                 may only import from tools/ or dist/, because scripts/ does
+                 NOT ship and a re-export across that line throws for every
+                 consumer while resolving fine in this repo.
+  scripts/       build helpers, NOT published (style dictionary config is in
+                 the repo root)
+  test/          node:test suite — no dependencies, run with `npm test`
+* dist/          generated — never edit, never commit (gitignored in the repo,
+                 published in the tarball)
+* docs/          guides + generated tokens-reference.md
+  showcase/      demo (repo-only, not published)
 ```
 
 ## Adding or changing a token
