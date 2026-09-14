@@ -31,6 +31,21 @@ export default defineConfig({
   // (`gh workflow run visual-baselines.yml`) and commit the artifact. See
   // 20260803-001. To iterate locally, record a throwaway local baseline set
   // first and diff against THAT; the committed ones are CI's.
+  //
+  // THE `-darwin` HALF OF THAT SENTENCE IS A TRAP: there is no runner for it.
+  // `-linux` is authoritative because a pinned CI job keeps recording it; the
+  // committed `-darwin` files have no such job and nothing has touched them
+  // since 2026-07-13 (841045c) — verified against `git log`, not copied from
+  // a ticket. Every snapshot added after that date (overlays, coarse-pointer
+  // variants, section-level shots) has no `-darwin` file AT ALL, not merely a
+  // stale one — `npm run test:visual` on a real Mac fails the whole suite,
+  // most of it for reasons that have nothing to do with your change. This is
+  // NOT a maintained surface today; whether it should become one is an open
+  // decision (20260909-038), not a fact this config can assert. Full state —
+  // exact counts, which snapshots are missing outright, what running
+  // `test:visual:update` locally on darwin would and would not fix — is in
+  // CONTRIBUTING.md's Visual regression section; read that before trusting a
+  // green OR a red `-darwin` result.
   snapshotPathTemplate: '{testDir}/__screenshots__/{arg}-{platform}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
