@@ -1,5 +1,5 @@
 ---
-'junoui': patch
+'@junoput01/junoui': patch
 ---
 
 `density.css`'s header claimed that compact "removes more block (vertical) padding than

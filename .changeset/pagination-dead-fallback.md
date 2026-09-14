@@ -1,5 +1,5 @@
 ---
-'junoui': patch
+'@junoput01/junoui': patch
 ---
 
 `.juno-pagination__item` read its inline tap floor as
