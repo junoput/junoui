@@ -122,6 +122,38 @@
   color: var(--juno-label);
 }
 
+/* ── UNKNOWN — the answer is not determined yet, NOT terminal ────────────
+   `.juno-empty` means the load RESOLVED and there is nothing: terminal, and
+   nothing changes without new input from the user. This is the other half,
+   and consumers need both — geovista's words from its survey reply
+   (20260909-129): "nothing-found and nothing-looked are different
+   sentences." Its elevation row renders two badges for exactly this, because
+   collapsing them "would put a layer with a third of its ground missing
+   under the same badge as a layer nobody has finished checking".
+
+   THE GENERAL FORM, which is why this is junoui's and not one consumer's: a
+   component reporting on ITSELF needs the eight states we document; a
+   component reporting on a MEASUREMENT must distinguish "the measurement ran
+   and found nothing" from "the measurement has not run". Any dashboard, any
+   filtered table, any panel over a scan.
+
+   They differ in what the user should DO, which is the test that separates a
+   state from a synonym: empty is terminal, unknown resolves later on its own.
+
+   NOT A COLOUR DISTINCTION. docs/accessibility.md's own rule is to pair
+   colour with a non-colour signal, so the difference is carried by the icon's
+   BORDER STYLE — solid for a settled answer, dashed for one not yet settled,
+   the same idiom skeleton uses for a placeholder — plus the consumer's own
+   icon and text. Same anatomy, same neutral colour, deliberately: this is not
+   a worse empty, it is a different question.
+
+   Named `--unknown` rather than `--indeterminate` because loader already uses
+   that word for IN PROGRESS, and reusing it for NOT STARTED would collide on
+   the one axis that matters. */
+.juno-empty--unknown .juno-empty__icon {
+  border-style: dashed;
+}
+
 .juno-empty__icon {
   display: flex;
   align-items: center;
