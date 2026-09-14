@@ -109,9 +109,56 @@ test('every excluded component states why, from a fixed, spelled-out vocabulary'
     'combinator-disagrees',
     'data-driven-parts',
   ]);
+  // `detail.length > 0` confirmed a string was there, not that it said
+  // anything true — 23 of 26 components had no assertion on CONTENT, and
+  // `detail: "."` would have satisfied all of them (20260914-096). Below,
+  // each reason's detail is checked against what the generator actually
+  // produces for that category, not merely that something was written.
+  const ZERO_PARTS_DETAIL = 'no `.juno-<x>__<part>` class declared anywhere in the file';
   for (const [name, e] of Object.entries(contract.excluded)) {
     assert.ok(known.has(e.reason), `${name} excluded for an unrecognised reason: ${e.reason}`);
     assert.ok(e.detail && e.detail.length > 0, `${name} excluded with no detail`);
+
+    if (e.reason === 'zero-parts') {
+      // Fixed boilerplate, identical for every zero-parts component — pin it
+      // exactly rather than merely requiring non-empty text.
+      assert.equal(
+        e.detail,
+        ZERO_PARTS_DETAIL,
+        `${name}'s zero-parts detail is not the generator's own sentence`,
+      );
+    } else if (e.reason === 'reorder-mechanism') {
+      // Names the component's OWN part class, not a generic sentence that
+      // would read the same for any component.
+      assert.ok(
+        e.detail.includes(`.juno-${name}__`),
+        `${name}'s reorder-mechanism detail does not name ${name}'s own part — may be a stub or another component's text`,
+      );
+    } else if (e.reason === 'multi-namespace') {
+      // Structural: a count and a parenthesised, comma-separated prefix
+      // list — not just words that happen to include "prefixes".
+      assert.match(
+        e.detail,
+        /file declares parts under \d+ independent component prefixes \([\w, -]+\)/,
+        `${name}'s multi-namespace detail is not the generator's own structured sentence`,
+      );
+    } else if (e.reason === 'no-usage-example') {
+      assert.match(e.detail, /Usage/, `${name}'s no-usage-example detail does not mention Usage`);
+    } else if (e.reason === 'data-driven-parts') {
+      assert.match(
+        e.detail,
+        /data[- ]defined/,
+        `${name}'s data-driven-parts detail does not say what makes the parts data-driven`,
+      );
+    } else if (e.reason === 'combinator-disagrees' || e.reason === 'usage-incomplete') {
+      // Neither reason has an instance today, so there is nothing to pin a
+      // content check against yet — flagged rather than silently falling
+      // through, so the first component to use either reason forces this
+      // test to grow a real check instead of inheriting `length > 0`.
+      assert.fail(
+        `${name} is excluded for "${e.reason}", which has no content check here yet — add one rather than leaving it on the length>0 floor`,
+      );
+    }
   }
 });
 

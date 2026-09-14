@@ -175,11 +175,47 @@ test('the Rust half is verifiable, and the limit is stated where it is read', ()
 
 test('the Rust rules carry the token values from the token target', () => {
   // Not restated: a token change reaches this file through the same build.
-  for (const name of ['SIZE_TAP_MIN', 'SIZE_TAP_COMFORTABLE', 'INK_CANVAS_HALO_WIDTH']) {
+  //
+  // Bound BY NAME, not by presence. `rs.includes(v)` — the value string
+  // appears somewhere in juno_rules.rs — cannot see WHICH identifier a
+  // literal belongs to: swap SIZE_TAP_MIN and SIZE_TAP_COMFORTABLE's values
+  // in juno_tokens.rs and both `.includes()` checks stay green while every
+  // Rust consumer gets a 44px minimum where it asked for the comfortable
+  // target, and vice versa (20260914-096).
+  const tokenValue = (name) => {
     const v = new RegExp(`pub const ${name}: f32 = ([0-9.]+);`).exec(tokens)?.[1];
     assert.ok(v, `juno_tokens.rs no longer defines ${name}`);
-    assert.ok(rs.includes(v), `juno_rules.rs does not carry ${name}'s value (${v})`);
-  }
+    return v;
+  };
+
+  // INK_CANVAS_HALO_WIDTH is emitted as a same-named `pub const` — bind to it
+  // directly rather than to the whole file's text.
+  const haloName = 'INK_CANVAS_HALO_WIDTH';
+  const haloInRules = new RegExp(`pub const ${haloName}: f32 = ([0-9.]+);`).exec(rs)?.[1];
+  assert.ok(haloInRules, `juno_rules.rs no longer defines ${haloName} by name`);
+  assert.equal(haloInRules, tokenValue(haloName), `${haloName} drifted between the two targets`);
+
+  // SIZE_TAP_MIN / SIZE_TAP_COMFORTABLE are not named consts in juno_rules.rs
+  // — build-rules.mjs inlines them as the two branches of tap_min(coarse).
+  // Bind to those branches BY POSITION (coarse -> comfortable, else -> min),
+  // the same pairing build-rules.mjs's template emits, rather than asking
+  // whether either value merely occurs somewhere in the file.
+  const tapMin =
+    /pub fn tap_min\(coarse: bool\) -> f32 \{\s*if coarse \{\s*([0-9.]+)\s*\} else \{\s*([0-9.]+)\s*\}/.exec(
+      rs,
+    );
+  assert.ok(tapMin, 'juno_rules.rs no longer defines tap_min in the expected if/else shape');
+  const [, comfortableInRules, minInRules] = tapMin;
+  assert.equal(
+    comfortableInRules,
+    tokenValue('SIZE_TAP_COMFORTABLE'),
+    'tap_min(true) does not carry SIZE_TAP_COMFORTABLE — it may be cross-wired with SIZE_TAP_MIN',
+  );
+  assert.equal(
+    minInRules,
+    tokenValue('SIZE_TAP_MIN'),
+    'tap_min(false) does not carry SIZE_TAP_MIN — it may be cross-wired with SIZE_TAP_COMFORTABLE',
+  );
 });
 
 test('the two bounds agree across the CSS condition and the Rust', () => {
