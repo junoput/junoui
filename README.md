@@ -98,15 +98,21 @@ feature newer than the floor.
 
 ## Repository
 
+**`*` marks what the npm package publishes.** `package.json`'s `files` is the
+authority; this column is a reminder, not a second copy of it.
+
 ```
-tokens/        DTCG token source — the single source of truth
-src/css/       authored CSS layer (base, utilities, components)
-src/icons/     vendored SVG icon sources (Phosphor bold, MIT) → sprite
-dist/          built outputs (generated; gitignored)
-docs/          guides + generated token reference
-showcase/      interactive demo (repo-only — not in the npm package)
-scripts/       build helpers (css bundle, doc gen, color conversion)
-design/        original Claude Design canvas source (reference)
+  tokens/        DTCG token source — the single source of truth
+* src/css/       authored CSS layer (base, utilities, components)
+* src/icons/     vendored SVG icon sources (Phosphor bold, MIT) → sprite
+* src/fonts/     self-hosted B612 woff2 faces — opt in with `junoui/fonts.css`
+* tools/         optional stateless enhancers, each with its own exports entry
+* dist/          built outputs (generated; gitignored in the repo, published)
+* docs/          guides + generated token reference
+  test/          node:test suite — no dependencies
+  scripts/       build helpers (css bundle, doc gen, color conversion)
+  showcase/      interactive demo (repo-only — not in the npm package)
+  design/        original Claude Design canvas source (reference)
 ```
 
 ## Develop
