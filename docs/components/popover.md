@@ -33,6 +33,20 @@ and ESC are all the platform's job — **zero JS**.
   on-screen via `position-try-fallbacks`.
 - Enter: rise + fade, `motion.duration.quick` / `ease.decel`, animated open↔closed with
   `@starting-style` + `transition-behavior: allow-discrete`.
+- **Following the flip needs script; junoui ships the CSS, not an enhancer.**
+  `getComputedStyle(panel).positionArea` reflects the RESOLVED area after a fallback
+  fires, so a consumer that wants to flip an arrow to match can read it — same shape as
+  the [tooltip](./tooltip.md)'s top-layer mode. Don't match against a literal string:
+  read it once when the panel opens uncrowded and again in the case you care about, and
+  compare against THAT reading rather than a hardcoded value — Chromium serializes the
+  authored logical `block-end span-inline-start` back as the physical `end span-end` /
+  `end span-start`, not as the logical spelling you wrote, and that serialization is
+  one engine's choice, not part of the spec's contract. Three limits: the resolved
+  value names the area, not _which_ fallback produced it, so two different crowding
+  conditions can read back identically; there is no CSS selector for it at all — this
+  is JS-only; and it was only measured in Chromium — Safari and Firefox may serialize
+  differently, or not support `position-area`/`position-try-fallbacks` at all, so treat
+  the property's availability and spelling as something to feature-detect, not assume.
 
 ## Usage
 
