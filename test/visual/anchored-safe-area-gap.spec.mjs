@@ -27,6 +27,7 @@ const CSS = readFileSync(join(ROOT, 'dist/css/juno.css'), 'utf8');
 const DOC = readFileSync(join(ROOT, 'docs/safe-area.md'), 'utf8');
 
 const VW = 844;
+const VH = 390;
 const INSET = 59;
 
 const page = (panel) => `<meta name="viewport" content="width=device-width,initial-scale=1">
@@ -69,6 +70,131 @@ for (const [selector, markup] of Object.entries(PANELS)) {
     ).toBeGreaterThan(VW - INSET);
   });
 }
+
+/**
+ * The tooltip needs its own fixture, and two details in it are load-bearing.
+ *
+ * 1. The anchor-positioning rules apply ONLY to `.juno-tooltip__bubble[popover]`
+ *    — the top-layer mode. A tooltip has no `popovertarget` invoker, so nothing
+ *    supplies an implicit anchor and `position-anchor` must be set the way
+ *    `showcase/app.js`'s `initTooltips()` does. A fixture without that measures
+ *    the wrapper-relative CSS-only mode and returns plausible numbers rather
+ *    than an error — which happened once, and the numbers were nearly filed.
+ * 2. `page.setContent()` does NOT navigate. It replaces the document in place
+ *    and the browser's top-layer stack survives, so a second fixture's popover
+ *    can silently fail to open. Hence the `about:blank` between them.
+ *
+ * Both are asserted rather than assumed, below.
+ */
+const TIP_CASES = [
+  { mod: 'juno-tooltip__bubble--right', at: 'right', label: '--right' },
+  { mod: 'juno-tooltip__bubble--left', at: 'left', label: '--left' },
+  { mod: '', at: 'top', label: 'default (block-start)' },
+  { mod: 'juno-tooltip__bubble--bottom', at: 'bottom', label: '--bottom' },
+];
+
+/** Trigger placed near the edge the bubble opens TOWARD.
+ *
+ *  Measuring `--bottom` against a trigger near the TOP reads "under the housing"
+ *  whatever the placement's own arithmetic does, because the trigger itself is
+ *  already inside the unsafe band — a fixture that tests the wrong thing and
+ *  reports a pass. Sizes are explicit pixels: this box has no fonts, and a
+ *  font-dependent trigger rect corrupts the anchor geometry itself. */
+const TIP_POS = {
+  right: 'inset-inline-end:4px;inset-block-start:160px',
+  left: 'inset-inline-start:4px;inset-block-start:160px',
+  top: `inset-inline-start:400px;inset-block-start:${INSET + 4}px`,
+  bottom: `inset-inline-start:400px;inset-block-end:${INSET + 4}px`,
+  // the control's trigger: nowhere near any edge
+  centre: 'inset-inline-start:400px;inset-block-start:180px',
+};
+
+const tipPage = (
+  mod,
+  at,
+  safe,
+) => `<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>${CSS}</style>
+<style>:root{--juno-safe-left:${safe}px;--juno-safe-right:${safe}px;--juno-safe-top:${safe}px;--juno-safe-bottom:${safe}px;}
+  #t{inline-size:60px;block-size:24px;}
+  #b{inline-size:140px;block-size:28px;}</style>
+<span class="juno-tooltip" style="position:absolute;${TIP_POS[at]}">
+  <button tabindex="0" id="t"></button>
+  <span class="juno-tooltip__bubble ${mod}" id="b" role="tooltip"></span>
+</span>`;
+
+/** Open the bubble the way the documented enhancer does, and PROVE it opened. */
+async function openTip(pw) {
+  const ok = await pw.evaluate(() => {
+    const trigger = document.getElementById('t');
+    const bubble = document.getElementById('b');
+    trigger.style.anchorName = '--juno-tip-probe';
+    bubble.style.positionAnchor = '--juno-tip-probe';
+    bubble.popover = 'hint';
+    bubble.showPopover();
+    return {
+      open: bubble.matches(':popover-open'),
+      anchor: getComputedStyle(bubble).positionAnchor.trim(),
+    };
+  });
+  // The apparatus check. Without it a closed bubble reports a zero box, and a
+  // zero box satisfies every "does not cross the housing" assertion below.
+  expect(ok.open, 'the bubble never entered the top layer — this measured the CSS-only mode').toBe(
+    true,
+  );
+  expect(ok.anchor, 'position-anchor did not resolve — the bubble is not anchored').toBe(
+    '--juno-tip-probe',
+  );
+}
+
+for (const { mod, at, label } of TIP_CASES) {
+  test(`.juno-tooltip__bubble ${label} still crosses into the housing`, async ({ page: pw }) => {
+    await pw.setViewportSize({ width: VW, height: VH });
+    await pw.goto('about:blank'); // setContent does not reset the top-layer stack
+    await pw.setContent(tipPage(mod, at, INSET));
+    await openTip(pw);
+    const b = await pw.evaluate(() => {
+      const r = document.getElementById('b').getBoundingClientRect();
+      return {
+        l: Math.round(r.left),
+        r: Math.round(r.right),
+        t: Math.round(r.top),
+        btm: Math.round(r.bottom),
+      };
+    });
+
+    const crosses = b.l < INSET || b.r > VW - INSET || b.t < INSET || b.btm > VH - INSET;
+    expect(
+      crosses,
+      `.juno-tooltip__bubble ${label} no longer crosses into the safe area ` +
+        `(${JSON.stringify(b)}). GOOD NEWS and a RED TEST — see the header.`,
+    ).toBe(true);
+  });
+}
+
+test('a centred trigger reads clean — the fixture is not reporting the housing for everything', async ({
+  page: pw,
+}) => {
+  // The control. Without it, a harness that returned "crosses the housing" for
+  // any input would satisfy all four cases above and prove nothing.
+  await pw.setViewportSize({ width: VW, height: VH });
+  await pw.goto('about:blank');
+  await pw.setContent(tipPage('', 'centre', INSET));
+  await openTip(pw);
+  const b = await pw.evaluate(() => {
+    const r = document.getElementById('b').getBoundingClientRect();
+    return {
+      l: Math.round(r.left),
+      r: Math.round(r.right),
+      t: Math.round(r.top),
+      btm: Math.round(r.bottom),
+    };
+  });
+  expect(b.l, 'control crossed the left inset').toBeGreaterThanOrEqual(INSET);
+  expect(b.r, 'control crossed the right inset').toBeLessThanOrEqual(VW - INSET);
+  expect(b.t, 'control crossed the top inset').toBeGreaterThanOrEqual(INSET);
+  expect(b.btm, 'control crossed the bottom inset').toBeLessThanOrEqual(VH - INSET);
+});
 
 test('the doc still carries the claim this file pins', async () => {
   // The other direction. If someone rewrites that section without touching the

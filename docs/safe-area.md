@@ -171,8 +171,29 @@ neither stylesheet declares an `anchor-name`):
 | `.juno-menu`    | **840**            |
 
 The right housing spans 785..844, so 55px of each panel — a fifth of a popover —
-is physically unreadable. `.juno-tooltip__bubble` shares the construction and has
-**not** been measured in its anchored mode; unmeasured, not fine.
+is physically unreadable.
+
+`.juno-tooltip__bubble` has now been measured too, in its **top-layer
+(`popover="hint"`) mode** — the only mode the anchor-positioning rules apply to,
+and the one that needs `position-anchor` set by the enhancer, since a tooltip has
+no `popovertarget` invoker to act as an implicit anchor. All four placements, each
+against a trigger near the edge it opens **toward**:
+
+| placement         | lands at        | housing    | under by                    |
+| ----------------- | --------------- | ---------- | --------------------------- |
+| `--right`         | right edge 844  | starts 785 | 25px, full width against it |
+| `--left`          | left edge 0     | ends 59    | 59px                        |
+| default / `--top` | top edge 53     | ends 59    | 6px                         |
+| `--bottom`        | bottom edge 337 | starts 331 | 6px                         |
+
+A centred trigger reads clean on all four, so the fixture is not reporting the
+housing for every input.
+
+**The tooltip is the weakest of the three, and for a reason its numbers do not
+show.** Its base rule declares `position-try-fallbacks: flip-block` only, and no
+placement modifier adds `flip-inline` — so it never _attempts_ a horizontal
+correction at all, where the popover and menu at least try and then stop at the
+viewport boundary.
 
 **Nothing in the component can fix it, and that is the point of recording it
 here.** Both panels declare `position-try-fallbacks`, which is exactly the right
