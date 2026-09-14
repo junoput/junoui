@@ -69,7 +69,7 @@ grows to fit the ring:
   class="juno-icon-loader"
   style="--juno-icon-loader-ring:40px;--juno-icon-loader-ring-width:2px"
 >
-  <button class="juno-btn juno-btn--icon" aria-label="More">&#8943;</button>
+  <button class="juno-btn juno-btn--ghost" aria-label="More">&#8943;</button>
   <span class="juno-arc juno-arc--indeterminate" role="status" aria-label="Loading"></span>
 </span>
 
