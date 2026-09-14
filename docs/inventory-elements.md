@@ -12,6 +12,31 @@ Usage example and the CSS's own selectors prove, never a judgement about an
 absence. The two documents are related, not identical — read that one for
 what a non-browser target can actually consume.
 
+**WHICH COLUMNS ARE ACTUALLY CHECKED, because "measured from the CSS itself" is
+not equally true of all of them.** Three are verified on every CI run against
+`src/css` by `test/census-matches-css.test.mjs`:
+
+| column                  | guarded by                                         |
+| ----------------------- | -------------------------------------------------- |
+| Responsive mechanism    | a CI test reading the stylesheet                   |
+| Density-aware           | a CI test reading the stylesheet                   |
+| States/hooks            | a CI test reading the stylesheet, since 2026-09-14 |
+| Tokens read             | **nothing** — derived once at authoring time       |
+| Local custom properties | **nothing** — derived once at authoring time       |
+
+The last two were produced on 2026-09-06 and no instrument has compared them to
+the CSS since. `test/inventory-elements.test.mjs` and
+`scripts/check-inventory-elements.mjs` sound like they would; both re-parse **this
+document's own rows** and check its prose against that tally, so they verify the
+census against itself. Treat those two columns as a snapshot with a date on it.
+
+`States/hooks` joined the checked set the hard way. Its `checkbox` row read
+`:disabled, :has(), :checked` while `checkbox.css` had styled `:indeterminate`
+since 2026-06-29 — and this census was the **fifth** place that state was
+invisible, after the component doc, the ARIA contract, every showcase page and
+every visual baseline (you cannot write the state in markup, so none could render
+it). Eight rows were wrong; all eight are corrected and the column is now guarded.
+
 **This document makes no judgement.** It does not say whether any component is fit,
 well-designed, or suitable for anything — that is W2b (the geovista gap map), which this
 census exists to be checked against. It does not cover appearance (colour/weight/balance),
@@ -214,7 +239,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (0): _none_
 - **Modifiers** (0): _none_
-- **States/hooks** (3): `:hover`, `:focus-visible`, `[aria-current]`
+- **States/hooks** (4): `:hover`, `:focus-visible`, `[aria-current]`, `[href]`
 - **Tokens read** (13): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-13`, `--juno-font-weight-semibold`, `--juno-label`, `--juno-muted`, `--juno-radius-2`, `--juno-space-2`, `--juno-space-4`, `--juno-space-8`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
@@ -258,7 +283,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (0): _none_
 - **Modifiers** (0): _none_
-- **States/hooks** (3): `:disabled`, `:has()`, `:checked`
+- **States/hooks** (4): `:disabled`, `:has()`, `:checked`, `:indeterminate`
 - **Tokens read** (19): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-3`, `--juno-control-edge-strong`, `--juno-control-surface`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-13`, `--juno-gap-control`, `--juno-motion-duration-quick`, `--juno-motion-ease-spring`, `--juno-motion-ease-standard`, `--juno-muted`, `--juno-opacity-disabled`, `--juno-radius-2`, `--juno-role`, `--juno-s1`, `--juno-space-16`, `--juno-space-8`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
@@ -445,7 +470,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (4): `__icon`, `__item`, `__kbd`, `__sep`
 - **Modifiers** (0): _none_
-- **States/hooks** (4): `:hover`, `:focus-visible`, `:disabled`, `[aria-disabled]`
+- **States/hooks** (5): `:hover`, `:focus-visible`, `:disabled`, `:popover-open`, `[aria-disabled]`
 - **Tokens read** (25): `--juno-border`, `--juno-border-width-1`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-size-11`, `--juno-font-size-13`, `--juno-gap-control`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-decel`, `--juno-muted`, `--juno-opacity-disabled`, `--juno-radius-4`, `--juno-radius-5`, `--juno-role`, `--juno-s2`, `--juno-s3`, `--juno-shadow-2`, `--juno-size-tap-min`, `--juno-space-10`, `--juno-space-16`, `--juno-space-4`, `--juno-space-8`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
@@ -467,7 +492,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (4): `__actions`, `__back`, `__back-label`, `__title`
 - **Modifiers** (0): _none_
-- **States/hooks** (2): `:hover`, `:focus-visible`
+- **States/hooks** (3): `:hover`, `:focus-visible`, `[dir]`
 - **Tokens read** (18): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-data`, `--juno-font-family-sans`, `--juno-font-size-11`, `--juno-font-size-14`, `--juno-font-tracking-label`, `--juno-font-weight-semibold`, `--juno-s1`, `--juno-safe-top`, `--juno-size-tap-comfortable`, `--juno-size-tap-min`, `--juno-space-2`, `--juno-space-4`, `--juno-space-8`, `--juno-z-raised`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
@@ -500,7 +525,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (1): `__arrow`
 - **Modifiers** (0): _none_
-- **States/hooks** (0): _none_
+- **States/hooks** (1): `:popover-open`
 - **Tokens read** (14): `--juno-border`, `--juno-border-width-1`, `--juno-data`, `--juno-motion-duration-quick`, `--juno-motion-ease-decel`, `--juno-pad-surface-block`, `--juno-pad-surface-inline`, `--juno-radius-5`, `--juno-s2`, `--juno-shadow-2`, `--juno-space-12`, `--juno-space-24`, `--juno-space-4`, `--juno-space-8`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
@@ -632,7 +657,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (3): `__label`, `__marker`, `__step`
 - **Modifiers** (1): `--vertical`
-- **States/hooks** (0): _none_
+- **States/hooks** (1): `[data-state]`
 - **Tokens read** (18): `--juno-active`, `--juno-border-width-1`, `--juno-border-width-2`, `--juno-control-edge-strong`, `--juno-control-surface`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-12`, `--juno-font-weight-bold`, `--juno-label`, `--juno-muted`, `--juno-role`, `--juno-space-12`, `--juno-space-16`, `--juno-space-28`, `--juno-space-8`, `--juno-stepper-marker`
 - **Local custom properties** (1): `--juno-stepper-marker`
 - **Responsive mechanism**: neither
@@ -665,7 +690,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (26): `__action`, `__actions`, `__bulk`, `__bulk-count`, `__check`, `__clamp`, `__clamp-text`, `__edit-input`, `__editable`, `__empty`, `__empty-icon`, `__foot`, `__id`, `__mark`, `__meter`, `__meter-fill`, `__meter-track`, `__meter-val`, `__mono`, `__num`, `__skeleton`, `__time`, `__toolbar`, `__trend`, `__truncate`, `__wrap`
 - **Modifiers** (4): `--compact`, `--stack`, `--sticky`, `--zebra`
-- **States/hooks** (6): `:hover`, `:focus`, `[aria-selected]`, `[aria-sort]`, `[data-juno-mode]`, `[hidden]`
+- **States/hooks** (6): `:hover`, `:focus-within`, `[aria-selected]`, `[aria-sort]`, `[data-juno-mode]`, `[hidden]`
 - **Tokens read** (41): `--juno-active`, `--juno-border`, `--juno-border-width-1`, `--juno-border-width-3`, `--juno-cell-max`, `--juno-control-edge`, `--juno-control-surface`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-family-sans`, `--juno-font-size-10`, `--juno-font-size-12`, `--juno-font-size-13`, `--juno-font-size-18`, `--juno-font-tracking-caps`, `--juno-font-weight-bold`, `--juno-font-weight-medium`, `--juno-label`, `--juno-motion-duration-quick`, `--juno-motion-ease-standard`, `--juno-muted`, `--juno-nominal`, `--juno-radius-3`, `--juno-radius-5`, `--juno-radius-8`, `--juno-role`, `--juno-s1`, `--juno-s2`, `--juno-s3`, `--juno-space-10`, `--juno-space-12`, `--juno-space-16`, `--juno-space-2`, `--juno-space-24`, `--juno-space-32`, `--juno-space-4`, `--juno-space-40`, `--juno-space-56`, `--juno-space-8`, `--juno-table-fill`, `--juno-z-raised`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: both
@@ -720,7 +745,7 @@ hard-coded — the guard names the location, the prose names the property.)
 
 - **BEM parts** (2): `__arrow`, `__bubble`
 - **Modifiers** (3): `--bottom`, `--left`, `--right`
-- **States/hooks** (2): `:hover`, `:focus`
+- **States/hooks** (4): `:hover`, `:focus-within`, `:popover-open`, `[popover]`
 - **Tokens read** (14): `--juno-border`, `--juno-border-width-1`, `--juno-data`, `--juno-font-family-mono`, `--juno-font-size-11`, `--juno-motion-duration-quick`, `--juno-motion-ease-decel`, `--juno-radius-4`, `--juno-s3`, `--juno-shadow-2`, `--juno-space-10`, `--juno-space-4`, `--juno-space-8`, `--juno-z-anchored`
 - **Local custom properties** (0): _none_
 - **Responsive mechanism**: neither
