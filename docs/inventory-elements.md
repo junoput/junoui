@@ -422,7 +422,7 @@ hard-coded — the guard names the location, the prose names the property.)
 ### `load-state`
 
 - **BEM parts** (1): `__icon`
-- **Modifiers** (0): _none_
+- **Modifiers** (1): `--unknown`
 - **States/hooks** (2): `[data-juno-state]`, `[data-juno-when]`
 - **Tokens read** (18): `--juno-border-width-1`, `--juno-caution`, `--juno-control-edge`, `--juno-font-family-mono`, `--juno-font-size-18`, `--juno-label`, `--juno-muted`, `--juno-radius-3`, `--juno-radius-8`, `--juno-role`, `--juno-s2`, `--juno-s3`, `--juno-shimmer-dur`, `--juno-space-12`, `--juno-space-24`, `--juno-space-40`, `--juno-space-56`, `--juno-space-8`
 - **Local custom properties** (0): _none_

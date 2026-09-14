@@ -153,11 +153,21 @@
               <p>Nothing here yet.</p>
             </div>
           </div>
+          <div data-juno-when="unknown" style="justify-content:center;">
+            <div class="juno-empty juno-empty--unknown">
+              <span class="juno-empty__icon" aria-hidden="true">?</span>
+              <p>Coverage not checked yet.</p>
+            </div>
+          </div>
         </div>
       </div></div>
       <p class="dh-note"><code class="juno-mono">.juno-fault</code> and <code class="juno-mono">.juno-empty</code>
         are terminal states and must <strong>never</strong> animate — if either shimmers, that is the bug this
-        vocabulary exists to prevent.</p>
+        vocabulary exists to prevent. <code class="juno-mono">.juno-empty--unknown</code> is the one that is
+        <em>not</em> terminal: &ldquo;nobody has looked&rdquo; resolves later on its own, where
+        <code class="juno-mono">.juno-empty</code> means the load resolved and found nothing. The dashed icon
+        border carries that difference without colour &mdash; and the text has to say which it is, because a
+        screen reader cannot see a border.</p>
     </section>
 
     <section class="dh-sec">

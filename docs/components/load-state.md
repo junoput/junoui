@@ -10,18 +10,67 @@ the app's job.
 
 ## The decision table
 
-| State                           | Treatment                 | Why                                                          |
-| ------------------------------- | ------------------------- | ------------------------------------------------------------ |
-| No data yet, about to fetch     | `.juno-beacon`            | "no bytes yet" — a pulse, not a promise of progress.         |
-| Fetching, will resolve          | `.juno-arc` / `.juno-bar` | Real progress or a bounded wait — see [loader](./loader.md). |
-| Layout known, content pending   | `.juno-skeleton`          | Placeholder mirrors the shape of what's coming.              |
-| Server working, **no ETA**      | `.juno-shimmer`           | Motion _without_ a completion promise.                       |
-| Failed — **terminal**           | `.juno-fault`             | Static. A spinner on a 404 spins forever.                    |
-| Legitimately nothing — terminal | `.juno-empty`             | Static. Not a failure — don't tint it like one.              |
+| State                                 | Treatment                 | Why                                                                            |
+| ------------------------------------- | ------------------------- | ------------------------------------------------------------------------------ |
+| No data yet, about to fetch           | `.juno-beacon`            | "no bytes yet" — a pulse, not a promise of progress.                           |
+| Fetching, will resolve                | `.juno-arc` / `.juno-bar` | Real progress or a bounded wait — see [loader](./loader.md).                   |
+| Layout known, content pending         | `.juno-skeleton`          | Placeholder mirrors the shape of what's coming.                                |
+| Server working, **no ETA**            | `.juno-shimmer`           | Motion _without_ a completion promise.                                         |
+| Failed — **terminal**                 | `.juno-fault`             | Static. A spinner on a 404 spins forever.                                      |
+| Legitimately nothing — terminal       | `.juno-empty`             | Static. Not a failure — don't tint it like one.                                |
+| **Not determined yet** — not terminal | `.juno-empty--unknown`    | Static. The measurement has not run, or has not finished covering its subject. |
 
 `.juno-shimmer` and `.juno-fault` are the two treatments this ticket adds; `.juno-empty` is
 the generalized, table-agnostic form of the existing `.juno-table__empty` (same anatomy,
 usable outside a table).
+
+## `empty` and `unknown` are different sentences
+
+`.juno-empty` means the load **resolved** and there is nothing: terminal, and
+nothing changes without new input from the user. `.juno-empty--unknown` means
+the answer is **not determined yet** — it resolves later, on its own.
+
+They differ in what the reader should DO, which is the test that separates a
+state from a synonym. Collapsing them tells someone "there is nothing here"
+when the truth is "nobody has looked".
+
+```html
+<div class="juno-empty">
+  <span class="juno-empty__icon" aria-hidden="true">&#8709;</span>
+  No results for this filter
+</div>
+
+<div class="juno-empty juno-empty--unknown">
+  <span class="juno-empty__icon" aria-hidden="true">?</span>
+  Coverage not checked yet
+</div>
+```
+
+**The distinction is not carried by colour.** Both are neutral, deliberately —
+`unknown` is not a worse `empty`, it is a different question. The visual cue is
+the icon's border: **solid for a settled answer, dashed for one not yet
+settled**, the same idiom `skeleton` uses for a placeholder. Per
+[accessibility.md](../accessibility.md), colour never carries meaning alone, so
+**the text must say which it is** — a screen-reader user cannot see the dashed
+border.
+
+If a measurement is genuinely _running_, that is `.juno-shimmer` with
+`aria-busy` — not this.
+
+### Where it came from
+
+geovista's survey reply (`20260909-129`), from a consumer that cannot use a
+line of this CSS. Its elevation row renders two badges — NOT ALL CHECKED and
+PART MEASURED — because, in its words, _"nothing-found and nothing-looked are
+different sentences"_, and collapsing them _"would put a layer with a third of
+its ground missing under the same badge as a layer nobody has finished
+checking"_.
+
+The general form is theirs and is why this is junoui's rather than one
+consumer's: **a component that reports on itself needs the eight documented
+states; a component that reports on a measurement must distinguish "the
+measurement ran and found nothing" from "the measurement has not run".** Any
+dashboard, any filtered table, any panel over a scan.
 
 ## Web
 
