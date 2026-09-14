@@ -16,6 +16,13 @@ const MUST_SHIP = [
   'dist/ios/JunoTokens.swift',
   'dist/flutter/juno_tokens.dart',
   'dist/icons/juno-icons.svg',
+  // all four faces, by name — `.some()` over a loose glob was satisfied by
+  // any ONE surviving, so a packaging glob that dropped 3 of 4 (breaking
+  // bold and mono for every consumer) still passed (20260914-096).
+  'dist/fonts/b612-400.woff2',
+  'dist/fonts/b612-700.woff2',
+  'dist/fonts/b612-mono-400.woff2',
+  'dist/fonts/b612-mono-700.woff2',
   'src/css/base.css',
   // docs ship so the paths README + the CSS comments point at (e.g.
   // docs/layout.md#app-shell) resolve inside node_modules for consumers.
@@ -42,8 +49,4 @@ test('npm tarball ships the right files', () => {
   }
   const leaked = files.filter((f) => MUST_NOT_SHIP.some((re) => re.test(f)));
   assert.deepEqual(leaked, [], `repo-only files leaked into tarball: ${leaked.join(', ')}`);
-  assert.ok(
-    files.some((f) => /^dist\/fonts\/.+\.woff2$/.test(f)),
-    'tarball missing woff2 fonts',
-  );
 });
