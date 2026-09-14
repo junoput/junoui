@@ -53,15 +53,18 @@ const files = () =>
  * the honest result and hiding it would make the next reader trust the scoping
  * for a reason that is not yet true.
  */
-function declarations(file) {
-  const text = readFileSync(file, 'utf8');
+function parseFrontMatter(text) {
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  assert.ok(m, `${file} has no front matter block`);
+  if (!m) return [];
   return [...m[1].matchAll(/^\s*'([^']+)'\s*:\s*(\S+)\s*$/gm)].map((d) => ({
     pkg: d[1],
     bump: d[2],
-    file,
   }));
+}
+
+/** The same, for one file on disk, tagged with where each declaration came from. */
+function declarations(file) {
+  return parseFrontMatter(readFileSync(file, 'utf8')).map((d) => ({ ...d, file }));
 }
 
 test('the changeset directory was really read, and the predicate discriminates', () => {
@@ -78,6 +81,45 @@ test('the changeset directory was really read, and the predicate discriminates',
   // the docs' prose.
   assert.notEqual(PKG, 'junoui', 'package.json now IS `junoui` — this guard is moot');
   assert.ok(PKG.endsWith('/junoui'), `unexpected package name ${PKG}`);
+});
+
+test('the front-matter parser rejects a wrong name and survives a file with none', () => {
+  // ADOPTED FROM PR #130, which built this guard in parallel with PR #131 and
+  // had the better control. Mine asserted that package.json is not `junoui`;
+  // this asserts the PARSER — that it extracts the wrong name rather than
+  // skipping it, and that a file with no front matter parses to zero lines
+  // instead of throwing. That is the difference between "the predicate would
+  // reject a bad name" and "the predicate SEES a bad name", and only the
+  // second rules out a regex that quietly matches nothing.
+  const wrong = parseFrontMatter("---\n'junoui': patch\n---\n\nbody\n");
+  assert.deepEqual(wrong, [{ pkg: 'junoui', bump: 'patch' }]);
+  assert.notEqual(wrong[0].pkg, PKG, 'the control fixture must name the WRONG package');
+
+  // The other half of #130's control, and I dropped it on the first pass —
+  // caught by mutating `if (!m) return []` to return a fabricated GOOD line,
+  // which survived. Nothing else can see that: every real changeset has front
+  // matter, so a parser inventing a passing declaration for a file without one
+  // is invisible against real data, and only a synthetic input exposes it.
+  assert.deepEqual(
+    parseFrontMatter('no front matter here at all'),
+    [],
+    'a file with no front matter must parse to zero declarations, not throw and ' +
+      'not invent one',
+  );
+});
+
+test('no changeset is left with an unparseable front matter', () => {
+  // Also from PR #130, and a different failure from the empty-body one below:
+  // a changeset whose front matter holds no `'<name>': <bump>` line is SKIPPED
+  // by `changeset version` rather than rejected, so the change it describes
+  // silently never versions anything.
+  const unparseable = files().filter((f) => declarations(f).length === 0);
+  assert.deepEqual(
+    unparseable,
+    [],
+    'a changeset has no parseable package/bump line — changeset version skips ' +
+      'it silently rather than failing',
+  );
 });
 
 test('every changeset names the package exactly as package.json spells it', () => {
