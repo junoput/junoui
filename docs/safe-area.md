@@ -179,21 +179,44 @@ and the one that needs `position-anchor` set by the enhancer, since a tooltip ha
 no `popovertarget` invoker to act as an implicit anchor. All four placements, each
 against a trigger near the edge it opens **toward**:
 
-| placement         | lands at        | housing    | under by                    |
-| ----------------- | --------------- | ---------- | --------------------------- |
-| `--right`         | right edge 844  | starts 785 | 25px, full width against it |
-| `--left`          | left edge 0     | ends 59    | 59px                        |
-| default / `--top` | top edge 53     | ends 59    | 6px                         |
-| `--bottom`        | bottom edge 337 | starts 331 | 6px                         |
+| placement         | lands at        | housing    | under by                  |
+| ----------------- | --------------- | ---------- | ------------------------- |
+| `--right`         | right edge 776  | starts 785 | clear — by 9px, see below |
+| `--left`          | left edge 68    | ends 59    | clear — by 9px, see below |
+| default / `--top` | top edge 53     | ends 59    | 6px                       |
+| `--bottom`        | bottom edge 337 | starts 331 | 6px                       |
 
 A centred trigger reads clean on all four, so the fixture is not reporting the
 housing for every input.
 
-**The tooltip is the weakest of the three, and for a reason its numbers do not
-show.** Its base rule declares `position-try-fallbacks: flip-block` only, and no
-placement modifier adds `flip-inline` — so it never _attempts_ a horizontal
-correction at all, where the popover and menu at least try and then stop at the
-viewport boundary.
+**THE TWO INLINE ROWS READ "CLEAR" AND THE GAP IS UNCHANGED — read this before
+quoting them.** They were 844 and 0, flush against each housing, until
+`.juno-tooltip__bubble[popover]` gained `flip-inline` (20260914-155). The flip
+moves the bubble to the trigger's other side, which at **this** geometry lands
+nine pixels inside the band. It is decided by the trigger's and the bubble's
+widths — anchor positioning still cannot read `env()` — so the landing spot does
+not move when the housing gets wider:
+
+| inset | `--right` box | verdict     |
+| ----- | ------------- | ----------- |
+| 59px  | 636..776      | clear       |
+| 80px  | 636..776      | **crosses** |
+| 100px | 636..776      | **crosses** |
+
+Identical boxes at every inset. `anchored-safe-area-gap.spec.mjs` therefore pins
+the inline placements at 80px, where the coincidence does not save them, and the
+block placements at 59px, where they still cross on their own.
+
+**The tooltip used to be the weakest of the three, and that has been fixed
+without fixing this.** Its base rule declared `position-try-fallbacks:
+flip-block` only, and since every placement modifier inherits that rule, `--right`
+and `--left` — the two placements whose whole job is inline — never _attempted_ a
+horizontal correction, where the popover and menu at least try and then stop at
+the viewport boundary. It now declares `flip-block, flip-inline` like they do
+(20260914-155), which fixed a separate and plainer defect: a `--right` bubble on
+a trigger 4px from the right edge was clamped flush to the viewport **on top of
+the trigger that summoned it**. The housing gap above is untouched by that —
+the flip is viewport-driven, as the inset table shows.
 
 **Nothing in the component can fix it, and that is the point of recording it
 here.** Both panels declare `position-try-fallbacks`, which is exactly the right

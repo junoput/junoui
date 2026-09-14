@@ -60,7 +60,39 @@
   margin: 0;
   inset: auto;
   position-area: block-start;
-  position-try-fallbacks: flip-block;
+
+  /* BOTH AXES. This was `flip-block` alone, so the two INLINE placements had no
+     correction available at all: `--right` on a trigger 4px from the right edge
+     was clamped flush to the viewport and covered its own trigger.
+
+         844x390, trigger 4px from the right edge, bubble 67px wide
+         --right, flip-block only        777..844   trigger spans 820..840
+         --right, flip-block, flip-inline 753..820   sits beside it
+         --left at the left edge           0..67  ->  24..91
+         CONTROL, centred trigger        388..456   unchanged either way
+
+     The fallback set lives on the base rule that every placement modifier
+     inherits, so `flip-block` alone meant the modifiers that need an inline flip
+     were the only ones that could not get one. popover.css and menu.css have
+     declared `flip-block, flip-inline` all along; this is tooltip catching up,
+     not a new idea.
+
+     IT IS NOT A SAFE-AREA FIX, and 20260914-072 must not be closed on it — but
+     the first draft of this comment got the reason wrong, so the measurement is
+     here rather than the reasoning. The flip DOES clear a 59px housing in that
+     ticket's fixture, which is why its pinned test went red. It clears it by
+     nine pixels of arithmetic coincidence, and the landing spot is decided by
+     the trigger's and the bubble's widths rather than by --juno-safe-*, which
+     anchor positioning cannot read:
+
+         inset  59   --right box 636..776   clear
+         inset  80   --right box 636..776   CROSSES
+         inset 100   --right box 636..776   CROSSES
+
+     Identical at every inset. So the gap is unchanged in kind, and
+     anchored-safe-area-gap.spec.mjs now pins the inline placements at an 80px
+     housing where the coincidence does not save them. */
+  position-try-fallbacks: flip-block, flip-inline;
   transform: translateY(var(--juno-space-4));
   transition:
     opacity var(--juno-motion-duration-quick) var(--juno-motion-ease-decel),
