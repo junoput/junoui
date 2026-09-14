@@ -17,6 +17,13 @@ inset is largest) rendered the stack running under the sensor housing.
 `.juno-toast-stack` now sheds `--juno-safe-right` there too, additive
 [floating chrome], same as `--juno-toast-edge-offset` sheds `--juno-safe-bottom`.
 
+**Fixed: the `--top` and `--start` corner placements were still on flat
+tokens.** Both used a bare `--juno-space-24` (or `-12` in the narrow branch)
+with no safe-area term at all. `--top` was the worse case: in portrait the
+top edge sits exactly where the Dynamic Island is, and this doc's own
+letterbox guidance says the top inset is real and must not be zeroed. Both
+now shed the relevant inset, additive.
+
 `docs/safe-area.md`'s toast row corrected to match: it previously named the
 token's definition without noting it was declared on the wrong element, and
 was silent on the horizontal axis.

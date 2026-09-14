@@ -22,9 +22,12 @@
      not the reverse; declaring it on the child left it undefined here, so
      `inset-block-end` fell back to `auto` (the static position — the TOP of the
      page) on every phone-width viewport. See docs/safe-area.md, 20260914-071.
-     Restate either to sit flush above the home indicator / sensor housing. */
+     Restate any of the four to sit flush above the home indicator / sensor
+     housing on that edge. */
   --juno-toast-edge-offset: calc(var(--juno-space-24) + var(--juno-safe-bottom));
+  --juno-toast-edge-offset-top: calc(var(--juno-space-24) + var(--juno-safe-top));
   --juno-toast-edge-offset-inline-end: calc(var(--juno-space-24) + var(--juno-safe-right));
+  --juno-toast-edge-offset-inline-start: calc(var(--juno-space-24) + var(--juno-safe-left));
 
   position: fixed;
   z-index: var(--juno-z-alert);
@@ -37,9 +40,12 @@
   pointer-events: none;
 }
 
-/* placements */
-.juno-toast-stack--top { inset-block: var(--juno-space-24) auto; }
-.juno-toast-stack--start { inset-inline: var(--juno-space-24) auto; }
+/* placements. --top is the one that matters most: in portrait the top edge is
+   exactly where the Dynamic Island sits, and base.css's own letterbox rule
+   says the top inset is real and zeroing it would be actively harmful — so
+   this axis gets no flat fallback. */
+.juno-toast-stack--top { inset-block: var(--juno-toast-edge-offset-top) auto; }
+.juno-toast-stack--start { inset-inline: var(--juno-toast-edge-offset-inline-start) auto; }
 
 .juno-toast {
   --juno-role: var(--juno-active);
@@ -105,13 +111,20 @@
        invalidates the sum and drops the whole declaration (the stack would then
        sit flush at 0 on any device without a safe area). */
     --juno-toast-edge-offset: calc(var(--juno-space-12) + var(--juno-safe-bottom));
+    --juno-toast-edge-offset-top: calc(var(--juno-space-12) + var(--juno-safe-top));
 
+    /* Flat, not shed — deliberately. This branch is width<=639.98px; a
+       landscape phone is 844px wide and never reaches it, so in practice this
+       is portrait-only, where left/right insets are 0 (see "Only the bottom,
+       and that is deliberate" above). True today; if the breakpoint ever
+       moves down far enough to admit a landscape width, this needs the same
+       inline-start/-end treatment the default branch has. */
     inset-inline: var(--juno-space-12);
     inset-block-end: var(--juno-toast-edge-offset);
     inline-size: auto;
   }
 
-  .juno-toast-stack--top { inset-block: var(--juno-space-12) auto; }
+  .juno-toast-stack--top { inset-block: var(--juno-toast-edge-offset-top) auto; }
 
   @starting-style {
     .juno-toast { transform: translateY(var(--juno-space-16)); }
