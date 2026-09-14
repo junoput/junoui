@@ -116,7 +116,21 @@ function definedClasses() {
   return new Set([...css.matchAll(/\.(juno-[a-zA-Z0-9_-]+)/g)].map((m) => m[1]));
 }
 
-/** Every `juno-` class named inside an ```html block in the shipped docs. */
+/**
+ * Every `juno-` class named in a doc example OR in a showcase page.
+ *
+ * THE SHOWCASE IS INCLUDED AND THE DOCS' LINK CHECKS ARE NOT — the two ask
+ * different questions. A relative href between showcase pages is that demo's
+ * business; a CLASS that does not exist is a broken reference implementation,
+ * and `scroll-region-tabstop.test.mjs` already settled why that matters here:
+ * "junoui ships CSS, not markup, so no test can force a consumer to do this.
+ * But the showcase is the thing people copy, and an unguarded reference
+ * implementation teaches the omission."
+ *
+ * Same argument, one attribute over. The showcase was clean when this widened
+ * — zero undefined parts or modifiers across 28 pages — so this guards a state
+ * rather than fixing one.
+ */
 function classesInExamples() {
   const out = [];
   for (const f of FILES) {
@@ -126,12 +140,33 @@ function classesInExamples() {
       }
     }
   }
+  for (const f of showcasePages()) {
+    for (const attr of readFileSync(f, 'utf8').matchAll(/class="([^"]+)"/g)) {
+      for (const c of attr[1].split(/\s+/)) if (c.startsWith('juno-')) out.push({ file: f, c });
+    }
+  }
   return out;
 }
 
-test('the doc examples were really read (vacuity floor)', () => {
+/** Every showcase page, walked rather than listed — the seventh scroll region
+ *  was missed because a sibling test enumerated pages by hand (20260909-091). */
+function showcasePages() {
+  const out = [];
+  const walk = (d) => {
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      const p = join(d, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (e.name.endsWith('.html')) out.push(p);
+    }
+  };
+  walk('showcase');
+  return out;
+}
+
+test('the doc examples and showcase pages were really read (vacuity floor)', () => {
   const used = classesInExamples();
-  assert.ok(used.length >= 100, `only ${used.length} juno- classes found in doc examples`);
+  assert.ok(used.length >= 400, `only ${used.length} juno- classes found in examples`);
+  assert.ok(showcasePages().length >= 20, `only ${showcasePages().length} showcase pages walked`);
   assert.ok(definedClasses().size >= 300, 'the stylesheets parsed suspiciously few classes');
 });
 
