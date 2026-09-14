@@ -13,6 +13,15 @@
 //  rather than exports from style-dictionary.config.mjs for the reason
 //  tools/token-names would be: that config BUILDS on import.
 //
+//  THE RE-EXPORT BELOW USED TO REACH INTO `scripts/rules.mjs` ANYWAY, doing
+//  exactly the thing this paragraph explains not to do — `@junoput01/junoui/
+//  pointer-first` resolved fine from this repo (scripts/ exists on disk here)
+//  and threw `ERR_MODULE_NOT_FOUND` from a real packed install, because
+//  `scripts/` is absent from `files`. Caught by 20260914-111's import guard,
+//  which imports every JS export target from an actually-packed tarball
+//  rather than from the repo tree. Fixed by moving the shared rule table into
+//  `tools/rules.mjs` itself — same directory, no boundary to cross.
+//
 //  ── THE DECISION, and the arithmetic behind it ────────────────────────
 //
 //  Open question C was whether the pointer-first condition is
@@ -47,18 +56,18 @@
 //      with a phone's dock, or a landscape phone with a desktop rail.
 // ════════════════════════════════════════════════════════════════════════
 
-// The two bounds and the predicate live in scripts/rules.mjs, which is also
-// what generates dist/rust/juno_rules.rs. RE-EXPORTED, not restated: a painted
-// consumer and a DOM consumer answering this question differently is the exact
-// defect 20260901-051 is about, and two copies that agree today is how it
-// starts.
+// The two bounds and the predicate live in ./rules.mjs (same directory —
+// see the note above), which is also what generates dist/rust/juno_rules.rs.
+// RE-EXPORTED, not restated: a painted consumer and a DOM consumer answering
+// this question differently is the exact defect 20260901-051 is about, and
+// two copies that agree today is how it starts.
 //
 //   SHORT_MAX_PX  — landscape phones are 320-430px tall, tablets start at 768;
 //                   500 sits in the gap with room either side, so anything from
 //                   ~460 to ~760 picks the same set. Not a per-device tuning.
 //   NARROW_MAX_PX — the md breakpoint's `below` half, which junoui publishes.
-export { SHORT_MAX_PX, NARROW_MAX_PX, wantsCompactNav } from '../scripts/rules.mjs';
-import { SHORT_MAX_PX, NARROW_MAX_PX } from '../scripts/rules.mjs';
+export { SHORT_MAX_PX, NARROW_MAX_PX, wantsCompactNav } from './rules.mjs';
+import { SHORT_MAX_PX, NARROW_MAX_PX } from './rules.mjs';
 
 /** Touch ergonomics: a finger, whatever it is attached to. No size term. */
 export const COARSE_POINTER = '(pointer: coarse)';

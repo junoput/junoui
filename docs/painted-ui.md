@@ -22,7 +22,7 @@ halo_offsets(font_px, halo_width_px, reference_px) -> [(f32, f32); 4]
 ```
 
 **One table, two targets — and one honest limit.** Each rule is defined once in
-`scripts/rules.mjs`; `tools/pointer-first.mjs` re-exports it rather than
+`tools/rules.mjs`; `tools/pointer-first.mjs` re-exports it rather than
 restating it, the Rust is generated from it, and the Rust's `#[test]` bodies are
 generated from the same `CASES` table the JS tests run. Adding a case covers
 both targets; there is no way to add one and miss the other.

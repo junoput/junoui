@@ -14,8 +14,12 @@
 //  over unknown backing needs its own ground (20260901-051, docs/painted-ui.md).
 //
 //  Each of those has a PURE-FUNCTION core. This file is that core, and it is
-//  the only place it exists. `tools/pointer-first.mjs` re-exports from here,
-//  and `dist/rust/juno_rules.rs` is generated from here — including its tests,
+//  the only place it exists. `tools/pointer-first.mjs` re-exports from here
+//  (same directory — it lives in `tools/`, not `scripts/`, SPECIFICALLY so
+//  that re-export stays inside what `package.json` `files` ships; the two
+//  used to be in different directories and the re-export 404'd in a real
+//  install while resolving fine in the repo — 20260914-111), and
+//  `dist/rust/juno_rules.rs` is generated from here — including its tests,
 //  which are generated from the same CASES table the JS tests run. Two
 //  implementations that agree today and drift tomorrow is the failure this
 //  file is shaped to prevent, so agreement is not asserted in prose.

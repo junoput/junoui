@@ -16,5 +16,9 @@ dist/
 # consumer clone (scripts/consumer-gate.mjs — see docs/release-gate.md)
 /.relgate/
 
+# exports-import guard scratch: a real packed-and-extracted tarball, cleaned
+# up by the test itself — see test/exports-import.test.mjs
+/.exports-import-check/
+
 # local throwaway preview pages (served ad-hoc, never committed)
 /_preview.html

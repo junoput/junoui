@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
-import * as rules from '../scripts/rules.mjs';
+import * as rules from '../tools/rules.mjs';
 import * as pointerFirst from '../tools/pointer-first.mjs';
 
 const rs = readFileSync('dist/rust/juno_rules.rs', 'utf8');
