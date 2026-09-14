@@ -37,15 +37,36 @@ Neither defect is visible from inside this repo. Both are one consumer build awa
 
 ## What it does, in order
 
-| #   | Stage                                             | What it proves                                                                                             |
-| --- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1   | `npm run build`                                   | the candidate's `dist/` is fresh, as `prepare` would make it before a publish                              |
-| 2   | stage a pack source                               | a **copy** of the tree under `.relgate/pack-src` — the working tree is never mutated                       |
-| 3   | `npm pack --ignore-scripts`                       | produces the exact artefact a consumer receives                                                            |
-| 4   | preflight                                         | every target in the `exports` map is actually **inside the tarball** — the `0.4.0` defect, stated directly |
-| 5   | shallow clone the consumer                        | `nexora` `develop`, into `.relgate/nexora`                                                                 |
-| 6   | `npm ci`, then install the tarball                | the consumer's real dependency tree, with junoui replaced by the candidate                                 |
-| 7   | `npx tsc --noEmit` · `npm test` · `npm run build` | the candidate compiles, passes the consumer's guards, and builds a production bundle                       |
+| #   | Stage                                             | What it proves                                                                                        |
+| --- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1   | `origin/main` is an ancestor of `HEAD`            | the candidate has not fallen behind — a stale Version PR fails here rather than being gated green     |
+| 2   | this version is not already published             | the registry does not have it yet (`20260909-122` — this stage's PASS was unreachable until then)     |
+| 3   | `npm run build`                                   | the candidate's `dist/` is fresh, as `prepare` would make it before a publish                         |
+| 4   | stage a pack source                               | a **copy** of the tree under `.relgate/pack-src` — the working tree is never mutated                  |
+| 5   | `npm pack --ignore-scripts`                       | produces the exact artefact a consumer receives                                                       |
+| 6   | preflight                                         | every target in the `exports` map is **inside the tarball** — the `0.4.0` defect. See the limit below |
+| 7   | shallow clone the consumer                        | `nexora` `develop`, into `.relgate/nexora`                                                            |
+| 8   | the consumer is current with its own baseline     | the clone is not itself stale, so a pass is about today's consumer rather than an old one             |
+| 9   | `npm ci`, then install the tarball                | the consumer's real dependency tree, with junoui replaced by the candidate                            |
+| 10  | `npx tsc --noEmit` · `npm test` · `npm run build` | the candidate compiles, passes the consumer's guards, and builds a production bundle                  |
+
+**Ten, and the verdict line counts them for you** — `GATE GREEN — N stages
+passed`. If that number and this table ever disagree, the gate is right and this
+table has drifted; it has before. Three stages above were missing from it for
+long enough that nobody noticed.
+
+### What stage 6 does NOT prove
+
+It asserts the exports **target is present** in the tarball. It does not assert
+the target **imports**. `@junoput01/junoui/pointer-first` satisfied stage 6
+completely while throwing `ERR_MODULE_NOT_FOUND` for every consumer, because it
+re-exported from `scripts/`, which does not ship (`20260914-111`). The file was
+there; what it reached for was not.
+
+That is now covered by `test/exports-import.test.mjs`, which imports every JS
+export target from a real packed-and-extracted tarball — in `npm test`, therefore
+in stage 10, not in stage 6. **A ten-stage green does not mean the package works;
+it means ten specific things are true.**
 
 Every stage is reported PASS/FAIL and the verdict block prints the **junoui SHA** and
 the **nexora SHA** the run was checked against. Paste both onto the release ticket.
@@ -101,8 +122,9 @@ release, then run it again.
 
 `develop`, since 2026-09-09. It was `ios/develop` until that branch vanished
 from nexora's origin, which made the gate **inoperable** rather than weaker —
-stage 6 died on `Remote branch ios/develop not found` and no release could be
-gated at all (`20260909-114`).
+the clone stage died on `Remote branch ios/develop not found` and no release
+could be gated at all (`20260909-114`). Named rather than numbered, because the
+numbering has drifted once already.
 
 Repointing was measured, not assumed: `ios/develop` still exists locally, has
 **zero** commits `develop` does not have, and **is an ancestor** of
