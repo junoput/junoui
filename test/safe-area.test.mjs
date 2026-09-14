@@ -122,13 +122,77 @@ test('a published offset is composed from the seam, not from env()', () => {
   }
 });
 
-test('the three buckets are documented with their arithmetic', () => {
-  // The rule is not a style choice and the doc has to say which is which, or
-  // the next consumer picks by taste and is wrong at one end of the range.
+/**
+ * The bucket table's rows, read as ROWS rather than as a bag of strings
+ * (20260914-096 item 5).
+ *
+ * The previous version made five independent presence checks — three bucket
+ * names and two formulas — and so could not see which formula belonged to which
+ * bucket. Its mutation: swap the "Because" text between the edge-padding and
+ * clearance rows, keeping both names and both formulas verbatim. All five
+ * assertions passed while the document told a consumer the opposite of the rule
+ * at both ends.
+ *
+ * That matters more here than in most places, because this table exists
+ * precisely to stop a consumer choosing arithmetic by taste — and a reader who
+ * follows a cross-attributed row is wrong at exactly the extreme the bucket was
+ * invented for.
+ */
+function bucketRows() {
   const doc = readFileSync('docs/safe-area.md', 'utf8');
-  for (const bucket of ['edge padding', 'clearance', 'floating chrome']) {
-    assert.ok(doc.includes(bucket), `the ${bucket} bucket is undocumented`);
+  const rows = new Map();
+  for (const line of doc.split('\n')) {
+    const m = /^\|\s*\*\*([^*]+)\*\*\s*\|([^|]*)\|([^|]*)\|/.exec(line);
+    if (m) rows.set(m[1].trim(), { rule: m[2].trim(), because: m[3].trim() });
   }
-  assert.match(doc, /max\(base, inset\)/, 'the edge-padding arithmetic is not stated');
-  assert.match(doc, /base \+ inset/, 'the additive arithmetic is not stated');
+  return rows;
+}
+
+/** Every bucket, its arithmetic, and a phrase only its OWN reasoning contains. */
+const BUCKETS = [
+  ['edge padding', /max\(base, inset\)/, /double-pads/],
+  ['clearance', /base \+ inset/, /lands short/],
+  ['floating chrome', /base \+ inset/, /sits _off_ the edge/],
+  ['available-space cap', /100% - 2 \* edge/, /subtracted_ from how much room/],
+];
+
+test('the bucket table was really parsed as rows (vacuity floor)', () => {
+  // Without this, a table reformatted past the regex yields an empty map and
+  // every assertion below iterates nothing — four buckets agreeing perfectly
+  // because none was read.
+  const rows = bucketRows();
+  assert.ok(rows.size >= 4, `only ${rows.size} bucket rows parsed from safe-area.md`);
+});
+
+test('every bucket is documented with ITS OWN arithmetic and ITS OWN reason', () => {
+  // The pairing, not the presence. Each `because` pattern is a phrase that
+  // appears in that row's reasoning and nowhere else, so a cross-attribution
+  // fails rather than passing on the shared vocabulary.
+  const rows = bucketRows();
+  for (const [name, rule, because] of BUCKETS) {
+    const row = rows.get(name);
+    assert.ok(row, `the ${name} bucket is undocumented`);
+    assert.match(row.rule, rule, `the ${name} row does not state its arithmetic`);
+    assert.match(
+      row.because,
+      because,
+      `the ${name} row's reasoning is not its own — a formula or an explanation ` +
+        `has been attributed to the wrong bucket, which is worse than an absent ` +
+        `row because the document still reads as complete`,
+    );
+  }
+});
+
+test('the table has not grown a bucket this test does not know about', () => {
+  // The direction that caught this file out. `available-space cap` landed on
+  // 2026-09-14 and this test still enumerated three buckets — stale within
+  // hours of the change, and silent about it, because a fixed list cannot see
+  // an addition. Now an addition fails loudly and cheaply.
+  const unknown = [...bucketRows().keys()].filter((k) => !BUCKETS.some(([n]) => n === k));
+  assert.deepEqual(
+    unknown,
+    [],
+    'safe-area.md documents a bucket this test does not check. Add it to BUCKETS ' +
+      'with the phrase unique to its own reasoning.',
+  );
 });
