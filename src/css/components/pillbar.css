@@ -98,7 +98,28 @@
   margin-inline: auto;
   margin-block-end: var(--juno-pillbar-edge);
   inline-size: fit-content;
-  max-inline-size: calc(100% - 2 * var(--juno-pillbar-edge));
+
+  /* Sheds BOTH horizontal insets as well as the edge gap. `100%` resolves
+     against the containing block — the viewport for the `position: fixed`
+     corner variants — and the viewport spans UNDER the sensor housing in
+     landscape. The corner variants already shed the inset on their own edge
+     when POSITIONING themselves (see --top-right / --top-left below), so the
+     pill's right edge lands correctly and only its WIDTH was unbounded by the
+     safe area.
+
+     Measured before the fix, 844x390 with 59px horizontal insets and enough
+     items for the cap to bind: cap 812px, pill width 812px, left edge at
+     -39px — off-screen, past the housing entirely. Found by nexora, which has
+     been carrying `--nx-safe-inline-start/-end` as an override for it
+     (20260909-126 override C, 20260914-059). It takes a notched device held
+     sideways to see, which is why a consumer found it and we did not.
+
+     safe-area.md bucket: MINIMUM-style on neither axis — this is the third
+     bucket, a term SUBTRACTED from available space rather than added to a
+     gap. */
+  max-inline-size: calc(
+    100% - 2 * var(--juno-pillbar-edge) - var(--juno-safe-left) - var(--juno-safe-right)
+  );
   display: flex;
   align-items: center;
   gap: var(--juno-pillbar-gap);
