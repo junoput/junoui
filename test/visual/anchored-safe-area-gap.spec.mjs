@@ -147,7 +147,18 @@ const tipPage = (
 <style>${CSS}</style>
 <style>:root{--juno-safe-left:${safe}px;--juno-safe-right:${safe}px;--juno-safe-top:${safe}px;--juno-safe-bottom:${safe}px;}
   #t{inline-size:60px;block-size:24px;}
-  #b{inline-size:140px;block-size:28px;}</style>
+  #b{inline-size:140px;block-size:28px;}
+  /* MEASURE THE SETTLED BOX, NOT A FRAME OF THE OPENING TRANSITION (20260914-162).
+     The bubble transitions transform from translateX(+/- space-4) to none over
+     motion-duration-quick, so a box read while that is running is up to 4px off --
+     and it flaked exactly that way: the inset-independence control measured
+     636..776, 636..776, 638..778 and failed on a 2px difference, i.e. halfway
+     through a 4px translate. Playwright disables animations for toHaveScreenshot;
+     a raw getBoundingClientRect() in page.evaluate gets no such help. Every
+     assertion in this file reads a box, so this belongs in the fixture rather than
+     at one call site. NOTE: no backticks in this comment -- it lives inside a
+     template literal, and the first draft of it ended the string mid-file. */
+  .juno-tooltip__bubble{transition:none !important;}</style>
 <span class="juno-tooltip" style="position:absolute;${TIP_POS[at]}">
   <button tabindex="0" id="t"></button>
   <span class="juno-tooltip__bubble ${mod}" id="b" role="tooltip"></span>
