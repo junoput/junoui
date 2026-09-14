@@ -173,6 +173,25 @@
   position: fixed;
   inset-inline: 0;
   inset-block-end: 0;
+
+  /* EDGE PADDING, not the floating-chrome margin the --pill/--float variants
+     use, and the difference is deliberate (20260914-070). This bar is
+     full-bleed by design: its background must keep spanning edge to edge, or a
+     bar that stops short of the housing reads as broken. What must not run
+     under the housing is the CONTENT, so the inset is padding and the box stays
+     the full viewport.
+
+     Unconditional, because `position: fixed` with `inset-inline: 0` sits against
+     the viewport whatever it is nested in — no ancestor's padding reaches it.
+     Measured inside a `.juno-app-shell` that HAD already padded by both insets,
+     844x390 with 59px insets: the bar spanned 0..844 and the first item's
+     leading edge sat at 0. That is why this is not the open question in
+     20260914-068, which is about the in-flow BASE bar.
+
+     Missed when 20260914-067 fixed --pill and --float: the argument is not "is
+     it floating", it is "is it positioned against the viewport", and I
+     enumerated by the first. */
+  padding-inline: var(--juno-safe-left) var(--juno-safe-right);
 }
 
 /* ── Pill variant — the full-width bar becomes a rounded floating pill with
