@@ -48,9 +48,14 @@ worktree; the gate makes its own throwaway clone under `.relgate/`.
 
 ## Gotchas (learned the hard way)
 
-- **CSS `@import` must be the first rule.** `src/css/base.css` imports the fonts;
-  `scripts/bundle-css.mjs` hoists all `@import` to the top of `dist/css/juno.css`.
-  Don't rely on a mid-file `@import` working — browsers drop it.
+- **CSS `@import` must be the first rule.** `scripts/bundle-css.mjs` hoists every
+  `@import` to the top of `dist/css/juno.css`, so you may write one mid-file in a
+  source layer — but don't rely on it working unhoisted, because browsers drop it.
+  The build reports the count it hoisted (`✓ bundled N layers (M @import
+hoisted)`) — read that rather than assuming a number here. In particular
+  **fonts are opt-in and are NOT imported by `base.css`**: they ship as a separate
+  `dist/css/juno-fonts.css`, so junoui forces no network request and breaks no
+  CSP. See `src/css/base.css`'s own header, and `bundle-css.mjs`'s fonts block.
 - **A CSS `mask` clips children.** The arc loader's `%` label must be a _sibling_ over
   a positioned wrapper, not inside `.juno-arc`.
 - **New component-local custom props** (e.g. `--juno-grid-min`) must be added to the
