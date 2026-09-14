@@ -45,3 +45,14 @@ on check; the radio is a ring with a center dot. Wrap with `.juno-choice` for a 
   `<input type="checkbox" indeterminate>` in markup does nothing. Clearing it
   is the same assignment with `false`, and setting `checked` does not clear it
   for you — the app owns the transition between the three states.
+- **A user click clears it and your script cannot see it coming.** Measured in
+  chromium: `el.checked = true` and `el.checked = false` both leave
+  `indeterminate` **true**, but a real click sets it **false** before your
+  `change` handler runs. So the state you set survives every assignment you make
+  and not the one thing you did not do. Re-derive it from the child set on every
+  change rather than tracking it — a "select all" that only writes
+  `indeterminate` when the partial set changes will silently lose the dash the
+  first time somebody clicks the box.
+- The dash is the only visual cue and the state announces as **mixed**, so the
+  label has to read correctly in all three: "Select all" is fine, "All regions
+  selected" is not.
