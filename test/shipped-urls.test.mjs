@@ -18,6 +18,18 @@
 //
 // It also covers `src/css`, because a consumer may import the sources directly —
 // that is why `src/css` is in package.json's `files` at all.
+//
+// ── A NOTE FOR WHOEVER MUTATION-TESTS THIS FILE ─────────────────────────────
+//
+// Mutate `src/css/fonts.css`, NOT `dist/css/juno-fonts.css`. `npm test` runs the
+// build first, so a mutation applied to the generated file is REGENERATED AWAY
+// before a single assertion runs — and the suite then passes, which reads
+// exactly like a test too weak to catch it.
+//
+// That happened here. Two mutations were confirmed present in `dist/` and both
+// "passed"; the mutant had been erased mid-flight by the harness. Asserting the
+// mutant is present is necessary and not sufficient when the subject is
+// generated: it has to still be present WHEN THE ASSERTIONS RUN.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
