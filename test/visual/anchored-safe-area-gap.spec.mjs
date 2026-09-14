@@ -86,11 +86,41 @@ for (const [selector, markup] of Object.entries(PANELS)) {
  *
  * Both are asserted rather than assumed, below.
  */
+/* THE TWO INLINE PLACEMENTS LEFT THIS LIST WHEN 20260914-155 LANDED, and the
+ * reason is the interesting part rather than the removal.
+ *
+ * Giving `.juno-tooltip__bubble[popover]` `flip-block, flip-inline` — the set
+ * popover.css and menu.css always had — moves a `--right` bubble off the edge
+ * to the trigger's other side. At THIS fixture's 59px inset that lands clear of
+ * the housing, so "still crosses" went red exactly as this file's header
+ * promises it should.
+ *
+ * IT IS NOT A SAFE-AREA FIX, AND THE PROBE BELOW IS WHY THAT CLAIM IS SAFE TO
+ * MAKE. The flipped position is inset-INDEPENDENT — it is decided by the
+ * trigger's and bubble's widths, not by `--juno-safe-*`, which anchor
+ * positioning cannot read:
+ *
+ *     inset  59   --right 636..776  clear      --left 68..208  clear
+ *     inset  80   --right 636..776  CROSSES    --left 68..208  CROSSES
+ *     inset 100   --right 636..776  CROSSES    --left 68..208  CROSSES
+ *
+ * Identical boxes at every inset. The 59px case clears by five pixels of
+ * arithmetic coincidence. So the gap is unchanged in kind and the two cases are
+ * pinned below at an inset where the coincidence does not save them.
+ */
 const TIP_CASES = [
-  { mod: 'juno-tooltip__bubble--right', at: 'right', label: '--right' },
-  { mod: 'juno-tooltip__bubble--left', at: 'left', label: '--left' },
   { mod: '', at: 'top', label: 'default (block-start)' },
   { mod: 'juno-tooltip__bubble--bottom', at: 'bottom', label: '--bottom' },
+];
+
+/** The inline placements, at a housing wide enough that flip-inline's fixed
+ *  landing spot does not clear it. Same property as TIP_CASES, one variable
+ *  moved — if this ever goes green, anchor positioning has learned about
+ *  `env()` and the whole file should go. */
+const WIDE_INSET = 80;
+const TIP_CASES_WIDE = [
+  { mod: 'juno-tooltip__bubble--right', at: 'right', label: '--right' },
+  { mod: 'juno-tooltip__bubble--left', at: 'left', label: '--left' },
 ];
 
 /** Trigger placed near the edge the bubble opens TOWARD.
@@ -171,6 +201,50 @@ for (const { mod, at, label } of TIP_CASES) {
     ).toBe(true);
   });
 }
+
+for (const { mod, at, label } of TIP_CASES_WIDE) {
+  test(`.juno-tooltip__bubble ${label} still crosses an ${WIDE_INSET}px housing`, async ({
+    page: pw,
+  }) => {
+    await pw.setViewportSize({ width: VW, height: VH });
+    await pw.goto('about:blank');
+    await pw.setContent(tipPage(mod, at, WIDE_INSET));
+    await openTip(pw);
+    const b = await pw.evaluate(() => {
+      const r = document.getElementById('b').getBoundingClientRect();
+      return { l: Math.round(r.left), r: Math.round(r.right) };
+    });
+    const crosses = b.l < WIDE_INSET || b.r > VW - WIDE_INSET;
+    expect(
+      crosses,
+      `.juno-tooltip__bubble ${label} no longer crosses an ${WIDE_INSET}px housing ` +
+        `(${JSON.stringify(b)}). GOOD NEWS and a RED TEST — see the header.`,
+    ).toBe(true);
+  });
+}
+
+test('flip-inline lands in the same place whatever the inset — it cannot read one', async ({
+  page: pw,
+}) => {
+  // The control for the comment above TIP_CASES. Without it, "the 59px case
+  // clears by coincidence" is an inference from two numbers; with it, the
+  // box is measured at three insets and is identical at all of them, which is
+  // the only evidence that the placement is not safe-area-aware.
+  await pw.setViewportSize({ width: VW, height: VH });
+  const boxes = [];
+  for (const inset of [INSET, WIDE_INSET, 100]) {
+    await pw.goto('about:blank');
+    await pw.setContent(tipPage('juno-tooltip__bubble--right', 'right', inset));
+    await openTip(pw);
+    boxes.push(
+      await pw.evaluate(() => {
+        const r = document.getElementById('b').getBoundingClientRect();
+        return `${Math.round(r.left)}..${Math.round(r.right)}`;
+      }),
+    );
+  }
+  expect(new Set(boxes).size, `the flipped bubble moved with the inset: ${boxes}`).toBe(1);
+});
 
 test('a centred trigger reads clean — the fixture is not reporting the housing for everything', async ({
   page: pw,
