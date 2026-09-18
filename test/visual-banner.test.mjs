@@ -45,6 +45,14 @@ test('outside CI it says why a local showcase red is expected', async () => {
   // And it must point at what IS meaningful locally, or the reader concludes
   // the whole suite is worthless on this box and stops running any of it.
   assert.match(out, /Geometry specs/);
+
+  // The launch-failure hint (20260918-002). It has to name the DISCRIMINATOR —
+  // which call threw — rather than only the remedy: "Target page, context or
+  // browser has been closed" is printed both when the browser dies at launch
+  // and when a page kills it, and a reader who has only the remedy still cannot
+  // tell which case they are in.
+  assert.match(out, /browserType\.launch:/);
+  assert.match(out, /chromium-libs/);
 });
 
 test('in CI it prints nothing at all', async () => {
