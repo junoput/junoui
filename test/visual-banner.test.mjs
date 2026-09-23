@@ -53,6 +53,17 @@ test('outside CI it says why a local showcase red is expected', async () => {
   // tell which case they are in.
   assert.match(out, /browserType\.launch:/);
   assert.match(out, /chromium-libs/);
+
+  // BOTH causes of a launch failure, and both sides of the split. The first
+  // version named only the missing libraries; the full chrome binary cannot
+  // launch on this box even with them staged, so a reader who had staged them
+  // was told, in effect, that their failure was impossible (20260918-002).
+  assert.match(out, /full chrome binary/i);
+  assert.match(out, /chrome-headless-shell/);
+  // And the other branch has to be present, or the note explains one case and
+  // leaves the reader in the other with nothing.
+  assert.match(out, /page\.goto:/);
+  assert.match(out, /free memory/i);
 });
 
 test('in CI it prints nothing at all', async () => {
