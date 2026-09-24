@@ -96,3 +96,91 @@
   color: var(--juno-data);
   overflow-wrap: anywhere;
 }
+
+/* ── Desktop viewport-framing switch ──────────────────────────────────────
+ * A real phone gets none of this — window.self === window.top there too,
+ * but harness.js never injects the control on a coarse pointer, and the
+ * page is already full-bleed with nothing to switch to. On a desktop
+ * browser (fine pointer + hover) this lets the operator flip between the
+ * page as it is now and the SAME page loaded fresh into a 390x844 iframe:
+ * a real nested browsing context, so (pointer: coarse), (hover: none) and
+ * 100dvh resolve against THAT viewport rather than a class name pretending
+ * to be narrow. See harness.js for the load/detect logic.
+ */
+.dh-viewport-switch {
+  position: fixed;
+  inset-block-start: 10px;
+  inset-inline-end: 10px;
+  z-index: 20;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--juno-s1);
+  border: 1px solid var(--juno-border);
+  border-radius: var(--juno-radius-8);
+  box-shadow: var(--juno-shadow-2);
+}
+
+.dh-viewport-switch__btn {
+  font-family: var(--juno-font-family-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--juno-radius-4);
+  background: transparent;
+  color: var(--juno-label);
+  cursor: pointer;
+}
+
+.dh-viewport-switch__btn[aria-pressed='true'] {
+  background: var(--juno-active);
+  color: var(--juno-s0);
+}
+
+/* The frame wrapper is a body-level sibling, always in the DOM, hidden
+   unless mobile-preview is active — so switching back to desktop is just
+   a class flip, not a reload. */
+.dh-viewport-frame-wrap {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  align-items: center;
+  justify-content: center;
+  background: var(--juno-s3);
+}
+
+html[data-dh-preview='mobile'] .dh-viewport-frame-wrap { display: flex; }
+
+/* Everything else at the body's own top level hides while the frame is up.
+   The switch and the frame wrapper are the only two exemptions — this is
+   what makes the desktop page's real content invisible without touching
+   its layout, so the SAME markup works whether it is showing or hidden. */
+html[data-dh-preview='mobile'] body > :not(.dh-viewport-switch):not(.dh-viewport-frame-wrap) {
+  display: none;
+}
+
+/* The bezel carries the border/radius/shadow so the iframe itself stays
+   EXACTLY 390x844 — junoui's own base.css sets box-sizing: border-box
+   globally, so a border on the iframe element directly would have shrunk
+   its content viewport below the 390x844 the rest of the project measures
+   against (test/visual/helpers.mjs's PHONE_VIEWPORT, the Playwright
+   chromium-coarse project). Measured: without this wrapper the nested
+   page's own window.innerWidth read 374, not 390. */
+.dh-viewport-frame-bezel {
+  padding: 8px;
+  border-radius: 40px;
+  background: var(--juno-s1);
+  box-shadow: var(--juno-shadow-3);
+}
+
+.dh-viewport-frame {
+  display: block;
+  width: 390px;
+  height: 844px;
+  border: none;
+  background: var(--juno-s0);
+}
