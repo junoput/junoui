@@ -65,6 +65,16 @@ test('outside CI it says why a local showcase red is expected', async () => {
   assert.match(out, /page\.goto:/);
   assert.match(out, /free memory/i);
 
+  // The fontconfig cause, and the BOUNDARY on it. The first wording said the
+  // missing config breaks any text render "on this box"; with the staged libs
+  // on LD_LIBRARY_PATH and FONTCONFIG_FILE unset, a plain text page still
+  // rendered here — the staged bundle carries its own libfontconfig and its own
+  // etc/fonts/fonts.conf. The advice is unchanged (set the variable); the claim
+  // is scoped to what was observed, so a reader who cannot reproduce the crash
+  // is not told their environment is impossible (20260918-002).
+  assert.match(out, /fontconfig cannot resolve a config/);
+  assert.match(out, /FONTCONFIG_FILE UNSET, a plain text page still rendered/);
+
   // FONTCONFIG (20260918-002 reopened): a bare page with no date input and no
   // custom CSS crashes identically on this box with no fontconfig config at
   // all, reproduced on a quiet box with 10Gi free — memory pressure is not
