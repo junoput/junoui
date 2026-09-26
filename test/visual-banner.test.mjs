@@ -64,6 +64,15 @@ test('outside CI it says why a local showcase red is expected', async () => {
   // leaves the reader in the other with nothing.
   assert.match(out, /page\.goto:/);
   assert.match(out, /free memory/i);
+
+  // FONTCONFIG (20260918-002 reopened): a bare page with no date input and no
+  // custom CSS crashes identically on this box with no fontconfig config at
+  // all, reproduced on a quiet box with 10Gi free — memory pressure is not
+  // the only cause, and it is not even the deterministic one. The note must
+  // name fontconfig ahead of memory, and the FONTCONFIG_FILE remedy, or a
+  // reader with a quiet box and no fontconfig chases the wrong hypothesis.
+  assert.match(out, /fontconfig/i);
+  assert.match(out, /FONTCONFIG_FILE/);
 });
 
 test('in CI it prints nothing at all', async () => {
