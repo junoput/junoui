@@ -123,6 +123,21 @@ on whether it visibly shifts consumer UI — see the [versioning policy](#versio
 - Keep components stateless. No JS required for a component to render; tiny optional
   vanilla enhancers only, never stateful.
 - Pair color with a non-color signal (see [accessibility.md](./docs/accessibility.md)).
+- **When you report a measurement, state what you HELD CONSTANT, not only what you
+  varied.** A varied factor is part of the design and gets written down; a held one
+  lives in the environment, so it is invisible to the person who chose it. One line
+  beside the numbers — `held constant: X, Y, Z` — is the whole convention.
+
+  It is in here because it cost a week (`20260918-002`). A crash was reported on a
+  page with an `<input type="date">`; a 2×2 crossing navigation method against
+  browser binary could not reproduce it, and the arms disagreed because
+  `FONTCONFIG_FILE` was exported in one environment and not the other. It was never
+  a candidate for being reasoned about — it came from a 54-day-old setup note and
+  was in every command. The published 2×2 could not have been re-run by the person
+  who disagreed, because the half that mattered was not in the specification.
+
+  So the second reason is reproducibility rather than rigour: **a null is only
+  re-runnable by someone other than its author if the held half is written down.**
 
 ## Releasing
 
