@@ -8,6 +8,12 @@
 <body>
 <x-dc>
 <helmet>
+<!-- junoui note (ticket 20260928-013, added 2026-09-28 — not part of the original canvas export):
+     Do not copy the two Google Fonts links below into a junoui-based app. They are frozen
+     reference artefacts from the imported canvas (2026-07-19) and contradict what this
+     library ships. junoui self-hosts its four B612 woff2 faces under src/fonts/; they
+     publish as a SEPARATE dist/css/juno-fonts.css that base.css deliberately does not
+     import, so consuming junoui forces no network request and breaks no CSP. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=B612+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
 <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { overflow-x: hidden; } @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} } *:focus-visible { outline: 2px solid oklch(76% 0.16 204); outline-offset: 2px; border-radius: 2px; }</style>
