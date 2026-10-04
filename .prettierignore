@@ -6,3 +6,16 @@ docs/tokens-reference.md
 **/*.css
 **/*.html
 .claude
+
+# devbox-conventions renders these, and the managed regions carry a marker
+# saying "edit outside the markers". Prettier --write reformats inside them,
+# which makes `conventions` report drift on a file nobody edited — so the
+# generator and the formatter would fight every render. Same reasoning as
+# docs/tokens-reference.md above, which gen-docs owns.
+# CONTRIBUTING.md is listed because its managed block is only PART of the file:
+# its hand-written half loses prettier coverage as the price of the block not
+# drifting. 20261004-006.
+CONTRIBUTING.md
+docs/BRANCHING.md
+docs/GIT_WORKFLOW.md
+docs/IDENTITY.md
