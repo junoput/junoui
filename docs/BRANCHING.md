@@ -1,4 +1,4 @@
-<!-- devbox-conventions docs__BRANCHING.md v4 BEGIN — generated; edit outside the markers -->
+<!-- devbox-conventions docs__BRANCHING.md v5 BEGIN — generated; edit outside the markers -->
 ## Branch policy
 
 Every branch name matches `<type>/<kebab-case>`, where type is one of:
