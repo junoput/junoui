@@ -1,4 +1,4 @@
-<!-- devbox-conventions docs__IDENTITY.md v4 BEGIN — generated; edit outside the markers -->
+<!-- devbox-conventions docs__IDENTITY.md v5 BEGIN — generated; edit outside the markers -->
 ## Identity, users and roles
 
 Every app on this box speaks one language for login. This document is that

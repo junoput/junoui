@@ -216,7 +216,7 @@ ones as **patch**, and reserve a real **major** for the intentional `1.0.0` "the
 is stable now" release. ⚠️ Changesets bumps a `major` changeset **straight to
 `1.0.0`** — do not file one until you actually mean to stabilize.
 
-<!-- devbox-conventions CONTRIBUTING.md v4 BEGIN — generated; edit outside the markers -->
+<!-- devbox-conventions CONTRIBUTING.md v5 BEGIN — generated; edit outside the markers -->
 ## Before you write anything, the work has a ticket
 
 `tick` is the shared board across every project on this box. Claim before you
