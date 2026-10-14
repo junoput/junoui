@@ -20,3 +20,7 @@ docs/BRANCHING.md
 docs/GIT_WORKFLOW.md
 docs/IDENTITY.md
 docs/OBSERVABILITY.md
+# Whole-file managed (conventions v6): no unmanaged region at all, so a prettier
+# rewrite IS a hand edit — lost on the next render, and reported as drift until
+# then. The file says so itself in _convention.edits_are_lost. 20261014.
+docs/OBSERVABILITY.vocabulary.json
