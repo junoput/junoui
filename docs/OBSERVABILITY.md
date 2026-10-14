@@ -1,4 +1,4 @@
-<!-- devbox-conventions docs__OBSERVABILITY.md v5 BEGIN — generated; edit outside the markers -->
+<!-- devbox-conventions docs__OBSERVABILITY.md v6 BEGIN — generated; edit outside the markers -->
 ## Observability: logs, metrics, errors, health and security events
 
 Every app and every machine on this network reports what it is doing in one
@@ -188,6 +188,17 @@ the same way. One app with its own spelling is one blind spot, and a blind spot
 nobody knows about.
 
 The vocabulary is CLOSED. These are the names, in `event.name`:
+
+<!-- `conventions check` READS THE BLOCK BELOW and asserts it names the same set
+     of events as docs/OBSERVABILITY.vocabulary.json, in both directions. The
+     extraction starts after the line containing "The vocabulary is CLOSED" and
+     stops at the line containing "Every security event carries", then takes the
+     first word of each indented line. It is bounded that way because the field
+     list further down also contains dotted names (`event.name`, `user.id`,
+     `session.id`) and an unbounded scan would read six field names as events.
+     If you reformat this block — a table, different indentation, a blank line
+     between entries — update vocab_prose_names() in the conventions tool in the
+     same change, or the check goes VACUOUS and says so rather than passing. -->
 
     auth.login.success        a credential was accepted and a session began
     auth.login.failure        a credential was rejected
